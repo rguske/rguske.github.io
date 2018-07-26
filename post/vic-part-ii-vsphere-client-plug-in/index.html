@@ -12,7 +12,7 @@
     <link rel="shortcut icon" href="https://rguske.github.io/favicon.ico" />
     <link rel="canonical" href="https://rguske.github.io/post/vic-part-ii-vsphere-client-plug-in/" />
 
-     <meta name="description" content="In this section, I´d like to give you a walkthrough on how to install the VIC HTML5 plug-in for the vCenter Server Appliance. I´m already using the vCenter Serv" /> 
+     <meta name="description" content="In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCe" /> 
 
      
     
@@ -21,7 +21,7 @@
     
  
     <meta name="twitter:title" content="VIC Part II: vSphere Client Plug-In"/>
-    <meta name="twitter:description" content="In this section, I´d like to give you a walkthrough on how to install the VIC HTML5 plug-in for the vCenter Server Appliance. I´m already using the vCenter Serv"/>
+    <meta name="twitter:description" content="In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCe"/>
     <meta name="twitter:url" content="https://rguske.github.io/post/vic-part-ii-vsphere-client-plug-in/" />
     <meta name="twitter:site" content="@vmw_rguske"/>
 
@@ -31,7 +31,7 @@
     
 
     <meta property="og:type" content="article" />
-    <meta property="og:description" content="In this section, I´d like to give you a walkthrough on how to install the VIC HTML5 plug-in for the vCenter Server Appliance. I´m already using the vCenter Serv" />
+    <meta property="og:description" content="In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCe" />
 
     <meta property="article:published_time" content="2018-07-13T13:17:23&#43;02:00" />
     <meta property="article:tag" content="VIC" /><meta property="article:tag" content="Container" /><meta property="article:tag" content="VMware" /><meta property="article:tag" content="vSphere" />
@@ -123,10 +123,10 @@
 
     <section class="post-full-content">
         <div class="kg-card-markdown">
-        <p>In this section, I´d like to give you a walkthrough on how to install the VIC HTML5 plug-in for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0. In general, it is important to know that a minimum version of vCenter Server 6.5.0d is required to make use of the plug-in.</p>
+        <p>In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0. In general, it is important to know that a minimum version of vCenter Server 6.5.0d is required to make use of the plug-in.</p>
 
 <p>However! It is also worth to be mentioned that the plug-in is not necessary or a requirement to run VIC as well as for the deployment of a Virtual Container Host aka <strong>VCH</strong>. But it makes the initial deployment of a VCH easier at the first beginning until you are more and more familiar with the vic-machine utility.
-The first step from the installation of the HTML5 plug-in is to download the vic-machine-bundle from the VIC-Appliance by using <a href="https://en.wikipedia.org/wiki/CURL" target="_blank"><code>curl</code></a>.</p>
+The first step from the installation of the vSphere Client Plug-In is to download the vic-machine-bundle from the VIC-Appliance by using <a href="https://en.wikipedia.org/wiki/CURL" target="_blank"><code>curl</code></a>.</p>
 
 <p>To set up the necessary commands from within the vCSA we first have to enable SSH over the Virtual Appliance Management Interface aka VAMI by using port 5480. By default SSH is disabled.</p>
 
@@ -138,7 +138,7 @@ The first step from the installation of the HTML5 plug-in is to download the vic
 
 <p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_092734.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_092734.jpg" width="800"</img></a></p>
 
-<p>But wait! To make sure if everything went right after the installation, we should check before and after. And how can we check if there isn´t a vic-plugin before the installation and afterwards it gets shown? Correct - over the Managed Object Browser aka MOB.</p>
+<p>But wait! To make sure if everything went right after the installation, we should check before and after. And how can we check if there isn´t a vic plug-in before the installation and afterwards it gets shown? Correct - over the Managed Object Browser aka MOB.</p>
 
 <p><a href="https://lab-vcsa67-001/mob">https://lab-vcsa67-001/mob</a></p>
 
@@ -154,7 +154,7 @@ The first step from the installation of the HTML5 plug-in is to download the vic
 <pre><code>shell
 </code></pre>
 
-<p>After the login we now want to download and unpack the vic-bundle tar-file from the VIC Appliance to start the installation of the VIC vSphere Plug-In. You should just change my IP-Address to yours in the following lines.</p>
+<p>After the login we now want to download and unpack the vic-bundle tar-file from the VIC Appliance to start the installation of the VIC vSphere Client Plug-In. You should just change my IP-Address to yours in the following lines.</p>
 
 <pre><code>export VIC_ADDRESS=192.168.100.160
 export VIC_BUNDLE=vic_v1.4.0.tar.gz
@@ -180,7 +180,7 @@ Execute the install.sh script by entering:</p>
 <p>Now let´s check again the extensionList over the vCenter Managed Object Manager - MOB.
 <a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180707_090912.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180707_090912.jpg" width="800"</img></a>
 Voila!
-Okay, now we are close to make use of the vic-plugin capabilities in our vSphere-WebClient but before we can go ahead, we need to restart the H5-Client as well as the Flex-based vSphere Web Client by running the following commands:</p>
+Okay, now we are close to make use of the vic plug-in capabilities in our vSphere-WebClient but before we can go ahead, we need to restart the H5-Client as well as the Flex-based vSphere Web Client by running the following commands:</p>
 
 <pre><code>service-control --stop vsphere-ui &amp;&amp; service-control --start vsphere-ui
 service-control --stop vsphere-client &amp;&amp; service-control --start vsphere-client
@@ -201,7 +201,7 @@ rm -R vic
 
 <hr />
 
-<p>The VIC-Plugin should now be available under <em>Menu/ vSphere Integrated Containers</em>.</p>
+<p>The VIC plug-in should now be available under <em>Menu/ vSphere Integrated Containers</em>.</p>
 
 <p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_092711.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_092711.jpg" width="300"</img></a></p>
 
@@ -219,7 +219,7 @@ rm -R vic
 
 <hr />
 
-<p>Recent parts:</p>
+<p>Previous articles:</p>
 
 <p><a href="https://rguske.github.io/post/vic-part-i-ova-deployment"><strong>VIC Part I: OVA Deployment</strong></a></p>
 
@@ -263,13 +263,13 @@ rm -R vic
     <div class="read-next-card-content">
       
         <ul>
-          <li><a href="https://rguske.github.io/post/sometimes-you-gotta-run-before-you-can-walk/">Sometimes you gotta run before you can walk</a></li>            
-        
-          <li><a href="https://rguske.github.io/post/vic-part-iv-docker-run-a-container-vm/">VIC Part IV: docker run a Container-VM</a></li>            
-        
-          <li><a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-overview/">VMware vSphere Integrated Containers: Overview</a></li>            
+          <li><a href="https://rguske.github.io/post/vic-part-i-ova-deployment/">VIC Part I: OVA Deployment</a></li>            
         
           <li><a href="https://rguske.github.io/post/vic-part-iii-deployment-of-a-virtual-container-host/">VIC Part III: Deployment of a Virtual Container Host</a></li>            
+        
+          <li><a href="https://rguske.github.io/post/sometimes-you-gotta-run-before-you-can-walk/">Sometimes you gotta run before you can walk</a></li>            
+        
+          <li><a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-overview/">VMware vSphere Integrated Containers: Overview</a></li>            
         </ul>
     </div>
     <footer class="read-next-card-footer">
