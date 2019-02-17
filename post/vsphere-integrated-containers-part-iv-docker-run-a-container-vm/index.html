@@ -69,15 +69,19 @@
 </head>
 
 
-<body class="post-template">
+<body class="ctsingle">
+
   <div class="site-wrapper"> 
 
-<header class="site-header outer">
+<header class="site-header outer "  style="background-image: url(https://rguske.github.io/img/blog-cover.jpg)"  >
   <div class="inner">
-    <nav class="site-nav">
-      <div class="site-nav-left">
+    <div class="site-header-content">
+      <h1 class="site-title"> j.a.r.v.i.s.  </h1>
+        <h2 class="site-description">Sometimes you gotta run before you can walk! </h2>
+    </div>
 
-        <ul class="nav" role="menu">
+    <nav class="site-nav">
+      <div class="site-nav-left"><ul class="nav" role="menu">
         
         
         
@@ -131,29 +135,38 @@
   </div>
 </header>
 
+
 <main id="site-main" class="site-main outer" role="main">
   <div class="inner">
     
-      <article class="post-full post"> 
-    <header class="post-full-header">
-        <section class="post-full-meta">
-            <time class="post-full-meta-date" datetime="2018-07-13">13 July 2018</time>
-                <span class="date-divider">/</span> <a href="https://rguske.github.io/tags/vic/">#VIC</a>&nbsp;<a href="https://rguske.github.io/tags/container/">#Container</a>&nbsp;
-        </section>
-        <h1 class="post-full-title">vSphere Integrated Containers Part IV: docker run a Container-VM</h1>
-    </header>
+    <div class="post-feed">
+      <article class="post-card post"> 
     
-    <figure class="post-full-image" style="background-image: url(https://rguske.github.io/img/vic_part_iv_cover.jpg)">
-    </figure>
+    <a class="post-card-image-link" href="https://rguske.github.io/post/vsphere-integrated-containers-part-iv-docker-run-a-container-vm/">
+      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/vic_part_iv_cover.jpg)"></div>
+    </a>
+    
 
-    <section class="post-full-content">
-        <div class="kg-card-markdown">
-        <p>Now that we´ve become more familiar with the Virtual Container Host, it´s time to run our first Container-VM on it. The following example will show you how easy it is to instantiate an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank">Nginx </a> Web Server container-image.</p>
+    <div class="post-card-content">
+      <a class="post-card-content-link" href="https://rguske.github.io/post/vsphere-integrated-containers-part-iv-docker-run-a-container-vm/">
+          <header class="post-card-header">
+              <span class="post-card-tags">
+              #VIC 
+              #Container 
+              #VMware 
+              #vSphere 
+              #docker  </span>
+              
+              <h2 class="post-card-title">vSphere Integrated Containers Part IV: docker run a Container-VM</h2>
+          </header>
+      </a>
+      <section class="post-card-excerpt" style="padding: 0 25px;">
+          <p>Now that we´ve become more familiar with the Virtual Container Host, it´s time to run our first Container-VM on it. The following example will show you how easy it is to instantiate an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank">Nginx </a> Web Server container-image.</p>
 
 <p>We first <code>pull</code> down the image from Docker Hub to our Datastore by using <code>docker -H 192.168.100.222:2376 --tls pull vmwarecna/nginx</code>.
 You´ll see some running tasks in your vCenter taskbar under <em>Recent Tasks</em>. Validate the downloaded image with <code>docker -H 192.168.100.222:2376 --tls images</code>.</p>
 
-<pre><code>docker -H 192.168.100.222:2376 --tls images
+<pre><code class="language-bash">docker -H 192.168.100.222:2376 --tls images
 
 REPOSITORY                TAG               IMAGE ID              CREATED                SIZE
 vmwarecna/nginx           latest            2492b68e515c          3 years ago            93.5MB
@@ -161,19 +174,19 @@ vmwarecna/nginx           latest            2492b68e515c          3 years ago   
 
 <p>Alright! This was successful and by runnig the following command, the VIC Engine will deploy a Nginx Container-VM with 512MB vRAM (<code>-m</code>) which will listen to port (<code>-p</code>) 8080.</p>
 
-<pre><code>docker -H 192.168.100.222:2376 --tls run --name nginx1 -m 512M -d -p 8080:80 vmwarecna/nginx
+<pre><code class="language-bash">docker -H 192.168.100.222:2376 --tls run --name nginx1 -m 512M -d -p 8080:80 vmwarecna/nginx
 </code></pre>
 
 <p>Let´s check if our container is up and running. First in vCenter:</p>
 
-<p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180831_125134.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180831_125134.jpg" width="850"</img></a></p>
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180831_125134.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180831_125134.jpg" width="800"></img></a></center></p>
 
 <p>&hellip;and second via command line:</p>
 
-<pre><code>docker -H 192.168.100.222:2376 --tls ps -a
+<pre><code class="language-bash">docker -H 192.168.100.222:2376 --tls ps -a
 </code></pre>
 
-<pre><code>docker -H 192.168.100.222:2376 --tls ps -a
+<pre><code class="language-bash">docker -H 192.168.100.222:2376 --tls ps -a
 
 CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          PORTS        NAMES
 1ce3a5a70099    nginx    &quot;nginx -g daemon off;&quot;    Up 1m     192.168.100.2:8080-&gt;80/tcp   nginx1
@@ -181,20 +194,22 @@ CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          POR
 
 <p>Just like any other Container Host, virtual or physical, you´ll reach your container via the Container Host IP-Address and port. I intended to show the same in my example before we configure a dedicated Container Network afterwards. We can reach the Nginx Web Server site via the VCH IP-Address and port 8080.</p>
 
-<p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180617_112351.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180617_112351.jpg" width="800"</img></a></p>
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180617_112351.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180617_112351.jpg" width="800"></img></a></center></p>
 
 <p>If you´re wondering why I always used <code>-H vch-ip-address --tls</code> in my example that´s because I´ve not &ldquo;exported&rdquo; my VCH through it´s IP-Address and port yet. We can do this by the following:</p>
 
-<pre><code>export DOCKER_HOST=192.168.100.222:2376
+<pre><code class="language-bash">export DOCKER_HOST=192.168.100.222:2376
 </code></pre>
 
-<p>After we´ve exported the host, we can go the classical way and use commands like: <code>docker pull</code>, <code>docker images</code>, <code>docker ps -a</code> etc. To get a complete list of all available and supported docker commands you´ve to go here: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_app_dev/container_operations.html" target="_blank">VIC - Supported Docker Commands</a></p>
+<p>After we´ve exported the host, we can go the classical way and use commands like: <code>docker pull</code>, <code>docker images</code>, <code>docker ps -a</code> etc. To get a complete list of all available and supported docker commands you´ve to go here:</p>
+
+<p><a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_app_dev/container_operations.html" target="_blank">VIC - Supported Docker Commands</a></p>
 
 <p>I´ve mentioned in the Networking-Part of this post, that I´ll come back to the point where I´ll configure a Container Network to an existing VCH. As a prerequisite we have to <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.networking.doc/GUID-809743E1-F366-4454-9BA5-9C3FD8C56D32.html" target="_blank">create a new Distributed Port Group </a> on our vDistributed Switch and ensure that all other network related configuration (e.g. VLAN) are set. I´ve gave my new dPG the name vic-container.</p>
 
 <p>As also mentioned we´ll make use of the <code>vic-machine configure</code> option to add the new network to our VCH. Before we begin, we need to know the internal ID of it. Use <code>vic-machine inspect</code> with the virtual machine name of your VCH:</p>
 
-<pre><code>./vic-machine-darwin inspect \
+<pre><code class="language-bash">./vic-machine-darwin inspect \
 --target lab-vcsa67-001.lab.jarvis.local/Datacenter-South \
 --user adm.jarvis@LAB.JARVIS.LOCAL \
 --thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 \
@@ -203,7 +218,7 @@ CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          POR
 
 <p>The output will show us the internal ID which is in my case <em>vm-212</em>:</p>
 
-<pre><code>INFO[0008] ### Inspecting VCH ####
+<pre><code class="language-bash">INFO[0008] ### Inspecting VCH ####
 INFO[0008] Validating target
 INFO[0009]
 INFO[0009] VCH ID: VirtualMachine:vm-212
@@ -232,7 +247,7 @@ INFO[0009] Completed successfully
 
 <p>Okay, now that we have the ID we can continue with adding the new container network by using <code>vic-machine configure</code>:</p>
 
-<pre><code>./vic-machine-darwin configure \
+<pre><code class="language-bash">./vic-machine-darwin configure \
 --target lab-vcsa67-001.lab.jarvis.local/Datacenter-South \
 --user adm.jarvis@lab.jarvis.local \
 --thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 \
@@ -246,7 +261,7 @@ INFO[0009] Completed successfully
 
 <p>I´ve used the option <code>--timeout 5m</code> because I ran in a timeout without it. I´m pretty sure this was performance related to my nested environment. But anyway! The configuration was successful and we can validate it with <code>vic-machine inspect</code>:</p>
 
-<pre><code>docker --tls inspect vic-container-network
+<pre><code class="language-bash">docker --tls inspect vic-container-network
 </code></pre>
 
 <pre><code>[
@@ -278,10 +293,10 @@ INFO[0009] Completed successfully
 
 <p>At the end we need to validate the functionality as well and we´ll deploy a new Nginx but this time with the dedicated Container Network <em>vic-container-network</em> and without declaring the port.</p>
 
-<pre><code>docker --tls run --name nginx3 --net vic-container-network vmwarecna/nginx
+<pre><code class="language-bash">docker --tls run --name nginx3 --net vic-container-network vmwarecna/nginx
 </code></pre>
 
-<p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_122610.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_122610.jpg" width="850"</img></a></p>
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_122610.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_122610.jpg" width="800"></img></a></center></p>
 
 <p>There you go! :-)</p>
 
@@ -289,11 +304,11 @@ INFO[0009] Completed successfully
 
 <p>Just before coming to the end of my VIC series and because it´s Worldcup time, I´d like to show you a nice <em>World Cup 2018 CLI dashboard</em> by <a href="https://github.com/cedricblondeau" target="_blank"> Cédric Blondeau</a> running in a container.</p>
 
-<pre><code>docker --tls pull cedricbl/world-cup-2018-cli-dashboard &amp;&amp; \
+<pre><code class="language-bash">docker --tls pull cedricbl/world-cup-2018-cli-dashboard &amp;&amp; \
 docker --tls run --name Worldcup2018 -ti -e TZ=Europe/Berlin cedricbl/world-cup-2018-cli-dashboard
 </code></pre>
 
-<p><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_113206.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_113206.jpg" width="850"</img></a></p>
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_113206.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_113206.jpg" width="800"></img></a></center></p>
 
 <p>Isn´t that cool?! :-) Try it out!</p>
 
@@ -301,7 +316,7 @@ docker --tls run --name Worldcup2018 -ti -e TZ=Europe/Berlin cedricbl/world-cup-
 
 <hr />
 
-<p>Previous articles:</p>
+<p><strong>Previous articles:</strong></p>
 
 <p><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-iii-deployment-of-a-virtual-container-host/"><strong>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</strong></a></p>
 
@@ -310,167 +325,33 @@ docker --tls run --name Worldcup2018 -ti -e TZ=Europe/Berlin cedricbl/world-cup-
 <p><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-i-ova-deployment"><strong>vSphere Integrated Containers Part I: OVA Deployment</strong></a></p>
 
 <p><a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction"><strong>vSphere Integrated Containers: Introduction</strong></a></p>
-    
-        </div>
-    </section>
 
-    <footer class="post-full-footer">
-      <section class="author-card">
-        <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
-        <section class="author-card-content">
-            <h4 class="author-card-name"><a href="https://rguske.github.io/">Robert Guske</a></h4>
-                <p>Read more.</p>
-        </section>
       </section>
-    </footer>
+
+      <footer class="post-card-meta">
+          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
+          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
+      </footer>
+    </div>
 </article>
+    </div>
+
+    <nav class="pagination" role="navigation">
+      
+          <a class="newer-posts" href="https://rguske.github.io/post/upgrade-vsphere-integrated-containers/">&larr; <span class="hide">Next Post</span></a>
+      
+      <span class="page-number">&nbsp;</span>
+      
+          <a class="older-posts" href="https://rguske.github.io/post/vsphere-integrated-containers-part-iii-deployment-of-a-virtual-container-host/"><span class="hide">Previous Post</span> &rarr;</a>
+      
+    </nav>
+
     
     
     
 
   </div>
 </main>
-
-
-<aside class="read-next outer">
-  <div class="inner">
-    <div class="read-next-feed">      
-      
-<article class="read-next-card" 
-            style="background-image: url(https://rguske.github.io/img/blog-cover.jpg);" >
-    <header class="read-next-card-header">
-        <small class="read-next-card-header-sitetitle">&mdash; j.a.r.v.i.s. &mdash;</small>
-        
-        <h3 class="read-next-card-header-title"><a href="https://rguske.github.io/tags/vic/">#VIC</a></h3>
-    </header>
-    <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
-    </div>
-
-    <div class="read-next-card-content">
-      
-        <ul>
-          <li><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-iii-deployment-of-a-virtual-container-host/">vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</a></li>            
-        
-          <li><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-ii-vsphere-client-plug-in/">vSphere Integrated Containers Part II: vSphere Client Plug-In</a></li>            
-        
-          <li><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-i-ova-deployment/">vSphere Integrated Containers Part I: OVA Deployment</a></li>            
-        
-          <li><a href="https://rguske.github.io/post/upgrade-vsphere-integrated-containers/">Upgrade vSphere Integrated Containers</a></li>            
-        </ul>
-    </div>
-    <footer class="read-next-card-footer">
-      
-        <a href="https://rguske.github.io/tags/vic/">See all related posts →</a>
-    </footer>
-</article>
-
-
-      
-      <article class="post-card post"> 
-    
-    <a class="post-card-image-link" href="https://rguske.github.io/post/upgrade-vsphere-integrated-containers/">
-      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/vic_upgrade_post_cover.jpg)"></div>
-    </a>
-    
-
-    <div class="post-card-content">
-      <a class="post-card-content-link" href="https://rguske.github.io/post/upgrade-vsphere-integrated-containers/">
-          <header class="post-card-header">
-              <span class="post-card-tags">
-              #VIC 
-              #Container 
-              #VMware 
-              #vSphere 
-              #Docker 
-              #Upgrade  </span>
-              
-              <h2 class="post-card-title">Upgrade vSphere Integrated Containers</h2>
-          </header>
-          <section class="post-card-excerpt">
-              
-                <p>I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues. In this post I´d like to guide you through the upgrade process of VMware vSphere Integrated Containers  from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.
-Thanks Tom Schwaller for reviewing this article.
-First of all and this applies to all upgrades, we have to check the compatibility and dependencys with our infrastructure components. ...  </p>
-              
-          </section>
-      </a>
-
-      <footer class="post-card-meta">
-          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
-          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
-      </footer>
-    </div>
-</article>
-      
-      
-      <article class="post-card post"> 
-    
-    <a class="post-card-image-link" href="https://rguske.github.io/post/vsphere-integrated-containers-part-iii-deployment-of-a-virtual-container-host/">
-      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/vic_part_iii_cover.jpg)"></div>
-    </a>
-    
-
-    <div class="post-card-content">
-      <a class="post-card-content-link" href="https://rguske.github.io/post/vsphere-integrated-containers-part-iii-deployment-of-a-virtual-container-host/">
-          <header class="post-card-header">
-              <span class="post-card-tags">
-              #VIC 
-              #Container 
-              #VMware 
-              #vSphere 
-              #docker  </span>
-              
-              <h2 class="post-card-title">vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</h2>
-          </header>
-          <section class="post-card-excerpt">
-              
-                <p>In this part I´d like to guide you through the Deployment of a Virtual Container Host aka VCH. I definitely don ́t want to make it a habit to use already written descriptions, but this one described it very well, thus I had like to quote this:
- A VCH is the virtual functional equivalent of a Linux VM running Docker. From a Docker client point of view, the Virtual Container Host looks very similar to a native Docker host. ...  </p>
-              
-          </section>
-      </a>
-
-      <footer class="post-card-meta">
-          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
-          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
-      </footer>
-    </div>
-</article>
-      
-    </div>
-  </div>
-</aside>
-
-<div class="floating-header">
-  <div class="floating-header-logo">
-    <a href="https://rguske.github.io/">
-      
-      <span></span>
-    </a>
-  </div>
-  <span class="floating-header-divider">&mdash;</span>
-  <div class="floating-header-title">vSphere Integrated Containers Part IV: docker run a Container-VM</div>
-  <div class="floating-header-share">
-    <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/></svg>
-    </div>
-    
-    <a class="floating-header-share-tw" href="https://twitter.com/share?text=vSphere%20Integrated%20Containers%20Part%20IV%3a%20docker%20run%20a%20Container-VM&amp;url=https%3a%2f%2frguske.github.io%2fpost%2fvsphere-integrated-containers-part-iv-docker-run-a-container-vm%2f"
-          onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
-      </a>
-      <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2frguske.github.io%2fpost%2fvsphere-integrated-containers-part-iv-docker-run-a-container-vm%2f"
-          onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
-      </a>
-  </div>
-
-  <progress class="progress" value="0">
-    <div class="progress-container">
-      <span class="progress-bar"></span>
-    </div>
-  </progress>
-</div>
 
 
 
@@ -508,67 +389,5 @@ First of all and this applies to all upgrades, we have to check the compatibilit
   </script>
 
 
-    <script>
 
-
-
-
-
-$(document).ready(function () {
-    
-    var $postContent = $(".post-full-content");
-    $postContent.fitVids();
-    
-
-    var progressBar = document.querySelector('progress');
-    var header = document.querySelector('.floating-header');
-    var title = document.querySelector('.post-full-title');
-
-    var lastScrollY = window.scrollY;
-    var lastWindowHeight = window.innerHeight;
-    var lastDocumentHeight = $(document).height();
-    var ticking = false;
-
-    function onScroll() {
-        lastScrollY = window.scrollY;
-        requestTick();
-    }
-
-    function onResize() {
-        lastWindowHeight = window.innerHeight;
-        lastDocumentHeight = $(document).height();
-        requestTick();
-    }
-
-    function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(update);
-        }
-        ticking = true;
-    }
-
-    function update() {
-        var trigger = title.getBoundingClientRect().top + window.scrollY;
-        var triggerOffset = title.offsetHeight + 35;
-        var progressMax = lastDocumentHeight - lastWindowHeight;
-
-        
-        if (lastScrollY >= trigger + triggerOffset) {
-            header.classList.add('floating-active');
-        } else {
-            header.classList.remove('floating-active');
-        }
-
-        progressBar.setAttribute('max', progressMax);
-        progressBar.setAttribute('value', lastScrollY);
-
-        ticking = false;
-    }
-
-    window.addEventListener('scroll', onScroll, {passive: true});
-    window.addEventListener('resize', onResize, false);
-
-    update();
-});
-</script>
 </body></html>
