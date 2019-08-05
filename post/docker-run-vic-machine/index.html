@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en-US" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>docker run vic-machine &middot; </title>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="https://rguske.github.io/favicon.ico" />
+    <link rel="canonical" href="https://rguske.github.io/post/docker-run-vic-machine/" />
+
+     <meta name="description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you" /> 
+
+     
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image" content="https://rguske.github.io/img/dockerrunvicmachine_cover.jpg"/>
+    
+ 
+    <meta name="twitter:title" content="docker run vic-machine"/>
+    <meta name="twitter:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you"/>
+    <meta name="twitter:url" content="https://rguske.github.io/post/docker-run-vic-machine/" />
+    <meta name="twitter:site" content="@vmw_rguske"/>
+
+    <meta property="og:site_name" content="" />
+    <meta property="og:title" content="docker run vic-machine &middot; j.a.r.v.i.s." />
+    <meta property="og:url" content="https://rguske.github.io/post/docker-run-vic-machine/" />
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you" />
+
+    <meta property="article:published_time" content="2019-07-04T22:52:18&#43;02:00" />
+    <meta property="article:tag" content="VIC" /><meta property="article:tag" content="Docker" /><meta property="article:tag" content="Hack" /><meta property="article:tag" content="Harbor" />
+
+    <meta property="og:image" content="https://rguske.github.io/img/dockerrunvicmachine_cover.jpg"/>
+
+
+    <meta name="generator" content="Hugo 0.55.6" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/built/screen.css" /> 
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/css/casper-two.css" /> 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+     <link rel="stylesheet" href="https://rguske.github.io/dist/css/tagformatting.css" /> 
+
+     
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#343c66",
+          "text": "#cfcfe8"
+        },
+        "button": {
+          "background": "#f71559"
+        }
+      }
+    })});
+    </script>
+
+</head>
+
+
+<body class="ctsingle">
+
+  <div class="site-wrapper">
+
+<header class="site-header outer "  style="background-image: url(https://rguske.github.io/img/blog-cover.jpg)"  >
+  <div class="inner">
+    <div class="site-header-content">
+      <h1 class="site-title"> j.a.r.v.i.s.  </h1>
+        <h2 class="site-description">Sometimes you gotta run before you can walk! </h2>
+    </div>
+
+    <nav class="site-nav">
+      <div class="site-nav-left"><ul class="nav" role="menu">
+        
+        
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/">Home</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/about">About Me</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/disclaimer">Disclaimer</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://github.com/rguske/vic-machine">vic-machine examples</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://blogs.vmware.com/cloudnative/">VMware´s Offical CNA Blog</a>
+            </li>
+        
+            <li class="nav-current" role="menuitem">
+              <a href="https://rguske.github.io/post/">Posts</a>
+            </li>
+        
+      </ul></div>
+
+      <div class="site-nav-right">
+        <div class="social-links">
+                    
+
+                    <a class="social-link social-link-tw" href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg></a>
+
+                    <a class="social-link" href="https://github.com/rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+
+                    <a class="social-link" href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 512 512"><path d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683 C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615 c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915 s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z" /></svg></a>
+
+                    
+        </div>  
+            
+      </div>
+
+    </nav>  
+
+  </div>
+</header>
+
+
+<main id="site-main" class="site-main outer" role="main">
+  <div class="inner">
+    
+    <div class="post-feed">
+      <article class="post-card post"> 
+    
+    <a class="post-card-image-link" href="https://rguske.github.io/post/docker-run-vic-machine/">
+      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/dockerrunvicmachine_cover.jpg)"></div>
+    </a>
+    
+
+    <div class="post-card-content">
+      <a class="post-card-content-link" href="https://rguske.github.io/post/docker-run-vic-machine/">
+          <header class="post-card-header">
+              <span class="post-card-tags">
+              #VIC 
+              #Docker 
+              #Hack 
+              #Harbor  </span>
+              
+              <h2 class="post-card-title">docker run vic-machine</h2>
+          </header>
+      </a>
+      <section class="post-card-excerpt" style="padding: 0 25px;">
+          
+
+<h2 id="introduction">Introduction</h2>
+
+<p>The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard.
+The far more efficient variant in my opinion is making use of the <code>vic-machine</code> utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle. Why do I think it is way better? Because it´s reproducible, independent from a browser, automatable as well as better documentable.</p>
+
+<p>You can find some of my <code>vic-machine</code> action examples in my Github repo here: <a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></p>
+
+<p>I had a lot of VMware-internal and public facing presentations as well as many demos on VIC over the past months and all based, more or less, on the following <code>vic-machine</code> arguments:</p>
+
+<pre><code class="language-shell">rguske@rguske-a01&gt; ./vic-machine-darwin create \          ### vic-machine binary + action
+--name vch-example \                                      ### Name of the Virtual Conatiner Host
+--syslog-address udp://10.10.10.10:514 \                  ### Syslog server
+--target vcenter.example.org/Datacenter \                 ### vSphere Datacenter
+--user administrator@vsphere.local \                      ### User with appropriate privileges
+--compute-resource /Datacenter/host/Cluster \             ### vSphere Cluster or single ESXi Host
+--image-store vsanDatastore \                             ### Datastore to deposite the images
+--volume-store vsanDatastore/volumes:default \            ### Datastore for the Docker Volumes (VMDKs)
+--bridge-network ls-vic-bridge \                          ### vDS dPort Group for the Container Bridge Network
+--bridge-network-range 172.16.0.0/12 \                    ### Network range for the Bridge Network
+--public-network ls-vic-public \                          ### vDS dPort Group for the Public Network
+--dns-server 10.10.10.254 \                               ### DNS Server address for the Public Network
+--public-network-ip=10.10.10.11/24 \                      ### Static IP address for the Virtual Container Host
+--public-network-gateway 10.10.10.254 \                   ### Gateway for the Public network
+--tls-cname=vch-example.example.org \                     ### Certificate Common Name (CN) for the VCH
+--certificate-key-size 3072 \                             ### Key size for the auto-generated certificates
+--organization example.org \                              ### Certificate Organization (O) field
+--registry-ca=/folder path/ca.crt \                       ### Path to the VIC (Harbor) ca.crt file
+--thumbprint 4C:92:D7:FC:F8:8D:5A:9F:.... \               ### vCenter Server Thumbprint
+--affinity-vm-group \                                     ### Automatically creates a VM/Host Group (cVM/ VCH Group)
+--ops-user vic-devops-admin@example.org \                 ### Defines the user which is used by the VCH to interact with vSphere
+--ops-grant-perms                                         ### Automatically grants the necessary vSphere permissions
+</code></pre>
+
+<blockquote>
+<h3 id="constantly-recurring-executions-should-be-automated-or-at-least-easier-to-handle"><strong>Constantly recurring executions should be automated or at least easier to handle</strong></h3>
+</blockquote>
+
+<p>&hellip;and thus, I was looking for a way how to apply this for <code>vic-machine</code>.</p>
+
+<hr />
+
+<p><strong>Credits goes out to Ben!</strong></p>
+
+<p><a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with <code>vic-machine</code>, because it takes a lot of arguments for each action like <code>create</code>, <code>configure</code> or <code>debug</code> for example. He mentioned his in his video from VMworld 2017 👇:</p>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/AD7CD8Haqdc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+<hr />
+
+<p>With this post I´d like to guide you through the various steps to consume <code>vic-machine</code> and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.</p>
+
+<p>To have Harbor as a cloud native registry deeply coupled and running inside of VIC is simply great. If you haven´t heard of <span style="color:#4A01D9"> <strong>Harbor</strong> </span> yet, check it out: <a href="https://goharbor.io/">https://goharbor.io/</a></p>
+
+<p>A short look into the innards of the VIC appliance shows us that all components of Harbor, including <a href="https://github.com/coreos/clair" target="_blank">Clair</a> for vulnerability scanning as well as <a href="https://github.com/theupdateframework/notary" target="_blank">Notary</a> for image signing, are running as a container inside of Harbor:</p>
+
+<p><code>docker ps -a | grep goharbor</code>
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg"></img></a></center>
+<center><em>Figure I: VIC components running as containers</em></center></p>
+
+<h2 id="the-hack">The Hack</h2>
+
+<p>The prerequisites for this hack are that you have <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">Git</a> as well as <a href="https://docs.docker.com/install/" target="_blank">Docker</a> installed on your local machine or on a Jumphost.</p>
+
+<hr />
+
+<h2 id="1-download-or-clone-bens-github-repository-called-bensdoings">1. Download or Clone Bens Github repository called <em>bensdoings</em></h2>
+
+<p><code>git clone https://github.com/corrieb/bensdoings.git</code> (into a folder of your choice)</p>
+
+<hr />
+
+<h2 id="2-create-a-new-folder-in-which-we-ll-subsequently-copy-all-necessary-files-into">2. Create a new folder in which we´ll subsequently copy all necessary files into</h2>
+
+<p><code>mkdir ~/vic-dev</code></p>
+
+<hr />
+
+<h2 id="3-copy-the-files-highlighted-in-span-style-color-32cd32-green-span-and-folder-1-out-of-the-downloaded-cloned-repo">3. Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</h2>
+
+<ul>
+<li>/bensdoings/vic-machine/<span style="color:#32CD32"><strong>example-complete-empty.json</strong>, <strong>example-complete.json</strong></span> as well as <span style="color:#32CD32"><strong>example-simple.json</strong></span></li>
+<li>/bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32"><strong>build.sh</strong></span> and <span style="color:#32CD32"><strong>push.sh</strong></span></li>
+<li>/bensdoings/vic-machine/vic-machine-base/OVA/<span style="color:#32CD32"><strong>Dockerfile</strong></span></li>
+<li>/bensdoings/vic-machine/<span style="color:#32CD32"><strong>actions</strong></span></li>
+</ul>
+
+<p>&hellip;and paste them into the newly created folder <em>vic-dev</em>. It should look like the following:</p>
+
+<pre><code class="language-shell">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev&gt; tree -L 2
+.
+├── Dockerfile
+├── actions
+│   ├── 1.1
+│   ├── 1.2
+│   ├── Dockerfile.create
+│   ├── Dockerfile.debug
+│   ├── Dockerfile.delete
+│   ├── Dockerfile.direct
+│   ├── Dockerfile.dumpargs
+│   ├── Dockerfile.firewall-allow
+│   ├── Dockerfile.firewall-deny
+│   ├── Dockerfile.inspect
+│   ├── Dockerfile.ls
+│   ├── Dockerfile.rollback
+│   ├── Dockerfile.thumbprint
+│   ├── Dockerfile.upgrade
+│   └── README.md
+├── build.sh
+├── example-complete-empty.json
+├── example-complete.json
+├── example-simple.json
+├── push.sh
+└── vic-machine
+</code></pre>
+
+<hr />
+
+<h2 id="4-create-a-new-project-in-harbor">4. Create a new project in Harbor</h2>
+
+<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab:8282">https://vic01.jarvis.lab:8282</a>) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
+
+<p>Now let´s create a project in Harbor called e.g. <em>vic-machine</em> in which we will later push our images to.</p>
+
+<p>Administration &ndash;&gt; Projects &ndash;&gt; <strong>+ PROJECT</strong></p>
+
+<p>If you want to make all repositories (images) of that project public, select the Public check box like I did.
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg"></img></a></center>
+<center><em>Figure II: New Project in Harbor</em></center></p>
+
+<p>As a next step we will assign a new user to our project.</p>
+
+<p>Administration &ndash;&gt; Projects &ndash;&gt; vic-machine &ndash;&gt; Members &ndash;&gt; <strong>+ ADD</strong></p>
+
+<p>I´ve added my local user admin@jarvis.lab to the project and assigned the role <em>Developer</em> to it.  In addition to the view access rights, the &ldquo;Developer&rdquo; role has the permissions to:</p>
+
+<ul>
+<li>Provision containers</li>
+<li>Push images into registries</li>
+<li>Create and import templates</li>
+</ul>
+
+<p><center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg"></img></a></center>
+<center><em>Figure III: User or Group entitlement to a Project in Harbor</em></center></p>
+
+<p>Under Administration &ndash;&gt; Projects &ndash;&gt; vic-machine &ndash;&gt; <strong>Configuration</strong> I´ve checked the box <em>&ldquo;Automatically scan images on push&rdquo;</em> to enable the automatically scanning for vulnerabilities of images while pushing them to the project.
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg"></img></a></center>
+<center><em>Figure IV: Vulnerability scanning automatically on push</em></center></p>
+
+<hr />
+
+<h2 id="5-the-vic-machine-utility-running-inside-a-container">5. The <code>vic-machine</code> utility running inside a container</h2>
+
+<p>The basis of a docker image is the <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Dockerfile</a>. Open the copied Dockerfile and replace the URL in the Dockerfile with the appropriate version of the VIC instance you´re running, to <code>curl</code> the VIC Engine bundle tarball from the appliance into the docker image during the building process.</p>
+
+<p>To avoid typos with the URL you can simply browse to the VIC appliance page (port 9443), right click the <strong>DOWNLOAD</strong> button which can be found under the section <em>Deploy a VCH</em> and choose <em>Copy Link Address</em>.</p>
+
+<p>Modify the section like below:</p>
+
+<h2 id="dockerfile">&gt;&gt; Dockerfile</h2>
+
+<pre><code class="language-sh">FROM debian:jessie
+
+RUN apt-get update &amp;&amp; apt-get install -y jq ca-certificates curl tar bc
+
+RUN mkdir /vic \
+    &amp;&amp; curl -k -L https://vic01.jarvis.lab:9443/files/vic_v1.5.2.tar.gz | tar xz -C /vic \
+    &amp;&amp; cp /vic/vic/vic-machine-linux /vic \
+    &amp;&amp; cp /vic/vic/*.iso /vic \
+    &amp;&amp; rm -fr /vic/vic
+
+CMD [&quot;/bin/bash&quot;]
+</code></pre>
+
+<p>Save and close the Dockerfile.</p>
+
+<hr />
+
+<h2 id="6-every-vic-machine-action-as-a-docker-image">6. Every <code>vic-machine</code> action as a docker image</h2>
+
+<p>The <strong>build.sh</strong> script will build all docker images for each <code>vic-machine</code> action for us.</p>
+
+<p><strong>IMPORTANT:</strong> It´s necessary to have the Dockerfile prepared before executing the build script! Because &ldquo;<span style="color:#32CD32"><code>docker build -t vic-machine-base .</code></span>&rdquo; will start the build process, which creates the docker image as well as tag (<code>-t</code>) the image as <em>vic-machine-base</em>.</p>
+
+<p>The image includes the <em>vic-machine binary (for Linux)</em>, the <em>bootstrap.iso</em> as well the <em>appliance.iso</em>.</p>
+
+<p>See also:</p>
+
+<pre><code class="language-shell">rguske@rguske-a01&gt; ~/_DEV&gt; docker run -it --rm vic-machine-base:latest /bin/bash
+root@5d76a7b7973f:/# cd /vic
+root@5d76a7b7973f:/vic# ls -rtl
+-rwxr-xr-x 1 root root 19623264 Jul 16 20:51 vic-machine-linux
+-rw-r--r-- 1 root root 41091072 Jul 16 20:51 bootstrap.iso
+-rw-r--r-- 1 root root 91029504 Jul 16 20:51 appliance.iso
+</code></pre>
+
+<p>Now moving forward to the build script itself. I´ve modified the script from the original one just a little bit for my own needs.</p>
+
+<p>I´d like to thank <a href="https://twitter.com/AlexanderDess" target="_blank">Alexander Dess</a> at this point who reminded me that I should simply stick to the <a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank">K.I.S.S. principle</a>. Stop making things more complicated 😉.</p>
+
+<h2 id="build-sh-explanations-behind-the">build.sh (explanations behind the ###)</h2>
+
+<pre><code class="language-sh">#!/bin/bash
+set -e
+
+### Harbor FQDN and project
+REPO_NAME=&quot;vic01.jarvis.lab:443/vic-machine&quot;
+### Folder (with version) were the JSON keys for each vic-machine action are deposited. You can define your own JSON schema by simply modifying those files.
+MAP_VERSION=&quot;1.2&quot;
+### Define your own version for the docker images
+VERSION=&quot;1.0&quot;
+
+actions=( &quot;create&quot; &quot;debug&quot; &quot;delete&quot; &quot;inspect&quot; &quot;ls&quot; &quot;rollback&quot; &quot;upgrade&quot; &quot;thumbprint&quot; &quot;firewall-allow&quot; &quot;firewall-deny&quot; &quot;dumpargs&quot; &quot;direct&quot; )
+
+### Docker command to build a docker image (from Dockerfile above) and to tag it with the given name.
+docker build -t vic-machine-base .
+### Will change the directory to actions/1.2
+cd actions/$MAP_VERSION
+### Will copy the new created Dockerfiles
+cp ../Dockerfile* .
+
+for i in &quot;${actions[@]}&quot;
+do
+### Build a docker image out of every newly created Dockerfile and tag it with the repo-name as well as version number
+  docker build -f Dockerfile.$i -t $REPO_NAME/vic-machine-$i:$VERSION .
+done
+### Remove all Dockerfiles
+rm Dockerfile*
+</code></pre>
+
+<p>Execute <code>sh ./build.sh</code> and validate that everything went well by executing the command <code>docker images | grep vic</code>. You should see the newly created images listed:</p>
+
+<pre><code class="language-shell">rguske@rguske-a01&gt; ~/_DEV&gt; docker images | grep vic
+vic01.jarvis.lab:443/vic-machine/vic-machine-direct           1.0                 6434b9f67b34        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-dumpargs         1.0                 65a84b73ea6d        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-firewall-deny    1.0                 4280647bb27f        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-firewall-allow   1.0                 ef69a80ff285        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-thumbprint       1.0                 cba88f5aeec8        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-upgrade          1.0                 6eca536b5221        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-rollback         1.0                 85b65b17df10        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-ls               1.0                 57496ec4fdd9        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-inspect          1.0                 47eaedc40980        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-delete           1.0                 e24ee592ab15        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-debug            1.0                 306ba819b1d4        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-create           1.0                 e567f6eff231        About an hour ago   305MB
+vic-machine-base                                              latest              9434fc83969b        About an hour ago   305MB
+</code></pre>
+
+<hr />
+
+<h2 id="7-pushing-the-docker-images-to-harbor">7. Pushing the docker images to Harbor</h2>
+
+<p>The next step after creating a lot of new docker images is to have them available and well guarded in Harbor. We´ll make use of the push.sh script from our folder which will save us the work of handling each image separately. Let´s have a look into it as well.</p>
+
+<pre><code class="language-sh">### !/bin/bash
+set -e
+
+### Push to our Harbor instance
+REPO_NAME=&quot;vic01.jarvis.lab:443/vic-machine&quot;
+### Docker images version
+VERSION=&quot;1.0&quot;
+
+actions=( &quot;create&quot; &quot;debug&quot; &quot;delete&quot; &quot;inspect&quot; &quot;ls&quot; &quot;rollback&quot; &quot;upgrade&quot; &quot;thumbprint&quot; &quot;firewall-allow&quot; &quot;firewall-deny&quot; &quot;dumpargs&quot; &quot;direct&quot; )
+
+for i in &quot;${actions[@]}&quot;
+do
+### Tagging the images with the give version as well as with &quot;latest&quot;
+### Pushing them with both versions into Harbor
+   docker tag $REPO_NAME/vic-machine-$i:$VERSION $REPO_NAME/vic-machine-$i:latest
+   docker push $REPO_NAME/vic-machine-$i:$VERSION
+   docker push $REPO_NAME/vic-machine-$i:latest
+done
+</code></pre>
+
+<p>Just replace the repository URL like we already did in the build script.
+Before you execute the script, you have to login into Harbor with the user which we´ve added to the project in step 4.</p>
+
+<p><strong>Execute:</strong></p>
+
+<pre><code class="language-sh">docker login vic01.jarvis.lab:443 -u admin@jarvis.lab
+Password: ********
+Login Succeeded
+</code></pre>
+
+<p>&ldquo;Login succeeded&rdquo; is always pleasing to see and since we´re done with that run <code>sh ./push.sh</code> from your shell. If you have the membership and role correctly configured, you should see under <em>Internal Repositories</em> all <code>vic-machine-(action)</code> images.
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg"></img></a></center>
+<center><em>Figure V: vic-machine-(action) images deposited under Internal (Project) Repositories</em></center></p>
+
+<hr />
+
+<h2 id="8-configure-the-config-json-file-for-the-vch-deployment">8. Configure the config.json file for the VCH deployment</h2>
+
+<p>Everything seems to be well prepared so far and we´re approaching the end of our efforts to deploy a VCH in a &ldquo;simplified fashion&rdquo;. The intention is to make use of the <code>vic-machine</code> script, which in turn needs a JSON manifest as input to all commands lying in a subdirectory of our <em>vic-dev</em> folder. Before turning to the <em>config.json</em> file I don&rsquo;t want to embezzle this impressive piece of work.</p>
+
+<p>The <code>vic-machine</code> script:</p>
+
+<pre><code class="language-shell">#!/bin/bash
+
+# This script is designed to simplify vic-machine usage, but using a single JSON manifest as input to all commands
+# The expected layout is that a particular vic-machine configuration will be in a subdirectory of the current dir
+# In that subdirectory should be a config.json file which conforms to the format in example.json 
+# That subdirectory is then both the input and working directory of vic-machine
+# As such, generated certificates and log files will be written to that sub directory as root user
+# Note that if you don't specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it
+
+# consume images from dockerhub
+# REPO_NAME=&quot;bensdoings&quot;
+
+# consume images from a local registry
+REPO_NAME=&quot;vic01.jarvis.lab:443/vic-machine&quot;
+
+usage()
+{
+   echo &quot;Usage: vic-machine.sh &lt;version&gt; &lt;config-dir&gt; &lt;action&gt;&quot;
+   echo &quot;  Where version is \&quot;latest\&quot; or &lt;version number&gt;-&lt;optional rc&gt; eg. 1.0.0-rc5&quot;
+   echo &quot;  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny | dumpargs&quot;
+   echo &quot;  Use dumpargs action to show the args the script generates for vic-machine-create&quot;
+   exit 1
+}
+
+if [ $# -le 2 ]; then usage; fi
+
+case &quot;$3&quot; in 
+  create|delete|inspect|ls|debug|upgrade|rollback|thumbprint|firewall-allow|firewall-deny|dumpargs)
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+host_config_path=$(pwd)/$2
+
+if [ ! -f &quot;$host_config_path/config.json&quot; ]; then
+  echo &quot;Config file not found at $host_config_path/config.json&quot;
+  exit 1
+fi
+
+docker_volume_path=/config
+
+# Check to see whether the combination of version and action actually exist
+docker pull $REPO_NAME/vic-machine-$3:$1 &gt; /dev/null 2&gt;&amp;1
+if [ $? != 0 ]; then
+  echo &quot;Action \&quot;$3\&quot; or version \&quot;$1\&quot; not found&quot;
+  exit 1
+fi
+
+sudo docker run -it --rm -v $host_config_path:$docker_volume_path $REPO_NAME/vic-machine-$3:$1 | sed &quot;s|$docker_volume_path/|$host_config_path/|&quot;
+</code></pre>
+
+<hr />
+
+<h2 id="9-preparing-the-config-json-file">9. Preparing the config.json file</h2>
+
+<p>Create a new folder in your main folder (vic-dev), give it the name of your VCH for example and also create the <em>config.json</em> file.</p>
+
+<pre><code class="language-shell">mkdir vch1 &amp;&amp; cd vch1 &amp;&amp; touch config.json
+</code></pre>
+
+<p>Here is an example of my deployment.</p>
+
+<p><strong>vch1/config.json</strong>:</p>
+
+<pre><code class="language-json">{
+   &quot;version&quot;: &quot;1.2&quot;,
+   &quot;vch&quot;: {
+      &quot;name&quot;: &quot;vch1&quot;,
+      &quot;compute&quot;: {
+         &quot;vsphere_resource&quot;: &quot;Stark&quot;,
+         &quot;memory&quot;: {
+            &quot;limit_mb&quot;: &quot;8192&quot;,
+            &quot;reservation_mb&quot;: &quot;512&quot;,
+            &quot;shares&quot;: &quot;normal&quot;
+         }
+      },
+      &quot;network&quot;: {
+         &quot;bridge&quot;: {
+            &quot;port_group&quot;: &quot;ls-vic-bridge&quot;,
+            &quot;ip_range&quot;: &quot;172.16.0.0/12&quot;
+         },
+         &quot;public&quot;: {
+            &quot;port_group&quot;: &quot;ls-vic-public&quot;,
+            &quot;vch_static_ip&quot;: &quot;192.168.2.192/24&quot;,
+            &quot;vch_gateway&quot;: &quot;192.168.2.254&quot;
+         },
+         &quot;container&quot;: [
+            {
+               &quot;port_group&quot;: &quot;ls-vic-container&quot;,
+               &quot;firewall&quot;: &quot;Open&quot;
+            },
+            {
+               &quot;port_group&quot;: &quot;ls-vic-container&quot;,
+               &quot;alias&quot;: &quot;container-net&quot;,
+               &quot;ip_range&quot;: &quot;192.168.3.100/24&quot;,
+               &quot;gateway&quot;: &quot;192.168.3.254/24&quot;,
+               &quot;dns&quot;: &quot;192.168.100.254&quot;,
+               &quot;firewall&quot;: &quot;Published&quot;
+            }
+         ],
+         &quot;dns_server&quot;: &quot;192.168.100.250&quot;,
+         &quot;asymmetric_routes&quot;: false
+         },
+      &quot;storage&quot;: {
+         &quot;image_store&quot;: &quot;nfs_ds&quot;,
+         &quot;volume_stores&quot;: [&quot;vsanDatastore/volumes:default&quot;],
+         &quot;base_image_size&quot;: &quot;8GB&quot;,
+         &quot;volumes_rm_on_delete&quot;: true
+      },
+      &quot;auth&quot;: {
+         &quot;cert_path&quot;: &quot;vch1&quot;,
+         &quot;keygen&quot;: {
+            &quot;cert_size&quot;: &quot;2048&quot;,
+            &quot;tls_cname&quot;: &quot;*.jarvis.lab&quot;,
+            &quot;organization&quot;: [&quot;Jarvis Lab&quot;]
+         }
+      },
+         &quot;endpoint_vm&quot;: {
+            &quot;vcpus&quot;: &quot;1&quot;,
+            &quot;memory_mb&quot;: &quot;2048&quot;,
+            &quot;syslog_address&quot;: &quot;tcp://192.168.100.6:514&quot;
+         },
+         &quot;container&quot;: {
+            &quot;name_convention&quot;: &quot;{name}-{id}&quot;
+         },
+      &quot;debug&quot;: {
+         &quot;enable_ssh&quot;: true,
+         &quot;root_password&quot;: &quot;*********&quot;
+      }
+   },
+   &quot;vcenter&quot;: {
+      &quot;address_datacenter&quot;: &quot;192.168.100.1/Malibu&quot;,
+      &quot;credentials&quot;: {
+         &quot;thumbprint&quot;: &quot;4C:92:D7:FC:F8:8D:5A:....&quot;,
+         &quot;admin_user&quot;: &quot;administrator@jarvis.lab&quot;,
+         &quot;admin_password&quot;: &quot;*******&quot;
+       }
+   },
+   &quot;registry&quot;: {
+      &quot;insecure_registries&quot;: [&quot;192.168.100.50&quot;]
+   },
+   &quot;vic_machine&quot;: {
+      &quot;debug&quot;: &quot;0&quot;,
+      &quot;timeout&quot;: &quot;60s&quot;
+   }
+}
+</code></pre>
+
+<hr />
+
+<p><strong>IMPORTANT</strong>: You have to define the version at the beginning which will point to the folder with the declared version number in the <em>actions</em> folder. Remember:</p>
+
+<pre><code class="language-shell">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev/actions&gt; tree -L 2
+.
+├── 1.1
+│   ├── map-create.json
+│   ├── map-debug.json
+│   ├── map-delete.json
+│   ├── map-firewall.json
+│   ├── map-inspect.json
+│   ├── map-ls.json
+│   ├── map-thumbprint.json
+│   ├── map-upgrade.json
+│   ├── parse.sh
+│   └── validate.sh
+├── 1.2
+│   ├── map-create.json
+│   ├── map-debug.json
+│   ├── map-delete.json
+│   ├── map-firewall.json
+│   ├── map-inspect.json
+│   ├── map-ls.json
+│   ├── map-thumbprint.json
+│   ├── map-upgrade.json
+│   ├── parse.sh
+│   └── validate.sh
+</code></pre>
+
+<p>Pick two identical files e.g. <em>map-create.json</em> from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.</p>
+
+<hr />
+
+<p>Depending on your requirements (VCH Networking, Log aggregation, Debug-Level and so on), you can build your own <em>config.json</em> from the examples (example-simple.json, example-complete.json &amp; example-complete-empty.json) which we´ve copied in step 3.</p>
+
+<p>If you now execute &ldquo;<code>sh ./vic-machine 1.0 (or latest) vch1 create</code>&rdquo; and run a <code>watch</code> perhaps on container instances spinning up locally and also a <code>watch</code> on the folder <em>vch1</em> itself, you´ll see that the newly created image <em>vic-machine-create:1.0</em> will be used for having the <code>vic-machine</code> utility on board which will then receive the parsed arguments from the <em>config.json</em> and starts deploying the Virtual Container Host to your target.</p>
+
+<p>By using e.g my deployment-example, you´ll see that a new folder with the given name of the VCH will be created, containing the VCH certificates, which can be used to add the VCH to a project for example as well as a vic-machine and vpxd logfile, which is really nice to have.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg"></img></a></center>
+<center><em>Figure VI: vic-machine script with a watch on docker ps -a as well as ls -rtl</em></center></p>
+
+<h2 id="center-let-s-give-it-a-try-i-hope-you-ll-find-it-helpful-center"><center><strong>Let´s give it a try - I hope you´ll find it helpful.</strong></center></h2>
+
+<hr />
+
+<h2 id="10-addition-adding-a-vch-to-your-project">10 (addition): Adding a VCH to your project</h2>
+
+<p>As mentioned a few lines above, we can use the created certificates during the deployment, to add a Virtual Container Host to our project(s).</p>
+
+<p>Just go to:
+Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&gt; <strong>+ CREDENTIAL</strong></p>
+
+<p>Choose <em>Certificate</em>, enter a name and use the <em>cert.pem</em> for the Public certificate and the <em>key.pem</em> for the Private certificate. <strong>SAVE</strong>
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg"></img></a></center>
+<center><em>Figure VII: Using certificates for VCH authentication</em></center></p>
+
+<p>The VCH can be added to your project under:</p>
+
+<p>Administration &ndash;&gt; Projects &ndash;&gt; Your Project (vic-machine) &ndash;&gt; Infrastructure &ndash;&gt; <strong>+ CONTAINER HOST</strong></p>
+
+<p>Fill out the required fields and select under <em>Credentials</em> your previously created credentials and press <em>SAVE</em>.
+<center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg"></img></a></center>
+<center><em>Figure VIII: Adding a Virtual Container Host to a Project</em></center></p>
+
+<p>The result should look like this if everything went well.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg"><img src="https://rguske.github.io/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg"></img></a></center>
+<center><em>Figure IX: Virtual Container Host assigned to a Project</em></center></p>
+
+<h3 id="center-thanks-for-reading-center"><center><strong>THANKS FOR READING</strong></center></h3>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<table>
+<thead>
+<tr>
+<th><strong>Article</strong></th>
+<th><strong>Link</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
+<td><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
+</tr>
+
+<tr>
+<td>[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
+<td><a href="https://youtu.be/AD7CD8Haqdc">https://youtu.be/AD7CD8Haqdc</a></td>
+</tr>
+
+<tr>
+<td>[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
+<td><a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></td>
+</tr>
+
+<tr>
+<td>[@harbor] <strong>Harbor Official Website</strong></td>
+<td><a href="https://goharbor.io/">https://goharbor.io/</a></td>
+</tr>
+
+<tr>
+<td>[@github/coreos] <strong>Clair Github repo</strong></td>
+<td><a href="https://github.com/coreos/clair">https://github.com/coreos/clair</a></td>
+</tr>
+
+<tr>
+<td>[@github/theupdateframework] <strong>Notary Github repo</strong></td>
+<td><a href="https://github.com/theupdateframework/notary">https://github.com/theupdateframework/notary</a></td>
+</tr>
+
+<tr>
+<td>[@docker] <strong>Dockerfile reference</strong></td>
+<td><a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></td>
+</tr>
+</tbody>
+</table>
+
+      </section>
+
+      <footer class="post-card-meta">
+          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
+          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
+      </footer>
+    </div>
+</article>
+    </div>
+    <section class="tags">    
+      <a href='https://rguske.github.io/tags/vic/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">VIC</a>
+    
+      <a href='https://rguske.github.io/tags/docker/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Docker</a>
+    
+      <a href='https://rguske.github.io/tags/hack/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Hack</a>
+    
+      <a href='https://rguske.github.io/tags/harbor/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Harbor</a>
+    </section>
+    <nav class="pagination" role="navigation">
+
+      
+
+      <time class="" datetime="2019-07-04T22:52:18&#43;02:00">July 4, 2019</time>
+
+      <span class="page-number">&nbsp;</span>
+      
+          <a class="older-posts" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/"><span class="hide">Previous Post</span> &rarr;</a>
+      
+    </nav>
+
+    
+    
+
+  </div>
+</main>
+
+
+
+<footer class="site-footer outer">
+  <div class="site-footer-content inner">
+    <section class="copyright" style="line-height: 1.3em;">
+      <a href="https://rguske.github.io/"></a> © All rights reserved -2018 <br>
+      
+    </section>
+    <nav class="site-footer-nav">
+        <a href="https://rguske.github.io/">Latest Posts</a>
+        
+        <a href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://github.com/rguske" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener">LinkedIn</a>
+        
+    </nav>  
+  </div>
+</footer>
+
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://rguske.github.io/js/jquery.fitvids.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+  <!-- Google Analytics -->
+  <script>
+    var _gaq=[['_setAccount','UA-122353302-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+
+
+</body></html>
