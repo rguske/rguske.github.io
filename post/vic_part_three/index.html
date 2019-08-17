@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en-US" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host &middot; </title>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="https://rguske.github.io/favicon.ico" />
+    <link rel="canonical" href="https://rguske.github.io/post/vic_part_three/" />
+
+     <meta name="description" content="In this part I´d like to guide you through the Deployment of a Virtual Container Host aka VCH. I definitely don ́t want to make it a habit to use already writte" /> 
+
+     
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image" content="https://rguske.github.io/img/vic_part_iii_cover.jpg"/>
+    
+ 
+    <meta name="twitter:title" content="vSphere Integrated Containers Part III: Deployment of a Virtual Container Host"/>
+    <meta name="twitter:description" content="In this part I´d like to guide you through the Deployment of a Virtual Container Host aka VCH. I definitely don ́t want to make it a habit to use already writte"/>
+    <meta name="twitter:url" content="https://rguske.github.io/post/vic_part_three/" />
+    <meta name="twitter:site" content="@vmw_rguske"/>
+
+    <meta property="og:site_name" content="" />
+    <meta property="og:title" content="vSphere Integrated Containers Part III: Deployment of a Virtual Container Host &middot; j.a.r.v.i.s." />
+    <meta property="og:url" content="https://rguske.github.io/post/vic_part_three/" />
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="In this part I´d like to guide you through the Deployment of a Virtual Container Host aka VCH. I definitely don ́t want to make it a habit to use already writte" />
+
+    <meta property="article:published_time" content="2018-07-13T13:21:33&#43;02:00" />
+    <meta property="article:tag" content="VIC" /><meta property="article:tag" content="Container" /><meta property="article:tag" content="VMware" /><meta property="article:tag" content="vSphere" /><meta property="article:tag" content="docker" />
+
+    <meta property="og:image" content="https://rguske.github.io/img/vic_part_iii_cover.jpg"/>
+
+
+    <meta name="generator" content="Hugo 0.56.3" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/built/screen.css" /> 
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/css/casper-two.css" /> 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+     <link rel="stylesheet" href="https://rguske.github.io/dist/css/tagformatting.css" /> 
+
+     
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#343c66",
+          "text": "#cfcfe8"
+        },
+        "button": {
+          "background": "#f71559"
+        }
+      }
+    })});
+    </script>
+
+</head>
+
+
+<body class="ctsingle">
+
+  <div class="site-wrapper">
+
+<header class="site-header outer "  style="background-image: url(https://rguske.github.io/img/blog-cover.jpg)"  >
+  <div class="inner">
+    <div class="site-header-content">
+      <h1 class="site-title"> j.a.r.v.i.s.  </h1>
+        <h2 class="site-description">Sometimes you gotta run before you can walk! </h2>
+    </div>
+
+    <nav class="site-nav">
+      <div class="site-nav-left"><ul class="nav" role="menu">
+        
+        
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/">Home</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/about">About Me</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/disclaimer">Disclaimer</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://github.com/rguske/vic-machine">vic-machine examples</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://blogs.vmware.com/cloudnative/">VMware´s Offical CNA Blog</a>
+            </li>
+        
+            <li class="nav-current" role="menuitem">
+              <a href="https://rguske.github.io/post/">Posts</a>
+            </li>
+        
+      </ul></div>
+
+      <div class="site-nav-right">
+        <div class="social-links">
+                    
+
+                    <a class="social-link social-link-tw" href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg></a>
+
+                    <a class="social-link" href="https://github.com/rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+
+                    <a class="social-link" href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 512 512"><path d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683 C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615 c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915 s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z" /></svg></a>
+
+                    
+        </div>  
+            
+      </div>
+
+    </nav>  
+
+  </div>
+</header>
+
+
+<main id="site-main" class="site-main outer" role="main">
+  <div class="inner">
+    
+    <div class="post-feed">
+      <article class="post-card post"> 
+    
+    <a class="post-card-image-link" href="https://rguske.github.io/post/vic_part_three/">
+      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/vic_part_iii_cover.jpg)"></div>
+    </a>
+    
+
+    <div class="post-card-content">
+      <a class="post-card-content-link" href="https://rguske.github.io/post/vic_part_three/">
+          <header class="post-card-header">
+              <span class="post-card-tags">
+              #VIC 
+              #Container 
+              #VMware 
+              #vSphere 
+              #docker  </span>
+              
+              <h2 class="post-card-title">vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</h2>
+          </header>
+      </a>
+      <section class="post-card-excerpt" style="padding: 0 25px;">
+          
+
+<p>In this part I´d like to guide you through the Deployment of a <strong>Virtual Container Host</strong> aka <strong>VCH</strong>. I definitely don ́t want to make it a habit to use already written descriptions, but this one described it very well, thus I had like to quote this:</p>
+
+<blockquote>
+<p><em>A VCH is the virtual functional equivalent of a Linux VM running Docker. From a Docker client point of view, the Virtual Container Host looks very similar to a native Docker host. Hence, there are differences between a native Docker host and a Virtual Container Host (VCH), and between a Linux container and a container VM.</em></p>
+</blockquote>
+
+<p><strong>Source:</strong> <a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/vsphere/vmware-vsphere-integrated-containers-white-paper.pdf" target="_blank">Architecture Overview (VIC 1.2)</a></p>
+
+<p>Now let´s download the vic-bundle.tar.gz to our desktop locally to make use of the <code>vic-machine</code> command line utility what gives us the possibility to deploy VCHs and to manage their lifecycle.</p>
+
+<p>Open the VIC Getting Started page which you can reach by using the VIC IP, FQDN or DNS short name and port 9443. So in my case: <a href="https://vic01:9443">https://vic01:9443</a>. You´ll see in the lower left corner <em>Infrastructure Deployment Tools</em> where you can download the vic-bundle.tar.gz file. The other option is to use the url directly: <a href="https://vic01:9443/files/">https://vic01:9443/files/</a>.</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_093754.jpg"></img></center></p>
+
+<p>It´s up to you which way you choose, it´s just important to have the vic-machine utility on the machine where you´ll execute the commands from (local or a remote-execution host). Before we finally can begin with the deployment of our first VCH, we need to <em>open</em> the <em>required port</em> for the outgoing communication, via Serial over LAN, and using port <em>2377</em> between the <em>ESXi Host(s)</em> and our VCH.</p>
+
+<p>This is the first time we´ll make use of the <code>vic-machine</code> utility which is basically for lifecycle-management operations of a Virtual Container Host. There´s support for three platforms on which you can use <code>vic-machine</code>. Here is an short example for the <code>create</code> command:</p>
+
+<pre><code class="language-bash">### Windows
+./vic-machine-windows create --option argument --option argument
+</code></pre>
+
+<pre><code class="language-bash">### Linux
+./vic-machine-linux create --option argument --option argument
+</code></pre>
+
+<pre><code class="language-bash">### MacOS
+./vic-machine-darwin create --option argument --option argument
+</code></pre>
+
+<p>In the following you´ll find all neccessary pieces of information:
+<a href="https://vmware.github.io/vic-product/assets/files/html/1.3/vic_vsphere_admin/running_vicmachine_cmds.html" target="_blank"> <em>Running <code>vic-machine</code> Commands</em></a>.
+Before we can really open up the required port it´s neccassary to know the Thumbprint of your vCenter Server. By executing the following you should get what you need:</p>
+
+<pre><code class="language-bash">### In my example
+./vic-machine-darwin ls --target administrator@jarvis.local@lab-vcsa67-001/Datacenter-South
+</code></pre>
+
+<p>I´ll receive an certificate related error but the result counts - the output shows us the vCenter Server Thumbprint.</p>
+
+<pre><code class="language-bash">INFO[0000] vSphere password for administrator@jarvis.local:
+INFO[0003] ### Listing VCHs ####
+ERRO[0003] Failed to verify certificate for target=lab-vcsa67-001 (thumbprint=4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26)
+ERRO[0003] List cannot continue - failed to create validator: x509: certificate is valid for lab-vcsa67-001.lab.jarvis.local, not lab-vcsa67-001
+ERRO[0003] --------------------
+ERRO[0003] vic-machine-darwin ls failed: list failed
+</code></pre>
+
+<p>Switch to your downloaded and unzipped vic-bundle folder. Execute the following command to open the needed ports:</p>
+
+<pre><code class="language-bash">./vic-machine-darwin update firewall \
+--target lab-vcsa67-001/Datacenter-South \
+--user administrator@jarvis.local \
+--compute-resource nested-vSAN \
+--thumbprint  4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 \
+--allow
+</code></pre>
+
+<p>You´ll get an output similar like this:</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_110343.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_110343.jpg"></img></a></center></p>
+
+<p>Now let´s go to the point of what the title of Part III is promising you and we´ll start with the deployment of a VCH through the wizard which got available through the vic-plugin installation. Open the <em>vSphere Integrated Containers</em> subsection in your vSphere Client and under Virtual Conatiner Hosts choose + NEW VIRTUAL CONTAINER HOST.</p>
+
+<h2 id="general">General</h2>
+
+<p>The General section is more important than it appears at the first glance! Because besides the possibility to configure an endpoint for log aggregation and the level of logging deepness, we could  enter a naming-prefix for the instanciated Container-VMs what gives us, from a security point of view, more capabilities and flexibility.</p>
+
+<p>For instance, we could establish a <a href="https://docs.vmware.com/en/VMware-NSX-for-vSphere/6.4/com.vmware.nsx.admin.doc/GUID-16B3134E-DDF1-445A-8646-BB0E98C3C9B5.html" target="_blank"> NSX Security Group </a> by using the naming-prefix as a membership-criteria. Consequently, our Container-VMs becomes dynamically a member of the Security Group which gives us back the control of the East-West traffic within our Datacenter.</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180707_122841.jpg"></img></center></p>
+
+<h2 id="compute">Compute</h2>
+
+<p>Next we have to chose our Compute-Resource where our VCH runs on. That can be an ESXi Host, a Cluster or a Resource-Pool.</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_112753.jpg"></img></center></p>
+
+<p>The default settings for the CPU and Memory Limits (internally referred to as MAX) is set to <em>Unlimited</em>. I assume in most cases these settings can be untouched but if you decide to configure limits (MAX) and reservations (MIN) please remind the following:</p>
+
+<blockquote>
+<p><strong>Reservation</strong></p>
+
+<p><em>A reservation specifies the guaranteed minimum allocation for a virtual machine</em></p>
+
+<p><strong>Shares</strong></p>
+
+<p><em>Shares specify the relative importance of a virtual machine (or resource pool). If a virtual machine has twice as many shares of a resource as another virtual machine, it is entitled to consume twice as much of that resource when these two virtual machines are competing for resources.</em></p>
+
+<p><em>Shares are typically specified as High, Normal, or Low and these values specify share values with a 4:2:1 ratio, respectively. You can also select Custom to assign a specific number of shares (which expresses a
+proportional weight) to each virtual machine..</em></p>
+
+<p><strong>Limit</strong></p>
+
+<p><em>Limit specifies an upper bound for CPU, memory, or storage I/O resources that can be allocated to a virtual machine. A server can allocate more than the reservation to a virtual machine, but never allocates more than the limit, even if there are unused resources on the system. The limit is expressed in concrete units (megahertz, megabytes, or I/O operations per second).</em></p>
+
+<p><em>CPU, memory, and storage I/O resource limits default to unlimited. When the memory limit is unlimited, the amount of memory configured for the virtual machine when it was created becomes its effective limit.</em></p>
+
+<p><strong>Source:</strong> <a href="https://docs.vmware.com/en/VMware-vSphere/6.5/vsphere-esxi-vcenter-server-65-resource-management-guide.pdf" target="_blank"> vSphere Resource Management
+VMware vSphere 6.5</a></p>
+</blockquote>
+
+<hr />
+
+<p>A <strong>must have</strong> with regards to Resource Management is definetely the <a href="https://www.amazon.com/VMware-vSphere-Host-Resources-Deep/dp/1540873064" target="_blank"> VMware vSphere 6.5 Host Resource Deep Dive </a> by <a href="http://frankdenneman.nl/" target="_blank"> Frank Dennemann </a> and <a href="https://nielshagoort.com/" target="_blank"> Niels Hagoort</a></p>
+
+<hr />
+
+<h2 id="storage">Storage</h2>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_112841.jpg"></img></center></p>
+
+<p>To persistently store our container-images we can configure a Datastore in point 3. It´s also possible to set a maximum for the Container-VM Image size but keep in mind, if you configure it once, it can´t be re-configured afterwards. 8GB is set by default and due to the <strong>small footprint</strong> of a container, what is one of the major benefits of it, this predefined size should be sufficient in most cases.</p>
+
+<p>VIC can operate with any type of datastores: local VMFS, shared like NFS and iSCSI or vSAN. I´m running my Homelab on a single physical server and to make use of the benefits from Cluster-Features like DRS, vMotion or HA, I´ve implemented three nested ESXi Hosts and configured a vSAN All-Flash Cluster.</p>
+
+<p><strong>Reference:</strong> <a href="https://www.virtuallyghetto.com/nested-virtualization" target="_blank"> virtuallyGhetto.com | Nested Virtualization </a> by
+<a href="https://twitter.com/lamw" target="_blank"> William Lam</a></p>
+
+<p>Therefore, I´ve chosen my vSAN Datastore.
+Containers are ephemeral but this does not necessarily mean that the same applies to data. Of course persistence belongs to containers as well, and databases like e.g. a <a href="https://hub.docker.com/_/mongo/" target="_blank">MongoDB</a> or <a href="https://hub.docker.com/_/mysql/" target="_blank">MySQL</a> have to be stored persistently.</p>
+
+<p>As you can see through the picture above, we can make use of <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_app_dev/using_volumes_with_vic.html" target="_blank">docker volumes</a> which can be created and assigned by using the command <code>docker volume create</code>.</p>
+
+<h2 id="network">Network</h2>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_113743.jpg"></img></center></p>
+
+<p>This part is a little bit more comprehensive and like in most cases a picture quickly creates clarity.</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/vic_networking.png"></img></center></p>
+
+<p>Resource: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/vch_networking.html" target="_blank">VIC Documentation Networking Requirements</a></p>
+
+<p>The picture above shows you the available networks, which are described by the following:</p>
+
+<blockquote>
+<ul>
+<li><strong><em>Docker Client Management Network:</em></strong> <em>the network used to interact with the VCH VM via a Docker client</em></li>
+<li><strong><em>vSphere Management Network:</em></strong> <em>the network used by the VCH VM and the Container-VMs to interact with vSphere</em></li>
+<li><strong><em>Public Network:</em></strong> <em>the equivalent of eth0 on a Docker host. This is the network used to expose services to the public world (via –p)</em></li>
+<li><strong><em>Bridge Network(s):</em></strong> <em>the equivalent of Docker0 on a Docker Host.</em></li>
+<li><strong><em>Container Network(s):</em></strong> <em>these are networks containers can attach to directly for inbound/ outbound communications to by-pass the VCH VM</em></li>
+</ul>
+</blockquote>
+
+<p>I´d like to get your attention on the last network - the <strong>Container Network</strong>. With VIC, you have the ability to directly connect a Container-VM to a dedicated network what is a differentiator to e.g. the native Docker Container-Host. These Container Networks will be configured during the VCH deployment or afterwards by using the <code>vic-machine configure</code> command. More about this later on.</p>
+
+<p>The mapped container networks are available for use by the Docker API and with that a container developer can use classical docker commands like <code>docker network ls</code> to list the container networks or <code>docker run</code>, <code>docker create</code>with the <code>--network=*mapped-network-name*</code>option. There exists already two great posts about this topic. Check it out:</p>
+
+<ul>
+<li><a href="https://blogs.vmware.com/vsphere/2017/02/connecting-containers-directly-external-networks.html" target="_blank">Connecting Containers Directly to External Networks</a></li>
+<li><a href="https://blogs.vmware.com/vsphere/2017/01/basic-network-configuration-with-vsphere-integrated-containers-engine.html" target="_blank">Basic Network Configuration with vSphere Integrated Containers Engine</a></li>
+</ul>
+
+<h2 id="security">Security</h2>
+
+<p>By default, Virtual Container Hosts authenticate connections from Docker API clients by using server and client TLS certificates. This configuration is commonly referred to as <code>tlsverify</code> in documentation about containers and Docker.</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_114110.jpg"></img></center></p>
+
+<p>I like to refer you to the Offical VIC Documentation Page under Section <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/vch_security.html" target="_blank"> VCH Security</a>.</p>
+
+<h2 id="operations-user">Operations User</h2>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_115018.jpg"></img></center></p>
+
+<p>The operations user account must exist before you create a VCH. If you are deploying the VCH to a cluster, vSphere Integrated Containers Engine can configure the operations user account with all of the necessary permissions for you.
+You can see that I use my user <em>Jarvis</em> for day-to-day operations for my VCH´s.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180712_082018.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180712_082018.jpg"></img></a></center></p>
+
+<p><strong>More here:</strong> <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/set_up_ops_user.html" target="_blank"><em>Configure the Operations User</em></a></p>
+
+<hr />
+
+<p><strong>IMPORTANT:</strong> If you are deploying the VCH to a standalone host that is managed by vCenter Server, you must configure the operations user account manually. The option to grant any necessary permissions automatically only applies when deploying VCHs to clusters.</p>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>Like always when a summary appears by the end of a wizard - validate your configuration again!</p>
+
+<p><center><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180616_115031.jpg"></img></center></p>
+
+<p>I´d recommend to copy the command lines to your notes, so that you can use them for further (manual) deployments.</p>
+
+<p>It seems that we´ve gone a long way until here, right? But let us recap:</p>
+
+<ul>
+<li>we´ve downloaded the OVA</li>
+<li>we´ve deployed the VIC-Appliance</li>
+<li>we´ve installed the VIC vSphere Client Plug-In</li>
+</ul>
+
+<p>&hellip;and now we´ve ran through the VCH deployment wizard and we´re just one click away to have our first Virtual Container Host deployed.</p>
+
+<p>Hit <strong>FINISH</strong>!</p>
+
+<p>Now let´s check the deployment in our vCenter&hellip;</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_105210.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180713_105210.jpg"></img></a></center></p>
+
+<p>&hellip;and over the command line by using <code>vic-machine</code> (as mentioned) as well:</p>
+
+<pre><code class="language-shell">./vic-machine-darwin ls \
+--target &quot;lab-vcsa67-001&quot; \
+--user &quot;administrator@jarvis.local&quot; \
+--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26
+</code></pre>
+
+<pre><code class="language-bash">INFO[0000] vSphere password for administrator@jarvis.local:
+INFO[0006] ### Listing VCHs ####
+INFO[0006] Validating target
+
+ID     PATH                                         NAME   VERSION               UPGRADE STATUS
+vm-212 /Datacenter-South/host/nested-vSAN/Resources vch02  v1.4.0-18893-6c385b0  Up to date
+</code></pre>
+
+<p>Looks good!
+What infos else?</p>
+
+<pre><code class="language-Bash">docker -H 192.168.100.223:2376 --tls info
+</code></pre>
+
+<p><center><a href="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180712_045012.jpg"><img src="https://rguske.github.io/img/posts/vic_getting_started/CapturFiles-20180712_045012.jpg" width="800"></img></a></center></p>
+
+<p>Alright, we´ve deployed our first Virtual Container Host we can go ahead with Part IV.</p>
+
+<hr />
+
+<p><strong>Continue with:</strong></p>
+
+<p><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-iv-docker-run-a-container-vm"><strong>vSphere Integrated Containers Part IV: docker run a Container-VM</strong></a></p>
+
+<hr />
+
+<p><strong>Previous articles:</strong></p>
+
+<p><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-ii-vsphere-client-plug-in"><strong>vSphere Integrated Containers Part II: vSphere Client Plug-In</strong></a></p>
+
+<p><a href="https://rguske.github.io/post/vsphere-integrated-containers-part-i-ova-deployment"><strong>vSphere Integrated Containers Part I: OVA Deployment</strong></a></p>
+
+<p><a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction"><strong>vSphere Integrated Containers: Introduction</strong></a></p>
+
+      </section>
+
+      <footer class="post-card-meta">
+          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
+          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
+      </footer>
+    </div>
+</article>
+    </div>
+    <section class="tags">    
+      <a href='https://rguske.github.io/tags/vic/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">VIC</a>
+    
+      <a href='https://rguske.github.io/tags/container/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Container</a>
+    
+      <a href='https://rguske.github.io/tags/vmware/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">VMware</a>
+    
+      <a href='https://rguske.github.io/tags/vsphere/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">vSphere</a>
+    
+      <a href='https://rguske.github.io/tags/docker/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">docker</a>
+    </section>
+    <nav class="pagination" role="navigation">
+
+      
+          <a class="newer-posts" href="https://rguske.github.io/post/vic_part_four/">&larr; <span class="hide">Next Post</span></a>
+      
+
+      <time class="" datetime="2018-07-13T13:21:33&#43;02:00">July 13, 2018</time>
+
+      <span class="page-number">&nbsp;</span>
+      
+          <a class="older-posts" href="https://rguske.github.io/post/vic_part_two/"><span class="hide">Previous Post</span> &rarr;</a>
+      
+    </nav>
+
+    
+    
+
+  </div>
+</main>
+
+
+
+<footer class="site-footer outer">
+  <div class="site-footer-content inner">
+    <section class="copyright" style="line-height: 1.3em;">
+      <a href="https://rguske.github.io/"></a> © All rights reserved -2018 <br>
+      
+    </section>
+    <nav class="site-footer-nav">
+        <a href="https://rguske.github.io/">Latest Posts</a>
+        
+        <a href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://github.com/rguske" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener">LinkedIn</a>
+        
+    </nav>  
+  </div>
+</footer>
+
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://rguske.github.io/js/jquery.fitvids.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+  <!-- Google Analytics -->
+  <script>
+    var _gaq=[['_setAccount','UA-122353302-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+
+
+</body></html>
