@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en-US" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Monitoring Container VMs with vRealize Operations Manager &middot; </title>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="https://rguske.github.io/favicon.ico" />
+    <link rel="canonical" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" />
+
+     <meta name="description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere I" /> 
+
+     
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image" content="https://rguske.github.io/img/vic_monitoring_cover.jpg"/>
+    
+ 
+    <meta name="twitter:title" content="Monitoring Container VMs with vRealize Operations Manager"/>
+    <meta name="twitter:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere I"/>
+    <meta name="twitter:url" content="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" />
+    <meta name="twitter:site" content="@vmw_rguske"/>
+
+    <meta property="og:site_name" content="" />
+    <meta property="og:title" content="Monitoring Container VMs with vRealize Operations Manager &middot; j.a.r.v.i.s." />
+    <meta property="og:url" content="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" />
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere I" />
+
+    <meta property="article:published_time" content="2019-01-21T23:00:09&#43;01:00" />
+    <meta property="article:tag" content="VIC" /><meta property="article:tag" content="Container" /><meta property="article:tag" content="vSphere" /><meta property="article:tag" content="Monitoring" /><meta property="article:tag" content="vRealize Operations Manager" /><meta property="article:tag" content="Dashboard" />
+
+    <meta property="og:image" content="https://rguske.github.io/img/vic_monitoring_cover.jpg"/>
+
+
+    <meta name="generator" content="Hugo 0.57.2" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/built/screen.css" /> 
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/css/casper-two.css" /> 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+     <link rel="stylesheet" href="https://rguske.github.io/dist/css/tagformatting.css" /> 
+
+     
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#343c66",
+          "text": "#cfcfe8"
+        },
+        "button": {
+          "background": "#f71559"
+        }
+      }
+    })});
+    </script>
+
+</head>
+
+
+<body class="ctsingle">
+
+  <div class="site-wrapper">
+
+<header class="site-header outer "  style="background-image: url(https://rguske.github.io/img/blog_cover_black.jpg)"  >
+  <div class="inner">
+    <div class="site-header-content">
+      <h1 class="site-title"> j.a.r.v.i.s.  </h1>
+        <h2 class="site-description">Sometimes you gotta run before you can walk! </h2>
+    </div>
+
+    <nav class="site-nav">
+      <div class="site-nav-left"><ul class="nav" role="menu">
+        
+        
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/">Home</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/about">About Me</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/disclaimer">Disclaimer</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://github.com/rguske">Github Repo</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/post/vmwaremicrosites">VMware Microsites</a>
+            </li>
+        
+            <li class="nav-current" role="menuitem">
+              <a href="https://rguske.github.io/post/">Posts</a>
+            </li>
+        
+      </ul></div>
+
+      <div class="site-nav-right">
+        <div class="social-links">
+                    
+
+                    <a class="social-link social-link-tw" href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg></a>
+
+                    <a class="social-link" href="https://github.com/rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+
+                    <a class="social-link" href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 512 512"><path d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683 C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615 c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915 s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z" /></svg></a>
+
+                    
+        </div>  
+            
+      </div>
+
+    </nav>  
+
+  </div>
+</header>
+
+
+<main id="site-main" class="site-main outer" role="main">
+  <div class="inner">
+    
+    <div class="post-feed">
+      <article class="post-card post"> 
+    
+    <a class="post-card-image-link" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/">
+      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/vic_monitoring_cover.jpg)"></div>
+    </a>
+    
+
+    <div class="post-card-content">
+      <a class="post-card-content-link" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/">
+          <header class="post-card-header">
+              <span class="post-card-tags">
+              #VIC 
+              #Container 
+              #vSphere 
+              #Monitoring 
+              #vRealize Operations Manager 
+              #Dashboard  </span>
+              
+              <h2 class="post-card-title">Monitoring Container VMs with vRealize Operations Manager</h2>
+          </header>
+      </a>
+      <section class="post-card-excerpt" style="padding: 0 25px;">
+          
+
+<p>Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, <a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank"><em>vRealize Operations Manager (vR Ops)</em></a>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg"></img></a></center></p>
+
+<p><center><em>Figure I: VIC monitoring high level overview</em></center></p>
+
+<h2 id="the-dashboard"><strong>The Dashboard</strong></h2>
+
+<p>Treating Containers as <a href="https://en.wikipedia.org/wiki/First-class_citizen" target="_blank">&ldquo;First-Class Citizens&rdquo;</a> is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine.</p>
+
+<blockquote>
+<p>Therefore you don´t have to build out a separate, tailored infrastructure stack and can continue to leverage existing Scalability, Security and <strong>Monitoring</strong> capabilities.</p>
+
+<p><em>Source: <a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" target="_blank">VMware vSphere Integrated Containers: Introduction</a></em></p>
+</blockquote>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg"></img></a></center></p>
+
+<p>I´ve splitted the dashboard into two parts because I wanted to get as most as valuable content displayed on the screen without scrolloing down the page (depending on your resolution 😉). The upper part gives you more details about the <strong>utilization</strong> and properties of the Virtual Container Host itself. Thus resource pool as well as the Virtual Container Host VM (Docker endpoint) are covered by the <span style="color:blue">upper part</span>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg"></img></a></center></p>
+
+<p>The <span style="color:orange">lower part</span> is focused on the <strong>performance</strong> of each Container-VM (by selecting the cVM) running inside the resource pool, and by the end of the day, on the service which will be provided by the container.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg"></img></a></center></p>
+
+<p>I also considered to build out each part in a separate dashboard, so one for the Virtual Container Host(s) and another one for the Container-VM(s), but nevertheless I decided to go with the &ldquo;All-in-One&rdquo; variant.</p>
+
+<h2 id="download-via-vmware-code">Download via VMware {code}</h2>
+
+<p>If you like the dashboard and you are interested to monitor your containerized applications in terms of performance and utilization, you can download it through the following link: <a href="https://code.vmware.com/samples?id=5283">https://code.vmware.com/samples?id=5283</a></p>
+
+<p><strong>But</strong> before you can make use of it you have to do some preperations first.</p>
+
+<h2 id="things-you-have-to-do-first-before-the-import">Things you have to do first before the import</h2>
+
+<p><strong>In vSphere</strong></p>
+
+<ol>
+<li>Create a new <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vcenterhost.doc/GUID-E8E854DD-AA97-4E0C-8419-CE84F93C4058.html" target="_blank">vSphere-Tag</a></li>
+</ol>
+
+<p>Open up the vSphere-Client and create a new <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vcenterhost.doc/GUID-BA3D1794-28F2-43F3-BCE9-3964CB207FB6.html?hWord=N4IghgNiBcIC5gOYAIDGY4FNEHsBOAniAL5A" target="_blank">vSphere-Tag Category</a> as well as a vSphere-Tag called <em>Virtual Container Host</em> and assign the Tag to every Virtual Container Host <strong>Resource Pool(!)</strong>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg" width="550"></img></a></center></p>
+
+<p>I´m going to explain the reason why we need this in a moment.</p>
+
+<p><strong>In vR Ops</strong></p>
+
+<ol>
+<li>Create a <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-43ACB276-C9A3-490A-B65E-3D0EA66E8AC8.html" target="_blank">Group Type</a> to categorize objects in vR Ops.</li>
+<li>Create a <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-7CD02B2B-4BB1-4BD3-B24E-5F630B94A7EF.html" target="_blank">Dynamic Custom Group</a> for dynamic assignment of Virtual Container Hosts through a membership criteria.</li>
+<li>Create two new <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-75E5B784-6CE7-4048-AD77-89A9E21C2AC2.html" target="blank">Metric Configurations</a> to define a specific set of metrics for the VCH as well as for the cVM.</li>
+<li>Import two new <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-BC389BD4-8F24-42D9-82B1-C33A87F738B6.html?hWord=N4IghgNiBcIGoEsCmB3AziAvkA" target="_blank"><em>Views</em></a> (VCH properties &amp; cVM properties)</li>
+</ol>
+
+<p>Let´s start with <strong>#1</strong>, the creation of a <em>Group Type</em>, a superior group for our <em>Dynamic Custom Group</em> which we´ll configure in step <strong>#2</strong>. When you´re already logged in into vR Ops go to <em>Administration</em> and select <em>Group Types</em> which is under <em>Configuration</em> on the left side. Create a new one and call it <em>vSphere Integrated Containers</em> for example.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg"></img></a></center></p>
+
+<p>It is followed by the mentioned <em>Dynamic Custom Group</em> which is not found under <em>Administration</em> but under <em>Environment</em> and then <em>Groups and Applications</em>. Create a new one and call it e.g. <em>Virtual Container Hosts</em>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg"></img></a></center></p>
+
+<p>One striking aspect about <em>Dynamic Custom Groups</em> is the fact that we can define the <em>Membership</em> based on a specific criteria. During my first tests, I´ve defined the membership based on the <em>Prefix</em> of a Virtual Container Host name like <strong>vch-</strong>app01 for example. Asking me naming conventions is an important topic and every organization has its own, so it won´t fit for everyone and therefore I had to find another criteria to let the dynamic assignment to this group happen.</p>
+
+<p>I thought <em>vSphere-Tags</em> is a perfect alternative as a criteria. Consequently, we have to configure it for the <em>Object Type Resource Pool</em> like the screenshot below shows.</p>
+
+<p><em>Properties</em> &ndash;&gt; <em>Summary|vSphere Tag</em> is <em>Virtual Container Host</em></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg" width="850"></img></a></center></p>
+
+<p>Hit <em>Preview</em> to see if it works.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg" width="400"></img></a></center></p>
+
+<p>The next step, step <strong>#3</strong>, is the configuration of a specific metric set which will only show us what we´ll see in our dashboard reagrding the Virtual Container Host Resource Pool as well as the Container-VM. To configure those, go to <em>Administration</em> and <em>Configuration</em> again and select this time <em>Metric Configurations</em>.</p>
+
+<p>Select the folder <em>ReskndMetric</em> and hit the plus sign above to create a new one. I´ve named the first of my two configurations <em>vch_resource_utilization</em>. Of course you can title it as you like but we have to keep in mind that we have to select this one after the dashboard import.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg" width="400"></img></a></center></p>
+
+<p>After assigning the name, please copy the following xml code and paste it into your new metric configuration.</p>
+
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;AdapterKinds&gt;
+    &lt;AdapterKind adapterKindKey=&quot;VMWARE&quot;&gt;
+        &lt;ResourceKind resourceKindKey=&quot;ResourcePool&quot;&gt;
+            &lt;Metric attrkey=&quot;summary|total_number_vms&quot; label=&quot;# cVM&quot; unit=&quot;cVM&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;summary|number_running_vms&quot; label=&quot;# running cVM&quot; unit=&quot;cVM&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;cpu|corecount_provisioned&quot; label=&quot;# CPU Cores&quot; unit=&quot;cores&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot; isProperty=&quot;true&quot;/&gt;
+            &lt;Metric attrkey=&quot;config|cpuAllocation|limit&quot; label=&quot;CPU Limit&quot; unit=&quot;MHz&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot; isProperty=&quot;true&quot;/&gt;
+            &lt;Metric attrkey=&quot;config|cpuAllocation|reservation&quot; label=&quot;CPU Reservation&quot; unit=&quot;GHz&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot; isProperty=&quot;true&quot;/&gt;
+            &lt;Metric attrkey=&quot;config|memoryAllocation|limit&quot; label=&quot;Mem Limit&quot; unit=&quot;MB&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot; isProperty=&quot;true&quot;/&gt;
+            &lt;Metric attrkey=&quot;config|memoryAllocation|reservation&quot; label=&quot;Mem Reservation&quot; unit=&quot;MB&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot; isProperty=&quot;true&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|consumed_average&quot; label=&quot;Mem consumed&quot; unit=&quot;MB&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|overhead_average&quot; label=&quot;VM Mem overhead&quot; unit=&quot;MB&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;OnlineCapacityAnalytics|capacityRemainingPercentage&quot; label=&quot;Capacity Remaining&quot; unit=&quot;%&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+        &lt;/ResourceKind&gt;
+    &lt;/AdapterKind&gt;
+&lt;/AdapterKinds&gt;
+</code></pre>
+
+<p>The second metric configuration is specific for the performance of the Container-VM. I´ve named it <em>container_vm_performance</em>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg" width="400"></img></a></center></p>
+
+<p>Copy the xml code and again simply paste it into.</p>
+
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;AdapterKinds&gt;
+    &lt;AdapterKind adapterKindKey=&quot;VMWARE&quot;&gt;
+        &lt;ResourceKind resourceKindKey=&quot;VirtualMachine&quot;&gt;
+            &lt;Metric attrkey=&quot;config|hardware|num_Cpu&quot; label=&quot;# vCPU&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;cpu|usagemhz_average&quot; label=&quot;CPU Usage&quot; unit=&quot;MHz&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;cpu|usage_average&quot; label=&quot;CPU Usage Avg&quot; unit=&quot;MHz&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;cpu|readyPct&quot; label=&quot;CPU Ready&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;cpu|costopPct&quot; label=&quot;CPU Costop&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|usage_average&quot; label=&quot;Mem Usage&quot; unit=&quot;%&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|vmMemoryDemand&quot; label=&quot;Mem Demand&quot; unit=&quot;KB&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|balloonPct&quot; label=&quot;Mem Ballooning&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;mem|swapped_average&quot; label=&quot;Mem Swapped&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;net|received_average&quot; label=&quot;Net RX&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+            &lt;Metric attrkey=&quot;net|transmitted_average&quot; label=&quot;Net TX&quot; unit=&quot;&quot; yellow=&quot;&quot; orange=&quot;&quot; red=&quot;&quot; link=&quot;&quot;/&gt;
+        &lt;/ResourceKind&gt;
+    &lt;/AdapterKind&gt;
+&lt;/AdapterKinds&gt;
+</code></pre>
+
+<p>The last point (<strong>#4</strong>) before we are ready to go is the <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-42F41582-E2EE-4BD3-9751-F65C886E1118.html" target="_blank">import</a> of the two custom views. Click <strong><em>Dashboards</em></strong>, and then in the left pane click <strong><em>Views</em></strong>. Click on the gear icon, select <strong><em>Import View</em></strong> and navigate to the folder where you´ve downloaded the files to. To ensure that the dashboard will work smoothly after importing it check if the import of the two custom <em>Views</em> were successfull. Just filter by <em>&ldquo;vm properties&rdquo;</em> and your search should result in the following:</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg" width="800"></img></a></center></p>
+
+<hr />
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>vRealize Operations Manager has evolved greatly over time and building custom dashboards according to your own ideas and demands is quite fun. Let´s just take the new <em>Dashboard Canvas</em> which was shipped with version 7.0 as an example. It´s not all about how cool it looks like but rather than the simplicity it brings during the creation of an dashboard.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg"></img></a></center></p>
+
+<p><center><em>Widget interactions of the Virtual Container Host(s) dashboard</em></center></p>
+
+<p>Here are two posts I would like to recommend to read with regard to:</p>
+
+<ol>
+<li><p><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html" target="_blank">Dashboards Made Easy with vRealize Operations</a></p></li>
+
+<li><p><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html" target="_blank">Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</a></p></li>
+</ol>
+
+<p>The <a href="https://twitter.com/search?q=%23vcommunity&src=typd" target="_blank">#vCommunity</a> is more active than ever on sharing great work and if you like to make use of what the #vCommunity already cooked or even better if you like to share your own creations, please go here: <a href="https://vrealize.vmware.com/sample-exchange/">https://vrealize.vmware.com/sample-exchange/</a> and give it a shout-out on Twitter. Our great Product-Manager´s will hear you 😎.</p>
+
+<p><center> <blockquote class="twitter-tweet" data-conversation="none"><p lang="en" dir="ltr">Thanks to ALL our contributors, let&#39;s get to 200.  There&#39;s some really interesting ideas and I know our fabulous PMs <a href="https://twitter.com/Sunny_Dua?ref_src=twsrc%5Etfw">@Sunny_Dua</a> <a href="https://twitter.com/e1_ang?ref_src=twsrc%5Etfw">@e1_ang</a> and <a href="https://twitter.com/storalok?ref_src=twsrc%5Etfw">@storalok</a> are excited to see what the community comes up with in 2019.</p>&mdash; John Dias 🔭 (@johnddias) <a href="https://twitter.com/johnddias/status/1079442191972483073?ref_src=twsrc%5Etfw">December 30, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center></p>
+
+<p><center> <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Super excited to see how the <a href="https://twitter.com/hashtag/vROps?src=hash&amp;ref_src=twsrc%5Etfw">#vROps</a> community has grown over the past few years. I remember the lack of blogs and Ops experts. It is great to see this achievement of community driven ops content. To the <a href="https://twitter.com/hashtag/OpsCommunity?src=hash&amp;ref_src=twsrc%5Etfw">#OpsCommunity</a>.. Cheers.. <a href="https://twitter.com/VMware?ref_src=twsrc%5Etfw">@VMware</a> <a href="https://twitter.com/hashtag/vExpert?src=hash&amp;ref_src=twsrc%5Etfw">#vExpert</a> <a href="https://twitter.com/vRealizeOps?ref_src=twsrc%5Etfw">@vRealizeOps</a> <a href="https://twitter.com/vmwarecloudmgmt?ref_src=twsrc%5Etfw">@vmwarecloudmgmt</a> <a href="https://t.co/AEc6qgZ0Ep">https://t.co/AEc6qgZ0Ep</a></p>&mdash; Sunny Dua (@Sunny_Dua) <a href="https://twitter.com/Sunny_Dua/status/1081415672712679429?ref_src=twsrc%5Etfw">January 5, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center></p>
+
+<p>And in case you are already a <em>vR Ops-Ninja</em> and you are not on this list <a href="https://twitter.com/johnddias/lists/vrops-friends1">https://twitter.com/johnddias/lists/vrops-friends1</a> reach out to <a href="https://twitter.com/johnddias" target="_blank">John Dias</a> and he´ll put your name on the list as well.</p>
+
+<p><center> <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I just created a list!  It is short but growing.  If anyone is missing that should be there let me know. <a href="https://t.co/0eVPbQJCwq">https://t.co/0eVPbQJCwq</a></p>&mdash; John Dias 🔭 (@johnddias) <a href="https://twitter.com/johnddias/status/1068561326216228865?ref_src=twsrc%5Etfw">November 30, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg"><img src="https://rguske.github.io/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" width="150"></img></a></center></p>
+
+<p><center><strong>THANK YOU</strong></center></p>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<table>
+<thead>
+<tr>
+<th><strong>Article</strong></th>
+<th><strong>Link</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>[@VMware Blog] Dashboards Made Easy with vRealize Operations</strong></td>
+<td><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html">https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html</a></td>
+</tr>
+
+<tr>
+<td><strong>[@VMware Blog] Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</strong></td>
+<td><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html">https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html</a></td>
+</tr>
+
+<tr>
+<td><strong>[@VMware Blog] VMware´s Cloud Management Blog</strong></td>
+<td><a href="https://blogs.vmware.com/management/">https://blogs.vmware.com/management/</a></td>
+</tr>
+
+<tr>
+<td><strong>[@VMware Blog] VMware´s Cloud-Native Blog</strong></td>
+<td><a href="https://blogs.vmware.com/cloudnative">https://blogs.vmware.com/cloudnative</a></td>
+</tr>
+</tbody>
+</table>
+
+      </section>
+
+      <footer class="post-card-meta">
+          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
+          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
+      </footer>
+    </div>
+</article>
+    </div>
+    <section class="tags">    
+      <a href='https://rguske.github.io/tags/vic/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">VIC</a>
+    
+      <a href='https://rguske.github.io/tags/container/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Container</a>
+    
+      <a href='https://rguske.github.io/tags/vsphere/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">vSphere</a>
+    
+      <a href='https://rguske.github.io/tags/monitoring/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Monitoring</a>
+    
+      <a href='https://rguske.github.io/tags/vrealize-operations-manager/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">vRealize Operations Manager</a>
+    
+      <a href='https://rguske.github.io/tags/dashboard/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Dashboard</a>
+    </section>
+    <nav class="pagination" role="navigation">
+
+      
+          <a class="newer-posts" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/">&larr; <span class="hide">Next Post</span></a>
+      
+
+      <time class="" datetime="2019-01-21T23:00:09&#43;01:00">January 21, 2019</time>
+
+      <span class="page-number">&nbsp;</span>
+      
+          <a class="older-posts" href="https://rguske.github.io/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/"><span class="hide">Previous Post</span> &rarr;</a>
+      
+    </nav>
+
+    
+    
+
+  </div>
+</main>
+
+
+
+<footer class="site-footer outer">
+  <div class="site-footer-content inner">
+    <section class="copyright" style="line-height: 1.3em;">
+      <a href="https://rguske.github.io/"></a> © All rights reserved -2018 <br>
+      
+    </section>
+    <nav class="site-footer-nav">
+        <a href="https://rguske.github.io/">Latest Posts</a>
+        
+        <a href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://github.com/rguske" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener">LinkedIn</a>
+        
+    </nav>  
+  </div>
+</footer>
+
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://rguske.github.io/js/jquery.fitvids.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+  <!-- Google Analytics -->
+  <script>
+    var _gaq=[['_setAccount','UA-122353302-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+
+
+</body></html>
