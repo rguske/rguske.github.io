@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en-US" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>VMware Enterprise PKS Management Console (EPMC) - Day 1 &middot; </title>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="https://rguske.github.io/favicon.ico" />
+    <link rel="canonical" href="https://rguske.github.io/post/pks-management-console-day-1/" />
+
+     <meta name="description" content="Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year" /> 
+
+     
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image" content="https://rguske.github.io/img/epmcday1_cover.jpg"/>
+    
+ 
+    <meta name="twitter:title" content="VMware Enterprise PKS Management Console (EPMC) - Day 1"/>
+    <meta name="twitter:description" content="Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year"/>
+    <meta name="twitter:url" content="https://rguske.github.io/post/pks-management-console-day-1/" />
+    <meta name="twitter:site" content="@vmw_rguske"/>
+
+    <meta property="og:site_name" content="" />
+    <meta property="og:title" content="VMware Enterprise PKS Management Console (EPMC) - Day 1 &middot; j.a.r.v.i.s." />
+    <meta property="og:url" content="https://rguske.github.io/post/pks-management-console-day-1/" />
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year" />
+
+    <meta property="article:published_time" content="2019-11-27T14:53:23&#43;01:00" />
+    <meta property="article:tag" content="Kubernetes" /><meta property="article:tag" content="PKS" /><meta property="article:tag" content="EPMC" /><meta property="article:tag" content="vSphere" />
+
+    <meta property="og:image" content="https://rguske.github.io/img/epmcday1_cover.jpg"/>
+
+
+    <meta name="generator" content="Hugo 0.57.2" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/built/screen.css" /> 
+    <link rel="stylesheet" type="text/css" href="https://rguske.github.io/css/casper-two.css" /> 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+     <link rel="stylesheet" href="https://rguske.github.io/dist/css/tagformatting.css" /> 
+
+     
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+    window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#343c66",
+          "text": "#cfcfe8"
+        },
+        "button": {
+          "background": "#f71559"
+        }
+      }
+    })});
+    </script>
+
+</head>
+
+
+<body class="ctsingle">
+
+  <div class="site-wrapper">
+
+<header class="site-header outer "  style="background-image: url(https://rguske.github.io/img/blog_cover_black.jpg)"  >
+  <div class="inner">
+    <div class="site-header-content">
+      <h1 class="site-title"> j.a.r.v.i.s.  </h1>
+        <h2 class="site-description">Sometimes you gotta run before you can walk! </h2>
+    </div>
+
+    <nav class="site-nav">
+      <div class="site-nav-left"><ul class="nav" role="menu">
+        
+        
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/">Home</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/about">About Me</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/disclaimer">Disclaimer</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://github.com/rguske">Github Repo</a>
+            </li>
+        
+            <li class="" role="menuitem">
+              <a href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark">VMware Microsites</a>
+            </li>
+        
+            <li class="nav-current" role="menuitem">
+              <a href="https://rguske.github.io/post/">Posts</a>
+            </li>
+        
+      </ul></div>
+
+      <div class="site-nav-right">
+        <div class="social-links">
+                    
+
+                    <a class="social-link social-link-tw" href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg></a>
+
+                    <a class="social-link" href="https://github.com/rguske" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+
+                    <a class="social-link" href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 512 512"><path d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683 C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615 c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915 s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z" /></svg></a>
+
+                    
+        </div>  
+            
+      </div>
+
+    </nav>  
+
+  </div>
+</header>
+
+
+<main id="site-main" class="site-main outer" role="main">
+  <div class="inner">
+    
+    <div class="post-feed">
+      <article class="post-card post"> 
+    
+    <a class="post-card-image-link" href="https://rguske.github.io/post/pks-management-console-day-1/">
+      <div class="post-card-image" style="background-image: url(https://rguske.github.io/img/epmcday1_cover.jpg)"></div>
+    </a>
+    
+
+    <div class="post-card-content">
+      <a class="post-card-content-link" href="https://rguske.github.io/post/pks-management-console-day-1/">
+          <header class="post-card-header">
+              <span class="post-card-tags">
+              #Kubernetes 
+              #PKS 
+              #EPMC 
+              #vSphere  </span>
+              
+              <h2 class="post-card-title">VMware Enterprise PKS Management Console (EPMC) - Day 1</h2>
+          </header>
+      </a>
+      <section class="post-card-excerpt" style="padding: 0 25px;">
+          
+
+<p>Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year. This release introduced the beta (v.0.9) of the <span style="color:#60C12F"><em>VMware Enterprise PKS Management Console (EPMC)</em></span> which offers an opinionated installation of Enterprise PKS. With the PKS minor release v.1.5.1, the EPMC went GA in version 1.0.0.</p>
+
+<p>Further improvements and enhancements were made in version 1.6 (*1), which went GA on the 26th of November, a few days after the release of Enterprise PKS v.1.6 and after testing it, I´d like to share my impressions with you through this post.</p>
+
+<blockquote>
+<p>*1: <em>Enterprise PKS Management Console version number equals now the version number of Enterprise PKS.</em></p>
+</blockquote>
+
+<p>Thanks <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a> for reviewing both articles.</p>
+
+<h2 id="let-s-start-with-my-conclusion-first">Let´s start with my conclusion first</h2>
+
+<p>The Enterprise PKS Management Console makes the adjective <em>TURNKEY</em>, which VMware uses when introducing Enterprise PKS, really well-rounded. It really improves the overall Day-1 and Day-2 experience by greatly simplifying the deployment process of Enterprise PKS (Day-1) and additionally providing a rich set of features around Visibility, User Management and Upgrades/Patches (Day-2).</p>
+
+<h2 id="it-s-an-appliance">It´s an appliance</h2>
+
+<p>EPMC will run as a Virtual Appliance in your Datacenter and can be downloaded through the provided link at the end of this post. It´s a 10,6 GB download and it´s that heavy because it´s all packaged together in one OVA, which in turn has the advantage, that you don´t have to work out the interoperability matrix.</p>
+
+<p>The Appliance includes all the necessary bits to run Enterprise PKS such as the <a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-deploy.html" target="_blank">Pivotal Ops Manager</a>, <a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-config.html" target="_blank">BOSH</a>, <a href="https://docs.pivotal.io/pks/1-6/installing-pks-vsphere.html" target="_blank">the PKS instance</a>, <a href="https://docs.pivotal.io/partners/vmware-harbor/installing.html" target="_blank">Harbor</a> (optional) as well as the necessary <a href="https://docs.pivotal.io/releasenotes/stemcell-index.html#rt_xenial" target="_blank">Stemcells</a>. Also think about <em>Dark Site installations</em>! It´s just one download and you don´t have to care about the different pieces with the right version anymore.</p>
+
+<p><strong>Version Details:</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Element</strong></th>
+<th align="right"><strong>Details</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">EPMC version</td>
+<td align="right"><strong>v1.6.0</strong></td>
+</tr>
+
+<tr>
+<td align="left">Release date</td>
+<td align="right"><strong>November 26, 2019</strong></td>
+</tr>
+
+<tr>
+<td align="left">Installed Enterprise PKS version</td>
+<td align="right"><strong>v1.6.0</strong></td>
+</tr>
+
+<tr>
+<td align="left">Installed Ops Manager version</td>
+<td align="right"><strong>v2.7.3</strong></td>
+</tr>
+
+<tr>
+<td align="left">Installed Kubernetes version</td>
+<td align="right"><strong>v1.15.5</strong></td>
+</tr>
+
+<tr>
+<td align="left">Installed Harbor Registry version</td>
+<td align="right"><strong>v1.9.3</strong></td>
+</tr>
+
+<tr>
+<td align="left">Supported NSX-T versions</td>
+<td align="right"><strong>v2.4.1, v2.4.2, 2.5.0</strong></td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html" target="_blank">Release Notes Enterprise PKS 1.6</a></p>
+</blockquote>
+
+<hr />
+
+<p>Let´s have a look at it via <code>ssh</code>:</p>
+
+<pre><code>root@epmc [ /storage/data/artifacts ]# ls
+artifacts.yaml  harbor-container-registry  ops-manager  pivotal-container-service  stemcells-ubuntu-xenial
+root@pksmgmt [ /storage/data/artifacts ]# cat artifacts.yaml
+opsman:
+  name: ops-manager
+  version: 2.7.3
+  path: /storage/data/artifacts/ops-manager/2.7.3/ops-manager-vsphere-2.7.3-build.208.ova
+harbor:
+  name: harbor-container-registry
+  version: 1.9.3-build.2
+  path: /storage/data/artifacts/harbor-container-registry/1.9.3-build.2/harbor-container-registry-1.9.3-build.2.pivotal
+pks:
+  name: pivotal-container-service
+  version: 1.6.0-build.17
+  path: /storage/data/artifacts/pivotal-container-service/1.6.0-build.17/pivotal-container-service-1.6.0-build.17.pivotal
+pks-stemcell:
+  name: pks-stemcell
+  version: &quot;456.51&quot;
+  path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+harbor-stemcell:
+  name: harbor-stemcell
+  version: &quot;456.51&quot;
+  path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+bosh:
+  name: bosh
+  version: NA
+  path: NA
+root@epmc [ /storage/data/artifacts ]#
+</code></pre>
+
+<p><center><em>Figure I: Enterprise PKS Management Console component versions</em></center></p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>As always, before we come to the exciting part, we have to deal with the requirements as well as the prerequisuits in advance. The requirements for the Appliance are normal! Just 2 vCPUs, 8 GB of vRAM and 40 GB of Diskspace. Since the Appliance must reach the vCenter Server as well as the NSX Manager, it should be assigned to a network with connectivity to the same.
+Furthermore, we have to define two Availability-Zones. One is for the PKS Management Plane components and the other one (at least) for the Kubernetes cluster Nodes. I´m running just one vSphere-Cluster in my Homelab and I´m using Resource-Pools to provide the two AZ´s.</p>
+
+<p><strong>IMPORTANT:</strong> The Resource-Pools should exist before starting with the PKS Configuration through the EPMC! Otherwise they will not show up if you configure them on-the-fly. Means, you have to restart from the beginning. Avoid this, trust me 😉.</p>
+
+<hr />
+
+<p>When it comes to Networking, EPMC offers three kinds of flavors:</p>
+
+<ul>
+<li><strong>Bring-Your-Own-Topology (BYOT):</strong>  Assumes that NSX-T is already preconfigured for the use of Ent. PKS.</li>
+<li><strong>Flannel:</strong> EPMC will provision a Flannel container networking interface during the Ent. PKS deployment.</li>
+</ul>
+
+<p>and now my favorite&hellip;</p>
+
+<ul>
+<li>the <strong>Automated NAT Deployment to NSX-T Data Center:</strong> This option will deploy Ent. PKS fully automated and <em>ready-for-use</em> configured in NAT mode, which includes the creation and configuration of the T0, T1 routers as well as the necessary IP Blocks for the Kubernetes Nodes and PODs. End-to-End!</li>
+</ul>
+
+<p>As always, I recommend reading the Prerequisite-sections in the documentation:</p>
+
+<p><strong><em>Prereq for vSphere</em></strong> <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html</a></p>
+
+<p><strong><em>Prereq for an Automated NAT Deployment:</em></strong> <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html</a></p>
+
+<h1 id="nine-simple-steps">Nine simple steps</h1>
+
+<p>After having finished the OVA deployment and the Appliance is successfully booted, you can reach the Login-page by entering the FQDN or the IP address into your Browser.</p>
+
+<p><strong>BTW:</strong> If you want to re-ensure that the appliance configuration has been correctly submitted during OVA provisioning, simply connect via <code>ssh</code> to the appliance and check the <em>environment</em> file.</p>
+
+<pre><code class="language-shell">root@epmc [ /etc/vmware ]# cat environment
+APPLIANCE_SERVICE_UID=10000
+HOSTNAME=epmc.jarvis.lab
+IP_ADDRESS=10.10.14.3
+FILESERVER_PORT=443
+APPLIANCE_ID=2tsKp8PbqZeR6ON5G5IhNZJnknET4fA+JGXvl6xyHJE=
+APPLIANCE_TLS_CERT=
+APPLIANCE_TLS_PRIVATE_KEY=
+APPLIANCE_TLS_CA_CERT=
+APPLIANCE_PERMIT_ROOT_LOGIN=True
+NETWORK_FQDN=epmc.jarvis.lab
+NETWORK_IP0=10.10.14.3
+NETWORK_NETMASK0=255.255.255.192
+NETWORK_GATEWAY=10.10.14.62
+NETWORK_DNS=10.10.13.10 10.10.13.62
+NETWORK_SEARCHPATH=jarvis.lab
+LOGINSIGHT_HOST=10.10.13.5
+LOGINSIGHT_PORT=9000
+LOGINSIGHT_ID=039daa6c-3d83-46a8-8b44-db273e9d11a5
+</code></pre>
+
+<p><center><em>Figure II: Appliance configuration</em></center></p>
+
+<hr />
+
+<p>Login with the assigned credentials.
+<center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg"></img></a></center>
+<center><em>Figure III: Enterprise PKS Management Console Login Page</em></center></p>
+
+<hr />
+
+<p>On the next page click on <em>Install</em> to continue with the wizard-driven installation or on <em>Upgrade</em> to perform an upgrade of the EPMC (including all the new Enterprise PKS bits).
+<center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg"></img></a></center>
+<center><em>Figure IV: Install or Upgrade Option</em></center></p>
+
+<hr />
+
+<p>The first cool capability already comes on the next page, because you can choose between <em>Start Configuration</em>, which lets the Deployment-Wizard followed by, or <em>Import Configuration File</em> were we can upload an existing YAML configuration file from a previous deployment.
+<center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg"></img></a></center>
+<center><em>Figure V: Start or Import an Configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-1-vcenter-account">Step 1: vCenter Account</h2>
+
+<p>Step One is the connection establishment to our vCenter Server which will be our deployment target. Just enter the FQDN/ IP, provide valid credentials of a user with the appropriate vSphere administrator permissions, wait for the validation and you will recognize that the Datacenter field will be auto-populated.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg"></img></a></center>
+<center><em>Figure VI: vCenter Server Configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-2-networking">Step 2: Networking</h2>
+
+<p>I´m not going to explain all three options in detail here. What I am very curious and excited about was the <em>Automated NAT deployment</em> option, which is an End-to-End PKS deployment in NAT mode (T0, T1, IP blocks) including NSX Certificates generation.</p>
+
+<p>If you choose this deployment-method too and in case you have configured an NSX-T Edge for the use of Enterprise PKS with NAT rules before, make sure you clean them out to prevent any conflicts, because EPMC will automatically create all NAT rules for you.</p>
+
+<p><strong>Proof-of-Concept Deployments:</strong></p>
+
+<p>The well documented prereqs for NSX-T describing how VMware recommends an Enterprise-ready NSX-T deployment with the necessary pieces deployed in High-Availability mode. Luckily, these prereqs are not &ldquo;hard coded&rdquo; and thus it doesn´t apply for Proof-of-Concept deployments. With regard to, one NSX Manager node and one Edge Node is sufficient.</p>
+
+<p><strong>Uplink Network</strong></p>
+
+<p>Like you´ve already done in the previous step for the vCenter Server before, just do the same here and provide the credentials for the administrative user. The fields for the NSX-T Edges will be auto-populated too. Select the one you intend to use and specify the appropriate Uplink Network specifications.
+<center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg"></img></a></center>
+<center><em>Figure VII: NSX Manager and PKS Edge configuration</em></center></p>
+
+<p><strong>Network Resources</strong></p>
+
+<p>In the <em>Network Resources</em> section, specify the different subnets as well as network services like DNS and NTP for the following resources:</p>
+
+<ul>
+<li><strong>Deployment:</strong> Basically, the PKS Management Plane components like OpsManager, BOSH, the PKS instance as well as Harbor.</li>
+<li><strong>POD IP Block:</strong> Used by the Kubernetes PODs. <strong>IMPORTNAT!</strong> Maximum suffix is 24.</li>
+<li><strong>Node IP Block:</strong> Used by the Kubernetes Master, and Worker-Nodes. <strong>IMPORTNAT!</strong> Maximum suffix of 22.</li>
+<li><strong>Floating IPs:</strong> Used for SNAT IP addresses whenever a Namespace is created (NAT mode) as well as for Load Balancers which will be automatically provisioned by NSX-T, including the load balancer fronting the PKS API server and load balancers for pod ingress.</li>
+</ul>
+
+<p>I use self-signed certificates in my environment and for this reason I´ve toggled the radio button <strong><em>Disable SSL certificates verification</em></strong> to allow unsecured connections to the NSX Manager.</p>
+
+<p>At this point, I´d also like to point out to the documentation regarding the automated generation of certificates:</p>
+
+<blockquote>
+<p><em>If NSX-T Data Center uses custom certificates and you do not provide the CA certificate for NSX Manager, Enterprise PKS Management Console automatically generates one and registers it with NSX Manager. This can cause other services that are integrated with NSX Manager not to function correctly.</em></p>
+
+<p><em>Source: <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html</a></em></p>
+</blockquote>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg"></img></a></center>
+<center><em>Figure VIII: Deployment, POD IP Block, Node IP Block and Floating IP range configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-3-identity">Step 3: Identity</h2>
+
+<p>Specify in this Step how you would like to add <em>Users</em> and <em>Groups</em> to Enterprise PKS. EPMC offers three option here:</p>
+
+<ul>
+<li>Create Users and Groups and assign roles to those which will be stored into the <strong>UAA database</strong>.</li>
+<li>Add an <strong>External LDAP Server</strong> and define the <em>User search base</em> and the <em>Group search base</em>.</li>
+</ul>
+
+<p>or you can use a</p>
+
+<ul>
+<li>SAML Identity Provider like e.g. <a href="https://www.okta.com/" target="_blank">Okta</a> or <a href="https://azure.microsoft.com/en-us/services/active-directory/" target="_blank">Azure Active Directory</a></li>
+</ul>
+
+<p>To finish this step, enter the address for the <strong>PKS API Server</strong> like <code>pks.jarvis.lab</code> in my case.</p>
+
+<p>Optionally, you can use <a href="https://en.wikipedia.org/wiki/OpenID_Connect" target="_blank">OpenID Connect</a> to authenticate users who access Kubernetes clusters with <code>kubectl</code> by using e.g. Okta as an external IDP. This will give administrators the ability to grant access on an namespace or cluster-wide level to Kubernetes end users.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg"></img></a></center>
+<center><em>Figure IX: Identity configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-4-availability-zones">Step 4: Availability Zones</h2>
+
+<p>Availability Zones (AZ) are one of four layers of fault tolerance in VMware Enterprise PKS. As a design-recommendation, you should separate the PKS Management Plane from the Kubernetes cluster. This can easily be done by tagging the first AZ as the <em>Management AZ</em>. Click on <em>Save Availability Zone</em> and add another one for the Kubernetes cluster(s) with the recommendation to deploy more than one, for high-availability purposes.</p>
+
+<p>From a vSphere point of view, an AZ can be a Cluster, a Host-Group or a Resource Pool.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg"></img></a></center>
+<center><em>Figure X: Availability Design for VMware Enterprise PKS</em></center></p>
+
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/GUID-BDF962A2-3666-45E7-9830-068A05065AD7.html" target="_blank">VMware VVD5.1 | Availability Design for Enterprise PKS with NSX-T Workload Domains</a></p>
+
+<p>I´m running only one cluster in my Homelab, so I created two Resource Pools and gave them the appropriate description. <code>az-mgmt</code> and <code>az-prod-1</code>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg"></img></a></center>
+<center><em>Figure XI: Availability Zones</em></center></p>
+
+<hr />
+
+<h2 id="step-5-resources-storage">Step 5: Resources &amp; Storage</h2>
+
+<p>As you can see on the screenshot <em>Figure XII</em>, we have to configure three Resources now. Resources in this step is meant to be</p>
+
+<p>a) the storage for the service virtual machines which are as needed for compilation purposes (during installation, upgrade, and operation) by Ent. PKS, called <strong>Ephemeral Storage</strong> as well as</p>
+
+<p>b) the <strong>Kubernetes Persistent Volume Storage</strong> were all the <em>vmdks</em> will be stored for the Kubernetes persistent volumes (stateful applications) AND optionally</p>
+
+<p>c) the <strong>Permanent Storage</strong> for Enterprise PKS data. If you let this option default (radio switch off), the same selected datastore for Ephemeral Storage will be used for it.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg"></img></a></center>
+<center><em>Figure XII: Resources &amp; Storage Configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-6-plans">Step 6: Plans</h2>
+
+<p>Plans are configuration sets defining the sizes as well as the deployment target (AZ) of the Kubernetes clusters. The EPMC provides by default three &ldquo;T-Shirt sizes&rdquo;: <em>Small, Medium and Large</em>. I won´t go into details regarding the other per plan available options here, however I´d like to recommend reading the documentation (Resources section).
+<center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg"></img></a></center>
+<center><em>Figure XIII: Specification - PKS Plan Small</em></center></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg"></img></a></center>
+<center><em>Figure XIV: PKS Plans as T-Shirt sizes</em></center></p>
+
+<hr />
+
+<h2 id="step-7-integrations">Step 7: Integrations</h2>
+
+<p>The integration of vRealize Operations Manager, vRealize Log Insight and Wavefront for monitoring, logging and enterprise observability can be all together done in Step 7. To monitor your Kubernetes clusters with vROps, it is necessary to import the <em>Management Pack for Container Monitoring</em>. A description of how to import the Management Pack as well as some more details on how it works (cAdvisor), can be found through this <a href="https://beyondelastic.com/2019/02/18/vmware-pks-1-3-monitor-k8s-with-vrops/" target="_blank">POST</a> by my friend <a href="https://twitter.com/Alec1823" target="_blank">Alex</a>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg"></img></a></center>
+<center><em>Figure XV: Specify logging, monitoring and other integrations</em></center></p>
+
+<p>New in EPMC version 1.1.0 is the ability to attach a by PKS created Kubernetes cluster to <a href="https://cloud.vmware.com/tanzu-mission-control" target="_blank">VMware Tanzu Mission Control (TMC)</a> 🚀. <strong>Tanzu Mission Control</strong> provides you the ability to handle multi-cluster Kubernetes deployments across multiple clouds with operational consistency.</p>
+
+<p>More here: <a href="https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/">https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/</a></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg"></img></a></center>
+<center><em>Figure XVI: Integration into Tanzu Mission Control</em></center></p>
+
+<hr />
+
+<h2 id="step-8-harbor">Step 8: Harbor</h2>
+
+<p>Running production grade Kubernetes in your organization requires the use of a container image registry as well. <a href="https://goharbor.io/" target="_blank">Harbor</a> is where your container images found a place which they can call &ldquo;Home&rdquo;. Configure it in Step 8.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg"></img></a></center>
+<center><em>Figure XVII: Harbor Enterprise Container Registry configuration</em></center></p>
+
+<hr />
+
+<h2 id="step-9-ceip">Step 9: CEIP</h2>
+
+<p>Please stay a moment here and read the following blog post from Pivotal regarding the <em>Enhanced Telemetry for PKS</em> before you proceed further.</p>
+
+<p><a href="https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks">https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks</a></p>
+
+<p>Also: <a href="https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports">https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports</a></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg"></img></a></center>
+<center><em>Figure XVIII: Harbor Enterprise Container Registry configuration</em></center></p>
+
+<hr />
+
+<p>Validate your deployment config and click on <strong>Generate Configuration</strong>.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg"></img></a></center>
+<center><em>Figure XIX: Generate configuration</em></center></p>
+
+<hr />
+
+<h2 id="let-the-magic-happen">Let the magic happen!</h2>
+
+<p>You can see now that every configuration we made in the past 9 steps, is available and still editable in an in-browser text editor. Export the configuration as an YAML file to have it availavle for further deployments (see <em>Figure V: Start or Import an Configuration</em>).</p>
+
+<p>Click <strong>APPLY CONFIGURATION</strong></p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg"></img></a></center>
+<center><em>Figure XX: Configuration as YAML editable and exportable</em></center></p>
+
+<hr />
+
+<p>Observe the <em>Deployment status</em> and rejoice the green hooks.</p>
+
+<p><center><a href="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg"><img src="https://rguske.github.io/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg"></img></a></center>
+<center><em>Figure XXI: Deployment status page</em></center></p>
+
+<hr />
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>If you are running into troubles with the Enterprise PKS Management Console, you can connect to it via <code>ssh</code> (root) and execute the following command to obtain the server log:</p>
+
+<ul>
+<li><strong>Either</strong>: <code>journalctl -u pks-mgmt-server &gt; server.log</code> <strong>and than</strong> <code>cat server.log</code></li>
+<li><strong>Or</strong>: <code>journalctl -u pks-mgmt-server.service -f</code></li>
+</ul>
+
+<p>When it comes to <strong>BOSH</strong> realted issues, also have a look at this post by my colleague <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a>: <a href="http://keithlee.ie/2019/03/31/pks-troubleshooting-part-1-using-bosh-cli/" target="_blank">PKS Troubleshooting – Part 1: Using BOSH CLI</a></p>
+
+<hr />
+
+<p><strong>All about the Day-2 capabilities of the Enterprise PKS Management Console can be read here:</strong> <a href="https://rguske.github.io/post/pks-management-console-day-2/">https://rguske.github.io/post/pks-management-console-day-2/</a></p>
+
+<h2 id="center-thanks-for-reading-center"><center><strong>Thanks for reading.</strong></center></h2>
+
+<hr />
+
+<h2 id="resources">Resources:</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Site</strong></th>
+<th align="left"><strong>URL</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left"><strong>VMware Docs EPMC</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-console-index.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-console-index.html</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>Pivotal Docs EPMC</strong></td>
+<td align="left"><a href="http://docs-pcf-staging.cfapps.io/pks/1-6/console/deploy-console-ova.html">http://docs-pcf-staging.cfapps.io/pks/1-6/console/deploy-console-ova.html</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>VMware Release Notes</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>VMware VVD 5.1 - PKS</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/">https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>EPMC YAML Configuration import</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-yaml.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-yaml.html</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>VMware Docs - PKS Control Plane</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-control-plane.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-control-plane.html</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>Download via VMware</strong></td>
+<td align="left"><a href="https://my.vmware.com/web/vmware/info/slug/infrastructure_operations_management/vmware_enterprise_pks/1_6">https://my.vmware.com/web/vmware/info/slug/infrastructure_operations_management/vmware_enterprise_pks/1_6</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>Download via Pivotal</strong></td>
+<td align="left"><a href="https://network.pivotal.io/products/pivotal-container-service">https://network.pivotal.io/products/pivotal-container-service</a></td>
+</tr>
+
+<tr>
+<td align="left"><strong>Download Pivotal CLI</strong></td>
+<td align="left"><a href="https://network.pivotal.io/products/pivotal-container-service">https://network.pivotal.io/products/pivotal-container-service</a></td>
+</tr>
+</tbody>
+</table>
+
+      </section>
+
+      <footer class="post-card-meta">
+          <img class="author-profile-image" src="https://rguske.github.io/img/profile_robert.jpg" alt="Author" />
+          <span class="post-card-author"><a href="https://rguske.github.io/">Robert Guske</a></span>
+      </footer>
+    </div>
+</article>
+    </div>
+    <section class="tags">    
+      <a href='https://rguske.github.io/tags/kubernetes/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Kubernetes</a>
+    
+      <a href='https://rguske.github.io/tags/pks/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">PKS</a>
+    
+      <a href='https://rguske.github.io/tags/epmc/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">EPMC</a>
+    
+      <a href='https://rguske.github.io/tags/vsphere/'
+        class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">vSphere</a>
+    </section>
+    <nav class="pagination" role="navigation">
+
+      
+
+      <time class="" datetime="2019-11-27T14:53:23&#43;01:00">November 27, 2019</time>
+
+      <span class="page-number">&nbsp;</span>
+      
+          <a class="older-posts" href="https://rguske.github.io/post/pks-management-console-day-2/"><span class="hide">Previous Post</span> &rarr;</a>
+      
+    </nav>
+
+    
+    
+
+  </div>
+</main>
+
+
+
+<footer class="site-footer outer">
+  <div class="site-footer-content inner">
+    <section class="copyright" style="line-height: 1.3em;">
+      <a href="https://rguske.github.io/"></a> © All rights reserved -2018 <br>
+      
+    </section>
+    <nav class="site-footer-nav">
+        <a href="https://rguske.github.io/">Latest Posts</a>
+        
+        <a href="https://twitter.com/vmw_rguske" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://github.com/rguske" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/robert-guske-830853111" target="_blank" rel="noopener">LinkedIn</a>
+        
+    </nav>  
+  </div>
+</footer>
+
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://rguske.github.io/js/jquery.fitvids.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+  <!-- Google Analytics -->
+  <script>
+    var _gaq=[['_setAccount','UA-122353302-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+
+
+</body></html>
