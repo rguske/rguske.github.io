@@ -176,7 +176,17 @@
 
 <p>EPMC will run as a Virtual Appliance in your Datacenter and can be downloaded through the provided link at the end of this post. It´s a 10,6 GB download and it´s that heavy because it´s all packaged together in one OVA, which in turn has the advantage, that you don´t have to work out the interoperability matrix.</p>
 
-<p>The Appliance includes all the necessary bits to run Enterprise PKS such as the <a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-deploy.html" target="_blank">Pivotal Ops Manager</a>, <a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-config.html" target="_blank">BOSH</a>, <a href="https://docs.pivotal.io/pks/1-6/installing-pks-vsphere.html" target="_blank">the PKS instance</a>, <a href="https://docs.pivotal.io/partners/vmware-harbor/installing.html" target="_blank">Harbor</a> (optional) as well as the necessary <a href="https://docs.pivotal.io/releasenotes/stemcell-index.html#rt_xenial" target="_blank">Stemcells</a>. Also think about <em>Dark Site installations</em>! It´s just one download and you don´t have to care about the different pieces with the right version anymore.</p>
+<p>Included bits are:</p>
+
+<ul>
+<li><a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-deploy.html" target="_blank">Pivotal Ops Manager</a></li>
+<li><a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-config.html" target="_blank">BOSH</a></li>
+<li><a href="https://docs.pivotal.io/pks/1-6/installing-pks-vsphere.html" target="_blank">PKS instance</a></li>
+<li><a href="https://docs.pivotal.io/partners/vmware-harbor/installing.html" target="_blank">Harbor</a></li>
+<li><a href="https://docs.pivotal.io/releasenotes/stemcell-index.html#rt_xenial" target="_blank">Stemcells</a></li>
+</ul>
+
+<p>When you think about <em>Dark Site installations</em>, it brings the benefit, that it´s just one download and you don´t have to care about the different pieces with the right version anymore.</p>
 
 <p><strong>Version Details:</strong></p>
 
@@ -230,9 +240,9 @@
 <p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html" target="_blank">Release Notes Enterprise PKS 1.6</a></p>
 </blockquote>
 
-<hr />
+<p>Let´s have a look at the <code>artifacts.yaml</code> file to see the different component versions.</p>
 
-<p>Let´s have a look at it via <code>ssh</code>:</p>
+<p><code>ssh root@epmc.jarvis.lab</code></p>
 
 <pre><code>root@epmc [ /storage/data/artifacts ]# ls
 artifacts.yaml  harbor-container-registry  ops-manager  pivotal-container-service  stemcells-ubuntu-xenial
@@ -266,10 +276,12 @@ root@epmc [ /storage/data/artifacts ]#
 
 <p><center><em>Figure I: Enterprise PKS Management Console component versions</em></center></p>
 
+<hr />
+
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>As always, before we come to the exciting part, we have to deal with the requirements as well as the prerequisuits in advance. The requirements for the Appliance are normal! Just 2 vCPUs, 8 GB of vRAM and 40 GB of Diskspace. Since the Appliance must reach the vCenter Server as well as the NSX Manager, it should be assigned to a network with connectivity to the same.
-Furthermore, we have to define two Availability-Zones. One is for the PKS Management Plane components and the other one (at least) for the Kubernetes cluster Nodes. I´m running just one vSphere-Cluster in my Homelab and I´m using Resource-Pools to provide the two AZ´s.</p>
+<p>As always, before we come to the exciting part, we have to deal with the requirements as well as the prerequisuits in advance. The requirements for the Appliance are 2 vCPUs, 8 GB of vRAM and 40 GB of Diskspace. Since the Appliance must reach the vCenter Server as well as the NSX Manager, it should be assigned to a network with connectivity to the same.
+Furthermore, we have to define two Availability-Zones. From a vSphere point of view, an AZ can be a Cluster, a Host-Group or a Resource Pool. One AZ is for the PKS Management Plane components and the other one (at least) for the Kubernetes cluster Nodes. I´m running just one vSphere-Cluster in my Homelab and I´m using Resource-Pools to provide the two AZ´s.</p>
 
 <p><strong>IMPORTANT:</strong> The Resource-Pools should exist before starting with the PKS Configuration through the EPMC! Otherwise they will not show up if you configure them on-the-fly. Means, you have to restart from the beginning. Avoid this, trust me 😉.</p>
 
