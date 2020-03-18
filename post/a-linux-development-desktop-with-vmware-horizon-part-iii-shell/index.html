@@ -216,6 +216,24 @@
 cat /etc/passwd | grep &quot;username&quot;
 </code></pre>
 
+<h2 id="zsh-syntax-highlighting-https-github-com-zsh-users-zsh-syntax-highlighting">ZSH Syntax Highlighting - <a href="https://github.com/zsh-users/zsh-syntax-highlighting">https://github.com/zsh-users/zsh-syntax-highlighting</a></h2>
+
+<p>This plugin enables highlighting of commands whilst they are typed and it´ll help you to avoid syntax erros before you run a command.</p>
+
+<p><span style="color:#6003B6"><strong>CentOS</strong></span> &amp; <span style="color:#018914"><strong>Ubuntu:</strong></span></p>
+
+<p>Let´s clone the repository into our <em>oh-my-zsh</em> plugins directory:</p>
+
+<pre><code class="language-shell">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+</code></pre>
+
+<p>Enable the plugin in your zsh config file (<code>~/.zshrc</code>) in the &ldquo;plugins section&rdquo;.</p>
+
+<pre><code class="language-shell">plugins=(git pks zsh-syntax-highlighting)
+</code></pre>
+
+<p>Restart your terminal.</p>
+
 <h2 id="3-install-powerline-fonts-https-github-com-powerline-fonts">3. Install Powerline Fonts - <a href="https://github.com/powerline/fonts">https://github.com/powerline/fonts</a></h2>
 
 <p>Needed fonts for the Powerlevel9k theme (step 4.).</p>
@@ -234,7 +252,7 @@ cd ..
 rm -rf fonts
 </code></pre>
 
-<h2 id="4-powerlevel-9k-https-github-com-powerlevel9k-powerlevel9k">4. Powerlevel-9k - <a href="https://github.com/Powerlevel9k/powerlevel9k">https://github.com/Powerlevel9k/powerlevel9k</a></h2>
+<h2 id="4-powerlevel9k-https-github-com-powerlevel9k-powerlevel9k">4. Powerlevel9k - <a href="https://github.com/Powerlevel9k/powerlevel9k">https://github.com/Powerlevel9k/powerlevel9k</a></h2>
 
 <p>This theme will give your shell a new shine.</p>
 
@@ -244,12 +262,24 @@ rm -rf fonts
 vim ~/.zshrc
 </code></pre>
 
-<p>Replace the default ZSH_THEME with the new Powerlevel-9k theme:</p>
+<p>Replace the default ZSH_THEME with the new Powerlevel9k theme:</p>
 
 <pre><code class="language-shell">ZSH_THEME=&quot;powerlevel9k/powerlevel9k&quot;
 </code></pre>
 
-<p>And you should also paste the following variable to the top of your <em>.zshrc</em> file, otherwise we will get an error when we use <code>tmux</code> later.</p>
+<p>The Powerlevel9k theme gives you some pretty neat customization options which makes your terminal even more powerful.</p>
+
+<p>Here´s my configuration:</p>
+
+<pre><code class="language-shell">POWERLEVEL9K_SHORTEN_DIR_LENGTH=3
+POWERLEVEL9K_SHORTEN_DELIMITER=””
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_SHORTEN_STRATEGY=”truncate_from_right”
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kubecontext time date)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user dir vcs)
+</code></pre>
+
+<p>And you should also paste the following variable to the top of your <em>.zshrc</em> file, otherwise you will get an error when using <code>tmux</code> later.</p>
 
 <pre><code class="language-shell">export TERM=&quot;xterm-256color&quot;
 </code></pre>
@@ -258,7 +288,7 @@ vim ~/.zshrc
 
 <p><strong>The result:</strong></p>
 
-<p><center><a href="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200226_112728.jpg"><img src="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200226_112728.jpg"></img></a></center></p>
+<p><center><a href="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg"><img src="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg"></img></a></center></p>
 
 <p><center><em>Figure II: ZSH with Powerlevel-9k Theme | l: Ubuntu r: CentOS</em></center></p>
 
@@ -270,7 +300,7 @@ vim ~/.zshrc
 
 <h2 id="homebrew-on-linux-https-docs-brew-sh-homebrew-on-linux">Homebrew on Linux 🍺 - <a href="https://docs.brew.sh/Homebrew-on-Linux">https://docs.brew.sh/Homebrew-on-Linux</a></h2>
 
-<p>Homebrew is a package manager which simplifies the installation of software on your OS and should not be missing if you ask me.</p>
+<p>Homebrew is a package manager (like Snappy) which simplifies the installation of software on your OS and should not be missing if you ask me.</p>
 
 <p><span style="color:#6003B6"><strong>CentOS</strong></span> &amp; <span style="color:#018914"><strong>Ubuntu:</strong></span></p>
 
@@ -304,16 +334,55 @@ source ~/.zshrc
 echo &quot;if [ $commands[kubectl] ]; then source &lt;(kubectl completion zsh); fi&quot; &gt;&gt; ~/.zshrc
 </code></pre>
 
+<p><strong>Powershell</strong> - <a href="https://snapcraft.io/powershell">https://snapcraft.io/powershell</a></p>
+
+<blockquote>
+<p>PowerShell is an cross-platform (Windows, Linux, and macOS) command-line shell for automation and configuration management.</p>
+</blockquote>
+
+<p>Installation via <code>snap</code>:</p>
+
+<pre><code class="language-shell">sudo snap install powershell --classic
+</code></pre>
+
+<p><strong>KinD - Kubernetes in Docker</strong> - <a href="https://github.com/kubernetes-sigs/kind">https://github.com/kubernetes-sigs/kind</a></p>
+
+<blockquote>
+<p>kind is a tool for running local Kubernetes clusters using Docker container &ldquo;nodes&rdquo;.</p>
+</blockquote>
+
+<p><center><a href="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg"><img src="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg"></img></a></center></p>
+
+<p><center><em>Figure III: kind create cluster</em></center></p>
+
+<p><strong>Octant</strong> - <a href="https://github.com/vmware-tanzu/octant">https://github.com/vmware-tanzu/octant</a></p>
+
+<blockquote>
+<p>Octant is a tool for developers to understand how applications run on a Kubernetes cluster.</p>
+</blockquote>
+
+<p><img src="https://rguske.github.io/img/posts/201912_development_desktop/octant-demo.gif" alt="Octant demo" /></p>
+
+<p><center><em>Source: <a href="https://github.com/vmware-tanzu/octant">https://github.com/vmware-tanzu/octant</a></em></center></p>
+
 <p><strong>tmux</strong> - <a href="https://github.com/tmux/tmux">https://github.com/tmux/tmux</a></p>
 
 <blockquote>
 <p><code>tmux</code> is a terminal multiplexer.</p>
 </blockquote>
 
+<p><strong>Enable Mouse-scrolling</strong>: Scrolling the terminal pages by using the mouse-wheel is natural for me and because it´s not enabled by default when using <code>tmux</code> I need to enable it. Settings like this for example can be applied while running <code>tmux</code>. Press <em>ctrl + b</em> and then type <code>:set -g mouse on</code>.</p>
+
 <p><strong>bat</strong> - <a href="https://github.com/sharkdp/bat">https://github.com/sharkdp/bat</a></p>
 
 <blockquote>
 <p><code>bat</code> is a cat clone with syntax highlighting and Git integration.</p>
+</blockquote>
+
+<p><strong>glances</strong> - <a href="https://github.com/nicolargo/glances">https://github.com/nicolargo/glances</a></p>
+
+<blockquote>
+<p><code>glances</code> is a cross-platform monitoring tool.</p>
 </blockquote>
 
 <p><strong>htop</strong> - <a href="https://github.com/hishamhm/htop">https://github.com/hishamhm/htop</a></p>
@@ -336,12 +405,12 @@ echo &quot;if [ $commands[kubectl] ]; then source &lt;(kubectl completion zsh); 
 
 <p>And all of them can be easily installed via <code>brew</code>:</p>
 
-<pre><code class="language-shell">brew install tmux bat htop ctop prettyping
+<pre><code class="language-shell">brew install kind octant tmux bat glances htop ctop prettyping
 </code></pre>
 
 <p>Addtionally to <code>htop</code>, <code>ytop</code> (former gotop) is a pretty neat process and system monitor.</p>
 
-<p><code>ytop</code> - <a href="https://github.com/cjbassi/ytop">https://github.com/cjbassi/ytop</a></p>
+<p><strong><code>ytop</code></strong> - <a href="https://github.com/cjbassi/ytop">https://github.com/cjbassi/ytop</a></p>
 
 <pre><code class="language-shell">brew tap cjbassi/ytop &amp;&amp; brew install ytop
 </code></pre>
@@ -425,6 +494,14 @@ alias cat=bat
 <p><a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/">A Linux Development Desktop with VMware Horizon - Part II: Applications</a></p>
 
 <hr />
+
+<p><strong>Change Log:</strong></p>
+
+<ul>
+<li>[2020-03-10]: Added Enable Mouse-scrolling for <code>tmux</code>; ZSH Syntax Highlighting; Powerlevel9k configuration</li>
+<li>[2020-03-10]: Updated Figure II</li>
+<li>[2020-03-18]: Added Glances &amp; Powershell</li>
+</ul>
 
 <h2 id="center-thanks-for-reading-center"><center><strong>Thanks for reading.</strong></center></h2>
 

@@ -167,7 +167,9 @@
 
 <p>Similar to Mark´s answer, I´m also using a VDI (Virtual-Desktop-Infrastructure) desktop for my purposes and I began writing this series&hellip;back in January&hellip;time passed by and due to other projects I worked on and which demanded a lot of my attention (<a href="https://twitter.com/search?q=vCenter%20Event%20Broker%20Appliance&src=typed_query" target="_blank">#VEBA</a> 😁), it took a little bit longer to publish them.</p>
 
-<p><strong>But NOW!</strong></p>
+<hr />
+
+<p><strong>BIG THANKS</strong> to <a href="https://de.linkedin.com/in/gerrit-lehr-b00a34a9" target="_blank">Gerrit Lehr</a>, <a href="https://twitter.com/HilkoLantinga" target="_blank">Hilko Lantinga</a> and <a href="https://twitter.com/ivirtualex" target="_blank">Alex Lopez</a> for your valuable input and feedback.</p>
 
 <hr />
 
@@ -262,7 +264,7 @@
 
 <h2 id="create-a-new-virtual-machine">Create a new Virtual Machine</h2>
 
-<p>Now that your iso is ready to be mounted let´s create a new Virtual Machine. Choose your distro from the list and configure your vHardware. I followed the official recommendation for <em>&ldquo;Improved video playback in a 2D desktop (page 23)</em>.</p>
+<p>Now that your iso is ready to be mounted let´s create a new Virtual Machine. Choose your distro from the list and configure your vHardware. I followed the official recommendation for <em>&ldquo;Improved video playback in a 2D desktop (<a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf" target="_blank">page 23</a>)</em>.</p>
 
 <p><center><a href="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200219_123512.jpg"><img src="https://rguske.github.io/img/posts/201912_development_desktop/CapturFiles-20200219_123512.jpg"></img></a></center></p>
 
@@ -308,9 +310,15 @@ timedatectl set-timezone Europe/Berlin
 
 <p>We´re planning to join our system into a Active Directory Domain and also want to install the VMware Horizon View Agent, which is necessary for adding our machine to a Desktop-Pool later on. Before we can continue, it´s necessary to eliminate some dependencies by installing some packages upfront.</p>
 
-<p><strong>ATTENTION (CentOS): Do not run <code>yum update</code>!</strong></p>
+<hr />
 
-<p>Normally, the first step I do after setting up a fresh Linux system, is the update of every currently installed package of it (<code>apt update</code> / <code>yum update</code>). You can run the update and upgrade &ldquo;safely&rdquo; for Ubuntu but <strong>NOT</strong> for CentOS 8.0. The <em>VMware Horizon View Agent</em> does not support <strong><em>gnome-shell version 3.3x</em></strong>. If you run the <code>sudo yum update</code> command, the gnome-shell will be updated and this leads to the following error:</p>
+<p>❗️ <strong>The following only applies to CentOS 8.0 with Horizon Agent version 7.11</strong></p>
+
+<blockquote>
+<p><strong>Do not</strong> run <code>yum update</code>!</p>
+</blockquote>
+
+<p>Normally, the first step I do after setting up a fresh Linux system, is the update of every currently installed package of it (<code>apt update</code> / <code>yum update</code>). You can run the update and upgrade &ldquo;safely&rdquo; for Ubuntu but <strong>NOT</strong> for CentOS 8.0. The <em>VMware Horizon View Agent v.7.11</em> does not support <strong><em>gnome-shell version 3.3x</em></strong>. If you run the <code>sudo yum update</code> command, the gnome-shell will be updated and this leads to the following error:</p>
 
 <pre><code class="language-shell">The version of gnome shell 3.32.2 isn't matched,\n
                        try to replace default version.
@@ -328,11 +336,22 @@ exclude=gnome* mutter*
 
 <p>&hellip;but this will cause the system to boot with a black-screen. I got the internal feedback, that we´ll support CentOS 8.1 (gnome-shell 3.3x) with Horizon v.7.12.</p>
 
-<p><strong>Big Thanks</strong> to <a href="https://twitter.com/HilkoLantinga" target="_blank">Hilko Lantinga</a> for your support here.</p>
+<p><strong>UPDATE</strong></p>
 
-<p>As already mentioned, normally I update my freshly installed system immediately after the first boot! Let´s do this, but only for Ubuntu:</p>
+<p><strong>[2020-03-17] VMware Horizon 7.12 with CentOS 8.1 support released:</strong> <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.12/rn/horizon-712-view-release-notes.html" target="_blank">Release Notes</a></p>
+
+<hr />
+
+<p>As already mentioned earlier, normally I update my freshly installed system immediately after the first boot. Let´s do this now!</p>
+
+<p><span style="color:#018914"><strong>Ubuntu:</strong></span></p>
 
 <pre><code class="language-shell">sudo apt -y update &amp;&amp; sudo apt -y upgrade &amp;&amp; sudo reboot
+</code></pre>
+
+<p><span style="color:#6003B6"><strong>CentOS:</strong></span></p>
+
+<pre><code class="language-shell">sudo yum update
 </code></pre>
 
 <p><strong>Now</strong> that our system has a current state, we will install the needed packages which are necessary to proceed further.</p>
@@ -399,7 +418,7 @@ sudo /opt/pbis/bin/config LoginShellTemplate /bin/bash
 sudo /opt/pbis/bin/config HomeDirTemplate %H/%U
 </code></pre>
 
-<p>Edit the <strong>/etc/pamd.d/common-session</strong> file and <strong>replace</strong> the line <strong><code>session optional pam_lsass.so</code></strong> with <strong><code>session [success=ok default=ignore] pam_lsass.so</code></strong>, save and quite (<code>wq!</code>) and reboot the system.</p>
+<p>Edit the <strong>/etc/pam.d/common-session</strong> file and <strong>replace</strong> the line <strong><code>session optional pam_lsass.so</code></strong> with <strong><code>session [success=ok default=ignore] pam_lsass.so</code></strong>, save and quite (<code>wq!</code>) and reboot the system.</p>
 
 <p><strong>Note:</strong> Updating the Horizon Agent will require that this setting must be performed again.</p>
 
@@ -478,6 +497,8 @@ sudo mv *.desktop backup/
 sudo mv backup/gnome-classic.desktop ./
 </code></pre>
 
+<p><strong>Note:</strong> Updating the Horizon Agent will require that this setting must be performed again.</p>
+
 <p><strong>Reboot</strong> the system.</p>
 
 <hr />
@@ -504,10 +525,10 @@ cd VMware-horizonagent-linux-x86_64-7.11.0-15238356/
 <li><em>Regarding the used command options and arguments</em> - <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC.html#GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC">https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC.html#GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC</a></li>
 </ul>
 
-<p>Now set the correct <em>SSO Desktop Type</em> for the View Agent (see page 18 and 107). Run <code>sudo vim /etc/vmware/viewagent-custom.conf</code> and uncomment the necessary line for your desktop environment.</p>
+<p>Now set the correct <em>SSO Desktop Type</em> for the View Agent (see <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf" target="_blank">page 18 and 107</a>). Run <code>sudo vim /etc/vmware/viewagent-custom.conf</code> and uncomment the necessary line for your desktop environment.</p>
 
 <ul>
-<li><span style="color:#018914"><strong>Ubuntu 18.04</strong></span> = <em>SSODesktopType=UseGnomeClassic</em></li>
+<li><span style="color:#018914"><strong>Ubuntu 18.04</strong></span> = <em>SSODesktopType=UseGnomeUbuntu</em></li>
 <li><span style="color:#6003B6"><strong>CentOS</strong></span> = <em>SSODesktopType=UseGnomeClassic</em></li>
 </ul>
 
@@ -564,6 +585,13 @@ cd VMware-horizonagent-linux-x86_64-7.11.0-15238356/
 <p><strong>Continue with Part II:</strong> <a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/"> A Linux Development Desktop with VMware Horizon - Part II: Applications</a></p>
 
 <hr />
+
+<p><strong>Change Log:</strong></p>
+
+<ul>
+<li>[2020-03-18]: Added VMware Horizon 7.12 announcement (CentOS 8.1 support)</li>
+<li>[2020-03-18]: Updated CentOS 8.0 &amp; Horizon Agent 7.11 section; Updated Mindmap</li>
+</ul>
 
 <h2 id="center-thanks-for-reading-center"><center><strong>Thanks for reading.</strong></center></h2>
 
