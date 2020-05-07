@@ -11,8 +11,6 @@ Just to name a few updates:
 - *AWS EventBridge support*
 - *New event playload structure - cloudevents.io*
 
----
-
 ## Pulling images from Harbor fails
 
 I was still testing the new version in my lab but this time I wanted to add another great open source project as a playmate to the round, the enterprise container image registry <a href="https://goharbor.io" target="_blank">Harbor</a>. VEBA ist using <a href="https://www.openfaas.com/" target="_blank">OpenFaaS®</a> as the built-in event processor and you define the function configuration in a YAML file, the `stack.yml`.
@@ -24,8 +22,6 @@ A closer look into the `stack.yml` file shows us that the official VMware reposi
 Instead of pulling the appropriate image(s) from Docker Hub, I wanted to use **Harbor** this time. In order to implement this, I have to replace the original image specification in the `stack.yml` and point to my Harbor instance, the corresponding project and the image with tag.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200323_120429.jpg" caption="Figure II: Modified repository, image name and tag" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200323_120429.jpg" class="center" width="800" height="800" >}}
-
----
 
 ## Create a project in Harbor
 
@@ -52,8 +48,6 @@ The following settings are not required but I wanted to authenticate Active-Dire
 If everything is configured correctly, you should be able to add one or more AD groups to your project.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200323_044925.jpg" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200323_044925.jpg" class="center" caption="Figure VII: Harbor LDAP Authentication configuration" >}}
-
----
 
 ## Push an image to Harbor
 
@@ -110,8 +104,6 @@ unauthorized: authentication required
 Login and execute `faas-cli push -f stack.yml`. The image will be pushed into your project.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" class="center" caption="Figure VIII: Pushed image to the new project" >}}
-
----
 
 ## Deploy a function to VEBA
 

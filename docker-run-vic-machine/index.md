@@ -67,10 +67,10 @@ The prerequisites for this hack are that you have <a href="https://git-scm.com/b
 `mkdir ~/vic-dev`
 
 ### 1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo
-- /bensdoings/vic-machine/<span style="color:#32CD32">**example-complete-empty.json**, **example-complete.json**</span> as well as <span style="color:#32CD32">**example-simple.json**</span>
-- /bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32">**build.sh**</span> and <span style="color:#32CD32">**push.sh**</span>
-- /bensdoings/vic-machine/vic-machine-base/OVA/<span style="color:#32CD32">**Dockerfile**</span>
-- /bensdoings/vic-machine/<span style="color:#32CD32">**actions**</span>
+- /bensdoings/vic-machine/<span style="color:#32CD32">example-complete-empty.json, example-complete.json</span> as well as <span style="color:#32CD32">example-simple.json</span>
+- /bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32">build.sh</span> and <span style="color:#32CD32">push.sh</span>
+- /bensdoings/vic-machine/vic-machine-base/OVA/<span style="color:#32CD32">Dockerfile</span>
+- /bensdoings/vic-machine/<span style="color:#32CD32">actions</span>
 
 ...and paste them into the newly created folder *vic-dev*. It should look like the following:
 

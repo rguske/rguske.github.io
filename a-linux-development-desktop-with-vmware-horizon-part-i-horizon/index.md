@@ -30,15 +30,11 @@ With this series of posts, I´d like to demonstrate how you can build such an en
 
 *<center>Video I: SSO and HTML5 feature in VMware Horizon</center>*
 
----
-
 ## My Mindnode for building a Development Desktop
 
 <a href="https://github.com/rguske/rguske.github.io/blob/master/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" target="_blank">**Download**</a>
 
 {{< image src="/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" caption="Figure I: Mindnode Development Desktop" src-s="/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" class="center" >}}
-
----
 
 ## 1. Setup VMware Horizon Connection Server (v.7.11)
 
@@ -67,8 +63,6 @@ That´s it roughly! Therefore, it´s not necessary for me to go into the details
 **Post** by <a href="https://twitter.com/cstalhood" target="_blank">Carl Stalhood</a>
 
 - *Install Horizon 7 Standard Connection Server* by - https://www.carlstalhood.com/vmware-horizon-7-connection-server/
-
----
 
 ## 2. Install a Linux-VM
 
@@ -127,8 +121,6 @@ systemctl status sshd.service
 
 We´re planning to join our system into a Active Directory Domain and also want to install the VMware Horizon View Agent, which is necessary for adding our machine to a Desktop-Pool later on. Before we can continue, it´s necessary to eliminate some dependencies by installing some packages upfront.
 
----
-
 {{< admonition note "Note: The following only applies to CentOS 8.0 with Horizon Agent version 7.11" true >}}
 Do not** run `yum update`!
 {{< /admonition >}}
@@ -185,8 +177,6 @@ sudo apt -y install open-vm-tools-desktop vim curl git build-essential realmd py
 sudo dnf -y install sssd oddjob oddjob-mkhomedir adcli samba-common-tools
 ```
 
----
-
 ## 3 Single Sign-On
 
 *Source: <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-4532309E-F219-4FEC-ADC4-B62B5E67BC8F.html" target="_blank">VMware Horizon 7: Setting Up Single Sign-On</a>*
@@ -242,8 +232,6 @@ sudo /opt/pbis/bin/config HomeDirTemplate %H/%U
 Edit the `/etc/pam.d/common-session` file and `replace` the line `session optional pam_lsass.so` with `session [success=ok default=ignore] pam_lsass.so`, save and quite (`wq`) and reboot the system.
 
 **Note:** Updating the Horizon Agent will require that this setting must be performed again.
-
----
 
 ### 3.2 Integrating CentOS 8 with Active Directory
 
@@ -326,8 +314,6 @@ sudo mv backup/gnome-classic.desktop ./
 **Note:** Updating the Horizon Agent will require that this setting must be performed again.
 
 **Reboot** the system.
-
----
 
 ## 4 Install Horizon View Agent
 
