@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>docker run vic-machine - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="docker run vic-machine" />
+<meta property="og:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard. The far more efficient variant in my opinion is making use of the vic-machine utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/docker-run-vic-machine/" />
+<meta property="article:published_time" content="2019-07-04T22:52:18+02:00" />
+<meta property="article:modified_time" content="2019-07-04T22:52:18+02:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="docker run vic-machine"/>
+<meta name="twitter:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard. The far more efficient variant in my opinion is making use of the vic-machine utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/docker-run-vic-machine/" /><link rel="prev" href="https://rguske.github.io/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="next" href="https://rguske.github.io/vmware-microsites-you-should-bookmark/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "docker run vic-machine",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/docker-run-vic-machine\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "July2019, VIC, Docker, Hack, Harbor","wordcount":  3200 ,
+        "url": "https:\/\/rguske.github.io\/docker-run-vic-machine\/","datePublished": "2019-07-04T22:52:18+02:00","dateModified": "2019-07-04T22:52:18+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske">Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske">Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">docker run vic-machine</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2019-07-04>2019-07-04</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 3200 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>16 min&nbsp;<span id="/docker-run-vic-machine/" class="leancloud_visitors" data-flag-title="docker run vic-machine">
+                        <i class="far fa-eye fa-fw"></i><span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/dockerrunvicmachine_cover.jpg"
+        data-srcset="/img/dockerrunvicmachine_cover.jpg, /img/dockerrunvicmachine_cover.jpg 1.5x, /img/dockerrunvicmachine_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/dockerrunvicmachine_cover.jpg"
+        title="/img/dockerrunvicmachine_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#credits-goes-out-to-ben">Credits goes out to Ben!</a></li>
+    <li><a href="#1-the-hack">1. The Hack</a>
+      <ul>
+        <li><a href="#11-download-or-clone-bens-github-repository-called-bensdoings">1.1 Download or Clone Bens Github repository called <em>bensdoings</em></a></li>
+        <li><a href="#12-create-a-new-folder-in-which-well-subsequently-copy-all-necessary-files-into">1.2 Create a new folder in which we´ll subsequently copy all necessary files into</a></li>
+        <li><a href="#13-copy-the-files-highlighted-in-span-stylecolor32cd32greenspan-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-create-a-new-project-in-harbor">2. Create a new project in Harbor</a></li>
+    <li><a href="#3-the-vic-machine-utility-running-inside-a-container">3. The <code>vic-machine</code> utility running inside a container</a>
+      <ul>
+        <li><a href="#31-dockerfile">3.1 Dockerfile</a></li>
+      </ul>
+    </li>
+    <li><a href="#32-every-vic-machine-action-as-a-docker-image">3.2 Every <code>vic-machine</code> action as a docker image</a>
+      <ul>
+        <li><a href="#33-buildsh">3.3 build.sh</a></li>
+      </ul>
+    </li>
+    <li><a href="#34-pushing-the-docker-images-to-harbor">3.4 Pushing the docker images to Harbor</a></li>
+    <li><a href="#4-configure-the-configjson-file-for-the-vch-deployment">4. Configure the config.json file for the VCH deployment</a>
+      <ul>
+        <li><a href="#41-preparing-the-configjson-file">4.1. Preparing the config.json file</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-addition-adding-a-vch-to-your-project">5 (addition): Adding a VCH to your project</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard.
+The far more efficient variant in my opinion is making use of the <code>vic-machine</code> utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle. Why do I think it is way better? Because it´s reproducible, independent from a browser, automatable as well as better documentable.</p>
+<p>You can find some of my <code>vic-machine</code> action examples in my Github repo here: <a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></p>
+<p>I had a lot of VMware-internal and public facing presentations as well as many demos on VIC over the past months and all based, more or less, on the following <code>vic-machine</code> arguments:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">rguske@rguske-a01&gt; ./vic-machine-darwin create <span class="se">\ </span>         <span class="c1">### vic-machine binary + action</span>
+--name vch-example <span class="se">\ </span>                                     <span class="c1">### Name of the Virtual Conatiner Host</span>
+--syslog-address udp://10.10.10.10:514 <span class="se">\ </span>                 <span class="c1">### Syslog server</span>
+--target vcenter.example.org/Datacenter <span class="se">\ </span>                <span class="c1">### vSphere Datacenter</span>
+--user administrator@vsphere.local <span class="se">\ </span>                     <span class="c1">### User with appropriate privileges</span>
+--compute-resource /Datacenter/host/Cluster <span class="se">\ </span>            <span class="c1">### vSphere Cluster or single ESXi Host</span>
+--image-store vsanDatastore <span class="se">\ </span>                            <span class="c1">### Datastore to deposite the images</span>
+--volume-store vsanDatastore/volumes:default <span class="se">\ </span>           <span class="c1">### Datastore for the Docker Volumes (VMDKs)</span>
+--bridge-network ls-vic-bridge <span class="se">\ </span>                         <span class="c1">### vDS dPort Group for the Container Bridge Network</span>
+--bridge-network-range 172.16.0.0/12 <span class="se">\ </span>                   <span class="c1">### Network range for the Bridge Network</span>
+--public-network ls-vic-public <span class="se">\ </span>                         <span class="c1">### vDS dPort Group for the Public Network</span>
+--dns-server 10.10.10.254 <span class="se">\ </span>                              <span class="c1">### DNS Server address for the Public Network</span>
+--public-network-ip<span class="o">=</span>10.10.10.11/24 <span class="se">\ </span>                     <span class="c1">### Static IP address for the Virtual Container Host</span>
+--public-network-gateway 10.10.10.254 <span class="se">\ </span>                  <span class="c1">### Gateway for the Public network</span>
+--tls-cname<span class="o">=</span>vch-example.example.org <span class="se">\ </span>                    <span class="c1">### Certificate Common Name (CN) for the VCH</span>
+--certificate-key-size <span class="m">3072</span> <span class="se">\ </span>                            <span class="c1">### Key size for the auto-generated certificates</span>
+--organization example.org <span class="se">\ </span>                             <span class="c1">### Certificate Organization (O) field</span>
+--registry-ca<span class="o">=</span>/folder path/ca.crt <span class="se">\ </span>                      <span class="c1">### Path to the VIC (Harbor) ca.crt file</span>
+--thumbprint 4C:92:D7:FC:F8:8D:5A:9F:.... <span class="se">\ </span>              <span class="c1">### vCenter Server Thumbprint</span>
+--affinity-vm-group <span class="se">\ </span>                                    <span class="c1">### Automatically creates a VM/Host Group (cVM/ VCH Group)</span>
+--ops-user vic-devops-admin@example.org <span class="se">\ </span>                <span class="c1">### Defines the user which is used by the VCH to interact with vSphere</span>
+--ops-grant-perms                                         <span class="c1">### Automatically grants the necessary vSphere permissions</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>Constantly recurring executions should be automated or at least easier to handle</p>
+</blockquote>
+<p>&hellip;and thus, I was looking for a way how to apply this for <code>vic-machine</code>.</p>
+<hr>
+<h2 id="credits-goes-out-to-ben">Credits goes out to Ben!</h2>
+<p><a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with <code>vic-machine</code>, because it takes a lot of arguments for each action like <code>create</code>, <code>configure</code> or <code>debug</code> for example. He mentioned this in his video from VMworld 2017 👇</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/AD7CD8Haqdc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<p>With this post I´d like to guide you through the various steps to consume <code>vic-machine</code> and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.</p>
+<p>To have Harbor as a cloud native registry deeply coupled and running inside of VIC is simply great. If you haven´t heard of <span style="color:#4A01D9"> <strong>Harbor</strong> </span> yet, check it out: <a href="https://goharbor.io/">https://goharbor.io/</a></p>
+<p>A short look into the innards of the VIC appliance shows us that all components of Harbor, including <a href="https://github.com/coreos/clair" target="_blank">Clair</a> for vulnerability scanning as well as <a href="https://github.com/theupdateframework/notary" target="_blank">Notary</a> for image signing, are running as a container inside of Harbor:</p>
+<p><code>docker ps -a | grep goharbor</code></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" data-sub-html="<h2>Figure I: VIC components running as containers</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" />
+    </a><figcaption class="image-caption">Figure I: VIC components running as containers</figcaption>
+    </figure>
+<h2 id="1-the-hack">1. The Hack</h2>
+<p>The prerequisites for this hack are that you have <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">Git</a> as well as <a href="https://docs.docker.com/install/" target="_blank">Docker</a> installed on your local machine or on a Jumphost.</p>
+<h3 id="11-download-or-clone-bens-github-repository-called-bensdoings">1.1 Download or Clone Bens Github repository called <em>bensdoings</em></h3>
+<p><code>git clone https://github.com/corrieb/bensdoings.git</code> (into a folder of your choice)</p>
+<h3 id="12-create-a-new-folder-in-which-well-subsequently-copy-all-necessary-files-into">1.2 Create a new folder in which we´ll subsequently copy all necessary files into</h3>
+<p><code>mkdir ~/vic-dev</code></p>
+<h3 id="13-copy-the-files-highlighted-in-span-stylecolor32cd32greenspan-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</h3>
+<ul>
+<li>/bensdoings/vic-machine/<span style="color:#32CD32"><strong>example-complete-empty.json</strong>, <strong>example-complete.json</strong></span> as well as <span style="color:#32CD32"><strong>example-simple.json</strong></span></li>
+<li>/bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32"><strong>build.sh</strong></span> and <span style="color:#32CD32"><strong>push.sh</strong></span></li>
+<li>/bensdoings/vic-machine/vic-machine-base/OVA/<span style="color:#32CD32"><strong>Dockerfile</strong></span></li>
+<li>/bensdoings/vic-machine/<span style="color:#32CD32"><strong>actions</strong></span></li>
+</ul>
+<p>&hellip;and paste them into the newly created folder <em>vic-dev</em>. It should look like the following:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev&gt; tree -L <span class="m">2</span>
+.
+├── Dockerfile
+├── actions
+│   ├── 1.1
+│   ├── 1.2
+│   ├── Dockerfile.create
+│   ├── Dockerfile.debug
+│   ├── Dockerfile.delete
+│   ├── Dockerfile.direct
+│   ├── Dockerfile.dumpargs
+│   ├── Dockerfile.firewall-allow
+│   ├── Dockerfile.firewall-deny
+│   ├── Dockerfile.inspect
+│   ├── Dockerfile.ls
+│   ├── Dockerfile.rollback
+│   ├── Dockerfile.thumbprint
+│   ├── Dockerfile.upgrade
+│   └── README.md
+├── build.sh
+├── example-complete-empty.json
+├── example-complete.json
+├── example-simple.json
+├── push.sh
+└── vic-machine
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="2-create-a-new-project-in-harbor">2. Create a new project in Harbor</h2>
+<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab">https://vic01.jarvis.lab</a>:8282) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
+<p>Now let´s create a project in Harbor called e.g. <em>vic-machine</em> in which we will later push our images to.</p>
+<p>Administration &ndash;&gt; Projects &ndash;&gt; <strong>+ PROJECT</strong></p>
+<p>If you want to make all repositories (images) of that project public, select the Public check box like I did.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg" data-sub-html="<h2>Figure II: New Project in Harbor</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_103413.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure II: New Project in Harbor</figcaption>
+    </figure>
+<p>As a next step we will assign a new user to our project.</p>
+<p>Administration &ndash;&gt; Projects &ndash;&gt; vic-machine &ndash;&gt; Members &ndash;&gt; <strong>+ ADD</strong></p>
+<p>I´ve added my local user <a href="mailto:admin@jarvis.lab">admin@jarvis.lab</a> to the project and assigned the role <em>Developer</em> to it.  In addition to the view access rights, the &ldquo;Developer&rdquo; role has the permissions to:</p>
+<ul>
+<li>Provision containers</li>
+<li>Push images into registries</li>
+<li>Create and import templates</li>
+</ul>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg" data-sub-html="<h2>Figure III: User or Group entitlement to a Project in Harbor</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_121538.jpg" />
+    </a><figcaption class="image-caption">Figure III: User or Group entitlement to a Project in Harbor</figcaption>
+    </figure>
+<p>Under Administration &ndash;&gt; Projects &ndash;&gt; vic-machine &ndash;&gt; <strong>Configuration</strong> I´ve checked the box <em>&ldquo;Automatically scan images on push&rdquo;</em> to enable the automatically scanning for vulnerabilities of images while pushing them to the project.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" data-sub-html="<h2>Figure IV: Vulnerability scanning automatically on push</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure IV: Vulnerability scanning automatically on push</figcaption>
+    </figure>
+<h2 id="3-the-vic-machine-utility-running-inside-a-container">3. The <code>vic-machine</code> utility running inside a container</h2>
+<p>The basis of a docker image is the <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Dockerfile</a>. Open the copied Dockerfile and replace the URL in the Dockerfile with the appropriate version of the VIC instance you´re running, to <code>curl</code> the VIC Engine bundle tarball from the appliance into the docker image during the building process.</p>
+<p>To avoid typos with the URL you can simply browse to the VIC appliance page (port 9443), right click the <strong>DOWNLOAD</strong> button which can be found under the section <em>Deploy a VCH</em> and choose <em>Copy Link Address</em>.</p>
+<p>Modify the section like below:</p>
+<h3 id="31-dockerfile">3.1 Dockerfile</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> debian:jessie</span><span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get install -y jq ca-certificates curl tar bc<span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">RUN</span> mkdir /vic <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> curl -k -L https://vic01.jarvis.lab:9443/files/vic_v1.5.2.tar.gz <span class="p">|</span> tar xz -C /vic <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> cp /vic/vic/vic-machine-linux /vic <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> cp /vic/vic/*.iso /vic <span class="se">\
+</span><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -fr /vic/vic<span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="err">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Save and close the Dockerfile.</p>
+<h2 id="32-every-vic-machine-action-as-a-docker-image">3.2 Every <code>vic-machine</code> action as a docker image</h2>
+<p>The <strong>build.sh</strong> script will build all docker images for each <code>vic-machine</code> action for us.</p>
+<p><strong>IMPORTANT:</strong> It´s necessary to have the Dockerfile prepared before executing the build script! Because &ldquo;<span style="color:#32CD32"><code>docker build -t vic-machine-base .</code></span>&rdquo; will start the build process, which creates the docker image as well as tag (<code>-t</code>) the image as <em>vic-machine-base</em>.</p>
+<p>The image includes the <em>vic-machine binary (for Linux)</em>, the <em>bootstrap.iso</em> as well the <em>appliance.iso</em>.</p>
+<p>See also:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">rguske@rguske-a01&gt; ~/_DEV&gt; docker run -it --rm vic-machine-base:latest /bin/bash
+root@5d76a7b7973f:/# <span class="nb">cd</span> /vic
+root@5d76a7b7973f:/vic# ls -rtl
+-rwxr-xr-x <span class="m">1</span> root root <span class="m">19623264</span> Jul <span class="m">16</span> 20:51 vic-machine-linux
+-rw-r--r-- <span class="m">1</span> root root <span class="m">41091072</span> Jul <span class="m">16</span> 20:51 bootstrap.iso
+-rw-r--r-- <span class="m">1</span> root root <span class="m">91029504</span> Jul <span class="m">16</span> 20:51 appliance.iso
+</code></pre></td></tr></table>
+</div>
+</div><p>Now moving forward to the build script itself. I´ve modified the script from the original one just a little bit for my own needs.</p>
+<p>I´d like to thank <a href="https://twitter.com/AlexanderDess" target="_blank">Alexander Dess</a> at this point who reminded me that I should simply stick to the <a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank">K.I.S.S. principle</a>. Stop making things more complicated 😉.</p>
+<h3 id="33-buildsh">3.3 build.sh</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">set</span> -e
+
+<span class="c1">### Harbor FQDN and project</span>
+<span class="nv">REPO_NAME</span><span class="o">=</span><span class="s2">&#34;vic01.jarvis.lab:443/vic-machine&#34;</span>
+<span class="c1">### Folder (with version) were the JSON keys for each vic-machine action are deposited. You can define your own JSON schema by simply modifying those files.</span>
+<span class="nv">MAP_VERSION</span><span class="o">=</span><span class="s2">&#34;1.2&#34;</span>
+<span class="c1">### Define your own version for the docker images</span>
+<span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span>
+
+<span class="nv">actions</span><span class="o">=(</span> <span class="s2">&#34;create&#34;</span> <span class="s2">&#34;debug&#34;</span> <span class="s2">&#34;delete&#34;</span> <span class="s2">&#34;inspect&#34;</span> <span class="s2">&#34;ls&#34;</span> <span class="s2">&#34;rollback&#34;</span> <span class="s2">&#34;upgrade&#34;</span> <span class="s2">&#34;thumbprint&#34;</span> <span class="s2">&#34;firewall-allow&#34;</span> <span class="s2">&#34;firewall-deny&#34;</span> <span class="s2">&#34;dumpargs&#34;</span> <span class="s2">&#34;direct&#34;</span> <span class="o">)</span>
+
+<span class="c1">### Docker command to build a docker image (from Dockerfile above) and to tag it with the given name.</span>
+docker build -t vic-machine-base .
+<span class="c1">### Will change the directory to actions/1.2</span>
+<span class="nb">cd</span> actions/<span class="nv">$MAP_VERSION</span>
+<span class="c1">### Will copy the new created Dockerfiles</span>
+cp ../Dockerfile* .
+
+<span class="k">for</span> i in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">actions</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+<span class="k">do</span>
+<span class="c1">### Build a docker image out of every newly created Dockerfile and tag it with the repo-name as well as version number</span>
+  docker build -f Dockerfile.<span class="nv">$i</span> -t <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span> .
+<span class="k">done</span>
+<span class="c1">### Remove all Dockerfiles</span>
+rm Dockerfile*
+</code></pre></td></tr></table>
+</div>
+</div><p>Execute <code>sh ./build.sh</code> and validate that everything went well by executing the command <code>docker images | grep vic</code>. You should see the newly created images listed:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">rguske@rguske-a01&gt; ~/_DEV&gt; docker images <span class="p">|</span> grep vic
+vic01.jarvis.lab:443/vic-machine/vic-machine-direct           1.0                 6434b9f67b34        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-dumpargs         1.0                 65a84b73ea6d        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-firewall-deny    1.0                 4280647bb27f        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-firewall-allow   1.0                 ef69a80ff285        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-thumbprint       1.0                 cba88f5aeec8        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-upgrade          1.0                 6eca536b5221        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-rollback         1.0                 85b65b17df10        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-ls               1.0                 57496ec4fdd9        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-inspect          1.0                 47eaedc40980        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-delete           1.0                 e24ee592ab15        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-debug            1.0                 306ba819b1d4        About an hour ago   305MB
+vic01.jarvis.lab:443/vic-machine/vic-machine-create           1.0                 e567f6eff231        About an hour ago   305MB
+vic-machine-base                                              latest              9434fc83969b        About an hour ago   305MB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="34-pushing-the-docker-images-to-harbor">3.4 Pushing the docker images to Harbor</h2>
+<p>The next step after creating a lot of new docker images is to have them available and well guarded in Harbor. We´ll make use of the push.sh script from our folder which will save us the work of handling each image separately. Let´s have a look into it as well.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">### !/bin/bash</span>
+<span class="nb">set</span> -e
+
+<span class="c1">### Push to our Harbor instance</span>
+<span class="nv">REPO_NAME</span><span class="o">=</span><span class="s2">&#34;vic01.jarvis.lab:443/vic-machine&#34;</span>
+<span class="c1">### Docker images version</span>
+<span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span>
+
+<span class="nv">actions</span><span class="o">=(</span> <span class="s2">&#34;create&#34;</span> <span class="s2">&#34;debug&#34;</span> <span class="s2">&#34;delete&#34;</span> <span class="s2">&#34;inspect&#34;</span> <span class="s2">&#34;ls&#34;</span> <span class="s2">&#34;rollback&#34;</span> <span class="s2">&#34;upgrade&#34;</span> <span class="s2">&#34;thumbprint&#34;</span> <span class="s2">&#34;firewall-allow&#34;</span> <span class="s2">&#34;firewall-deny&#34;</span> <span class="s2">&#34;dumpargs&#34;</span> <span class="s2">&#34;direct&#34;</span> <span class="o">)</span>
+
+<span class="k">for</span> i in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">actions</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
+<span class="k">do</span>
+<span class="c1">### Tagging the images with the give version as well as with &#34;latest&#34;</span>
+<span class="c1">### Pushing them with both versions into Harbor</span>
+   docker tag <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span> <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:latest
+   docker push <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span>
+   docker push <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:latest
+<span class="k">done</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Just replace the repository URL like we already did in the build script.
+Before you execute the script, you have to login into Harbor with the user which we´ve added to the project in step 4.</p>
+<p><strong>Execute:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh">docker login vic01.jarvis.lab:443 -u admin@jarvis.lab
+Password: ********
+Login Succeeded
+</code></pre></td></tr></table>
+</div>
+</div><p>&ldquo;Login succeeded&rdquo; is always pleasing to see and since we´re done with that run <code>sh ./push.sh</code> from your shell. If you have the membership and role correctly configured, you should see under <em>Internal Repositories</em> all <code>vic-machine-(action)</code> images.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" data-sub-html="<h2>Figure V: vic-machine-(action) images deposited under Internal (Project) Repositories</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure V: vic-machine-(action) images deposited under Internal (Project) Repositories</figcaption>
+    </figure>
+<h2 id="4-configure-the-configjson-file-for-the-vch-deployment">4. Configure the config.json file for the VCH deployment</h2>
+<p>Everything seems to be well prepared so far and we´re approaching the end of our efforts to deploy a VCH in a &ldquo;simplified fashion&rdquo;. The intention is to make use of the <code>vic-machine</code> script, which in turn needs a JSON manifest as input to all commands lying in a subdirectory of our <em>vic-dev</em> folder. Before turning to the <em>config.json</em> file I don&rsquo;t want to embezzle this impressive piece of work.</p>
+<p>The <code>vic-machine</code> script:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/bin/bash
+</span><span class="cp"></span>
+<span class="c1"># This script is designed to simplify vic-machine usage, but using a single JSON manifest as input to all commands</span>
+<span class="c1"># The expected layout is that a particular vic-machine configuration will be in a subdirectory of the current dir</span>
+<span class="c1"># In that subdirectory should be a config.json file which conforms to the format in example.json</span> 
+<span class="c1"># That subdirectory is then both the input and working directory of vic-machine</span>
+<span class="c1"># As such, generated certificates and log files will be written to that sub directory as root user</span>
+<span class="c1"># Note that if you don&#39;t specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it</span>
+
+<span class="c1"># consume images from dockerhub</span>
+<span class="c1"># REPO_NAME=&#34;bensdoings&#34;</span>
+
+<span class="c1"># consume images from a local registry</span>
+<span class="nv">REPO_NAME</span><span class="o">=</span><span class="s2">&#34;vic01.jarvis.lab:443/vic-machine&#34;</span>
+
+usage<span class="o">()</span>
+<span class="o">{</span>
+   <span class="nb">echo</span> <span class="s2">&#34;Usage: vic-machine.sh &lt;version&gt; &lt;config-dir&gt; &lt;action&gt;&#34;</span>
+   <span class="nb">echo</span> <span class="s2">&#34;  Where version is \&#34;latest\&#34; or &lt;version number&gt;-&lt;optional rc&gt; eg. 1.0.0-rc5&#34;</span>
+   <span class="nb">echo</span> <span class="s2">&#34;  Where action is one of: create | delete | inspect | ls | debug | upgrade | rollback | thumbprint | firewall-allow | firewall-deny | dumpargs&#34;</span>
+   <span class="nb">echo</span> <span class="s2">&#34;  Use dumpargs action to show the args the script generates for vic-machine-create&#34;</span>
+   <span class="nb">exit</span> <span class="m">1</span>
+<span class="o">}</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -le <span class="m">2</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> usage<span class="p">;</span> <span class="k">fi</span>
+
+<span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$3</span><span class="s2">&#34;</span> in 
+  create<span class="p">|</span>delete<span class="p">|</span>inspect<span class="p">|</span>ls<span class="p">|</span>debug<span class="p">|</span>upgrade<span class="p">|</span>rollback<span class="p">|</span>thumbprint<span class="p">|</span>firewall-allow<span class="p">|</span>firewall-deny<span class="p">|</span>dumpargs<span class="o">)</span>
+    <span class="p">;;</span>
+  *<span class="o">)</span>
+    usage
+    <span class="p">;;</span>
+<span class="k">esac</span>
+
+<span class="nv">host_config_path</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/<span class="nv">$2</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;</span><span class="nv">$host_config_path</span><span class="s2">/config.json&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&#34;Config file not found at </span><span class="nv">$host_config_path</span><span class="s2">/config.json&#34;</span>
+  <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="nv">docker_volume_path</span><span class="o">=</span>/config
+
+<span class="c1"># Check to see whether the combination of version and action actually exist</span>
+docker pull <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$3</span>:<span class="nv">$1</span> &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> !<span class="o">=</span> <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&#34;Action \&#34;</span><span class="nv">$3</span><span class="s2">\&#34; or version \&#34;</span><span class="nv">$1</span><span class="s2">\&#34; not found&#34;</span>
+  <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">fi</span>
+
+sudo docker run -it --rm -v <span class="nv">$host_config_path</span>:<span class="nv">$docker_volume_path</span> <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$3</span>:<span class="nv">$1</span> <span class="p">|</span> sed <span class="s2">&#34;s|</span><span class="nv">$docker_volume_path</span><span class="s2">/|</span><span class="nv">$host_config_path</span><span class="s2">/|&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="41-preparing-the-configjson-file">4.1. Preparing the config.json file</h3>
+<p>Create a new folder in your main folder (vic-dev), give it the name of your VCH for example and also create the <em>config.json</em> file.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">mkdir vch1 <span class="o">&amp;&amp;</span> <span class="nb">cd</span> vch1 <span class="o">&amp;&amp;</span> touch config.json
+</code></pre></td></tr></table>
+</div>
+</div><p>Here is an example of my deployment.</p>
+<p><strong>vch1/config.json</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+   <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.2&#34;</span><span class="p">,</span>
+   <span class="nt">&#34;vch&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;vch1&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;compute&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;vsphere_resource&#34;</span><span class="p">:</span> <span class="s2">&#34;Stark&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;memory&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;limit_mb&#34;</span><span class="p">:</span> <span class="s2">&#34;8192&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;reservation_mb&#34;</span><span class="p">:</span> <span class="s2">&#34;512&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;shares&#34;</span><span class="p">:</span> <span class="s2">&#34;normal&#34;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;network&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;bridge&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;port_group&#34;</span><span class="p">:</span> <span class="s2">&#34;ls-vic-bridge&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;ip_range&#34;</span><span class="p">:</span> <span class="s2">&#34;172.16.0.0/12&#34;</span>
+         <span class="p">},</span>
+         <span class="nt">&#34;public&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;port_group&#34;</span><span class="p">:</span> <span class="s2">&#34;ls-vic-public&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;vch_static_ip&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.2.192/24&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;vch_gateway&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.2.254&#34;</span>
+         <span class="p">},</span>
+         <span class="nt">&#34;container&#34;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="nt">&#34;port_group&#34;</span><span class="p">:</span> <span class="s2">&#34;ls-vic-container&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;firewall&#34;</span><span class="p">:</span> <span class="s2">&#34;Open&#34;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="nt">&#34;port_group&#34;</span><span class="p">:</span> <span class="s2">&#34;ls-vic-container&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;alias&#34;</span><span class="p">:</span> <span class="s2">&#34;container-net&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;ip_range&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.3.100/24&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;gateway&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.3.254/24&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;dns&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.254&#34;</span><span class="p">,</span>
+               <span class="nt">&#34;firewall&#34;</span><span class="p">:</span> <span class="s2">&#34;Published&#34;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="nt">&#34;dns_server&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.250&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;asymmetric_routes&#34;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+      <span class="nt">&#34;storage&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;image_store&#34;</span><span class="p">:</span> <span class="s2">&#34;nfs_ds&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;volume_stores&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;vsanDatastore/volumes:default&#34;</span><span class="p">],</span>
+         <span class="nt">&#34;base_image_size&#34;</span><span class="p">:</span> <span class="s2">&#34;8GB&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;volumes_rm_on_delete&#34;</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;auth&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;cert_path&#34;</span><span class="p">:</span> <span class="s2">&#34;vch1&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;keygen&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;cert_size&#34;</span><span class="p">:</span> <span class="s2">&#34;2048&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;tls_cname&#34;</span><span class="p">:</span> <span class="s2">&#34;*.jarvis.lab&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;organization&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;Jarvis Lab&#34;</span><span class="p">]</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+         <span class="nt">&#34;endpoint_vm&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;vcpus&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;memory_mb&#34;</span><span class="p">:</span> <span class="s2">&#34;2048&#34;</span><span class="p">,</span>
+            <span class="nt">&#34;syslog_address&#34;</span><span class="p">:</span> <span class="s2">&#34;tcp://192.168.100.6:514&#34;</span>
+         <span class="p">},</span>
+         <span class="nt">&#34;container&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;name_convention&#34;</span><span class="p">:</span> <span class="s2">&#34;{name}-{id}&#34;</span>
+         <span class="p">},</span>
+      <span class="nt">&#34;debug&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;enable_ssh&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&#34;root_password&#34;</span><span class="p">:</span> <span class="s2">&#34;*********&#34;</span>
+      <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&#34;vcenter&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;address_datacenter&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.1/Malibu&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;credentials&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;thumbprint&#34;</span><span class="p">:</span> <span class="s2">&#34;4C:92:D7:FC:F8:8D:5A:....&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;admin_user&#34;</span><span class="p">:</span> <span class="s2">&#34;administrator@jarvis.lab&#34;</span><span class="p">,</span>
+         <span class="nt">&#34;admin_password&#34;</span><span class="p">:</span> <span class="s2">&#34;*******&#34;</span>
+       <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&#34;registry&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;insecure_registries&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;192.168.100.50&#34;</span><span class="p">]</span>
+   <span class="p">},</span>
+   <span class="nt">&#34;vic_machine&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;debug&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;timeout&#34;</span><span class="p">:</span> <span class="s2">&#34;60s&#34;</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="details admonition Note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>Important<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">You have to define the version at the beginning which will point to the folder with the declared version number in the <em>actions</em> folder. Remember:</div>
+        </div>
+    </div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev/actions&gt; tree -L <span class="m">2</span>
+.
+├── 1.1
+│   ├── map-create.json
+│   ├── map-debug.json
+│   ├── map-delete.json
+│   ├── map-firewall.json
+│   ├── map-inspect.json
+│   ├── map-ls.json
+│   ├── map-thumbprint.json
+│   ├── map-upgrade.json
+│   ├── parse.sh
+│   └── validate.sh
+├── 1.2
+│   ├── map-create.json
+│   ├── map-debug.json
+│   ├── map-delete.json
+│   ├── map-firewall.json
+│   ├── map-inspect.json
+│   ├── map-ls.json
+│   ├── map-thumbprint.json
+│   ├── map-upgrade.json
+│   ├── parse.sh
+│   └── validate.sh
+</code></pre></td></tr></table>
+</div>
+</div><p>Pick two identical files e.g. <em>map-create.json</em> from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.</p>
+<hr>
+<p>Depending on your requirements (VCH Networking, Log aggregation, Debug-Level and so on), you can build your own <em>config.json</em> from the examples (example-simple.json, example-complete.json &amp; example-complete-empty.json) which we´ve copied in step 3.</p>
+<p>If you now execute &ldquo;<code>sh ./vic-machine 1.0 (or latest) vch1 create</code>&rdquo; and run a <code>watch</code> perhaps on container instances spinning up locally and also a <code>watch</code> on the folder <em>vch1</em> itself, you´ll see that the newly created image <em>vic-machine-create:1.0</em> will be used for having the <code>vic-machine</code> utility on board which will then receive the parsed arguments from the <em>config.json</em> and starts deploying the Virtual Container Host to your target.</p>
+<p>By using e.g my deployment-example, you´ll see that a new folder with the given name of the VCH will be created, containing the VCH certificates, which can be used to add the VCH to a project for example as well as a vic-machine and vpxd logfile, which is really nice to have.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg" data-sub-html="<h2>Figure VI: vic-machine script with a watch on docker ps -a as well as ls -rtl</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_092032.jpg" />
+    </a><figcaption class="image-caption">Figure VI: vic-machine script with a watch on docker ps -a as well as ls -rtl</figcaption>
+    </figure>
+<p><strong><center>Let´s give it a try - I hope you´ll find it helpful.</center></strong></p>
+<hr>
+<h2 id="5-addition-adding-a-vch-to-your-project">5 (addition): Adding a VCH to your project</h2>
+<p>As mentioned a few lines above, we can use the created certificates during the deployment, to add a Virtual Container Host to our project(s).</p>
+<p>Just go to:
+Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&gt; <strong>+ CREDENTIAL</strong></p>
+<p>Choose <em>Certificate</em>, enter a name and use the <em>cert.pem</em> for the Public certificate and the <em>key.pem</em> for the Private certificate. <strong>SAVE</strong></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg" data-sub-html="<h2>Figure VII: Using certificates for VCH authentication</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_011046.jpg" />
+    </a><figcaption class="image-caption">Figure VII: Using certificates for VCH authentication</figcaption>
+    </figure>
+<p>The VCH can be added to your project under:</p>
+<p>Administration &ndash;&gt; Projects &ndash;&gt; Your Project (vic-machine) &ndash;&gt; Infrastructure &ndash;&gt; <strong>+ CONTAINER HOST</strong></p>
+<p>Fill out the required fields and select under <em>Credentials</em> your previously created credentials and press <em>SAVE</em>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg" data-sub-html="<h2>Figure VIII: Adding a Virtual Container Host to a Project</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190803_095949.jpg" />
+    </a><figcaption class="image-caption">Figure VIII: Adding a Virtual Container Host to a Project</figcaption>
+    </figure>
+<p>The result should look like this if everything went well.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" data-sub-html="<h2>Figure IX: Virtual Container Host assigned to a Project</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg"
+            data-srcset="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg 1.5x, /img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" />
+    </a><figcaption class="image-caption">Figure IX: Virtual Container Host assigned to a Project</figcaption>
+    </figure>
+<hr>
+<p><strong><center>Thanks for reading</center></strong></p>
+<hr>
+<h2 id="resources">Resources</h2>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Article</strong></th>
+<th align="right"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
+<td align="right"><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
+</tr>
+<tr>
+<td align="left">[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
+<td align="right"><a href="https://youtu.be/AD7CD8Haqdc">https://youtu.be/AD7CD8Haqdc</a></td>
+</tr>
+<tr>
+<td align="left">[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
+<td align="right"><a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></td>
+</tr>
+<tr>
+<td align="left">[@harbor] <strong>Harbor Official Website</strong></td>
+<td align="right"><a href="https://goharbor.io/">https://goharbor.io/</a></td>
+</tr>
+<tr>
+<td align="left">[@github/coreos] <strong>Clair Github repo</strong></td>
+<td align="right"><a href="https://github.com/coreos/clair">https://github.com/coreos/clair</a></td>
+</tr>
+<tr>
+<td align="left">[@github/theupdateframework] <strong>Notary Github repo</strong></td>
+<td align="right"><a href="https://github.com/theupdateframework/notary">https://github.com/theupdateframework/notary</a></td>
+</tr>
+<tr>
+<td align="left">[@docker] <strong>Dockerfile reference</strong></td>
+<td align="right"><a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2019-07-04</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/docker-run-vic-machine/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine" data-via="vmw_rguske" data-hashtags="July2019,VIC,Docker,Hack,Harbor"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/docker-run-vic-machine/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/docker-run-vic-machine/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/docker-run-vic-machine/" data-title="docker run vic-machine" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/july2019/">July2019</a>,&nbsp;<a href="/tags/vic/">VIC</a>,&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/hack/">Hack</a>,&nbsp;<a href="/tags/harbor/">Harbor</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/event-driven-interactions-with-vsphere-using-functions-as-a-service/" class="prev" rel="prev" title="Event-driven interactions with vSphere using Functions as a Service"><i class="fas fa-angle-left fa-fw"></i>Event-driven interactions with vSphere using Functions as a Service</a>
+            <a href="/vmware-microsites-you-should-bookmark/" class="next" rel="next" title="VMware Microsites You should bookmark">VMware Microsites You should bookmark<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"visitor":true}},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

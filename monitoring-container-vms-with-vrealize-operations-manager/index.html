@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Monitoring Container VMs with vRealize Operations Manager - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Monitoring Container VMs with vRealize Operations Manager" />
+<meta property="og:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, vRealize Operations Manager (vR Ops).
+Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &quot;First-Class Citizens&quot; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" />
+<meta property="article:published_time" content="2019-01-21T23:00:09+01:00" />
+<meta property="article:modified_time" content="2019-01-21T23:00:09+01:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Monitoring Container VMs with vRealize Operations Manager"/>
+<meta name="twitter:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, vRealize Operations Manager (vR Ops).
+Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &quot;First-Class Citizens&quot; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" /><link rel="next" href="https://rguske.github.io/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Monitoring Container VMs with vRealize Operations Manager",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/monitoring-container-vms-with-vrealize-operations-manager\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "January2019, VIC, Container, vSphere, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1589 ,
+        "url": "https:\/\/rguske.github.io\/monitoring-container-vms-with-vrealize-operations-manager\/","datePublished": "2019-01-21T23:00:09+01:00","dateModified": "2019-01-21T23:00:09+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske">Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske">Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Monitoring Container VMs with vRealize Operations Manager</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2019-01-21>2019-01-21</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 1589 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>8 min&nbsp;<span id="/monitoring-container-vms-with-vrealize-operations-manager/" class="leancloud_visitors" data-flag-title="Monitoring Container VMs with vRealize Operations Manager">
+                        <i class="far fa-eye fa-fw"></i><span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/vic_monitoring_cover.jpg"
+        data-srcset="/img/vic_monitoring_cover.jpg, /img/vic_monitoring_cover.jpg 1.5x, /img/vic_monitoring_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/vic_monitoring_cover.jpg"
+        title="/img/vic_monitoring_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-dashboard">The Dashboard</a>
+      <ul>
+        <li><a href="#download-via-vmware-code">Download via VMware {code}</a></li>
+        <li><a href="#things-you-have-to-do-first-before-the-import">Things you have to do first before the import</a>
+          <ul>
+            <li><a href="#in-vsphere">In vSphere</a></li>
+            <li><a href="#in-vrops">In vROps</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, <a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank">vRealize Operations Manager (vR Ops)</a>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" data-sub-html="<h2>Figure I: VIC monitoring high level overview</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" width="900" />
+    </a><figcaption class="image-caption">Figure I: VIC monitoring high level overview</figcaption>
+    </figure>
+<h2 id="the-dashboard">The Dashboard</h2>
+<p>Treating Containers as <a href="https://en.wikipedia.org/wiki/First-class_citizen" target="_blank">&quot;First-Class Citizens&quot;</a> is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine.</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>&ldquo;Therefore you don´t have to build out a separate, tailored infrastructure stack and can continue to leverage existing Scalability, Security and <strong>Monitoring</strong> capabilities.&rdquo;</p>
+<p><em>Source: <a href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" target="_blank">VMware vSphere Integrated Containers: Introduction</a></em></p>
+</div>
+        </div>
+    </div>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg" data-sub-html="<h2>Figure II: VIC Dashboard</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190114_100348.jpg" width="900" />
+    </a><figcaption class="image-caption">Figure II: VIC Dashboard</figcaption>
+    </figure>
+<p>I´ve splitted the dashboard into two parts because I wanted to get as most as valuable content displayed on the screen without scrolloing down the page (depending on your resolution 😉). The upper part gives you more details about the <strong>utilization</strong> and properties of the Virtual Container Host itself. Thus resource pool as well as the Virtual Container Host VM (Docker endpoint) are covered by the <span style="color:blue">upper part</span>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg" data-sub-html="<h2>Figure III: VIC Dashboard - upper part</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190114_103053.jpg" width="900" />
+    </a><figcaption class="image-caption">Figure III: VIC Dashboard - upper part</figcaption>
+    </figure>
+<p>The <span style="color:orange">lower part</span> is focused on the <strong>performance</strong> of each Container-VM (by selecting the cVM) running inside the resource pool, and by the end of the day, on the service which will be provided by the container.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg" data-sub-html="<h2>Figure IV: VIC Dashboard - lower part</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190114_103149.jpg" width="900" />
+    </a><figcaption class="image-caption">Figure IV: VIC Dashboard - lower part</figcaption>
+    </figure>
+<p>I also considered to build out each part in a separate dashboard, so one for the Virtual Container Host(s) and another one for the Container-VM(s), but nevertheless I decided to go with the &ldquo;All-in-One&rdquo; variant.</p>
+<h3 id="download-via-vmware-code">Download via VMware {code}</h3>
+<p>If you like the dashboard and you are interested to monitor your containerized applications in terms of performance and utilization, you can download it through the following link: <a href="https://code.vmware.com/samples?id=5283">https://code.vmware.com/samples?id=5283</a></p>
+<p><strong>But</strong> before you can make use of it you have to do some preperations first.</p>
+<h3 id="things-you-have-to-do-first-before-the-import">Things you have to do first before the import</h3>
+<h4 id="in-vsphere">In vSphere</h4>
+<ol>
+<li>Create a new <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vcenterhost.doc/GUID-E8E854DD-AA97-4E0C-8419-CE84F93C4058.html" target="_blank">vSphere-Tag</a></li>
+</ol>
+<p>Open up the vSphere-Client and create a new <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vcenterhost.doc/GUID-BA3D1794-28F2-43F3-BCE9-3964CB207FB6.html?hWord=N4IghgNiBcIC5gOYAIDGY4FNEHsBOAniAL5A" target="_blank">vSphere-Tag Category</a> as well as a vSphere-Tag called <em>Virtual Container Host</em> and assign the Tag to every Virtual Container Host <strong>Resource Pool(!)</strong>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg" data-sub-html="<h2>Figure V: vSphere Resource Pool</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_101420.jpg" width="600" />
+    </a><figcaption class="image-caption">Figure V: vSphere Resource Pool</figcaption>
+    </figure>
+<p>I´m going to explain the reason why we need this in a moment.</p>
+<h4 id="in-vrops">In vROps</h4>
+<ol>
+<li>Create a <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-43ACB276-C9A3-490A-B65E-3D0EA66E8AC8.html" target="_blank">Group Type</a> to categorize objects in vR Ops.</li>
+<li>Create a <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-7CD02B2B-4BB1-4BD3-B24E-5F630B94A7EF.html" target="_blank">Dynamic Custom Group</a> for dynamic assignment of Virtual Container Hosts through a membership criteria.</li>
+<li>Create two new <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-75E5B784-6CE7-4048-AD77-89A9E21C2AC2.html" target="blank">Metric Configurations</a> to define a specific set of metrics for the VCH as well as for the cVM.</li>
+<li>Import two new <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-BC389BD4-8F24-42D9-82B1-C33A87F738B6.html?hWord=N4IghgNiBcIGoEsCmB3AziAvkA" target="_blank"><em>Views</em></a> (VCH properties &amp; cVM properties)</li>
+</ol>
+<p>Let´s start with <strong>#1</strong>, the creation of a <em>Group Type</em>, a superior group for our <em>Dynamic Custom Group</em> which we´ll configure in step <strong>#2</strong>. When you´re already logged in into vR Ops go to <em>Administration</em> and select <em>Group Types</em> which is under <em>Configuration</em> on the left side. Create a new one and call it <em>vSphere Integrated Containers</em> for example.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg" data-sub-html="<h2>Figure VI: vROps - Create new Group Type</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg, /img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20181204_102513.jpg" />
+    </a><figcaption class="image-caption">Figure VI: vROps - Create new Group Type</figcaption>
+    </figure>
+<p>It is followed by the mentioned <em>Dynamic Custom Group</em> which is not found under <em>Administration</em> but under <em>Environment</em> and then <em>Groups and Applications</em>. Create a new one and call it e.g. <em>Virtual Container Hosts</em>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg" data-sub-html="<h2>Figure VII: vROps - Create new Custom Group</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg, /img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20181204_102917.jpg" />
+    </a><figcaption class="image-caption">Figure VII: vROps - Create new Custom Group</figcaption>
+    </figure>
+<p>One striking aspect about <em>Dynamic Custom Groups</em> is the fact that we can define the <em>Membership</em> based on a specific criteria. During my first tests, I´ve defined the membership based on the <em>Prefix</em> of a Virtual Container Host name like **vch-**app01 for example. Asking me naming conventions is an important topic and every organization has its own, so it won´t fit for everyone and therefore I had to find another criteria to let the dynamic assignment to this group happen.</p>
+<p>I thought <em>vSphere-Tags</em> is a perfect alternative as a criteria. Consequently, we have to configure it for the <em>Object Type Resource Pool</em> like the screenshot below shows.</p>
+<p><em>Properties</em> &ndash;&gt; <em>Summary|vSphere Tag</em> is <em>Virtual Container Host</em></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg" data-sub-html="<h2>Figure VIII: vROps - Dynamic Custom Group</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190107_101933.jpg" />
+    </a><figcaption class="image-caption">Figure VIII: vROps - Dynamic Custom Group</figcaption>
+    </figure>
+<p>Hit <em>Preview</em> to see if it works.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg" data-sub-html="<h2>Figure IX: vROps - vSphere Tag as a Membership Criteria</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190107_110525.jpg" />
+    </a><figcaption class="image-caption">Figure IX: vROps - vSphere Tag as a Membership Criteria</figcaption>
+    </figure>
+<p>The next step, step <strong>#3</strong>, is the configuration of a specific metric set which will only show us what we´ll see in our dashboard reagrding the Virtual Container Host Resource Pool as well as the Container-VM. To configure those, go to <em>Administration</em> and <em>Configuration</em> again and select this time <em>Metric Configurations</em>.</p>
+<p>Select the folder <em>ReskndMetric</em> and hit the plus sign above to create a new one. I´ve named the first of my two configurations <em>vch_resource_utilization</em>. Of course you can title it as you like but we have to keep in mind that we have to select this one after the dashboard import.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg" data-sub-html="<h2>Figure X: vROps - Metric Configuration VCH</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_103948.jpg" width="600" />
+    </a><figcaption class="image-caption">Figure X: vROps - Metric Configuration VCH</figcaption>
+    </figure>
+<p>After assigning the name, please copy the following xml code and paste it into your new metric configuration.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;AdapterKinds&gt;</span>
+    <span class="nt">&lt;AdapterKind</span> <span class="na">adapterKindKey=</span><span class="s">&#34;VMWARE&#34;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;ResourceKind</span> <span class="na">resourceKindKey=</span><span class="s">&#34;ResourcePool&#34;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;summary|total_number_vms&#34;</span> <span class="na">label=</span><span class="s">&#34;# cVM&#34;</span> <span class="na">unit=</span><span class="s">&#34;cVM&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;summary|number_running_vms&#34;</span> <span class="na">label=</span><span class="s">&#34;# running cVM&#34;</span> <span class="na">unit=</span><span class="s">&#34;cVM&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;cpu|corecount_provisioned&#34;</span> <span class="na">label=</span><span class="s">&#34;# CPU Cores&#34;</span> <span class="na">unit=</span><span class="s">&#34;cores&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span> <span class="na">isProperty=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;config|cpuAllocation|limit&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Limit&#34;</span> <span class="na">unit=</span><span class="s">&#34;MHz&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span> <span class="na">isProperty=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;config|cpuAllocation|reservation&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Reservation&#34;</span> <span class="na">unit=</span><span class="s">&#34;GHz&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span> <span class="na">isProperty=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;config|memoryAllocation|limit&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Limit&#34;</span> <span class="na">unit=</span><span class="s">&#34;MB&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span> <span class="na">isProperty=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;config|memoryAllocation|reservation&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Reservation&#34;</span> <span class="na">unit=</span><span class="s">&#34;MB&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span> <span class="na">isProperty=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|consumed_average&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem consumed&#34;</span> <span class="na">unit=</span><span class="s">&#34;MB&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|overhead_average&#34;</span> <span class="na">label=</span><span class="s">&#34;VM Mem overhead&#34;</span> <span class="na">unit=</span><span class="s">&#34;MB&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;OnlineCapacityAnalytics|capacityRemainingPercentage&#34;</span> <span class="na">label=</span><span class="s">&#34;Capacity Remaining&#34;</span> <span class="na">unit=</span><span class="s">&#34;%&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/ResourceKind&gt;</span>
+    <span class="nt">&lt;/AdapterKind&gt;</span>
+<span class="nt">&lt;/AdapterKinds&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The second metric configuration is specific for the performance of the Container-VM. I´ve named it <em>container_vm_performance</em>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg" data-sub-html="<h2>Figure XI: vROps - Metric Configuration C-VM</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_103638.jpg" width="600" />
+    </a><figcaption class="image-caption">Figure XI: vROps - Metric Configuration C-VM</figcaption>
+    </figure>
+<p>Copy the xml code and again simply paste it into.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;AdapterKinds&gt;</span>
+    <span class="nt">&lt;AdapterKind</span> <span class="na">adapterKindKey=</span><span class="s">&#34;VMWARE&#34;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;ResourceKind</span> <span class="na">resourceKindKey=</span><span class="s">&#34;VirtualMachine&#34;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;config|hardware|num_Cpu&#34;</span> <span class="na">label=</span><span class="s">&#34;# vCPU&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;cpu|usagemhz_average&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Usage&#34;</span> <span class="na">unit=</span><span class="s">&#34;MHz&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;cpu|usage_average&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Usage Avg&#34;</span> <span class="na">unit=</span><span class="s">&#34;MHz&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;cpu|readyPct&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Ready&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;cpu|costopPct&#34;</span> <span class="na">label=</span><span class="s">&#34;CPU Costop&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|usage_average&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Usage&#34;</span> <span class="na">unit=</span><span class="s">&#34;%&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|vmMemoryDemand&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Demand&#34;</span> <span class="na">unit=</span><span class="s">&#34;KB&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|balloonPct&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Ballooning&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;mem|swapped_average&#34;</span> <span class="na">label=</span><span class="s">&#34;Mem Swapped&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;net|received_average&#34;</span> <span class="na">label=</span><span class="s">&#34;Net RX&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;Metric</span> <span class="na">attrkey=</span><span class="s">&#34;net|transmitted_average&#34;</span> <span class="na">label=</span><span class="s">&#34;Net TX&#34;</span> <span class="na">unit=</span><span class="s">&#34;&#34;</span> <span class="na">yellow=</span><span class="s">&#34;&#34;</span> <span class="na">orange=</span><span class="s">&#34;&#34;</span> <span class="na">red=</span><span class="s">&#34;&#34;</span> <span class="na">link=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/ResourceKind&gt;</span>
+    <span class="nt">&lt;/AdapterKind&gt;</span>
+<span class="nt">&lt;/AdapterKinds&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The last point (<strong>#4</strong>) before we are ready to go is the <a href="https://docs.vmware.com/en/vRealize-Operations-Manager/7.0/com.vmware.vcom.core.doc/GUID-42F41582-E2EE-4BD3-9751-F65C886E1118.html" target="_blank">import</a> of the two custom views. Click <em><strong>Dashboards</strong></em>, and then in the left pane click <em><strong>Views</strong></em>. Click on the gear icon, select <em><strong>Import View</strong></em> and navigate to the folder where you´ve downloaded the files to. To ensure that the dashboard will work smoothly after importing it check if the import of the two custom <em>Views</em> were successfull. Just filter by <em>&ldquo;vm properties&rdquo;</em> and your search should result in the following:</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg" data-sub-html="<h2>Figure XII: vROps - Views</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_105533.jpg" width="800" />
+    </a><figcaption class="image-caption">Figure XII: vROps - Views</figcaption>
+    </figure>
+<h2 id="conclusion">Conclusion</h2>
+<p>vRealize Operations Manager has evolved greatly over time and building custom dashboards according to your own ideas and demands is quite fun. Let´s just take the new <em>Dashboard Canvas</em> which was shipped with version 7.0 as an example. It´s not all about how cool it looks like but rather than the simplicity it brings during the creation of an dashboard.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg" data-sub-html="<h2>Figure XIII: vROps - Widget Interactions</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_111340.jpg" width="800" />
+    </a><figcaption class="image-caption">Figure XIII: vROps - Widget Interactions</figcaption>
+    </figure>
+<p>Here are two posts I would like to recommend to read with regard to:</p>
+<ol>
+<li>
+<p><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html" target="_blank">Dashboards Made Easy with vRealize Operations</a></p>
+</li>
+<li>
+<p><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html" target="_blank">Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</a></p>
+</li>
+</ol>
+<p>The <a href="https://twitter.com/search?q=%23vcommunity&src=typd" target="_blank">#vCommunity</a> is more active than ever on sharing great work and if you like to make use of what the #vCommunity already cooked or even better if you like to share your own creations, please go here: <a href="https://vrealize.vmware.com/sample-exchange/">https://vrealize.vmware.com/sample-exchange/</a> and give it a shout-out on Twitter. Our great Product-Manager´s will hear you 😎.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Super excited to see how the <a href="https://twitter.com/hashtag/vROps?src=hash&amp;ref_src=twsrc%5Etfw">#vROps</a> community has grown over the past few years. I remember the lack of blogs and Ops experts. It is great to see this achievement of community driven ops content. To the <a href="https://twitter.com/hashtag/OpsCommunity?src=hash&amp;ref_src=twsrc%5Etfw">#OpsCommunity</a>.. Cheers.. <a href="https://twitter.com/VMware?ref_src=twsrc%5Etfw">@VMware</a> <a href="https://twitter.com/hashtag/vExpert?src=hash&amp;ref_src=twsrc%5Etfw">#vExpert</a> <a href="https://twitter.com/vRealizeOps?ref_src=twsrc%5Etfw">@vRealizeOps</a> <a href="https://twitter.com/vmwarecloudmgmt?ref_src=twsrc%5Etfw">@vmwarecloudmgmt</a> <a href="https://t.co/AEc6qgZ0Ep">https://t.co/AEc6qgZ0Ep</a></p>&mdash; Sunny Dua (@Sunny_Dua) <a href="https://twitter.com/Sunny_Dua/status/1081415672712679429?ref_src=twsrc%5Etfw">January 5, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>And in case you are already a <em>vR Ops-Ninja</em> and you are not on this list <a href="https://twitter.com/johnddias/lists/vrops-friends1">https://twitter.com/johnddias/lists/vrops-friends1</a> reach out to <a href="https://twitter.com/johnddias" target="_blank">John Dias</a> and he´ll put your name on the list as well.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">I just created a list!  It is short but growing.  If anyone is missing that should be there let me know. <a href="https://t.co/0eVPbQJCwq">https://t.co/0eVPbQJCwq</a></p>&mdash; John Dias 🔭 (@johnddias) <a href="https://twitter.com/johnddias/status/1068561326216228865?ref_src=twsrc%5Etfw">November 30, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<figure class="center"><a class="lightgallery" href="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" title="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" data-thumbnail="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" data-sub-html="<h2>Figure XIV: vROps Ninja</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg"
+            data-srcset="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg, /img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg 1.5x, /img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" width="400" />
+    </a><figcaption class="image-caption">Figure XIV: vROps Ninja</figcaption>
+    </figure>
+<hr>
+<p><strong><center>Thank&rsquo;s for reading</center></strong></p>
+<hr>
+<h2 id="resources">Resources</h2>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Article</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">[@VMware Blog] Dashboards Made Easy with vRealize Operations</td>
+<td align="center"><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html">https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html</a></td>
+</tr>
+<tr>
+<td align="left">[@VMware Blog] Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</td>
+<td align="center"><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html">https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html</a></td>
+</tr>
+<tr>
+<td align="left">[@VMware Blog] VMware´s Cloud Management Blog</td>
+<td align="center"><a href="https://blogs.vmware.com/management/">https://blogs.vmware.com/management/</a></td>
+</tr>
+<tr>
+<td align="left">[@VMware Blog] VMware´s Cloud-Native Blog</td>
+<td align="center"><a href="https://blogs.vmware.com/cloudnative">https://blogs.vmware.com/cloudnative</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2019-01-21</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/monitoring-container-vms-with-vrealize-operations-manager/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager" data-via="vmw_rguske" data-hashtags="January2019,VIC,Container,vSphere,Monitoring,vRealize Operations Manager,Dashboard"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/monitoring-container-vms-with-vrealize-operations-manager/" data-title="Monitoring Container VMs with vRealize Operations Manager" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/january2019/">January2019</a>,&nbsp;<a href="/tags/vic/">VIC</a>,&nbsp;<a href="/tags/container/">Container</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/monitoring/">Monitoring</a>,&nbsp;<a href="/tags/vrealize-operations-manager/">vRealize Operations Manager</a>,&nbsp;<a href="/tags/dashboard/">Dashboard</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" class="prev" rel="prev" title="Youtube Hugo-Shortcode workaround - when {{&lt; youtube &gt;}} won´t work"><i class="fas fa-angle-left fa-fw"></i>Youtube Hugo-Shortcode workaround - when {{&lt; youtube &gt;}} won´t work</a>
+            <a href="/event-driven-interactions-with-vsphere-using-functions-as-a-service/" class="next" rel="next" title="Event-driven interactions with vSphere using Functions as a Service">Event-driven interactions with vSphere using Functions as a Service<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"visitor":true}},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

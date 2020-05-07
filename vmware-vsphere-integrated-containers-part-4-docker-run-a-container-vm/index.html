@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>vSphere Integrated Containers Part IV: docker run a Container-VM - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere Integrated Containers Part IV: docker run a Container-VM" />
+<meta property="og:description" content="Now that we´ve become more familiar with the Virtual Container Host, it´s time to run our first Container-VM on it. The following example will show you how easy it is to instantiate an Nginx  Web Server container-image.
+We first pull down the image from Docker Hub to our Datastore by using docker -H 192.168.100.222:2376 --tls pull vmwarecna/nginx. You´ll see some running tasks in your vCenter taskbar under Recent Tasks. Validate the downloaded image with docker -H 192." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" />
+<meta property="article:published_time" content="2018-07-13T13:31:42+02:00" />
+<meta property="article:modified_time" content="2018-07-13T13:31:42+02:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="vSphere Integrated Containers Part IV: docker run a Container-VM"/>
+<meta name="twitter:description" content="Now that we´ve become more familiar with the Virtual Container Host, it´s time to run our first Container-VM on it. The following example will show you how easy it is to instantiate an Nginx  Web Server container-image.
+We first pull down the image from Docker Hub to our Datastore by using docker -H 192.168.100.222:2376 --tls pull vmwarecna/nginx. You´ll see some running tasks in your vCenter taskbar under Recent Tasks. Validate the downloaded image with docker -H 192."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" /><link rel="prev" href="https://rguske.github.io/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/" /><link rel="next" href="https://rguske.github.io/upgrade-vmware-vsphere-integrated-containers/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vSphere Integrated Containers Part IV: docker run a Container-VM",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "July2018, VIC, Container, VMware, vSphere, docker","wordcount":  894 ,
+        "url": "https:\/\/rguske.github.io\/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm\/","datePublished": "2018-07-13T13:31:42+02:00","dateModified": "2018-07-13T13:31:42+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske">Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske">Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">vSphere Integrated Containers Part IV: docker run a Container-VM</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2018-07-13>2018-07-13</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 894 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>5 min&nbsp;<span id="/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" class="leancloud_visitors" data-flag-title="vSphere Integrated Containers Part IV: docker run a Container-VM">
+                        <i class="far fa-eye fa-fw"></i><span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/vic_part_4_cover.jpg"
+        data-srcset="/img/vic_part_4_cover.jpg, /img/vic_part_4_cover.jpg 1.5x, /img/vic_part_4_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/vic_part_4_cover.jpg"
+        title="/img/vic_part_4_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Now that we´ve become more familiar with the Virtual Container Host, it´s time to run our first Container-VM on it. The following example will show you how easy it is to instantiate an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank">Nginx </a> Web Server container-image.</p>
+<p>We first <code>pull</code> down the image from Docker Hub to our Datastore by using <code>docker -H 192.168.100.222:2376 --tls pull vmwarecna/nginx</code>.
+You´ll see some running tasks in your vCenter taskbar under <em>Recent Tasks</em>. Validate the downloaded image with <code>docker -H 192.168.100.222:2376 --tls images</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls images
+
+REPOSITORY                TAG               IMAGE ID              CREATED                SIZE
+vmwarecna/nginx           latest            2492b68e515c          <span class="m">3</span> years ago            93.5MB
+</code></pre></td></tr></table>
+</div>
+</div><p>Alright! This was successful and by runnig the following command, the VIC Engine will deploy a Nginx Container-VM with 512MB vRAM (<code>-m</code>) which will listen to port (<code>-p</code>) 8080.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls run --name nginx1 -m 512M -d -p 8080:80 vmwarecna/nginx
+</code></pre></td></tr></table>
+</div>
+</div><p>Let´s check if our container is up and running. First in vCenter:</p>
+<a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg" />
+    </a>
+<p>&hellip;and second via command line:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls ps -a
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls ps -a
+
+CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          PORTS        NAMES
+1ce3a5a70099    nginx    <span class="s2">&#34;nginx -g daemon off;&#34;</span>    Up 1m     192.168.100.2:8080-&gt;80/tcp   nginx1
+</code></pre></td></tr></table>
+</div>
+</div><p>Just like any other Container Host, virtual or physical, you´ll reach your container via the Container Host IP-Address and port. I intended to show the same in my example before we configure a dedicated Container Network afterwards. We can reach the Nginx Web Server site via the VCH IP-Address and port 8080.</p>
+<a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg" />
+    </a>
+<p>If you´re wondering why I always used <code>-H vch-ip-address --tls</code> in my example that´s because I´ve not &ldquo;exported&rdquo; my VCH through it´s IP-Address and port yet. We can do this by the following:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.222:2376
+</code></pre></td></tr></table>
+</div>
+</div><p>After we´ve exported the host, we can go the classical way and use commands like: <code>docker pull</code>, <code>docker images</code>, <code>docker ps -a</code> etc. To get a complete list of all available and supported docker commands you´ve to go here:</p>
+<p><a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_app_dev/container_operations.html" target="_blank">VIC - Supported Docker Commands</a></p>
+<p>I´ve mentioned in the Networking-Part of this post, that I´ll come back to the point where I´ll configure a Container Network to an existing VCH. As a prerequisite we have to <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.networking.doc/GUID-809743E1-F366-4454-9BA5-9C3FD8C56D32.html" target="_blank">create a new Distributed Port Group </a> on our vDistributed Switch and ensure that all other network related configuration (e.g. VLAN) are set. I´ve gave my new dPG the name vic-container.</p>
+<p>As also mentioned we´ll make use of the <code>vic-machine configure</code> option to add the new network to our VCH. Before we begin, we need to know the internal ID of it. Use <code>vic-machine inspect</code> with the virtual machine name of your VCH:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin inspect <span class="se">\
+</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
+</span><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
+</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span><span class="se"></span>--name vch02
+</code></pre></td></tr></table>
+</div>
+</div><p>The output will show us the internal ID which is in my case <em>vm-212</em>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">INFO<span class="o">[</span>0008<span class="o">]</span> <span class="c1">### Inspecting VCH ####</span>
+INFO<span class="o">[</span>0008<span class="o">]</span> Validating target
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> VCH ID: VirtualMachine:vm-212
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> Installer version: v1.4.0-18893-6c385b0
+INFO<span class="o">[</span>0009<span class="o">]</span> VCH version: v1.4.0-18893-6c385b0
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> VCH upgrade status:
+INFO<span class="o">[</span>0009<span class="o">]</span> Installer has same version as VCH
+INFO<span class="o">[</span>0009<span class="o">]</span> No upgrade available with this installer version
+WARN<span class="o">[</span>0009<span class="o">]</span> Unable to identify address acceptable to host certificate, using assigned client IP as host address.
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> VCH Admin Portal:
+INFO<span class="o">[</span>0009<span class="o">]</span> https://192.168.100.222:2378
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> Published ports can be reached at:
+INFO<span class="o">[</span>0009<span class="o">]</span> 192.168.100.222
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> Docker environment variables:
+INFO<span class="o">[</span>0009<span class="o">]</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.222:2376
+INFO<span class="o">[</span>0009<span class="o">]</span>
+INFO<span class="o">[</span>0009<span class="o">]</span> Connect to docker:
+INFO<span class="o">[</span>0009<span class="o">]</span> docker -H 192.168.100.222:2376 --tls info
+INFO<span class="o">[</span>0009<span class="o">]</span> Completed successfully
+</code></pre></td></tr></table>
+</div>
+</div><p>Okay, now that we have the ID we can continue with adding the new container network by using <code>vic-machine configure</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin configure <span class="se">\
+</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
+</span><span class="se"></span>--user adm.jarvis@lab.jarvis.local <span class="se">\
+</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span><span class="se"></span>--id vm-212 <span class="se">\
+</span><span class="se"></span>--container-network vic-container:vic-container-network <span class="se">\
+</span><span class="se"></span>--container-network-gateway vic-container:192.168.100.1/24 <span class="se">\
+</span><span class="se"></span>--container-network-ip-range vic-container:192.168.100.0/24 <span class="se">\
+</span><span class="se"></span>--container-network-dns vic-container:192.168.100.80 <span class="se">\
+</span><span class="se"></span>--timeout 5m
+</code></pre></td></tr></table>
+</div>
+</div><p>I´ve used the option <code>--timeout 5m</code> because I ran in a timeout without it. I´m pretty sure this was performance related to my nested environment. But anyway! The configuration was successful and we can validate it with <code>vic-machine inspect</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker --tls inspect vic-container-network
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;vic-container-network&#34;</span>,
+        <span class="s2">&#34;Id&#34;</span>: <span class="s2">&#34;a6d0296afcace305048480244cca65564708a6dec474eb7d7a865593afdb593b&#34;</span>,
+        <span class="s2">&#34;Created&#34;</span>: <span class="s2">&#34;2018-07-12T22:11:39.685754355Z&#34;</span>,
+        <span class="s2">&#34;Scope&#34;</span>: <span class="s2">&#34;&#34;</span>,
+        <span class="s2">&#34;Driver&#34;</span>: <span class="s2">&#34;external&#34;</span>,
+        <span class="s2">&#34;EnableIPv6&#34;</span>: false,
+        <span class="s2">&#34;IPAM&#34;</span>: <span class="o">{</span>
+            <span class="s2">&#34;Driver&#34;</span>: <span class="s2">&#34;&#34;</span>,
+            <span class="s2">&#34;Options&#34;</span>: <span class="o">{}</span>,
+            <span class="s2">&#34;Config&#34;</span>: <span class="o">[</span>
+                <span class="o">{</span>
+                    <span class="s2">&#34;Subnet&#34;</span>: <span class="s2">&#34;192.168.100.0/24&#34;</span>,
+                    <span class="s2">&#34;Gateway&#34;</span>: <span class="s2">&#34;192.168.100.1&#34;</span>
+                <span class="o">}</span>
+            <span class="o">]</span>
+        <span class="o">}</span>,
+        <span class="s2">&#34;Internal&#34;</span>: false,
+        <span class="s2">&#34;Attachable&#34;</span>: false,
+        <span class="s2">&#34;Containers&#34;</span>: <span class="o">{}</span>,
+        <span class="s2">&#34;Options&#34;</span>: <span class="o">{}</span>,
+        <span class="s2">&#34;Labels&#34;</span>: <span class="o">{}</span>
+    <span class="o">}</span>
+<span class="o">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>At the end we need to validate the functionality as well and we´ll deploy a new Nginx but this time with the dedicated Container Network <em>vic-container-network</em> and without declaring the port.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker --tls run --name nginx3 --net vic-container-network vmwarecna/nginx
+</code></pre></td></tr></table>
+</div>
+</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg" />
+    </a>
+<p>There you go! :-)</p>
+<hr>
+<p>Just before coming to the end of my VIC series and because it´s Worldcup time, I´d like to show you a nice <em>World Cup 2018 CLI dashboard</em> by <a href="https://github.com/cedricblondeau" target="_blank"> Cédric Blondeau</a> running in a container.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">docker --tls pull cedricbl/world-cup-2018-cli-dashboard <span class="o">&amp;&amp;</span> <span class="se">\
+</span><span class="se"></span>docker --tls run --name Worldcup2018 -ti -e <span class="nv">TZ</span><span class="o">=</span>Europe/Berlin cedricbl/world-cup-2018-cli-dashboard
+</code></pre></td></tr></table>
+</div>
+</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg" />
+    </a>
+<p>Isn´t that cool?! :-) Try it out!</p>
+<hr>
+<p><strong><center>I hope you enjoyed reading.</center></strong></p>
+<hr>
+<p><strong>Previous articles:</strong></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/"><strong>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><strong>vSphere Integrated Containers Part II: vSphere Client Plug-In</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><strong>vSphere Integrated Containers Part I: OVA Deployment</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-introduction/"><strong>vSphere Integrated Containers: Introduction</strong></a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2018-07-13</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM" data-via="vmw_rguske" data-hashtags="July2018,VIC,Container,VMware,vSphere,docker"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" data-title="vSphere Integrated Containers Part IV: docker run a Container-VM" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/july2018/">July2018</a>,&nbsp;<a href="/tags/vic/">VIC</a>,&nbsp;<a href="/tags/container/">Container</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/docker/">Docker</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/" class="prev" rel="prev" title="vSphere Integrated Containers Part III: Deployment of a Virtual Container Host"><i class="fas fa-angle-left fa-fw"></i>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</a>
+            <a href="/upgrade-vmware-vsphere-integrated-containers/" class="next" rel="next" title="Upgrade vSphere Integrated Containers">Upgrade vSphere Integrated Containers<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"visitor":true}},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

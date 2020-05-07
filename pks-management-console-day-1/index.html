@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>VMware Enterprise PKS Management Console (EPMC) - Day 1 - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="VMware Enterprise PKS Management Console (EPMC) - Day 1" />
+<meta property="og:description" content="Info  VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition
+See: https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/
+   Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year. This release introduced the beta (v.0.9) of the *VMware Enterprise PKS Management Console (EPMC)* which offers an opinionated installation of Enterprise PKS. With the PKS minor release v.1.5.1, the EPMC went GA in version 1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/pks-management-console-day-1/" />
+<meta property="article:published_time" content="2019-11-27T14:53:23+01:00" />
+<meta property="article:modified_time" content="2019-11-27T14:53:23+01:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="VMware Enterprise PKS Management Console (EPMC) - Day 1"/>
+<meta name="twitter:description" content="Info  VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition
+See: https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/
+   Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year. This release introduced the beta (v.0.9) of the *VMware Enterprise PKS Management Console (EPMC)* which offers an opinionated installation of Enterprise PKS. With the PKS minor release v.1.5.1, the EPMC went GA in version 1."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/pks-management-console-day-1/" /><link rel="prev" href="https://rguske.github.io/pks-management-console-day-2/" /><link rel="next" href="https://rguske.github.io/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "VMware Enterprise PKS Management Console (EPMC) - Day 1",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/pks-management-console-day-1\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "November2019, Kubernetes, PKS, EPMC, vSphere","wordcount":  2773 ,
+        "url": "https:\/\/rguske.github.io\/pks-management-console-day-1\/","datePublished": "2019-11-27T14:53:23+01:00","dateModified": "2019-11-27T14:53:23+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske">Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske">Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">VMware Enterprise PKS Management Console (EPMC) - Day 1</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2019-11-27>2019-11-27</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 2773 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>14 min&nbsp;<span id="/pks-management-console-day-1/" class="leancloud_visitors" data-flag-title="VMware Enterprise PKS Management Console (EPMC) - Day 1">
+                        <i class="far fa-eye fa-fw"></i><span class=leancloud-visitors-count></span>&nbsp;views
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/epmc_day1_cover.jpg"
+        data-srcset="/img/epmc_day1_cover.jpg, /img/epmc_day1_cover.jpg 1.5x, /img/epmc_day1_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/epmc_day1_cover.jpg"
+        title="/img/epmc_day1_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#lets-start-with-my-conclusion-first">Let´s start with my conclusion first</a></li>
+    <li><a href="#its-an-appliance">It´s an appliance</a></li>
+    <li><a href="#prerequisites">Prerequisites</a>
+      <ul>
+        <li><a href="#prereq-for-vsphere">Prereq for vSphere</a></li>
+        <li><a href="#prereq-for-an-automated-nat-deployment">Prereq for an Automated NAT Deployment</a></li>
+      </ul>
+    </li>
+    <li><a href="#nine-simple-steps">Nine simple steps</a>
+      <ul>
+        <li><a href="#step-1-vcenter-account">Step 1: vCenter Account</a></li>
+        <li><a href="#step-2-networking">Step 2: Networking</a></li>
+        <li><a href="#step-3-identity">Step 3: Identity</a></li>
+        <li><a href="#step-4-availability-zones">Step 4: Availability Zones</a></li>
+        <li><a href="#step-5-resources--storage">Step 5: Resources &amp; Storage</a></li>
+        <li><a href="#step-6-plans">Step 6: Plans</a></li>
+        <li><a href="#step-7-integrations">Step 7: Integrations</a></li>
+        <li><a href="#step-8-harbor">Step 8: Harbor</a></li>
+        <li><a href="#step-9-ceip">Step 9: CEIP</a></li>
+        <li><a href="#let-the-magic-happen">Let the magic happen!</a></li>
+      </ul>
+    </li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition</p>
+<p>See: <a href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/">https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/</a></p>
+</div>
+        </div>
+    </div>
+<p>Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year. This release introduced the beta (v.0.9) of the <span style="color:#60C12F">*VMware Enterprise PKS Management Console (EPMC)*</span> which offers an opinionated installation of Enterprise PKS. With the PKS minor release v.1.5.1, the EPMC went GA in version 1.0.0.</p>
+<p>Further improvements and enhancements were made in version 1.6 (*1), which went GA on the 26th of November, a few days after the release of Enterprise PKS v.1.6 and after testing it, I´d like to share my impressions with you through this post.</p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>Note<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">*: <em>Enterprise PKS Management Console version number equals now the version number of Enterprise PKS.</em></div>
+        </div>
+    </div>
+<p>Thanks <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a> for reviewing both articles.</p>
+<h2 id="lets-start-with-my-conclusion-first">Let´s start with my conclusion first</h2>
+<p>The Enterprise PKS Management Console makes the adjective <em>TURNKEY</em>, which VMware uses when introducing Enterprise PKS, really well-rounded. It really improves the overall Day-1 and Day-2 experience by greatly simplifying the deployment process of Enterprise PKS (Day-1) and additionally providing a rich set of features around Visibility, User Management and Upgrades/Patches (Day-2).</p>
+<h2 id="its-an-appliance">It´s an appliance</h2>
+<p>EPMC will run as a Virtual Appliance in your Datacenter and can be downloaded through the provided link at the end of this post. It´s a 10,6 GB download and it´s that heavy because it´s all packaged together in one OVA, which in turn has the advantage, that you don´t have to work out the interoperability matrix.</p>
+<p>Included bits are:</p>
+<ul>
+<li><a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-deploy.html" target="_blank">Pivotal Ops Manager</a></li>
+<li><a href="https://docs.pivotal.io/pks/1-6/vsphere-nsxt-om-config.html" target="_blank">BOSH</a></li>
+<li><a href="https://docs.pivotal.io/pks/1-6/installing-pks-vsphere.html" target="_blank">PKS instance</a></li>
+<li><a href="https://docs.pivotal.io/partners/vmware-harbor/installing.html" target="_blank">Harbor</a></li>
+<li><a href="https://docs.pivotal.io/releasenotes/stemcell-index.html#rt_xenial" target="_blank">Stemcells</a></li>
+</ul>
+<p>When you think about <em>Dark Site installations</em>, it brings the benefit, that it´s just one download and you don´t have to care about the different pieces with the right version anymore.</p>
+<p><strong>Version Details:</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Element</strong></th>
+<th align="center"><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">EPMC version</td>
+<td align="center"><strong>v1.6.0</strong></td>
+</tr>
+<tr>
+<td align="center">Release date</td>
+<td align="center"><strong>November 26, 2019</strong></td>
+</tr>
+<tr>
+<td align="center">Installed Enterprise PKS version</td>
+<td align="center"><strong>v1.6.0</strong></td>
+</tr>
+<tr>
+<td align="center">Installed Ops Manager version</td>
+<td align="center"><strong>v2.7.3</strong></td>
+</tr>
+<tr>
+<td align="center">Installed Kubernetes version</td>
+<td align="center"><strong>v1.15.5</strong></td>
+</tr>
+<tr>
+<td align="center">Installed Harbor Registry version</td>
+<td align="center"><strong>v1.9.3</strong></td>
+</tr>
+<tr>
+<td align="center">Supported NSX-T versions</td>
+<td align="center"><strong>v2.4.1, v2.4.2, 2.5.0</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html" target="_blank">Release Notes Enterprise PKS 1.6</a></p>
+<p>Let´s have a look at the <code>artifacts.yaml</code> file to see the different component versions.</p>
+<p><code>ssh root@epmc.jarvis.lab</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@epmc <span class="o">[</span> /storage/data/artifacts <span class="o">]</span><span class="c1"># ls</span>
+artifacts.yaml  harbor-container-registry  ops-manager  pivotal-container-service  stemcells-ubuntu-xenial
+root@pksmgmt <span class="o">[</span> /storage/data/artifacts <span class="o">]</span><span class="c1"># cat artifacts.yaml</span>
+opsman:
+  name: ops-manager
+  version: 2.7.3
+  path: /storage/data/artifacts/ops-manager/2.7.3/ops-manager-vsphere-2.7.3-build.208.ova
+harbor:
+  name: harbor-container-registry
+  version: 1.9.3-build.2
+  path: /storage/data/artifacts/harbor-container-registry/1.9.3-build.2/harbor-container-registry-1.9.3-build.2.pivotal
+pks:
+  name: pivotal-container-service
+  version: 1.6.0-build.17
+  path: /storage/data/artifacts/pivotal-container-service/1.6.0-build.17/pivotal-container-service-1.6.0-build.17.pivotal
+pks-stemcell:
+  name: pks-stemcell
+  version: <span class="s2">&#34;456.51&#34;</span>
+  path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+harbor-stemcell:
+  name: harbor-stemcell
+  version: <span class="s2">&#34;456.51&#34;</span>
+  path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+bosh:
+  name: bosh
+  version: NA
+  path: NA
+root@epmc <span class="o">[</span> /storage/data/artifacts <span class="o">]</span>#
+</code></pre></td></tr></table>
+</div>
+</div><p><em><center>Figure I: Enterprise PKS Management Console component versions</center></em></p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>As always, before we come to the exciting part, we have to deal with the requirements as well as the prerequisuits in advance. The requirements for the Appliance are 2 vCPUs, 8 GB of vRAM and 40 GB of Diskspace. Since the Appliance must reach the vCenter Server as well as the NSX Manager, it should be assigned to a network with connectivity to the same.
+Furthermore, we have to define two Availability-Zones. From a vSphere point of view, an AZ can be a Cluster, a Host-Group or a Resource Pool. One AZ is for the PKS Management Plane components and the other one (at least) for the Kubernetes cluster Nodes. I´m running just one vSphere-Cluster in my Homelab and I´m using Resource-Pools to provide the two AZ´s.</p>
+<p><strong>IMPORTANT:</strong> The Resource-Pools should exist before starting with the PKS Configuration through the EPMC! Otherwise they will not show up if you configure them on-the-fly. Means, you have to restart from the beginning. Avoid this, trust me 😉.</p>
+<hr>
+<p>When it comes to Networking, EPMC offers three kinds of flavors:</p>
+<ul>
+<li><strong>Bring-Your-Own-Topology (BYOT):</strong>  Assumes that NSX-T is already preconfigured for the use of Ent. PKS.</li>
+<li><strong>Flannel:</strong> EPMC will provision a Flannel container networking interface during the Ent. PKS deployment.</li>
+</ul>
+<p>and now my favorite&hellip;</p>
+<ul>
+<li>the <strong>Automated NAT Deployment to NSX-T Data Center:</strong> This option will deploy Ent. PKS fully automated and <em>ready-for-use</em> configured in NAT mode, which includes the creation and configuration of the T0, T1 routers as well as the necessary IP Blocks for the Kubernetes Nodes and PODs. End-to-End!</li>
+</ul>
+<p>As always, I recommend reading the Prerequisite-sections in the documentation:</p>
+<h3 id="prereq-for-vsphere">Prereq for vSphere</h3>
+<p><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html</a></p>
+<h3 id="prereq-for-an-automated-nat-deployment">Prereq for an Automated NAT Deployment</h3>
+<p><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html</a></p>
+<h2 id="nine-simple-steps">Nine simple steps</h2>
+<p>After having finished the OVA deployment and the Appliance is successfully booted, you can reach the Login-page by entering the FQDN or the IP address into your Browser.</p>
+<p><strong>BTW:</strong> If you want to re-ensure that the appliance configuration has been correctly submitted during OVA provisioning, simply connect via <code>ssh</code> to the appliance and check the <em>environment</em> file.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@epmc <span class="o">[</span> /etc/vmware <span class="o">]</span><span class="c1"># cat environment</span>
+<span class="nv">APPLIANCE_SERVICE_UID</span><span class="o">=</span><span class="m">10000</span>
+<span class="nv">HOSTNAME</span><span class="o">=</span>epmc.jarvis.lab
+<span class="nv">IP_ADDRESS</span><span class="o">=</span>10.10.14.3
+<span class="nv">FILESERVER_PORT</span><span class="o">=</span><span class="m">443</span>
+<span class="nv">APPLIANCE_ID</span><span class="o">=</span>2tsKp8PbqZeR6ON5G5IhNZJnknET4fA+JGXvl6xyHJE<span class="o">=</span>
+<span class="nv">APPLIANCE_TLS_CERT</span><span class="o">=</span>
+<span class="nv">APPLIANCE_TLS_PRIVATE_KEY</span><span class="o">=</span>
+<span class="nv">APPLIANCE_TLS_CA_CERT</span><span class="o">=</span>
+<span class="nv">APPLIANCE_PERMIT_ROOT_LOGIN</span><span class="o">=</span>True
+<span class="nv">NETWORK_FQDN</span><span class="o">=</span>epmc.jarvis.lab
+<span class="nv">NETWORK_IP0</span><span class="o">=</span>10.10.14.3
+<span class="nv">NETWORK_NETMASK0</span><span class="o">=</span>255.255.255.192
+<span class="nv">NETWORK_GATEWAY</span><span class="o">=</span>10.10.14.62
+<span class="nv">NETWORK_DNS</span><span class="o">=</span>10.10.13.10 10.10.13.62
+<span class="nv">NETWORK_SEARCHPATH</span><span class="o">=</span>jarvis.lab
+<span class="nv">LOGINSIGHT_HOST</span><span class="o">=</span>10.10.13.5
+<span class="nv">LOGINSIGHT_PORT</span><span class="o">=</span><span class="m">9000</span>
+<span class="nv">LOGINSIGHT_ID</span><span class="o">=</span>039daa6c-3d83-46a8-8b44-db273e9d11a5
+</code></pre></td></tr></table>
+</div>
+</div><p><em><center>Figure II: Appliance configuration</center></em></p>
+<hr>
+<p>Login with the assigned credentials.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg" data-sub-html="<h2>Figure III: Enterprise PKS Management Console Login Page</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051246.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure III: Enterprise PKS Management Console Login Page</figcaption>
+    </figure>
+<hr>
+<p>On the next page click on <em>Install</em> to continue with the wizard-driven installation or on <em>Upgrade</em> to perform an upgrade of the EPMC (including all the new Enterprise PKS bits).</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg" data-sub-html="<h2>Figure IV: Install or Upgrade Option</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191127_115145.jpg" />
+    </a><figcaption class="image-caption">Figure IV: Install or Upgrade Option</figcaption>
+    </figure>
+<hr>
+<p>The first cool capability already comes on the next page, because you can choose between <em>Start Configuration</em>, which lets the Deployment-Wizard followed by, or <em>Import Configuration File</em> were we can upload an existing YAML configuration file from a previous deployment.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" data-sub-html="<h2>Figure V: Start or Import a Configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" />
+    </a><figcaption class="image-caption">Figure V: Start or Import a Configuration</figcaption>
+    </figure>
+<h3 id="step-1-vcenter-account">Step 1: vCenter Account</h3>
+<p>Step One is the connection establishment to our vCenter Server which will be our deployment target. Just enter the FQDN/ IP, provide valid credentials of a user with the appropriate vSphere administrator permissions, wait for the validation and you will recognize that the Datacenter field will be auto-populated.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" data-sub-html="<h2>Figure VI: vCenter Server Configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" />
+    </a><figcaption class="image-caption">Figure VI: vCenter Server Configuration</figcaption>
+    </figure>
+<h3 id="step-2-networking">Step 2: Networking</h3>
+<p>I´m not going to explain all three options in detail here. What I am very curious and excited about was the <em>Automated NAT deployment</em> option, which is an End-to-End PKS deployment in NAT mode (T0, T1, IP blocks) including NSX Certificates generation.</p>
+<p>If you choose this deployment-method too and in case you have configured an NSX-T Edge for the use of Enterprise PKS with NAT rules before, make sure you clean them out to prevent any conflicts, because EPMC will automatically create all NAT rules for you.</p>
+<p><strong>Proof-of-Concept Deployments:</strong></p>
+<p>The well documented prereqs for NSX-T describing how VMware recommends an Enterprise-ready NSX-T deployment with the necessary pieces deployed in High-Availability mode. Luckily, these prereqs are not &ldquo;hard coded&rdquo; and thus it doesn´t apply for Proof-of-Concept deployments. With regard to, one NSX Manager node and one Edge Node is sufficient.</p>
+<p><strong>Uplink Network</strong></p>
+<p>Like you´ve already done in the previous step for the vCenter Server before, just do the same here and provide the credentials for the administrative user. The fields for the NSX-T Edges will be auto-populated too. Select the one you intend to use and specify the appropriate Uplink Network specifications.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg" data-sub-html="<h2>Figure VII: NSX Manager and PKS Edge configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092454.jpg" />
+    </a><figcaption class="image-caption">Figure VII: NSX Manager and PKS Edge configuration</figcaption>
+    </figure>
+<p><strong>Network Resources</strong></p>
+<p>In the <em>Network Resources</em> section, specify the different subnets as well as network services like DNS and NTP for the following resources:</p>
+<ul>
+<li><strong>Deployment:</strong> Basically, the PKS Management Plane components like OpsManager, BOSH, the PKS instance as well as Harbor.</li>
+<li><strong>POD IP Block:</strong> Used by the Kubernetes PODs. <strong>IMPORTNAT!</strong> Maximum suffix is 24.</li>
+<li><strong>Node IP Block:</strong> Used by the Kubernetes Master, and Worker-Nodes. <strong>IMPORTNAT!</strong> Maximum suffix of 22.</li>
+<li><strong>Floating IPs:</strong> Used for SNAT IP addresses whenever a Namespace is created (NAT mode) as well as for Load Balancers which will be automatically provisioned by NSX-T, including the load balancer fronting the PKS API server and load balancers for pod ingress.</li>
+</ul>
+<p>I use self-signed certificates in my environment and for this reason I´ve toggled the radio button <em><strong>Disable SSL certificates verification</strong></em> to allow unsecured connections to the NSX Manager.</p>
+<p>At this point, I´d also like to point out to the documentation regarding the automated generation of certificates:</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>If NSX-T Data Center uses custom certificates and you do not provide the CA certificate for NSX Manager, Enterprise PKS Management Console automatically generates one and registers it with NSX Manager. This can cause other services that are integrated with NSX Manager not to function correctly.</p>
+<p><em>Source: <a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html</a></em></p>
+</div>
+        </div>
+    </div>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" data-sub-html="<h2>Figure VIII: Deployment, POD IP Block, Node IP Block and Floating IP range configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" />
+    </a><figcaption class="image-caption">Figure VIII: Deployment, POD IP Block, Node IP Block and Floating IP range configuration</figcaption>
+    </figure>
+<h3 id="step-3-identity">Step 3: Identity</h3>
+<p>Specify in this Step how you would like to add <em>Users</em> and <em>Groups</em> to Enterprise PKS. EPMC offers three option here:</p>
+<ol>
+<li>Create Users and Groups and assign roles to those which will be stored into the <strong>UAA database</strong>:</li>
+</ol>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg" data-sub-html="<h2>Figure IX: Identity configuration - UAA</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092708.jpg" />
+    </a><figcaption class="image-caption">Figure IX: Identity configuration - UAA</figcaption>
+    </figure>
+<p>or</p>
+<ol start="2">
+<li>Add an <strong>External LDAP Server</strong> and define the <em>User search base</em> and the <em>Group search base</em>:</li>
+</ol>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg" data-sub-html="<h2>Figure X: Identity configuration - LDAP</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191209_093203.jpg" />
+    </a><figcaption class="image-caption">Figure X: Identity configuration - LDAP</figcaption>
+    </figure>
+<p>or you can use a</p>
+<ol start="3">
+<li>SAML Identity Provider like e.g. <a href="https://www.okta.com/" target="_blank">Okta</a> or <a href="https://azure.microsoft.com/en-us/services/active-directory/" target="_blank">Azure Active Directory</a></li>
+</ol>
+<p>To finish this step, enter the address for the <strong>PKS API Server</strong> like <code>pks.jarvis.lab</code> in my case.</p>
+<p>Optionally, you can use <a href="https://en.wikipedia.org/wiki/OpenID_Connect" target="_blank">OpenID Connect</a> to authenticate users who access Kubernetes clusters with <code>kubectl</code> by using e.g. Okta as an external IDP. This will give administrators the ability to grant access on an namespace or cluster-wide level to Kubernetes end users.</p>
+<h3 id="step-4-availability-zones">Step 4: Availability Zones</h3>
+<p>Availability Zones (AZ) are one of four layers of fault tolerance in VMware Enterprise PKS. As a design-recommendation, you should separate the PKS Management Plane from the Kubernetes cluster. This can easily be done by tagging the first AZ as the <em>Management AZ</em>. Click on <em>Save Availability Zone</em> and add another one for the Kubernetes cluster(s) with the recommendation to deploy more than one, for high-availability purposes.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg" data-sub-html="<h2>Figure XI: Availability Design for VMware Enterprise PKS</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191114_053642.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure XI: Availability Design for VMware Enterprise PKS</figcaption>
+    </figure>
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/GUID-BDF962A2-3666-45E7-9830-068A05065AD7.html" target="_blank">VMware VVD5.1 | Availability Design for Enterprise PKS with NSX-T Workload Domains</a></p>
+<p>As mentioned at the beginning of this post (<em>Prerequisites</em>), I created two Resource Pools and gave them the appropriate description. <code>az-mgmt</code> and <code>az-prod-1</code>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg" data-sub-html="<h2>Figure XII: Availability Zones</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092815.jpg" />
+    </a><figcaption class="image-caption">Figure XII: Availability Zones</figcaption>
+    </figure>
+<h3 id="step-5-resources--storage">Step 5: Resources &amp; Storage</h3>
+<p>As you can see on the screenshot <em>Figure XII</em>, we have to configure three Resources now. Resources in this step is meant to be</p>
+<p>a) the storage for the service virtual machines which are as needed for compilation purposes (during installation, upgrade, and operation) by Ent. PKS, called <strong>Ephemeral Storage</strong> as well as</p>
+<p>b) the <strong>Kubernetes Persistent Volume Storage</strong> were all the <em>vmdks</em> will be stored for the Kubernetes persistent volumes (stateful applications) AND optionally</p>
+<p>c) the <strong>Permanent Storage</strong> for Enterprise PKS data. If you let this option default (radio switch off), the same selected datastore for Ephemeral Storage will be used for it.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg" data-sub-html="<h2>Figure XIII: Resources &amp; Storage Configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092930.jpg" />
+    </a><figcaption class="image-caption">Figure XIII: Resources &amp; Storage Configuration</figcaption>
+    </figure>
+<h3 id="step-6-plans">Step 6: Plans</h3>
+<p>Plans are configuration sets defining the sizes as well as the deployment target (AZ) of the Kubernetes clusters. The EPMC provides by default three &ldquo;T-Shirt sizes&rdquo;: <em>Small, Medium and Large</em>. I won´t go into details regarding the other per plan available options here, however I´d like to recommend reading the documentation (Resources section).</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg" data-sub-html="<h2>Figure XIV: Specification - PKS Plan Small</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093112.jpg" />
+    </a><figcaption class="image-caption">Figure XIV: Specification - PKS Plan Small</figcaption>
+    </figure>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg" data-sub-html="<h2>Figure XV: PKS Plans as T-Shirt sizes</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093256.jpg" />
+    </a><figcaption class="image-caption">Figure XV: PKS Plans as T-Shirt sizes</figcaption>
+    </figure>
+<h3 id="step-7-integrations">Step 7: Integrations</h3>
+<p>The integration of vRealize Operations Manager, vRealize Log Insight and Wavefront for monitoring, logging and enterprise observability can be all together done in Step 7. To monitor your Kubernetes clusters with vROps, it is necessary to import the <em>Management Pack for Container Monitoring</em>. A description of how to import the Management Pack as well as some more details on how it works (cAdvisor), can be found through this <a href="https://beyondelastic.com/2019/02/18/vmware-pks-1-3-monitor-k8s-with-vrops/" target="_blank">POST</a> by my friend <a href="https://twitter.com/Alec1823" target="_blank">Alex</a>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg" data-sub-html="<h2>Figure XVI: Specify logging, monitoring and other integrations</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093403.jpg" />
+    </a><figcaption class="image-caption">Figure XVI: Specify logging, monitoring and other integrations</figcaption>
+    </figure>
+<p>New in EPMC version 1.1.0 is the ability to attach a by PKS created Kubernetes cluster to <a href="https://cloud.vmware.com/tanzu-mission-control" target="_blank">VMware Tanzu Mission Control (TMC)</a> 🚀. <strong>Tanzu Mission Control</strong> provides you the ability to handle multi-cluster Kubernetes deployments across multiple clouds with operational consistency.</p>
+<p>More to find here: <a href="https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/">https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/</a></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" data-sub-html="<h2>Figure XVII: Integration into Tanzu Mission Control</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" />
+    </a><figcaption class="image-caption">Figure XVII: Integration into Tanzu Mission Control</figcaption>
+    </figure>
+<h3 id="step-8-harbor">Step 8: Harbor</h3>
+<p>Running production grade Kubernetes in your organization requires the use of a container image registry as well. <a href="https://goharbor.io/" target="_blank">Harbor</a> is where your container images found a place which they can call &ldquo;Home&rdquo;. Configure it in Step 8.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg" data-sub-html="<h2>Figure XVIII: Harbor Enterprise Container Registry configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093404.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure XVIII: Harbor Enterprise Container Registry configuration</figcaption>
+    </figure>
+<h3 id="step-9-ceip">Step 9: CEIP</h3>
+<p>Please stay a moment here and read the following blog post from Pivotal regarding the <em>Enhanced Telemetry for PKS</em> before you proceed further.</p>
+<p><a href="https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks">https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks</a></p>
+<p>Also: <a href="https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports">https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports</a></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" data-sub-html="<h2>Figure XIX: Harbor Enterprise Container Registry configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" />
+    </a><figcaption class="image-caption">Figure XIX: Harbor Enterprise Container Registry configuration</figcaption>
+    </figure>
+<hr>
+<p>Validate your deployment config and click on <strong>Generate Configuration</strong>.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" data-sub-html="<h2>Figure XX: Generate configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" />
+    </a><figcaption class="image-caption">Figure XX: Generate configuration</figcaption>
+    </figure>
+<h3 id="let-the-magic-happen">Let the magic happen!</h3>
+<p>You can see now that every configuration we made in the past 9 steps, is available and still editable in an in-browser text editor. Export the configuration as an YAML file to have it availavle for further deployments (see <em>Figure V: Start or Import an Configuration</em>).</p>
+<p>Click <strong>APPLY CONFIGURATION</strong></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" data-sub-html="<h2>Figure XXI: Configuration as YAML editable and exportable</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" />
+    </a><figcaption class="image-caption">Figure XXI: Configuration as YAML editable and exportable</figcaption>
+    </figure>
+<p>Observe the <em>Deployment status</em> and rejoice the green hooks.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" data-sub-html="<h2>Figure XXII: Deployment status page</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg"
+            data-srcset="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg 1.5x, /img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" />
+    </a><figcaption class="image-caption">Figure XXII: Deployment status page</figcaption>
+    </figure>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If you are running into troubles with the Enterprise PKS Management Console, you can connect to it via <code>ssh</code> (root) and execute the following command to obtain the server log:</p>
+<ul>
+<li><strong>Either</strong>: <code>journalctl -u pks-mgmt-server &gt; server.log</code> <strong>and than</strong> <code>cat server.log</code></li>
+<li><strong>Or</strong>: <code>journalctl -u pks-mgmt-server.service -f</code> to see more details like the following indicates:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Nov <span class="m">27</span> 21:51:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:50Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-
+</span><span class="s2">42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) configuring Harbor product on ops_manager\n&#34;</span>
+Nov <span class="m">27</span> 21:51:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: configuring product...
+Nov <span class="m">27</span> 21:51:55 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: setting up networkfinished setting up networksetting propertiesfinished setting propertiesapplying resource configuration <span class="k">for</span> the following jobs:errands are not provided, nothing to <span class="k">do</span> here
+Nov <span class="m">27</span> 21:51:56 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:56Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for environment, _harbor.depl
+</span><span class="s2">oyment_config : **********&#34;</span>
+Nov <span class="m">27</span> 21:51:56 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: finished configuring <span class="nv">producttime</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:56Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) installing Harbor product on ops_manager\n&#34;</span>
+Nov <span class="m">27</span> 21:51:57 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: attempting to apply changes to the targeted Ops Manager
+Nov <span class="m">27</span> 21:52:02 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:02Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing BOSH\n&#34;</span>
+Nov <span class="m">27</span> 21:52:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Putting Tile Credentials into CredHub\n&#34;</span>
+Nov <span class="m">27</span> 21:52:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:50Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Updating runtime configs for harbor-container-registry\n&#34;</span>
+Nov <span class="m">27</span> 21:54:33 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:54:33Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing VMware Harbor Registry\n&#34;</span>
+Nov <span class="m">27</span> 22:08:57 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:08:57Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Running errand smoke-testing for VMware Harbor Registry\n&#34;</span>
+Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Failed to read channel\n&#34;</span>
+Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Cleaning up BOSH director\n&#34;</span>
+Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for environment, _harbor.is_deployed : true&#34;</span>
+Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) checking harbor liveness\n&#34;</span>
+Nov <span class="m">27</span> 22:11:41 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:41Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( success) finished deploying Harbor\n&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>When it comes to <strong>BOSH</strong> realted issues, also have a look at this post by my colleague <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a>: <a href="http://keithlee.ie/2019/03/31/pks-troubleshooting-part-1-using-bosh-cli/" target="_blank">PKS Troubleshooting – Part 1: Using BOSH CLI</a></p>
+<p><strong>All about the Day-2 capabilities of the Enterprise PKS Management Console can be read here:</strong> <a href="https://rguske.github.io/post/pks-management-console-day-2/">https://rguske.github.io/post/pks-management-console-day-2/</a></p>
+<hr>
+<p><strong><center>Thanks for reading.</center></strong></p>
+<hr>
+<h2 id="resources">Resources</h2>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Site</strong></th>
+<th align="left"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>VMware Docs EPMC</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-console-index.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-console-index.html</a></td>
+</tr>
+<tr>
+<td align="left"><strong>Pivotal Docs EPMC</strong></td>
+<td align="left"><a href="http://docs-pcf-staging.cfapps.io/pks/1-6/console/deploy-console-ova.html">http://docs-pcf-staging.cfapps.io/pks/1-6/console/deploy-console-ova.html</a></td>
+</tr>
+<tr>
+<td align="left"><strong>VMware Release Notes</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/rn/VMware-Enterprise-PKS-16-Release-Notes.html</a></td>
+</tr>
+<tr>
+<td align="left"><strong>VMware VVD 5.1 - PKS</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/">https://docs.vmware.com/en/VMware-Validated-Design/5.1/sddc-architecture-and-design-for-vmware-enterprise-pks-with-vmware-nsx-t-workload-domains/</a></td>
+</tr>
+<tr>
+<td align="left"><strong>EPMC YAML Configuration import</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-yaml.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-yaml.html</a></td>
+</tr>
+<tr>
+<td align="left"><strong>VMware Docs - PKS Control Plane</strong></td>
+<td align="left"><a href="https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-control-plane.html">https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-control-plane.html</a></td>
+</tr>
+<tr>
+<td align="left"><strong>Download via VMware</strong></td>
+<td align="left"><a href="https://my.vmware.com/web/vmware/info/slug/infrastructure_operations_management/vmware_enterprise_pks/1_6">https://my.vmware.com/web/vmware/info/slug/infrastructure_operations_management/vmware_enterprise_pks/1_6</a></td>
+</tr>
+<tr>
+<td align="left"><strong>Download via Pivotal</strong></td>
+<td align="left"><a href="https://network.pivotal.io/products/pivotal-container-service">https://network.pivotal.io/products/pivotal-container-service</a></td>
+</tr>
+<tr>
+<td align="left"><strong>Download Pivotal CLI</strong></td>
+<td align="left"><a href="https://network.pivotal.io/products/pivotal-container-service">https://network.pivotal.io/products/pivotal-container-service</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2019-11-27</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/pks-management-console-day-1/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1" data-via="vmw_rguske" data-hashtags="November2019,Kubernetes,PKS,EPMC,vSphere"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/pks-management-console-day-1/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/pks-management-console-day-1/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/pks-management-console-day-1/" data-title="VMware Enterprise PKS Management Console (EPMC) - Day 1" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/november2019/">November2019</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/pks/">PKS</a>,&nbsp;<a href="/tags/epmc/">EPMC</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/pks-management-console-day-2/" class="prev" rel="prev" title="VMware Enterprise PKS Management Console (EPMC) - Day 2"><i class="fas fa-angle-left fa-fw"></i>VMware Enterprise PKS Management Console (EPMC) - Day 2</a>
+            <a href="/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" class="next" rel="next" title="A Linux Development Desktop with VMware Horizon - Part III: Shell">A Linux Development Desktop with VMware Horizon - Part III: Shell<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","enableQQ":false,"highlight":true,"lang":"en","pageSize":10,"placeholder":"Your comment ...","recordIP":true,"visitor":true}},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
