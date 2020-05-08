@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>VMware vSphere Integrated Containers: Introduction - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="VMware vSphere Integrated Containers: Introduction" />
+<meta property="og:description" content="I´m very keen on everything related to Cloud-Native and all topics around the decoupling of a process from the underlying operating system and as well much more on the infrastructure underneath in order to run those distributed systems, which are the result by the end of the day.
+For me personally, it became so present in 2016 for the first time and far more when I decided to work for VMware." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" />
+<meta property="article:published_time" content="2018-07-13T13:03:26+02:00" />
+<meta property="article:modified_time" content="2020-05-07T18:55:58+02:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="VMware vSphere Integrated Containers: Introduction"/>
+<meta name="twitter:description" content="I´m very keen on everything related to Cloud-Native and all topics around the decoupling of a process from the underlying operating system and as well much more on the infrastructure underneath in order to run those distributed systems, which are the result by the end of the day.
+For me personally, it became so present in 2016 for the first time and far more when I decided to work for VMware."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" /><link rel="prev" href="https://rguske.github.io/post/sometimes-you-gotta-run-before-you-can-walk/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "VMware vSphere Integrated Containers: Introduction",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-introduction\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "July2018, VIC, Container, VMware, vSphere","wordcount":  751 ,
+        "url": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-introduction\/","datePublished": "2018-07-13T13:03:26+02:00","dateModified": "2020-05-07T18:55:58+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">VMware vSphere Integrated Containers: Introduction</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2018-07-13>2018-07-13</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 751 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>4 min&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/vic_intro_cover.jpg"
+        data-srcset="/img/vic_intro_cover.jpg, /img/vic_intro_cover.jpg 1.5x, /img/vic_intro_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/vic_intro_cover.jpg"
+        title="/img/vic_intro_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#vic-component-overview">VIC Component Overview</a>
+      <ul>
+        <li><a href="#components">Components:</a></li>
+      </ul>
+    </li>
+    <li><a href="#download">Download</a></li>
+    <li><a href="#more">More</a>
+      <ul>
+        <li><a href="#vic-solutions-brief">[VIC Solutions Brief]</a></li>
+        <li><a href="#whitepapers">Whitepapers</a></li>
+        <li><a href="#documentation">Documentation</a></li>
+        <li><a href="#release-notes">Release Notes</a></li>
+        <li><a href="#vmware-hands-on-labs">VMware Hands-on Labs</a></li>
+        <li><a href="#offical-vmware-cloud-native-blog">Offical VMware Cloud-Native Blog</a></li>
+        <li><a href="#recommended-vmworld-videos">Recommended VMworld Videos</a></li>
+        <li><a href="#lightboard-videos">Lightboard Videos</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>I´m very keen on everything related to Cloud-Native and all topics around the decoupling of a process from the underlying operating system and as well much more on the infrastructure underneath in order to run those distributed systems, which are the result by the end of the day.</p>
+<p>For me personally, it became so present in 2016 for the first time and far more when I decided to work for VMware. Did you know that VMware is a huge contributor to Open Source Projects and a Platinum Member at the Cloud Native Computing Foundation - <a href="https://www.cncf.io/about/members/" target="_blank">CNCF</a>? You´ll find an overview of our open source projects <a href="https://vmware.github.io/" target="_blank"> here</a>.</p>
+<p>One of these Open Source Projects is <a href="https://vmware.github.io/vic-product/" target="_blank">vSphere Integrated Containers</a> aka <strong>VIC</strong>. With vSphere Integrated Containers, Container Images get instantiated as a Virtual Machine by using <a href="https://vmware.github.io/photon/" target="_blank"> PhotonOS</a>, a minimal Linux Distribution by VMware, basically to be up and running in a few seconds.</p>
+<p>Running Containers as a Virtual Machine means that IT-Ops Teams still have the ability to treat them like classical workload before. Therefore you don´t have to build out a separate, tailored infrastructure stack and can continue to leverage existing Scalability, Security and Monitoring capabilities.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg" data-sub-html="<h2>Figure I: Virtual Container Host vs. Docker Container Host</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180710_094308.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure I: Virtual Container Host vs. Docker Container Host</figcaption>
+    </figure>
+<p>vSphere Integrated Containers also supports running native Docker container hosts on vSphere. It allows developers to self-provision Docker container hosts for use as a development sandbox, a build server or a swarm cluster. Now you can treat a Docker host as ephemerally as a container.</p>
+<p>In my role as a VMware Technical Account Manager I have the chance to meet individuals in various roles at Enterprises. Many share the same strategic priority: <em>Transform some of their monolithic applications.</em></p>
+<p>vSphere Integrated Containers can leverage a solution for use cases like <a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/solutionbrief/vmware-vic-app-repackaging-use-case.pdf" target="_blank">App Repackaging</a> and <a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/solutionbrief/vmware-vic-developer-sandbox-use-case.pdf" target="_blank">Developer Sandbox</a>. Just to name a few.</p>
+<p>VMware vSphere Integrated Containers Version 1.4 was already launched by our Cloud-Native Business Unit (CNABU) on the 15th of March this year.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">vSphere Integrated Containers 1.4 is out! Adds support for vSphere 6.7, ROBO Advanced, VCH/C-VM Host affinity and more. <a href="https://t.co/UqsIl6xZoX">https://t.co/UqsIl6xZoX</a> <a href="https://twitter.com/cloudnativeapps?ref_src=twsrc%5Etfw">@cloudnativeapps</a> <a href="https://twitter.com/hashtag/VMwareVIC?src=hash&amp;ref_src=twsrc%5Etfw">#VMwareVIC</a></p>&mdash; Patrick Daigle (@pdaigle) <a href="https://twitter.com/pdaigle/status/996453354812342274?ref_src=twsrc%5Etfw">May 15, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>And while I´m writing this series&hellip;</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">vSphere Integrated Containers 1.4.1 has just been released - Docs: <a href="https://t.co/ZWmmWQ8zHO">https://t.co/ZWmmWQ8zHO</a>; RN: <a href="https://t.co/Uj2K57ueCx">https://t.co/Uj2K57ueCx</a>; DL: <a href="https://t.co/B2mjmsgpVQ">https://t.co/B2mjmsgpVQ</a> <a href="https://twitter.com/cloudnativeapps?ref_src=twsrc%5Etfw">@cloudnativeapps</a> <a href="https://twitter.com/hashtag/Docker?src=hash&amp;ref_src=twsrc%5Etfw">#Docker</a> <a href="https://twitter.com/hashtag/vSphere?src=hash&amp;ref_src=twsrc%5Etfw">#vSphere</a> <a href="https://twitter.com/hashtag/RunAllTheThings?src=hash&amp;ref_src=twsrc%5Etfw">#RunAllTheThings</a></p>&mdash; Bjoern Brundert (@bbrundert) <a href="https://twitter.com/bbrundert/status/1017665789258813440?ref_src=twsrc%5Etfw">July 13, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>&hellip;VIC version 1.4.1. has been released and includes:</p>
+<ul>
+<li>
+<p>Added the ability to manage use of DRS VM affinity groups for existing VCHs using vic-machine configure.</p>
+</li>
+<li>
+<p>When copying a CLI command on the Summary page of the VCH Creation Wizard, a confirmation message is now shown.</p>
+</li>
+<li>
+<p>New Built-In Repositories view in vSphere Integrated Containers Management Portal provides better visibility on all repositories that reside in the vSphere Integrated Containers Registry.</p>
+</li>
+<li>
+<p>Security and bug fixes.</p>
+</li>
+</ul>
+<p>More details through the Release-Notes <a href="https://docs.vmware.com/en/VMware-vSphere-Integrated-Containers/1.4.1/rn/vsphere-integrated-containers-141-release-notes.html" target="_blank">here</a>.</p>
+<hr>
+<h2 id="vic-component-overview">VIC Component Overview</h2>
+<p>You´ll get an quick overview over the VIC components through this Lightboard Video by <a href="https://twitter.com/pdaigle" target="_blank">Patrick Daigle</a>:
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/phsVFTVK4t4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<h3 id="components">Components:</h3>
+<ul>
+<li>
+<p><a href="http://vmware.github.io/vic/" target="_blank"><strong>vSphere Integrated Containers Engine</strong></a>, a container runtime for vSphere that allows you to provision containers as virtual machines.</p>
+</li>
+<li>
+<p><strong>vSphere Integrated Containers Plug-In for vSphere Client</strong>, that provides information about your vSphere Integrated Containers setup and allows you to deploy virtual container hosts directly from the vSphere Client.</p>
+</li>
+<li>
+<p><a href="https://vmware.github.io/harbor/" target="_blank"><strong>Harbor</strong></a>, <strong>an enterprise-class container registry server</strong> that stores and distributes container images.</p>
+</li>
+<li>
+<p>Multi-tenant content signing and validation</p>
+</li>
+<li>
+<p>Security and vulnerability analysis</p>
+</li>
+<li>
+<p>Audit logging</p>
+</li>
+<li>
+<p>Identity integration and role-based access control</p>
+</li>
+<li>
+<p>Image replication between instances</p>
+</li>
+<li>
+<p>Extensible API and graphical UI</p>
+</li>
+<li>
+<p><strong>vSphere Integrated Containers Management Portal</strong> based on project <a href="https://github.com/vmware/admiral" target="_blank"><strong>Admiral</strong></a>.</p>
+</li>
+</ul>
+<h2 id="download">Download</h2>
+<ul>
+<li><a href="https://www.vmware.com/go/download-vic" target="_blank">VMware vSphere Integrated Containers</a></li>
+</ul>
+<h2 id="more">More</h2>
+<h3 id="vic-solutions-brief">[VIC Solutions Brief]</h3>
+<ul>
+<li><a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/products/vsphere/vmware-vic-solutions-brief.pdf" target="_blank">Run Modern Apps with vSphere Integrated Containers</a></li>
+</ul>
+<h3 id="whitepapers">Whitepapers</h3>
+<ul>
+<li>
+<p><a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/whitepaper/vmw-wp-conatiner-on-vms-a4-final-web.pdf" target="_blank">Containers on Virtual Machines or Bare Metal?</a></p>
+</li>
+<li>
+<p><a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/vsphere/vmware-vsphere-integrated-containers-white-paper.pdf" target="_blank">Architecture Overview (VIC 1.2)</a></p>
+</li>
+</ul>
+<h3 id="documentation">Documentation</h3>
+<ul>
+<li>
+<p><a href="https://vmware.github.io/vic-product/#documentation" target="_blank">Official documentation page</a></p>
+</li>
+<li>
+<p><a href="https://github.com/vmware/vic" target="_blank"> VIC on Github</a></p>
+</li>
+<li>
+<p><a href="https://github.com/vmware/vic-ui" target="_blank">VIC UI on Github</a></p>
+</li>
+</ul>
+<h3 id="release-notes">Release Notes</h3>
+<ul>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere-Integrated-Containers/" target="_blank">Release Notes vSphere Integrated Containers</a></li>
+</ul>
+<h3 id="vmware-hands-on-labs">VMware Hands-on Labs</h3>
+<ul>
+<li><a href="https://labs.hol.vmware.com/HOL/catalogs/lab/4277" target="_blank">HOL-1830-02-CNA - vSphere Integrated Containers – Getting Started</a></li>
+</ul>
+<h3 id="offical-vmware-cloud-native-blog">Offical VMware Cloud-Native Blog</h3>
+<ul>
+<li><a href="https://blogs.vmware.com/cloudnative" target="_blank">VMware Cloud Native Blog</a></li>
+<li><a href="https://blogs.vmware.com/cloudnative/?s=vsphere+integrated+containers" target="_blank">Blog search query - VIC</a></li>
+</ul>
+<h3 id="recommended-vmworld-videos">Recommended VMworld Videos</h3>
+<p><a href="https://videos.vmworld.com/global/2017/videoplayer/3703" target="_blank">vSphere Integrated Containers Deep Dive: Cool Hacks, Debugging, and Demos (CNA2547BU)</a>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/AD7CD8Haqdc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<p><a href="https://videos.vmworld.com/global/2017/videoplayer/3238" target="_blank">Running Docker on Your Existing Infrastructure with vSphere Integrated Containers (CNA1699BU)</a>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/d5nf8tn2MIM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<p><a href="https://videos.vmworld.com/global/2018/videoplayer/22401" target="_blank">Deploy vSphere Integrated Containers in Production: Case Study with Allegis (CNA1200BU)</a></p>
+<h3 id="lightboard-videos">Lightboard Videos</h3>
+<p><a href="https://www.youtube.com/playlist?list=PL7bmigfV0EqRxUB5FND_5tRdmM1qdC_Hl" target="_blank"> VMware Cloud-Native YouTube Channel - VIC Lightboard Videos Overview</a>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/phsVFTVK4t4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<p><a href="https://www.youtube.com/watch?v=QLi9KasWLCM&t=1s&list=PL7bmigfV0EqRxUB5FND_5tRdmM1qdC_Hl&index=3" target="_blank">vSphere Integrated Containers: Networking Overview</a>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/QLi9KasWLCM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<p><a href="https://www.youtube.com/watch?v=WrVHbjTZHrs&t=0s&list=PL7bmigfV0EqRxUB5FND_5tRdmM1qdC_Hl&index=4" target="_blank">vSphere Integrated Containers: Storage</a>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/WrVHbjTZHrs" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<hr>
+<p><strong>Continue with:</strong></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><strong>vSphere Integrated Containers Part I: OVA Deployment</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><strong>vSphere Integrated Containers Part II: vSphere Client Plug-In</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/"><strong>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</strong></a></p>
+<p><a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"><strong>vSphere Integrated Containers Part IV: docker run a Container-VM</strong></a></p>
+<hr>
+<p><strong><center>Thanks for reading</center></strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2020-05-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/d979e6fe82842f8d77e91b7fee3585c7731923e1" target="_blank" title="commit by Robert Guske(rguske@mware.com) d979e6fe82842f8d77e91b7fee3585c7731923e1: change theme from casper-two to loveit">
+                                <i class="fas fa-hashtag fa-fw"></i>d979e6f</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vmware-vsphere-integrated-containers-introduction/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction" data-via="vmw_rguske" data-hashtags="July2018,VIC,Container,VMware,vSphere"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" data-title="VMware vSphere Integrated Containers: Introduction" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/july2018/">July2018</a>,&nbsp;<a href="/tags/vic/">VIC</a>,&nbsp;<a href="/tags/container/">Container</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/sometimes-you-gotta-run-before-you-can-walk/" class="prev" rel="prev" title="Sometimes you gotta run before you can walk"><i class="fas fa-angle-left fa-fw"></i>Sometimes you gotta run before you can walk</a>
+            <a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" class="next" rel="next" title="vSphere Integrated Containers Part I: OVA Deployment">vSphere Integrated Containers Part I: OVA Deployment<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

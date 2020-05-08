@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>A Linux Development Desktop with VMware Horizon - Part III: Shell - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="A Linux Development Desktop with VMware Horizon - Part III: Shell" />
+<meta property="og:description" content="High ⚡ Way to Shell The operationalization of platforms such as e.g. Kubernetes, or the use of tools for building services or applications such as Docker, requires in both cases the use of the command-line. There are dozens of great plugins, themes and extensions out there to pimp your shell so that it´ll help you to increase velocity as well as useability.
+Part III of my series is focused on the Shell and which &ldquo;Highway&rdquo; you can take to have the described tool available at the end." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" />
+<meta property="article:published_time" content="2020-02-27T16:32:48+01:00" />
+<meta property="article:modified_time" content="2020-05-07T18:55:58+02:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="A Linux Development Desktop with VMware Horizon - Part III: Shell"/>
+<meta name="twitter:description" content="High ⚡ Way to Shell The operationalization of platforms such as e.g. Kubernetes, or the use of tools for building services or applications such as Docker, requires in both cases the use of the command-line. There are dozens of great plugins, themes and extensions out there to pimp your shell so that it´ll help you to increase velocity as well as useability.
+Part III of my series is focused on the Shell and which &ldquo;Highway&rdquo; you can take to have the described tool available at the end."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" /><link rel="prev" href="https://rguske.github.io/post/pks-management-console-day-1/" /><link rel="next" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "A Linux Development Desktop with VMware Horizon - Part III: Shell",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/a-linux-development-desktop-with-vmware-horizon-part-iii-shell\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "February2020, Linux, Horizon, VDI, Tools, Shell","wordcount":  1130 ,
+        "url": "https:\/\/rguske.github.io\/post\/a-linux-development-desktop-with-vmware-horizon-part-iii-shell\/","datePublished": "2020-02-27T16:32:48+01:00","dateModified": "2020-05-07T18:55:58+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">A Linux Development Desktop with VMware Horizon - Part III: Shell</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-02-27>2020-02-27</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 1130 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>6 min&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/devdesk_part_iii_cover.jpg"
+        data-srcset="/img/devdesk_part_iii_cover.jpg, /img/devdesk_part_iii_cover.jpg 1.5x, /img/devdesk_part_iii_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/devdesk_part_iii_cover.jpg"
+        title="/img/devdesk_part_iii_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-zsh-aka-z-shell">1. ZSH aka Z shell</a></li>
+    <li><a href="#2-oh-my-zsh">2. Oh My ZSH</a>
+      <ul>
+        <li><a href="#21-zsh-syntax-highlighting">2.1 ZSH Syntax Highlighting</a></li>
+        <li><a href="#22-install-powerline-fonts">2.2 Install Powerline Fonts</a></li>
+        <li><a href="#23-powerlevel9k">2.3 Powerlevel9k</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-homebrew-on-linux-">3 Homebrew on Linux 🍺</a></li>
+    <li><a href="#4-clis-and-tools">4 CLI´s and tools</a>
+      <ul>
+        <li><a href="#41-zsh-autocompletion-for-kubectl">4.1 ZSH Autocompletion for <code>kubectl</code></a></li>
+        <li><a href="#42-powershell">4.2 Powershell</a></li>
+        <li><a href="#43-kind---kubernetes-in-docker">4.3 KinD - Kubernetes in Docker</a></li>
+        <li><a href="#44-octant">4.4 Octant</a></li>
+        <li><a href="#45-tmux">4.5 tmux</a></li>
+        <li><a href="#46-bat">4.6 bat</a></li>
+        <li><a href="#47-glances">4.7 glances</a></li>
+        <li><a href="#48-htop">4.8 htop</a></li>
+        <li><a href="#49-ctop">4.9 ctop</a></li>
+        <li><a href="#410-prettyping">4.10 prettyping</a></li>
+        <li><a href="#411-ytop">4.11 <code>ytop</code></a></li>
+        <li><a href="#412-figlet">4.12 figlet</a></li>
+        <li><a href="#413-lolcat">4.13 lolcat</a></li>
+        <li><a href="#414-cowsay">4.14 cowsay</a></li>
+        <li><a href="#415-asciinema">4.15 Asciinema</a></li>
+      </ul>
+    </li>
+    <li><a href="#shell-aliases">Shell Aliases</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="high--way-to-shell">High ⚡ Way to Shell</h1>
+<p>The operationalization of platforms such as e.g. Kubernetes, or the use of tools for building services or applications such as Docker, requires in both cases the use of the command-line. There are dozens of great plugins, themes and extensions out there to pimp your shell so that it´ll help you to increase velocity as well as useability.</p>
+<p><strong>Part III</strong> of my series is focused on the Shell and which <em>&ldquo;Highway&rdquo;</em> you can take to have the described tool available at the end.</p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" title="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" data-thumbnail="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" data-sub-html="<h2>Figure I: Default Terminal appearance before tuning</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg"
+            data-srcset="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg, /img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg 1.5x, /img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" />
+    </a><figcaption class="image-caption">Figure I: Default Terminal appearance before tuning</figcaption>
+    </figure>
+<h2 id="1-zsh-aka-z-shell">1. ZSH aka Z shell</h2>
+<p><a href="http://www.zsh.org/">http://www.zsh.org/</a></p>
+<p>ZSH is a extended shell with lots of features, support for plugins and themes.</p>
+<p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt install zsh
+</code></pre></td></tr></table>
+</div>
+</div><p><strong><span style="color:#6003B6">CentOS:</span></strong></p>
+<p>Should be installed by default.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo yum install zsh
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="2-oh-my-zsh">2. Oh My ZSH</h2>
+<p><a href="https://ohmyz.sh/">https://ohmyz.sh/</a></p>
+<p>A community-driven framework for managing your Z shell configuration.</p>
+<p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sh -c <span class="s2">&#34;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span class="k">)</span><span class="s2">&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong><span style="color:#6003B6">CentOS:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sh -c <span class="s2">&#34;</span><span class="k">$(</span>wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span class="k">)</span><span class="s2">&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Verify if ZSH is set as your new default Shell:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> <span class="nv">$SHELL</span>
+cat /etc/passwd <span class="p">|</span> grep <span class="s2">&#34;username&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="21-zsh-syntax-highlighting">2.1 ZSH Syntax Highlighting</h3>
+<p><a href="https://github.com/zsh-users/zsh-syntax-highlighting">https://github.com/zsh-users/zsh-syntax-highlighting</a></p>
+<p>This plugin enables highlighting of commands whilst they are typed and it´ll help you to avoid syntax erros before you run a command.</p>
+<p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<p>Let´s clone the repository into our <em>oh-my-zsh</em> plugins directory:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="si">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="p">~/.oh-my-zsh/custom</span><span class="si">}</span>/plugins/zsh-syntax-highlighting
+</code></pre></td></tr></table>
+</div>
+</div><p>Enable the plugin in your zsh config file (<code>~/.zshrc</code>) in the &ldquo;plugins section&rdquo;.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">plugins</span><span class="o">=(</span>git pks zsh-syntax-highlighting<span class="o">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Restart your terminal.</p>
+<h3 id="22-install-powerline-fonts">2.2 Install Powerline Fonts</h3>
+<p><a href="https://github.com/powerline/fonts">https://github.com/powerline/fonts</a></p>
+<p>Needed fonts for the Powerlevel9k theme (step 4.).</p>
+<p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt install fonts-powerline
+</code></pre></td></tr></table>
+</div>
+</div><p><strong><span style="color:#6003B6">CentOS:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/powerline/fonts.git --depth<span class="o">=</span><span class="m">1</span>
+<span class="nb">cd</span> fonts
+./install.sh
+<span class="nb">cd</span> ..
+rm -rf fonts
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="23-powerlevel9k">2.3 Powerlevel9k</h3>
+<p><a href="https://github.com/Powerlevel9k/powerlevel9k">https://github.com/Powerlevel9k/powerlevel9k</a></p>
+<p>This theme will give your shell a new shine.</p>
+<p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+vim ~/.zshrc
+</code></pre></td></tr></table>
+</div>
+</div><p>Replace the default ZSH_THEME with the new Powerlevel9k theme:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">ZSH_THEME</span><span class="o">=</span><span class="s2">&#34;powerlevel9k/powerlevel9k&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The Powerlevel9k theme gives you some pretty neat customization options which makes your terminal even more powerful.</p>
+<p>Here´s my configuration:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">POWERLEVEL9K_SHORTEN_DIR_LENGTH</span><span class="o">=</span><span class="m">3</span>
+<span class="nv">POWERLEVEL9K_SHORTEN_DELIMITER</span><span class="o">=</span>””
+<span class="nv">POWERLEVEL9K_PROMPT_ON_NEWLINE</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">POWERLEVEL9K_SHORTEN_STRATEGY</span><span class="o">=</span>”truncate_from_right”
+<span class="nv">POWERLEVEL9K_TIME_BACKGROUND</span><span class="o">=</span>blue
+<span class="nv">POWERLEVEL9K_DATE_BACKGROUND</span><span class="o">=</span>cyan
+<span class="nv">POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS</span><span class="o">=(</span>kubecontext <span class="nb">time</span> date<span class="o">)</span>
+<span class="nv">POWERLEVEL9K_LEFT_PROMPT_ELEMENTS</span><span class="o">=(</span>user dir vcs<span class="o">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>And you should also paste the following variable to the top of your <em>.zshrc</em> file, otherwise you will get an error when using <code>tmux</code> later.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">TERM</span><span class="o">=</span><span class="s2">&#34;xterm-256color&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>A logout or reboot of the system is necessary for the changes to take effect.</p>
+<p><strong>The result:</strong></p>
+<figure class="center"><a class="lightgallery" href="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg" title="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg" data-thumbnail="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg" data-sub-html="<h2>Figure II: ZSH with Powerlevel-9k Theme | l: Ubuntu r: CentOS*</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg"
+            data-srcset="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg, /img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg 1.5x, /img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201912_development_desktop/CapturFiles-20200310_120723.jpg" />
+    </a><figcaption class="image-caption">Figure II: ZSH with Powerlevel-9k Theme | l: Ubuntu r: CentOS*</figcaption>
+    </figure>
+<p><strong>I love it!</strong> And it doesn´t only looks good, it also comes in very handy if you work e.g. with <code>Git</code> as you can see on <em>Figure II</em> for example. The right screenshot shows you that I am in a git branch called <em>featurebranch</em> and the color indicates me, that my workingtree is either clean and theres nothing to commit (green) or that new files were added and needs to be commited (orange).</p>
+<hr>
+<p><strong>More! More! More!</strong></p>
+<h2 id="3-homebrew-on-linux-">3 Homebrew on Linux 🍺</h2>
+<p><a href="https://docs.brew.sh/Homebrew-on-Linux">https://docs.brew.sh/Homebrew-on-Linux</a></p>
+<p>Homebrew is a package manager (like Snappy) which simplifies the installation of software on your OS and should not be missing if you ask me.</p>
+<p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sh -c <span class="s2">&#34;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh<span class="k">)</span><span class="s2">&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The installation-script will throw a <strong>Warning</strong> at the end, because it points out that <code>/home/linuxbrew/.linuxbrew/bin</code> isn´t in your PATH.
+Add the path to your .zshrc dot-file.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">vim ~/.zshrc
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="s2">&#34;/home/linuxbrew/.linuxbrew/bin&#34;</span>
+<span class="nb">source</span> ~/.zshrc
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="4-clis-and-tools">4 CLI´s and tools</h2>
+<p>&hellip;I´m using and I´d like to recommend</p>
+<p><strong>kubectl</strong> - <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux">https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">A command line tool for controlling Kubernetes clusters.</div>
+        </div>
+    </div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew install kubectl
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="41-zsh-autocompletion-for-kubectl">4.1 ZSH Autocompletion for <code>kubectl</code></h3>
+<p><a href="https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete">https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> &lt;<span class="o">(</span>kubectl completion zsh<span class="o">)</span>
+<span class="nb">echo</span> <span class="s2">&#34;if [ </span><span class="nv">$commands</span><span class="s2">[kubectl] ]; then source &lt;(kubectl completion zsh); fi&#34;</span> &gt;&gt; ~/.zshrc
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="42-powershell">4.2 Powershell</h3>
+<p><a href="https://snapcraft.io/powershell">https://snapcraft.io/powershell</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">PowerShell is an cross-platform (Windows, Linux, and macOS) command-line shell for automation and configuration management.</div>
+        </div>
+    </div>
+<p>Installation via <code>snap</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo snap install powershell --classic
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="43-kind---kubernetes-in-docker">4.3 KinD - Kubernetes in Docker</h3>
+<p><a href="https://github.com/kubernetes-sigs/kind">https://github.com/kubernetes-sigs/kind</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">kind is a tool for running local Kubernetes clusters using Docker container &ldquo;nodes&rdquo;.</div>
+        </div>
+    </div>
+<figure class="center"><a class="lightgallery" href="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" title="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" data-thumbnail="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" data-sub-html="<h2>Figure III: kind create cluster</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg"
+            data-srcset="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg, /img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg 1.5x, /img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" height="800" width="800" />
+    </a><figcaption class="image-caption">Figure III: kind create cluster</figcaption>
+    </figure>
+<h3 id="44-octant">4.4 Octant</h3>
+<p><a href="https://github.com/vmware-tanzu/octant">https://github.com/vmware-tanzu/octant</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">Octant is a tool for developers to understand how applications run on a Kubernetes cluster.</div>
+        </div>
+    </div>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/posts/201912_development_desktop/octant-demo.gif"
+        data-srcset="/img/posts/201912_development_desktop/octant-demo.gif, /img/posts/201912_development_desktop/octant-demo.gif 1.5x, /img/posts/201912_development_desktop/octant-demo.gif 2x"
+        data-sizes="auto"
+        alt="Octant demo"
+        title="Octant demo" /></p>
+<p><em><center>Source: <a href="https://github.com/vmware-tanzu/octant">https://github.com/vmware-tanzu/octant</a></center></em></p>
+<h3 id="45-tmux">4.5 tmux</h3>
+<p><a href="https://github.com/tmux/tmux">https://github.com/tmux/tmux</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>tmux</code> is a terminal multiplexer.</div>
+        </div>
+    </div>
+<p><strong>Enable Mouse-scrolling</strong>: Scrolling the terminal pages by using the mouse-wheel is natural for me and because it´s not enabled by default when using <code>tmux</code> I need to enable it. Settings like this for example can be applied while running <code>tmux</code>. Press <em>ctrl + b</em> and then type <code>:set -g mouse on</code>.</p>
+<h3 id="46-bat">4.6 bat</h3>
+<p><a href="https://github.com/sharkdp/bat">https://github.com/sharkdp/bat</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>bat</code> is a cat clone with syntax highlighting and Git integration.</div>
+        </div>
+    </div>
+<h3 id="47-glances">4.7 glances</h3>
+<p><a href="https://github.com/nicolargo/glances">https://github.com/nicolargo/glances</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>glances</code> is a cross-platform monitoring tool.</div>
+        </div>
+    </div>
+<h3 id="48-htop">4.8 htop</h3>
+<p><a href="https://github.com/hishamhm/htop">https://github.com/hishamhm/htop</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>htop</code> is an interactive process viewer.</div>
+        </div>
+    </div>
+<h3 id="49-ctop">4.9 ctop</h3>
+<p><a href="https://github.com/bcicen/ctop">https://github.com/bcicen/ctop</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>ctop</code> provides a concise and condensed overview of real-time metrics for multiple containers:</div>
+        </div>
+    </div>
+<h3 id="410-prettyping">4.10 prettyping</h3>
+<p><a href="https://github.com/denilsonsa/prettyping">https://github.com/denilsonsa/prettyping</a></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>prettyping</code> is a wrapper around the standard ping tool with the objective of making the output prettier, more colorful, more compact, and easier to read.</div>
+        </div>
+    </div>
+<p>And all of them can be easily installed via <code>brew</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew install kind octant tmux bat glances htop ctop prettyping
+</code></pre></td></tr></table>
+</div>
+</div><p>Addtionally to <code>htop</code>, <code>ytop</code> (former gotop) is a pretty neat process and system monitor.</p>
+<h3 id="411-ytop">4.11 <code>ytop</code></h3>
+<p><a href="https://github.com/cjbassi/ytop">https://github.com/cjbassi/ytop</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew tap cjbassi/ytop <span class="o">&amp;&amp;</span> brew install ytop
+</code></pre></td></tr></table>
+</div>
+</div><figure class="center"><a class="lightgallery" href="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" title="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" data-thumbnail="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" data-sub-html="<h2>Figure IV: tmux, htop, ctop, prettyping &amp; ytop</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg"
+            data-srcset="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg, /img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg 1.5x, /img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" />
+    </a><figcaption class="image-caption">Figure IV: tmux, htop, ctop, prettyping &amp; ytop</figcaption>
+    </figure>
+<h3 id="412-figlet">4.12 figlet</h3>
+<p><a href="http://www.figlet.org/">http://www.figlet.org/</a></p>
+<h3 id="413-lolcat">4.13 lolcat</h3>
+<p><a href="https://github.com/busyloop/lolcat">https://github.com/busyloop/lolcat</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew install figlet lolcat
+
+figlet cliFun <span class="p">|</span> lolcat
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">      _ _ _____
+  ___<span class="p">|</span> <span class="o">(</span>_<span class="o">)</span>  ___<span class="p">|</span>   _ _ __
+ / __<span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>_ <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="err">&#39;</span>_ <span class="se">\
+</span><span class="se"></span><span class="p">|</span> <span class="o">(</span>__<span class="p">|</span> <span class="p">|</span> <span class="p">|</span>  _<span class="o">||</span> <span class="p">|</span>_<span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>
+ <span class="se">\_</span>__<span class="p">|</span>_<span class="p">|</span>_<span class="p">|</span>_<span class="p">|</span>   <span class="se">\_</span>_,_<span class="p">|</span>_<span class="p">|</span> <span class="p">|</span>_<span class="p">|</span>
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="414-cowsay">4.14 cowsay</h3>
+<p>You should have a look at this post regarding cowsay 😄: <a href="https://medium.com/@jasonrigden/cowsay-is-the-most-important-unix-like-command-ever-35abdbc22b7f" target="_blank">&quot;cowsay is the Most Important Unix-like Command Ever&quot;</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew install cowsay
+
+cowsay -f vader I am your...LOL!
+
+ __________________
+&lt; I am your...LOL! &gt;
+ ------------------
+        <span class="se">\ </span>   ,-^-.
+         <span class="se">\ </span>  !oYo!
+          <span class="se">\ </span>/./<span class="o">=</span><span class="se">\.\_</span>_____
+               <span class="c1">##        )\/\</span>
+                <span class="o">||</span>-----w<span class="o">||</span>
+                <span class="o">||</span>      <span class="o">||</span>
+
+               Cowth Vader
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<p><em><strong>Last but not least!</strong></em></p>
+<h3 id="415-asciinema">4.15 Asciinema</h3>
+<p><a href="https://asciinema.org/">https://asciinema.org/</a></p>
+<p>A perfect way how you can easily record your terminal sessions.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">brew install asciinema
+
+asciinema rec
+</code></pre></td></tr></table>
+</div>
+</div><script id="asciicast-aVEG2MvECoVzqtYjkjHWDpw1L" src="https://asciinema.org/a/aVEG2MvECoVzqtYjkjHWDpw1L.js" async></script>
+<hr>
+<h2 id="shell-aliases">Shell Aliases</h2>
+<p>Put the following aliases for the individual commands to the end of your <code>.zshrc</code> file</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">tmux
+<span class="nb">alias</span> <span class="nv">tmuxinit</span><span class="o">=</span><span class="s2">&#34;tmux new-session -n init&#34;</span>
+<span class="nb">alias</span> <span class="nv">c</span><span class="o">=</span>clear
+<span class="nb">alias</span> <span class="nv">k</span><span class="o">=</span>kubectl
+<span class="nb">alias</span> <span class="nv">w</span><span class="o">=</span><span class="s1">&#39;watch -n1&#39;</span>
+<span class="nb">alias</span> <span class="nv">ping</span><span class="o">=</span>prettyping
+<span class="nb">alias</span> <span class="nv">cat</span><span class="o">=</span>bat
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="youre-good-to-go">You´re good to go!</h1>
+<p><strong><center>Thanks for reading.</center></strong></p>
+<hr>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li>[2020-03-10]: Added Enable Mouse-scrolling for <code>tmux</code>; ZSH Syntax Highlighting; Powerlevel9k configuration</li>
+<li>[2020-03-10]: Updated Figure II</li>
+<li>[2020-03-18]: Added Glances &amp; Powershell</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2020-05-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/d979e6fe82842f8d77e91b7fee3585c7731923e1" target="_blank" title="commit by Robert Guske(rguske@mware.com) d979e6fe82842f8d77e91b7fee3585c7731923e1: change theme from casper-two to loveit">
+                                <i class="fas fa-hashtag fa-fw"></i>d979e6f</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-via="vmw_rguske" data-hashtags="February2020,Linux,Horizon,VDI,Tools,Shell"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/february2020/">February2020</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/horizon/">Horizon</a>,&nbsp;<a href="/tags/vdi/">VDI</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/shell/">Shell</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/pks-management-console-day-1/" class="prev" rel="prev" title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fas fa-angle-left fa-fw"></i>VMware Enterprise PKS Management Console (EPMC) - Day 1</a>
+            <a href="/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" class="next" rel="next" title="A Linux Development Desktop with VMware Horizon - Part II: Applications ">A Linux Development Desktop with VMware Horizon - Part II: Applications <i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

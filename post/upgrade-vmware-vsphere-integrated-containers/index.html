@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Upgrade vSphere Integrated Containers - Robert Guske</title>
+        <meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Upgrade vSphere Integrated Containers" />
+<meta property="og:description" content="I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues. In this post I´d like to guide you through the upgrade process of VMware vSphere Integrated Containers  from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.
+Thanks Tom Schwaller for reviewing this article.
+First of all and this applies to all upgrades, we have to check the compatibility and dependencys with our infrastructure components." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" />
+<meta property="article:published_time" content="2018-10-19T00:11:11+02:00" />
+<meta property="article:modified_time" content="2020-05-07T18:55:58+02:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Upgrade vSphere Integrated Containers"/>
+<meta name="twitter:description" content="I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues. In this post I´d like to guide you through the upgrade process of VMware vSphere Integrated Containers  from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.
+Thanks Tom Schwaller for reviewing this article.
+First of all and this applies to all upgrades, we have to check the compatibility and dependencys with our infrastructure components."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" /><link rel="next" href="https://rguske.github.io/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Upgrade vSphere Integrated Containers",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/upgrade-vmware-vsphere-integrated-containers\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "October2018, VIC, Container, VMware, vSphere, Docker, Upgrade","wordcount":  4546 ,
+        "url": "https:\/\/rguske.github.io\/post\/upgrade-vmware-vsphere-integrated-containers\/","datePublished": "2018-10-19T00:11:11+02:00","dateModified": "2020-05-07T18:55:58+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+                "@type": "Organization",
+                "name": "Robert Guske",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/rguske.github.io\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Read me"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading/small.min.svg"
+        data-src="/img/avatar.png"
+        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-sizes="auto"
+        alt="Robert Guske"
+        title="Robert Guske" />Robert Guske</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Read me">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Upgrade vSphere Integrated Containers</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2018-10-19>2018-10-19</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 4546 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>22 min&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/vic_upgrade_post_cover.jpg"
+        data-srcset="/img/vic_upgrade_post_cover.jpg, /img/vic_upgrade_post_cover.jpg 1.5x, /img/vic_upgrade_post_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/vic_upgrade_post_cover.jpg"
+        title="/img/vic_upgrade_post_cover.jpg" /></div><div class="details toc" id="toc-static">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#phase-i">Phase I</a>
+      <ul>
+        <li><a href="#vic-appliance-upgrade-v131-to-141">VIC Appliance Upgrade v1.3.1 to 1.4.1</a></li>
+      </ul>
+    </li>
+    <li><a href="#phase-ii">Phase II</a>
+      <ul>
+        <li><a href="#download-of-the-newest-vic-engine-bundle-vic-machine">Download of the newest VIC Engine Bundle (<code>vic-machine</code>)</a></li>
+      </ul>
+    </li>
+    <li><a href="#phase-iii">Phase III</a>
+      <ul>
+        <li><a href="#vic-vsphere-client-plug-in-upgrade">VIC vSphere Client Plug-In upgrade</a></li>
+      </ul>
+    </li>
+    <li><a href="#upgrading-v141-to-v143">Upgrading v1.4.1 to v1.4.3</a></li>
+    <li><a href="#phase-iv">Phase IV</a>
+      <ul>
+        <li><a href="#upgrade-of-the-virtual-container-hosts">Upgrade of the Virtual Container Host(s)</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues.
+In this post I´d like to guide you through the upgrade process of <a href="/post/vmware-vsphere-integrated-containers-introduction/">VMware vSphere Integrated Containers </a> from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.</p>
+<p>Thanks <a href="https://twitter.com/tom_schwaller" target="_blank">Tom Schwaller</a> for reviewing this article.</p>
+<p>First of all and this applies to all upgrades, we have to check the compatibility and dependencys with our infrastructure components. This is for instance our vCenter Server where we have dependencies through the <a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/">VIC vSphere Client Plug-In</a>!</p>
+<p>VIC version 1.4.0 is e.g. compatible with vCenter Server version 6.0.0 U2 until 6.7.0! VIC verison 1.3.0 in contrast to leaves version 6.0.0 U2 as well as 6.5.0. See <a href="https://www.vmware.com/resources/compatibility/sim/interop_matrix.php#interop&2=&149=" target="_blank">VMware Product Interoperability Matrices</a>.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181017_081612.jpg" />
+    </a>
+<p>Of course the same applies to the upgrade path of the solution itself. You can check the <a href="https://www.vmware.com/resources/compatibility/sim/interop_matrix.php#upgrade" target="_blank"> Upgrade Path </a> for every specific VMware solution also over the VMware Product Interoperability Matrices. You´ll find the available upgrade paths for VIC <a href="https://www.vmware.com/resources/compatibility/sim/interop_matrix.php#upgrade&solution=149" target="_blank"> HERE </a>.</p>
+<p>Let´s now take a look at the interoperability for vSphere Integrated Containers:</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20180815_084838.jpg" width="800" />
+    </a>
+<p>We can see that an upgrade from version 1.3.1 to 1.4(.x) is supported and this is for us the final sign to start.</p>
+<p>The upgrade itself can be splitted into four phases.</p>
+<ol>
+<li>VIC Appliance rollout in the desired and supported version</li>
+<li>Download of the newest VIC Engine Bundle (<code>vic-machine</code>)</li>
+<li>VIC vSphere Client Plug-In upgrade</li>
+<li>Upgrade of the Virtual Container Host(s)</li>
+</ol>
+<p>Before we initiate the deployment of the new VIC Appliance, we´ll validate our used versions. For the VIC Appliance itself we´ll simply start the VMware Remote Console which will then show us the currently used version.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20180807_115237.jpg" width="800" />
+    </a>
+<p><strong>Version</strong> (Github versioning): <strong>1.3.1</strong> (<a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">Tag</a>) <strong>3409</strong> (Build) <strong>132fb13</strong> (<a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository" target="_blank">last Commit</a>)</p>
+<p>Next, we´ll check the version of our running Virtual Container Host(s) by using the command <code>docker info</code>.</p>
+<p>As described in my previous post <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"> vSphere Integrated Containers Part IV: docker run a Container-VM </a> we can export our VCH through it´s IP-Address and port via <code>export DOCKER_HOST=192.168.100.220:2376</code>.</p>
+<p>After we´ve exported it we´ll fire up <code>docker --tls info</code> what will show us the following output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Containers: <span class="m">7</span>
+ Running: <span class="m">7</span>
+ Paused: <span class="m">0</span>
+ Stopped: <span class="m">0</span>
+Images: <span class="m">5</span>
+Server Version: v1.3.1-16055-afdab46
+Storage Driver: vSphere Integrated Containers v1.3.1-16055-afdab46 Backend Engine
+VolumeStores: default
+vSphere Integrated Containers v1.3.1-16055-afdab46 Backend Engine: RUNNING
+ VCH CPU limit: <span class="m">22800</span> MHz
+ VCH memory limit: 30.49 GiB
+ VCH CPU usage: <span class="m">79</span> MHz
+ VCH memory usage: 1.637 GiB
+ VMware Product: VMware vCenter Server
+ VMware OS: linux-x64
+ VMware OS version: 6.7.0
+ Registry Whitelist Mode: disabled.  All registry access allowed.
+Plugins:
+ Volume: vsphere
+ Network: bridge container-net
+ Log:
+Swarm: inactive
+Operating System: linux-x64
+OSType: linux-x64
+Architecture: x86_64
+CPUs: <span class="m">22800</span>
+Total Memory: 30.49GiB
+ID: vSphere Integrated Containers
+Docker Root Dir:
+Debug Mode <span class="o">(</span>client<span class="o">)</span>: <span class="nb">false</span>
+Debug Mode <span class="o">(</span>server<span class="o">)</span>: <span class="nb">false</span>
+Registry: registry.hub.docker.com
+Experimental: <span class="nb">false</span>
+Live Restore Enabled: <span class="nb">false</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>The server version which is running within our VCH is v1.3.1-16055-afdab46.</p>
+<p>Another way to get the desired info is to make use of the <code>vic-machine</code> command line utility with the option <code>inspect</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin inspect <span class="se">\
+</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
+</span><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
+</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span><span class="se"></span>--name vch-elk
+</code></pre></td></tr></table>
+</div>
+</div><p>The output will also show us the VCH version and the Installer version from which the VCH got deployed as well&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">INFO<span class="o">[</span>0000<span class="o">]</span> vSphere password <span class="k">for</span> adm.jarvis@LAB.JARVIS.LOCAL:
+INFO<span class="o">[</span>0004<span class="o">]</span> <span class="c1">### Inspecting VCH ####</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Validating target
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH ID: VirtualMachine:vm-1190
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Installer version: v1.3.1-16055-afdab46
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH version: v1.3.1-16055-afdab46
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH upgrade status:
+INFO<span class="o">[</span>0005<span class="o">]</span> Installer has same version as VCH
+INFO<span class="o">[</span>0005<span class="o">]</span> No upgrade available with this installer version
+WARN<span class="o">[</span>0005<span class="o">]</span> Unable to identify address acceptable to host certificate
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH Admin Portal:
+INFO<span class="o">[</span>0005<span class="o">]</span> https://192.168.100.220:2378
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Published ports can be reached at:
+INFO<span class="o">[</span>0005<span class="o">]</span> 192.168.100.220
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Docker environment variables:
+INFO<span class="o">[</span>0005<span class="o">]</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.220:2376
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Connect to docker:
+INFO<span class="o">[</span>0005<span class="o">]</span> docker -H 192.168.100.220:2376 --tls info
+INFO<span class="o">[</span>0005<span class="o">]</span> Completed successfully
+</code></pre></td></tr></table>
+</div>
+</div><p>&hellip;and a hint regarding the <em>VCH Upgrade Status</em>:</p>
+<blockquote>
+<p>INFO[0005] VCH upgrade status:</p>
+<p>INFO[0005] Installer has same version as VCH</p>
+<p>INFO[0005] No upgrade available with this installer version</p>
+</blockquote>
+<p>If we run <code>vic-machine inspect</code> executed from a newer VIC-Bundle like 1.4.x for example we´ll see that the installer version differs from the VCH version. But more about this later on.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">By the way! I´ve documented a few examples of <code>vic-machine</code> options on my Github-Repo <a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></div>
+        </div>
+    </div>
+<h2 id="phase-i">Phase I</h2>
+<h3 id="vic-appliance-upgrade-v131-to-141">VIC Appliance Upgrade v1.3.1 to 1.4.1</h3>
+<p>I suppose that you are familiar with the VIC Appliance deployment because this post described the upgrade of an already deployed VIC appliance but in case not, you can go <a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" target="_blank"> here</a> first.</p>
+<p><strong>Download</strong> the latest bits through this link: <a href="https://www.vmware.com/go/download-vic" target="_blank"><a href="http://www.vmware.com/go/download-vic">www.vmware.com/go/download-vic</a></a>.</p>
+<p>Start the deployment and be aware of the fact, that <em>this is NOT an Inplace-Upgrade</em> and therefore we have to enter a new IP address as well as FQDN.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg" width="800" />
+    </a>
+<p>If you wish to reuse the originally IP address after the upgrade, reconfigure the old appliance to use a temporary IP address before you start the upgrade.</p>
+<p>VIC Appliance &ndash;&gt; Edit Settings &ndash;&gt; vApp Options</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181016_112747.jpg" width="800" />
+    </a>
+<p>At this point I´d like to quote the following astracts from the <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrade_appliance.html" target="_blank"> Upgrade section </a>of the official documentation page:</p>
+<div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw"></i>Important<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p><strong>The upgrade process copies data from the old appliance to the new appliance</strong>. Consequently, if you deployed the appliances to a cluster, the virtual disks for the two appliances must be located in the same datastore cluster.</p>
+<p>&amp;</p>
+<p><strong>After the new appliance has initialized, do not go to the Getting Started page of the appliance</strong>. Logging in to the Getting Started page for the first time initializes the appliance. Initialization is only applicable to new installations and causes upgraded appliances not to function correctly.</p>
+<p>&amp;</p>
+<p>You cannot upgrade between untagged, open source builds of the same release like 1.4.3 open source build to 1.4.3 official build for example.</p>
+</div>
+        </div>
+    </div>
+<p>After the deployment of the new VIC Appliance we´ll establish a <code>ssh</code> connection to it.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">ssh root@192.168.100.161
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">The authenticity of host <span class="s1">&#39;192.168.100.161 (192.168.100.161)&#39;</span> can<span class="s1">&#39;t be established.
+</span><span class="s1">ECDSA key fingerprint is SHA256:iVIdb5Sv1pxUsiqelop7DVubJcvjuHHbPSJWBg3No1g.
+</span><span class="s1">Are you sure you want to continue connecting (yes/no)? yes
+</span><span class="s1">Warning: Permanently added &#39;</span>192.168.100.161<span class="err">&#39;</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+
+<span class="c1">##########################################################################</span>
+<span class="c1">##  SSH access to the vSphere Integrated Containers Appliance can be    ##</span>
+<span class="c1">##  used in exceptional cases that cannot be handled through standard   ##</span>
+<span class="c1">##  remote management or CLI tools. This is primarily intended for use  ##</span>
+<span class="c1">##  in break-fix scenarios, under the guidance of VMware GSS.           ##</span>
+<span class="c1">##########################################################################</span>
+
+Password:
+
+<span class="c1">##########################################################################</span>
+<span class="c1">##  SSH access to the vSphere Integrated Containers Appliance can be    ##</span>
+<span class="c1">##  used in exceptional cases that cannot be handled through standard   ##</span>
+<span class="c1">##  remote management or CLI tools. This is primarily intended for use  ##</span>
+<span class="c1">##  in break-fix scenarios, under the guidance of VMware GSS.           ##</span>
+<span class="c1">##########################################################################</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Use <code>cd /etc/vmware/upgrade</code> to go into the directory which contains the <code>./upgrade.sh</code> script and execute it. You´ll be promped to enter the neccassary information. As an alternative you can also specify the neccassary arguments upfront like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./upgrade.sh --target 192.168.178.72 <span class="se">\ </span>       <span class="c1">### vCenter Server</span>
+--username <span class="s1">&#39;administrator@jarvis.local&#39;</span> <span class="se">\ </span>    <span class="c1">### User with appropriate permissions</span>
+--password <span class="s1">&#39;*********&#39;</span>   <span class="se">\ </span>                   <span class="c1">### Password</span>
+--fingerprint <span class="s1">&#39;192.168.178.72 4F:D3:9B...&#39;</span> <span class="se">\ </span> <span class="c1">### vCenter Server Fingerprint</span>
+--dc Datacenter-North <span class="se">\ </span>                      <span class="c1">### vSphere Datacenter</span>
+--embedded-psc <span class="se">\ </span>                             <span class="c1">### Platform Service Controller (--embedded-psc or --external-psc)</span>
+--appliance-target 192.168.100.160 <span class="se">\ </span>         <span class="c1">### VIC Appliance where we´d upgrade from</span>
+--appliance-username root <span class="se">\ </span>                  <span class="c1">### VIC Appliance root user</span>
+--appliance-password VMware1234!?! <span class="se">\ </span>         <span class="c1">### root user password</span>
+--appliance-version v1.3.1 <span class="se">\ </span>                 <span class="c1">### VIC Appliance version where we come from</span>
+--destroy                                     <span class="c1">### Destroy the the old appliance after the upgrade is finished.</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>See: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrade_appliance.html#upgradeoptions" target="_blank"> Specify Command Line Options During Appliance Upgrade </a></p>
+<p>The first time I ran the upgrade it ended up in an error which was related to the &ldquo;<strong>? letter</strong>&rdquo; which I´ve used in my password.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@vic02 <span class="o">[</span> /etc/vmware/upgrade <span class="o">]</span><span class="c1"># ./upgrade.sh</span>
+-------------------------------
+VIC Appliance Upgrade to v1.4.1
+-------------------------------
+
+<span class="o">[=]</span> Values containing $ <span class="o">(</span>dollar sign<span class="o">)</span>, <span class="sb">`</span> <span class="o">(</span>backquote<span class="o">)</span>, <span class="se">\&#39;</span> <span class="o">(</span>single quote<span class="o">)</span>, <span class="s2">&#34; (double quote), and \ (backslash) will not be substituted properly.
+</span><span class="s2">[=] Change any input (passwords) containing these values before running this script.
+</span><span class="s2">Enter vCenter Server FQDN or IP: lab-vcsa67-001.lab.jarvis.local
+</span><span class="s2">Enter vCenter Administrator Username: administrator@jarvis.local
+</span><span class="s2">Enter vCenter Administrator Password:
+</span><span class="s2">If using an external PSC, enter the FQDN of the PSC instance (leave blank otherwise):
+</span><span class="s2">If using an external PSC, enter the PSC Admin Domain (leave blank otherwise):
+</span><span class="s2">govc: dial tcp: address tcp/VMware1234!: unknown port
+</span><span class="s2">[=]
+</span><span class="s2">[=] -------------------------
+</span><span class="s2">[=] Upgrade failed.
+</span><span class="s2">[=] Please save /var/log/vmware/upgrade.log and contact VMware support.
+</span><span class="s2">[=] -------------------------
+</span><span class="s2">[=]
+</span></code></pre></td></tr></table>
+</div>
+</div><p>The output <code>govc: dial tcp: address tcp/VMware1234!: unknown port</code> gives us first indications that it might be closely connected with the letters in my password. There are two ways to bypass this.</p>
+<ol>
+<li><strong>[The easy way]</strong> Use another user with the needed permissions (see <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.security.doc/GUID-21EF0E93-0003-4D41-AA11-A73824E1A88C.html" target="_blank"> <em>vSphere Extension Privileges</em>)</a> and without including an <strong>?</strong> in the password.</li>
+<li><strong>[The <a href="https://github.com/vmware/govmomi" target="_blank"> govmomi </a> way]</strong> Use the workaround described here: <a href="https://github.com/vmware/govmomi/issues/1203" target="_blank"> github.com/vmware/govmomi/issues/1203 </a></li>
+</ol>
+<p>I´ve chosen the easy way ;-) and this is how it looks when the upgrade to <strong>v1.4.1</strong> went well:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@vic02 <span class="o">[</span> /etc/vmware/upgrade <span class="o">]</span><span class="c1"># ./upgrade.sh</span>
+-------------------------------
+VIC Appliance Upgrade to v1.4.1
+-------------------------------
+
+2018-08-16 21:20:30 <span class="o">[=]</span> Values containing $ <span class="o">(</span>dollar sign<span class="o">)</span>, <span class="sb">`</span> <span class="o">(</span>backquote<span class="o">)</span>, <span class="se">\&#39;</span> <span class="o">(</span>single quote<span class="o">)</span>, <span class="s2">&#34; (double quote), and \ (backslash) will not besubstituted properly.
+</span><span class="s2">2018-08-16 21:20:30 [=] Change any input (passwords) containing these values before running this script.
+</span><span class="s2">Enter vCenter Server FQDN or IP: 192.168.178.72
+</span><span class="s2">Enter vCenter Administrator Username: admin@jarvis.local
+</span><span class="s2">Enter vCenter Administrator Password:
+</span><span class="s2">If using an external PSC, enter the FQDN of the PSC instance (leave blank otherwise):
+</span><span class="s2">If using an external PSC, enter the PSC Admin Domain (leave blank otherwise):
+</span><span class="s2">
+</span><span class="s2">Please verify the vCenter IP and TLS fingerprint: 192.168.178.72 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26
+</span><span class="s2">Is the fingerprint correct? (y/n): y
+</span><span class="s2">Enter vCenter Datacenter of the old VIC appliance: Datacenter-North
+</span><span class="s2">Enter old VIC appliance IP: 192.168.100.160
+</span><span class="s2">Enter old VIC appliance username: root
+</span><span class="s2">2018-08-16 21:21:25 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting upgrade 2018-08-16 21:20:30 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-08-16 21:21:26 [=] Please enter the VIC appliance password for root@192.168.100.160
+</span><span class="s2">Password:
+</span><span class="s2">2018-08-16 21:21:36 [=]
+</span><span class="s2">2018-08-16 21:21:36 [=] Detected old appliance&#39;s version as v1.3.1.
+</span><span class="s2">2018-08-16 21:21:36 [=] If the old appliance&#39;s version is not detected correctly, please enter &#34;</span>n<span class="s2">&#34; to abort the upgrade and contact VMware support.
+</span><span class="s2">2018-08-16 21:21:36 [=]
+</span><span class="s2">2018-08-16 21:21:36 [=] Do you wish to proceed with upgrade? [y/n]
+</span><span class="s2">y
+</span><span class="s2">2018-08-16 21:21:43 [=] Continuing with upgrade
+</span><span class="s2">2018-08-16 21:21:43 [=]
+</span><span class="s2">2018-08-16 21:21:45 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-08-16 21:22:00 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-08-16 21:22:18 [=] Migrating old disks to new VIC appliance...
+</span><span class="s2">2018-08-16 21:22:19 [=] Copying old data disk. Please wait.
+</span><span class="s2">2018-08-16 21:22:25 [=] Copying old database disk. Please wait.
+</span><span class="s2">2018-08-16 21:22:32 [=] Copying old log disk. Please wait.
+</span><span class="s2">2018-08-16 21:22:41 [=] Finished attaching migrated disks to new VIC appliance
+</span><span class="s2">2018-08-16 21:22:41 [=] Preparing upgrade environment
+</span><span class="s2">2018-08-16 21:22:41 [=] Disabling and stopping Admiral and Harbor
+</span><span class="s2">2018-08-16 21:22:41 [=] Waiting for register appliance...
+</span><span class="s2">2018-08-16 21:22:51 [=] Waiting for register appliance...
+</span><span class="s2">2018-08-16 21:23:01 [=] Waiting for register appliance...
+</span><span class="s2">2018-08-16 21:23:40 [=] Finished preparing upgrade environment
+</span><span class="s2">2018-08-16 21:23:40 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting Admiral Upgrade 2018-08-16 21:20:30 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-08-16 21:23:40 [=] Performing pre-upgrade checks
+</span><span class="s2">2018-08-16 21:23:40 [=] Starting Admiral upgrade
+</span><span class="s2">2018-08-16 21:24:28 [=] Updating Admiral configuration
+</span><span class="s2">2018-08-16 21:24:28 [=] Restarting Admiral
+</span><span class="s2">2018-08-16 21:25:17 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting Harbor Upgrade 2018-08-16 21:20:30 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-08-16 21:25:17 [=] Performing pre-upgrade checks
+</span><span class="s2">2018-08-16 21:25:17 [=] Starting Harbor upgrade
+</span><span class="s2">2018-08-16 21:25:17 [=] [=] Shutting down Harbor
+</span><span class="s2">2018-08-16 21:25:17 [=] [=] Migrating Harbor configuration and data
+</span><span class="s2">2018-08-16 21:25:17 [=] Testing database credentials...
+</span><span class="s2">2018-08-16 21:25:18 [=] Backing up harbor config...
+</span><span class="s2">2018-08-16 21:25:23 [=] [=] Successfully migrated Harbor configuration and data
+</span><span class="s2">2018-08-16 21:25:23 [=] Harbor upgrade complete
+</span><span class="s2">2018-08-16 21:25:23 [=] Starting Harbor
+</span><span class="s2">2018-08-16 21:25:33 [=] Enabling and starting Admiral and Harbor
+</span><span class="s2">2018-08-16 21:25:33 [=]
+</span><span class="s2">2018-08-16 21:25:33 [=] -------------------------
+</span><span class="s2">2018-08-16 21:25:33 [=] Upgrade completed successfully. Exiting.
+</span><span class="s2">2018-08-16 21:25:33 [=] -------------------------
+</span></code></pre></td></tr></table>
+</div>
+</div><p>All neccessary information about the upgrade are also available in the <strong>upgrade.log</strong> which is deposited under <code>/var/log/vmware</code> on the VIC appliance.</p>
+<h2 id="phase-ii">Phase II</h2>
+<h3 id="download-of-the-newest-vic-engine-bundle-vic-machine">Download of the newest VIC Engine Bundle (<code>vic-machine</code>)</h3>
+<p>In phase two we´ll download the VIC Engine Bundle which includes the following:</p>
+<ol>
+<li>Scripts for the <em>VIC vSphere Client Plug-In</em> like install, upgrade, or remove</li>
+<li>The latest version of the <code>vic-machine</code> utility</li>
+</ol>
+<p>I´ve already covered this topic in my previous post <a href="/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/" target="_blank"> vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</a> right at the beginning.</p>
+<p>Open the VIC <em>Getting Started</em> page by entering your VIC Address with port 9443 into a browser and find the download-button under the point <em>Infrastructure Deployment Tools</em>.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113850.jpg" width="800" />
+    </a>
+<p>Otherwise you can go directly to: https://<em>your VIC Appliance address</em>:9443/files/</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181001_113551.jpg" width="500" />
+    </a>
+<h2 id="phase-iii">Phase III</h2>
+<h3 id="vic-vsphere-client-plug-in-upgrade">VIC vSphere Client Plug-In upgrade</h3>
+<p>Now that we have the new VIC Enginge Bundle available we´ll make use of the <em>Upgrade Script</em> for the <em>VIC vSphere Client Plug-In</em>.</p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>Note<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">This applies only until version VIC 1.4.1!</div>
+        </div>
+    </div>
+<p>Use a terminal and you´ll find the script deposited in the path <strong>/vic141/ui/vcsa</strong> on your local computer or remote execution host (wherever you´ve downloaded it).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">total <span class="m">72</span>
+drwxr-xr-x@ <span class="m">6</span> rguske  staff    <span class="m">192</span> Aug <span class="m">16</span> 23:22 .
+drwxr-xr-x@ <span class="m">8</span> rguske  staff    <span class="m">256</span> Jul  <span class="m">3</span> 17:37 ..
+-rw-r--r--@ <span class="m">1</span> rguske  staff    <span class="m">937</span> Aug <span class="m">16</span> 23:22 configs
+-rwxr-xr-x@ <span class="m">1</span> rguske  staff  <span class="m">10364</span> Jun <span class="m">22</span> 22:28 install.sh
+-rwxr-xr-x@ <span class="m">1</span> rguske  staff   <span class="m">6002</span> Jun <span class="m">22</span> 22:28 uninstall.sh
+-rwxr-xr-x@ <span class="m">1</span> rguske  staff  <span class="m">12059</span> Jun <span class="m">22</span> 22:28 upgrade.sh
+</code></pre></td></tr></table>
+</div>
+</div><p>Execute <code>./upgrade.sh</code> so that the script starts prompting you after neccessary information regarding the vCenter Server target and user credentials. This is how it will look like:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">-------------------------------------------------------------
+This script will upgrade vSphere Integrated Containers plugin
+<span class="k">for</span> vSphere Client <span class="o">(</span>HTML<span class="o">)</span> and vSphere Web Client <span class="o">(</span>Flex<span class="o">)</span>.
+
+Please provide connection information to the vCenter Server.
+-------------------------------------------------------------
+Enter FQDN or IP to target vCenter Server: lab-vcsa67-001.lab.jarvis.local
+Enter your vCenter Administrator Username: administrator@jarvis.local
+Enter your vCenter Administrator Password:
+
+SHA-1 key fingerprint of host <span class="s1">&#39;lab-vcsa67-001.lab.jarvis.local&#39;</span> is <span class="s1">&#39;4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26&#39;</span>
+Are you sure you trust the authenticity of this host <span class="o">(</span>yes/no<span class="o">)</span>? yes
+
+-------------------------------------------------------------
+Checking existing plugins...
+-------------------------------------------------------------
+Plugin with key <span class="s1">&#39;com.vmware.vic&#39;</span> is already registered with VC. <span class="o">(</span>Version: 1.3.1.687<span class="o">)</span>
+Plugin with key <span class="s1">&#39;com.vmware.vic.ui&#39;</span> is already registered with VC <span class="o">(</span>Version: 1.3.1.687<span class="o">)</span>
+The version you are about to install is <span class="s1">&#39;1.4.1.1262&#39;</span>.
+
+Are you sure you want to <span class="k">continue</span> <span class="o">(</span>yes/no<span class="o">)</span>? yes
+
+-------------------------------------------------------------
+Preparing to upgrade vCenter Extension vSphere Integrated Containers-FlexClient...
+-------------------------------------------------------------
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:07.794+02:00 INFO  <span class="c1">### Installing UI Plugin ####</span>
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:07.919+02:00 INFO  Removing existing plugin to force install
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.164+02:00 INFO  Removed existing plugin
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.164+02:00 INFO  Installing plugin
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.484+02:00 INFO  Installed UI plugin
+
+-------------------------------------------------------------
+Preparing to upgrade vCenter Extension vSphere Integrated Containers-H5Client...
+-------------------------------------------------------------
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.535+02:00 INFO  <span class="c1">### Installing UI Plugin ####</span>
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.664+02:00 INFO  Removing existing plugin to force install
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.730+02:00 INFO  Removed existing plugin
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.730+02:00 INFO  Installing plugin
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:08.865+02:00 INFO  Installed UI plugin
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:09.230+02:00 WARN  ignoring potential product VM vm-321: not powered on
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:09.237+02:00 INFO  Found <span class="m">1</span> VM<span class="o">(</span>s<span class="o">)</span> tagged as OVA
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:09.247+02:00 INFO  Attempting to configure ManagedByInfo
+Aug <span class="m">29</span> <span class="m">2018</span> 23:12:09.485+02:00 INFO  Successfully configured ManagedByInfo
+</code></pre></td></tr></table>
+</div>
+</div><p>If all the entered information were correct and most of the time it depends on the correct user privileges, it will output&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">--------------------------------------------------------------
+Upgrade successful. Restart the vSphere Client services. All vSphere Client users must log out and log back in again to see the vSphere Integrated Containersplug-in.
+Exited successfully
+</code></pre></td></tr></table>
+</div>
+</div><p>Finally and as requested in the last lines of the above output, restart the vSphere Client services on your vCenter Server Appliance.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">service-control --stop vsphere-ui <span class="o">&amp;&amp;</span> service-control --start vsphere-ui
+service-control --stop vsphere-client <span class="o">&amp;&amp;</span> service-control --start vsphere-client
+</code></pre></td></tr></table>
+</div>
+</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg"
+            data-srcset="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg, /img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg 1.5x, /img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" width="800" />
+    </a>
+<p>In case you are missing something here in my description, you´ll perhaps find your answer here: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrade_h5_plugin_vcsa.html" target="_blank"> Manually Upgrade the vSphere Client Plug-In on vCenter Server Appliance </a></p>
+<h2 id="upgrading-v141-to-v143">Upgrading v1.4.1 to v1.4.3</h2>
+<p>This phase (II) of the VIC Upgrade-process is now obsolete with version 1.4.3. The upgrade of the vSphere (H5) Plug-In is now integrated into the whole process. As you can see through the following output, the question after the <em>VIC UI Plugin</em> upgrade appeared when you start the VIC Appliance upgrade:</p>
+<p><code>Upgrade VIC UI Plugin? (y/n):</code> and of course I answered it with <code>y</code> (=yes)&hellip;what else?!</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@vic01 <span class="o">[</span> /etc/vmware/upgrade <span class="o">]</span><span class="c1"># ./upgrade.sh</span>
+-------------------------------
+VIC Appliance Upgrade to v1.4.3
+-------------------------------
+
+2018-10-09 21:43:15 <span class="o">[=]</span> Values containing $ <span class="o">(</span>dollar sign<span class="o">)</span>, <span class="sb">`</span> <span class="o">(</span>backquote<span class="o">)</span>, <span class="se">\&#39;</span> <span class="o">(</span>single quote<span class="o">)</span>, <span class="s2">&#34; (double quote), and \ (backslash) will not be substituted properly.
+</span><span class="s2">2018-10-09 21:43:15 [=] Change any input (passwords) containing these values before running this script.
+</span><span class="s2">Enter vCenter Server FQDN or IP: lab-vcsa67-001.lab.jarvis.local
+</span><span class="s2">Enter vCenter Administrator Username: admin@jarvis.local
+</span><span class="s2">Enter vCenter Administrator Password:
+</span><span class="s2">If using an external PSC, enter the FQDN of the PSC instance (leave blank otherwise):
+</span><span class="s2">If using an external PSC, enter the PSC Admin Domain (leave blank otherwise):
+</span><span class="s2">
+</span><span class="s2">Please verify the vCenter IP and TLS fingerprint: lab-vcsa67-001.lab.jarvis.local 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26
+</span><span class="s2">Is the fingerprint correct? (y/n): y
+</span><span class="s2">Enter vCenter Datacenter of the old VIC appliance: Datacenter-North
+</span><span class="s2">Enter old VIC appliance IP: 192.168.100.161
+</span><span class="s2">Enter old VIC appliance username: root
+</span><span class="s2">Upgrade VIC UI Plugin? (y/n): y
+</span><span class="s2">2018-10-09 21:43:58 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting upgrade 2018-10-09 21:43:15 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-10-09 21:44:00 [=] Please enter the VIC appliance password for root@192.168.100.161
+</span><span class="s2">The authenticity of host &#39;192.168.100.161 (192.168.100.161)&#39; can&#39;t be established.
+</span><span class="s2">ECDSA key fingerprint is SHA256:MTj3Ak65Uem4uiipiygyOpVJuik7iawz09hFsz7tSM4.
+</span><span class="s2">Are you sure you want to continue connecting (yes/no)? yes
+</span><span class="s2">Password:
+</span><span class="s2">2018-10-09 21:44:09 [=]
+</span><span class="s2">2018-10-09 21:44:09 [=] Detected old appliance&#39;s version as v1.4.1.
+</span><span class="s2">2018-10-09 21:44:09 [=] If the old appliance&#39;s version is not detected correctly, please enter &#34;</span>n<span class="s2">&#34; to abort the upgrade and contact VMware support.
+</span><span class="s2">2018-10-09 21:44:09 [=]
+</span><span class="s2">2018-10-09 21:44:09 [=] Do you wish to proceed with upgrade? [y/n]
+</span><span class="s2">y
+</span><span class="s2">2018-10-09 21:44:17 [=] Continuing with upgrade
+</span><span class="s2">2018-10-09 21:44:17 [=]
+</span><span class="s2">2018-10-09 21:44:19 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-10-09 21:44:35 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-10-09 21:44:50 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-10-09 21:45:05 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-10-09 21:45:20 [=] Waiting for old VIC appliance to power off
+</span><span class="s2">2018-10-09 21:45:39 [=] Migrating old disks to new VIC appliance...
+</span><span class="s2">2018-10-09 21:45:40 [=] Copying old data disk. Please wait.
+</span><span class="s2">2018-10-09 21:45:45 [=] Copying old database disk. Please wait.
+</span><span class="s2">2018-10-09 21:45:51 [=] Copying old log disk. Please wait.
+</span><span class="s2">2018-10-09 21:45:59 [=] Finished attaching migrated disks to new VIC appliance
+</span><span class="s2">2018-10-09 21:45:59 [=] Preparing upgrade environment
+</span><span class="s2">2018-10-09 21:45:59 [=] Disabling and stopping Admiral and Harbor
+</span><span class="s2">2018-10-09 21:45:59 [=] Registering the appliance in PSC
+</span><span class="s2">2018-10-09 21:46:00 [=] Waiting for register appliance...
+</span><span class="s2">2018-10-09 21:46:39 [=] Finished preparing upgrade environment
+</span><span class="s2">2018-10-09 21:46:39 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting VIC UI Plugin Upgrade 2018-10-09 21:43:15 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-10-09 21:46:41 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting Admiral Upgrade 2018-10-09 21:43:15 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-10-09 21:46:41 [=] Performing pre-upgrade checks
+</span><span class="s2">2018-10-09 21:46:41 [=] Starting Admiral upgrade
+</span><span class="s2">2018-10-09 21:47:22 [=] Updating Admiral configuration
+</span><span class="s2">2018-10-09 21:47:23 [=] Restarting Admiral
+</span><span class="s2">2018-10-09 21:48:12 [=]
+</span><span class="s2">-------------------------
+</span><span class="s2">Starting Harbor Upgrade 2018-10-09 21:43:15 +0000 UTC
+</span><span class="s2">
+</span><span class="s2">2018-10-09 21:48:12 [=] Performing pre-upgrade checks
+</span><span class="s2">2018-10-09 21:48:12 [=] Starting Harbor upgrade
+</span><span class="s2">2018-10-09 21:48:12 [=] [=] Shutting down Harbor
+</span><span class="s2">2018-10-09 21:48:12 [=] [=] Migrating Harbor configuration and data
+</span><span class="s2">2018-10-09 21:48:12 [=] Testing database credentials...
+</span><span class="s2">2018-10-09 21:48:14 [=] Backing up harbor config...
+</span><span class="s2">2018-10-09 21:48:19 [=] [=] Successfully migrated Harbor configuration and data
+</span><span class="s2">2018-10-09 21:48:19 [=] Harbor upgrade complete
+</span><span class="s2">2018-10-09 21:48:19 [=] Starting Harbor
+</span><span class="s2">2018-10-09 21:48:30 [=] Enabling and starting Admiral and Harbor
+</span><span class="s2">2018-10-09 21:48:30 [=]
+</span><span class="s2">2018-10-09 21:48:30 [=] -------------------------
+</span><span class="s2">2018-10-09 21:48:30 [=] Upgrade completed successfully. Exiting. All vSphere Client users must log out and log back in again twice to see the vSphere Integrated Containers plug-in.
+</span><span class="s2">2018-10-09 21:48:30 [=] -------------------------
+</span><span class="s2">2018-10-09 21:48:30 [=]
+</span></code></pre></td></tr></table>
+</div>
+</div><p>In the vSphere Client you´ll see an information that plug-ins have been updated and they´ll be ready for use next time you log into vSphere Client.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg" width="800" />
+    </a>
+<p>Re-Login</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115536.jpg" width="800" />
+    </a>
+<h2 id="phase-iv">Phase IV</h2>
+<h3 id="upgrade-of-the-virtual-container-hosts">Upgrade of the Virtual Container Host(s)</h3>
+<p>Last but not least we´ll upgrade our Virtual Container Host(s). This will also be done by using the <code>vic-machine</code> utility with the option <code>upgrade</code>. Before I begin, I´ll check all current versions of my running VCH´s.</p>
+<p>Use <code>docker --tls version</code> to get the desired information.</p>
+<p>For my VCH based and deployed on version 1.3.1 the output looks like:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Client:
+ Version:           18.06.1-ce
+ API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
+ Go version:        go1.10.3
+ Git commit:        e68fc7a
+ Built:             Tue Aug <span class="m">21</span> 17:21:31 <span class="m">2018</span>
+ OS/Arch:           darwin/amd64
+ Experimental:      <span class="nb">false</span>
+
+Server:
+ Engine:
+  Version:          1.3.1
+  API version:      1.25 <span class="o">(</span>minimum version 1.19<span class="o">)</span>
+  Go version:       go1.8.3
+  Git commit:       afdab46
+  Built:            Mon Feb  <span class="m">5</span> 15:35:58 <span class="m">2018</span>
+  OS/Arch:          linux/amd64
+  Experimental:     <span class="nb">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>&hellip;and for my VCH based on version 1.4.1 it looks like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Client:
+ Version:           18.06.1-ce
+ API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
+ Go version:        go1.10.3
+ Git commit:        e68fc7a
+ Built:             Tue Aug <span class="m">21</span> 17:21:31 <span class="m">2018</span>
+ OS/Arch:           darwin/amd64
+ Experimental:      <span class="nb">false</span>
+
+Server:
+ Engine:
+  Version:          1.4.1
+  API version:      1.25 <span class="o">(</span>minimum version 1.19<span class="o">)</span>
+  Go version:       go1.8.7
+  Git commit:       b3a6192
+  Built:            Tue Jul  <span class="m">3</span> 15:05:57 <span class="m">2018</span>
+  OS/Arch:          linux/amd64
+  Experimental:     <span class="nb">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Now let´s upgrade our VCH from version 1.4.1 to our latest version:</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/vSphereIntegratedContainers?src=hash&amp;ref_src=twsrc%5Etfw">#vSphereIntegratedContainers</a> 1.4.3 is available with cool new enhancements like shell auto-complete function or vic-machine create --no-proxy option to skip proxying for certain URLs or domains. Read more about the new release here: <a href="https://t.co/f21abf64TQ">https://t.co/f21abf64TQ</a> <a href="https://twitter.com/hashtag/VIC?src=hash&amp;ref_src=twsrc%5Etfw">#VIC</a></p>&mdash; Robert (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1041955154910740480?ref_src=twsrc%5Etfw">September 18, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>The <code>upgrade</code> option from <code>vic-machine</code> requires the VM-ID from our VCH and we can get this ID by using <code>vic-machine inspect</code>.</p>
+<p>That´s the point were you´ll hopefully say to yourself &ldquo;<em>AH! We´ve already made use of this option to get the VCH version displayed</em>&rdquo; and you`re right &ldquo;<em>Watson</em>&rdquo; ;-)!</p>
+<p>And I´ve also mentioned that I´ll come back to this point. Because we now will fire up this command from the new VIC Engine Bundle&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin inspect <span class="se">\
+</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-North <span class="se">\
+</span><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
+</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span><span class="se"></span>--name vch-elk
+</code></pre></td></tr></table>
+</div>
+</div><p>&hellip;and the output will show us this time the following:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">INFO<span class="o">[</span>0000<span class="o">]</span> vSphere password <span class="k">for</span> adm.jarvis@LAB.JARVIS.LOCAL:
+INFO<span class="o">[</span>0004<span class="o">]</span> <span class="c1">### Inspecting VCH ####</span>
+INFO<span class="o">[</span>0004<span class="o">]</span> Validating target
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Installer version: v1.4.3-20031-fa9732d
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH version: v1.4.1-19562-b3a6192
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH upgrade status:
+INFO<span class="o">[</span>0005<span class="o">]</span> Upgrade available
+WARN<span class="o">[</span>0005<span class="o">]</span> Unable to identify address acceptable to host certificate, using assigned client IP as host address.
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH ID: vm-1190
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> VCH Admin Portal:
+INFO<span class="o">[</span>0005<span class="o">]</span> https://192.168.100.220:2378
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Published ports can be reached at:
+INFO<span class="o">[</span>0005<span class="o">]</span> 192.168.100.22
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Management traffic will use:
+INFO<span class="o">[</span>0005<span class="o">]</span> 192.168.100.220
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Docker environment variables:
+INFO<span class="o">[</span>0005<span class="o">]</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.220:2376
+INFO<span class="o">[</span>0005<span class="o">]</span>
+INFO<span class="o">[</span>0005<span class="o">]</span> Connect to docker:
+INFO<span class="o">[</span>0005<span class="o">]</span> docker -H 192.168.100.220:2376 --tls info
+INFO<span class="o">[</span>0005<span class="o">]</span> Completed successfully
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>INFO[0005] <strong>Installer version: v1.4.3-20031-fa9732d</strong></p>
+<p>INFO[0005] <strong>VCH version: v1.4.1-19562-b3a6192</strong></p>
+<p>INFO[0005] VCH upgrade status:</p>
+<p>INFO[0005] <strong>Upgrade available</strong></p>
+</blockquote>
+<p><em>Upgrade available</em> sounds good to me! Here we go:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin upgrade <span class="se">\
+</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-North <span class="se">\
+</span><span class="se"></span>--user administrator@jarvis.local <span class="se">\
+</span><span class="se"></span>--id vm-1190 <span class="se">\
+</span><span class="se"></span>--force
+</code></pre></td></tr></table>
+</div>
+</div><p>&hellip;and a couple of seconds later&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">INFO<span class="o">[</span>0000<span class="o">]</span> vSphere password <span class="k">for</span> administrator@jarvis.local:
+INFO<span class="o">[</span>0004<span class="o">]</span> <span class="c1">### Upgrading VCH ####</span>
+INFO<span class="o">[</span>0004<span class="o">]</span> Validating target
+INFO<span class="o">[</span>0004<span class="o">]</span>
+INFO<span class="o">[</span>0004<span class="o">]</span> VCH ID: VirtualMachine:vm-1190
+INFO<span class="o">[</span>0005<span class="o">]</span> Creating directory <span class="o">[</span>lab-ds-001<span class="o">]</span> vch-elk
+INFO<span class="o">[</span>0005<span class="o">]</span> Datastore path is <span class="o">[</span>lab-ds-001<span class="o">]</span> vch-elk
+INFO<span class="o">[</span>0005<span class="o">]</span> Uploading ISO images
+INFO<span class="o">[</span>0006<span class="o">]</span> Uploading appliance.iso as V1.4.3-20031-FA9732D-appliance.iso
+INFO<span class="o">[</span>0016<span class="o">]</span> Uploading bootstrap.iso as V1.4.3-20031-FA9732D-bootstrap.iso
+INFO<span class="o">[</span>0023<span class="o">]</span> Switching appliance iso to <span class="o">[</span>lab-ds-001<span class="o">]</span> vch-elk/V1.4.3-20031-FA9732D-appliance.iso
+INFO<span class="o">[</span>0023<span class="o">]</span> Setting VM configuration
+WARN<span class="o">[</span>0024<span class="o">]</span> If ops-user <span class="o">(</span>jarvis@lab<span class="o">)</span> belongs to the Administrators group, permissions on some resources might have been restricted
+INFO<span class="o">[</span>0025<span class="o">]</span> Waiting <span class="k">for</span> IP information
+INFO<span class="o">[</span>0025<span class="o">]</span> Waiting <span class="k">for</span> major appliance components to launch
+INFO<span class="o">[</span>0035<span class="o">]</span> Obtained IP address <span class="k">for</span> client interface: <span class="s2">&#34;192.168.100.220&#34;</span>
+INFO<span class="o">[</span>0035<span class="o">]</span> Checking VCH connectivity with vSphere target
+INFO<span class="o">[</span>0035<span class="o">]</span> vSphere API Test: https://lab-vcsa67-001.lab.jarvis.local vSphere API target responds as expected
+INFO<span class="o">[</span>0121<span class="o">]</span> Completed successfully
+</code></pre></td></tr></table>
+</div>
+</div><p>Version check (<code>docker --tls version</code>) again!</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Client:
+ Version:           18.06.1-ce
+ API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
+ Go version:        go1.10.3
+ Git commit:        e68fc7a
+ Built:             Tue Aug <span class="m">21</span> 17:21:31 <span class="m">2018</span>
+ OS/Arch:           darwin/amd64
+ Experimental:      <span class="nb">false</span>
+
+Server:
+ Engine:
+  Version:          1.4.3
+  API version:      1.25 <span class="o">(</span>minimum version 1.19<span class="o">)</span>
+  Go version:       go1.8.7
+  Git commit:       fa9732d
+  Built:            Fri Sep <span class="m">14</span> 08:14:14 <span class="m">2018</span>
+  OS/Arch:          linux/amd64
+  Experimental:     <span class="nb">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="conclusion">Conclusion</h2>
+<p>We´ve went through each individual phase of the upgrade-process of vSphere Integrated Containers. The upgrade to a newer version is simple and improvements were made in version 1.4.3.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg" width="800" />
+    </a>
+<p>When upgrading to a newer version we just have to observe the following aspects:</p>
+<ul>
+<li>Upgrading vSphere Integrated Containers is not that difficult and it´s well documented. <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrading_vic.html" target="_blank"> <em>Upgrading vSphere Integrated Containers</em></a></li>
+<li>Upgrade between untagged, open source builds of the same release like 1.4.3 open source build to 1.4.3 official build is not supported</li>
+<li>The upgrade of the vSphere Client Plug-In is now in the VIC Appliance upgrade integrated with version 1.4.3</li>
+<li>While upgrading the Virtual Conatiner Host(s), the VCH get´s rebooted which means that when you have NOT configured a dedicated Container-Network for your VCH, your application cannot be reached over the VCH IP-Address and it´s exposed port.</li>
+</ul>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>Tip<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p><em>To avoid this, make use of one of the big benefits vSphere Integrated Containers can leverage here and configure a</em> <em><strong>dedicated Container-Network to your VCH!</strong></em></p>
+<p><em>In addition have a look at <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/">vSphere Integrated Containers Part IV: docker run a Container-VM</a></em></p>
+</div>
+        </div>
+    </div>
+<p>You can easily test this by instantiating a (vmwarecna) <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank"> NGINX</a> Container-VM with the <code>--net</code> option, start upgrading the Virtual Container Host and see if the C-VM will become unreachable.</p>
+<p>Example: <code>docker --tls run --name vmwarenginx --net vch-blog-net -d -p 8080:80 vmwarecna/nginx</code></p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_104814.jpg" width="800" />
+    </a>
+<p>While upgrading the VCH, the NGINX Container-VM is still reachable.</p>
+<a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg"
+            data-srcset="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg 1.5x, /img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_105153.jpg" width="800" />
+    </a>
+<p>Please find the Release Notes for vSphere Integrated Containers here: <a href="https://docs.vmware.com/en/VMware-vSphere-Integrated-Containers/" target="_blank">VMware vSphere Integrated Containers Docs</a></p>
+<p>I hope you won´t find this post not too long for this kind of topic, but I wanted to be as detailed as possible.</p>
+<hr>
+<p><strong><center>Thanks for reading.</center></strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>The article was updated on 2020-05-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/d979e6fe82842f8d77e91b7fee3585c7731923e1" target="_blank" title="commit by Robert Guske(rguske@mware.com) d979e6fe82842f8d77e91b7fee3585c7731923e1: change theme from casper-two to loveit">
+                                <i class="fas fa-hashtag fa-fw"></i>d979e6f</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/upgrade-vmware-vsphere-integrated-containers/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-via="vmw_rguske" data-hashtags="October2018,VIC,Container,VMware,vSphere,Docker,Upgrade"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/october2018/">October2018</a>,&nbsp;<a href="/tags/vic/">VIC</a>,&nbsp;<a href="/tags/container/">Container</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/upgrade/">Upgrade</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" class="prev" rel="prev" title="vSphere Integrated Containers Part IV: docker run a Container-VM"><i class="fas fa-angle-left fa-fw"></i>vSphere Integrated Containers Part IV: docker run a Container-VM</a>
+            <a href="/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" class="next" rel="next" title="Youtube Hugo-Shortcode workaround - when {{&lt; youtube &gt;}} won´t work">Youtube Hugo-Shortcode workaround - when {{&lt; youtube &gt;}} won´t work<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript">
+    window.config = {"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"headerMode":{"desktop":"fixed","mobile":"auto"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};
+</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=html5shiv%2CElement.prototype.closest%2CrequestAnimationFrame%2CCustomEvent%2CPromise%2CObject.entries%2CObject.assign%2CObject.values%2Cfetch%2CElement.prototype.after%2CArray.prototype.fill%2CIntersectionObserver%2CArray.from%2CArray.prototype.find%2CMath.sign"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/object-fit-images/ofi.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
