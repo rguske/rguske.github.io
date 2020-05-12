@@ -26,7 +26,7 @@ Export the desired version as an environment variable. We will use this variable
 VERSION=v0.35.0
 ```
 
-The following shows how the container deployment looks like and important for this demonstration is the usage of the `docker` option `--publish=8080:8080` which will expose the port were we can reach the cAdvisor page.
+The following shows how the container deployment looks like and important for this example is the usage of the `docker` option `--publish=8080:8080` which will expose the port through which we can reach the cAdvisor website.
 
 ```shell
 sudo docker run \
@@ -41,7 +41,7 @@ sudo docker run \
   gcr.io/google-containers/cadvisor:$VERSION
 ```
 
-`docker ps` will tell us if both containers are up and running as well as if they are listening on the specified ports:
+`docker ps` will show us if both containers are up and running as well as if they are listening on the specified ports:
 
 ```shell
 CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS                      PORTS                           NAMES
