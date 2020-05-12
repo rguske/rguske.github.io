@@ -4,13 +4,13 @@ Since the [VMware Event Broker Appliance (VEBA)](https://vmweventbroker.io) is r
 
 Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore! Not only the workload is of interest, but also the dependencies of the individual components to each other are interesting. Beyond that and because I'm just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.
 
-[VMware's vRealize Operations Manager (vROps)](https://www.vmware.com/products/vrealize-operations.html) and it's Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate to you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.
+[VMware's vRealize Operations Manager (vROps)](https://www.vmware.com/products/vrealize-operations.html) and it's Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.
 
 ## Leveraging Google cAdvisor
 
 <i class='fab fa-github fa-fw'></i> Repository: https://github.com/google/cadvisor
 
-cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me demonstrate you what I mean.
+cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.
 
 I'm going to start a [nginx](https://hub.docker.com/r/vmwarecna/nginx/) container from which we will grap the data from after deploying cAdvisor.
 
