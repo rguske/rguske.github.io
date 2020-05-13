@@ -291,7 +291,7 @@ Similar procedure applies for the dashboard itself. `Dashboards` -> `ACTIONS` ->
 
 Here we go!
 
-{{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" caption="Figure IX: vROps Dashboard (again) to monitor VEBA" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" class="center" >}}
+{{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" caption="Figure IX: vROps Dashboard to monitor VEBA" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" class="center" >}}
 
 ---
 
