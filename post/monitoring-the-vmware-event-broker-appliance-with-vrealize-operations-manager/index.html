@@ -32,7 +32,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
                 "url": "https:\/\/rguske.github.io\/cover.png",
                 "width":  800 ,
                 "height":  600 
-            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1740 ,
+            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1738 ,
         "url": "https:\/\/rguske.github.io\/post\/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager\/","datePublished": "2020-05-12T23:59:50+02:00","dateModified": "2020-05-13T00:06:17+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
                 "@type": "Organization",
                 "name": "Robert Guske",
@@ -131,7 +131,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
         </div><article class="page single"><h1 class="single-title animated flipInX">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-05-12>2020-05-12</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>about 1740 words&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 1738 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>9 min&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -178,12 +178,12 @@ Monitoring in terms of utilization and performance captured my interest. So, how
   </ul>
 </nav></div>
             </div><div class="content" id="content"><p>Since the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer">VMware Event Broker Appliance (VEBA)</a> is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought 😉.</p>
-<p>Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore! Not only the workload is of interest, but also the dependencies of the individual components to each other are interesting. Beyond that and because I&rsquo;m just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.</p>
+<p>Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore, not only the workload is of interest but also the dependencies of the individual components to each other are interesting. Beyond that and because I&rsquo;m just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.</p>
 <p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreffer">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
 <h2 id="leveraging-google-cadvisor">Leveraging Google cAdvisor</h2>
 <p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor">https://github.com/google/cadvisor</a></p>
 <p>cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.</p>
-<p>I&rsquo;m going to start a <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreffer">nginx</a> container from which we will grap the data from after deploying cAdvisor.</p>
+<p>I&rsquo;m going to start a <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreffer">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -192,7 +192,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
 <pre class="chroma"><code class="language-shell" data-lang="shell">docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
 </code></pre></td></tr></table>
 </div>
-</div><p>The nginx webserver container is running and listining on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreffer">latest version</a> also as a docker container (for now).</p>
+</div><p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreffer">latest version</a> also as a docker container (for now).</p>
 <p>Export the desired version as an environment variable. We will use this variable (<code>$VERSION</code>) for the container deployment.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -255,7 +255,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
     </figure>
 <p>This is the kind of data that vROps can put into a good looking shape. Now let&rsquo;s move on to deploy cAdvisor on VEBA.</p>
 <h3 id="enabling-ssh-on-veba">Enabling SSH on VEBA</h3>
-<p><code>SSH</code> is disabled by deafult on VEBA. To enable <code>ssh</code>, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the <code>sshd</code> daemon by executing <code>systemctl start sshd</code> and validate if it&rsquo;s running properly with <code>systemctl status sshd</code>.</p>
+<p><code>SSH</code> is disabled by default on VEBA. To enable <code>ssh</code>, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the <code>sshd</code> daemon by executing <code>systemctl start sshd</code> and validate if it&rsquo;s running properly with <code>systemctl status sshd</code>.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" data-sub-html="<h2>Figure II: PhotonOS - start sshd daemon</h2>">
         <img
             class="lazyload"
@@ -268,7 +268,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
     </figure>
 <h3 id="deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</h3>
 <h4 id="environment-with-internet-access">Environment with internet access</h4>
-<p>Now it&rsquo;s on the time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreffer">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
+<p>Now it&rsquo;s time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreffer">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
 <p>Establish a <code>ssh</code> connection to your VEBA appliance and change into the <code>/tmp</code> directory. I have set up a repository on Github where I&rsquo;ve stored the necessary files for the deployment. From here (<code>/tmp</code>) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run <code>git clone https://github.com/rguske/monitoring-veba.git &amp;&amp; kubectl apply -k monitoring-veba/</code>.</p>
 <h4 id="environment-without-internet-access">Environment without internet access</h4>
 <p>For air-gapped environments, three simple steps are neccessary:</p>
@@ -518,7 +518,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
             <i class="icon fas fa-pencil-alt fa-fw"></i>Note<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">If you are running more then one VEBA node, than you have to repeat the next steps for each instance separately.</div>
+            <div class="admonition-content">If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.</div>
         </div>
     </div>
 <ul>

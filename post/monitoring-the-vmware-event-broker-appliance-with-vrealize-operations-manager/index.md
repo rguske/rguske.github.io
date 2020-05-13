@@ -2,7 +2,7 @@
 
 Since the [VMware Event Broker Appliance (VEBA)](https://vmweventbroker.io) is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that's what I thought :wink:.
 
-Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore! Not only the workload is of interest, but also the dependencies of the individual components to each other are interesting. Beyond that and because I'm just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.
+Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore, not only the workload is of interest but also the dependencies of the individual components to each other are interesting. Beyond that and because I'm just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.
 
 [VMware's vRealize Operations Manager (vROps)](https://www.vmware.com/products/vrealize-operations.html) and it's Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.
 
@@ -12,13 +12,13 @@ Monitoring in terms of utilization and performance captured my interest. So, how
 
 cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.
 
-I'm going to start a [nginx](https://hub.docker.com/r/vmwarecna/nginx/) container from which we will grap the data from after deploying cAdvisor.
+I'm going to start a [nginx](https://hub.docker.com/r/vmwarecna/nginx/) container from which we will grab the data from after deploying cAdvisor.
 
 ```shell
 docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
 ```
 
-The nginx webserver container is running and listining on port 8181 for HTTP requests. Now let's deploy cAdvisor in it's [latest version](https://github.com/google/cadvisor/releases) also as a docker container (for now).
+The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let's deploy cAdvisor in it's [latest version](https://github.com/google/cadvisor/releases) also as a docker container (for now).
 
 Export the desired version as an environment variable. We will use this variable (`$VERSION`) for the container deployment.
 
@@ -57,7 +57,7 @@ This is the kind of data that vROps can put into a good looking shape. Now let's
 
 ### Enabling SSH on VEBA
 
-`SSH` is disabled by deafult on VEBA. To enable `ssh`, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the `sshd` daemon by executing `systemctl start sshd` and validate if it's running properly with `systemctl status sshd`.
+`SSH` is disabled by default on VEBA. To enable `ssh`, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the `sshd` daemon by executing `systemctl start sshd` and validate if it's running properly with `systemctl status sshd`.
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" caption="Figure II: PhotonOS - start sshd daemon" src-s="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" class="center" width="700" >}}
 
@@ -65,7 +65,7 @@ This is the kind of data that vROps can put into a good looking shape. Now let's
 
 #### Environment with internet access
 
-Now it's on the time to deploy the cAdvisor as a Kubernetes `DaemonSet` onto VEBA. I've used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in `/deploy/kubernetes/base` and modified them a bit for my needs. We will have three files at the end, because we are using [kustomize](https://github.com/kubernetes-sigs/kustomize) in order to create and deploy the namespace and the daemonset for cAdvisor.
+Now it's time to deploy the cAdvisor as a Kubernetes `DaemonSet` onto VEBA. I've used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in `/deploy/kubernetes/base` and modified them a bit for my needs. We will have three files at the end, because we are using [kustomize](https://github.com/kubernetes-sigs/kustomize) in order to create and deploy the namespace and the daemonset for cAdvisor.
 
 Establish a `ssh` connection to your VEBA appliance and change into the `/tmp` directory. I have set up a repository on Github where I've stored the necessary files for the deployment. From here (`/tmp`) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run `git clone https://github.com/rguske/monitoring-veba.git && kubectl apply -k monitoring-veba/`.
 
@@ -208,7 +208,7 @@ To enable the capability to monitor Kubernetes Clusters in vRealize Operations M
 - Configure the Kubernetes Adapter to establish a connection to your VEBA node(s)
 
 {{< admonition note "Note" true >}}
-If you are running more then one VEBA node, than you have to repeat the next steps for each instance separately.
+If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.
 {{< /admonition >}}
 
 - Go to `Other Accounts` and select the `Kubernetes Adapter`
