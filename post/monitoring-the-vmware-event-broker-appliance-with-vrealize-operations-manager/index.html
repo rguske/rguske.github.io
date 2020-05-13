@@ -32,7 +32,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
                 "url": "https:\/\/rguske.github.io\/cover.png",
                 "width":  800 ,
                 "height":  600 
-            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1738 ,
+            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1805 ,
         "url": "https:\/\/rguske.github.io\/post\/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager\/","datePublished": "2020-05-12T23:59:50+02:00","dateModified": "2020-05-13T00:06:17+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
                 "@type": "Organization",
                 "name": "Robert Guske",
@@ -131,7 +131,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
         </div><article class="page single"><h1 class="single-title animated flipInX">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-05-12>2020-05-12</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>about 1738 words&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 1805 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>9 min&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -149,7 +149,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
   <ul>
     <li><a href="#leveraging-google-cadvisor">Leveraging Google cAdvisor</a>
       <ul>
-        <li><a href="#enabling-ssh-on-veba">Enabling SSH on VEBA</a></li>
+        <li><a href="#start-the-sshd-daemon-on-veba">Start the <code>sshd</code> daemon on VEBA</a></li>
         <li><a href="#deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</a>
           <ul>
             <li><a href="#environment-with-internet-access">Environment with internet access</a></li>
@@ -254,8 +254,8 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
     </a><figcaption class="image-caption">Figure I: cAdvisor provides performance data</figcaption>
     </figure>
 <p>This is the kind of data that vROps can put into a good looking shape. Now let&rsquo;s move on to deploy cAdvisor on VEBA.</p>
-<h3 id="enabling-ssh-on-veba">Enabling SSH on VEBA</h3>
-<p><code>SSH</code> is disabled by default on VEBA. To enable <code>ssh</code>, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the <code>sshd</code> daemon by executing <code>systemctl start sshd</code> and validate if it&rsquo;s running properly with <code>systemctl status sshd</code>.</p>
+<h3 id="start-the-sshd-daemon-on-veba">Start the <code>sshd</code> daemon on VEBA</h3>
+<p>To deploy cAdvisor on VEBA, we have to establish a <code>ssh</code> connection to it because we will run the deployment steps directly from within the appliance. The <code>sshd</code> daemon is stopped by default. To start it, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the <code>sshd</code> daemon by executing <code>systemctl start sshd</code> and validate if it&rsquo;s running properly with <code>systemctl status sshd</code>.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" data-sub-html="<h2>Figure II: PhotonOS - start sshd daemon</h2>">
         <img
             class="lazyload"
@@ -502,6 +502,16 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 <p>To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it&rsquo;s necessary to import a Management Pack for it, which is available for free at the <a href="https://marketplace.vmware.com" target="_blank" rel="noopener noreffer">VMware Marketplace</a>.</p>
 <ol>
 <li>Download the <a href="https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring" target="_blank" rel="noopener noreffer">Mangement Pack for Container Monitoring</a></li>
+</ol>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>Note:<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continues to work with vRealize Operations Advanced and Enterprise editions.</div>
+        </div>
+    </div>
+<ol start="2">
 <li>Import the Management Pack in vROps as follows:</li>
 </ol>
 <ul>
@@ -513,9 +523,9 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 </li>
 <li>Configure the Kubernetes Adapter to establish a connection to your VEBA node(s)</li>
 </ul>
-<div class="details admonition note open">
+<div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-pencil-alt fa-fw"></i>Note<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw"></i>Info:<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.</div>
@@ -583,10 +593,10 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     </figure>
 <div class="details admonition warning open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-exclamation-triangle fa-fw"></i>Attention<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-exclamation-triangle fa-fw"></i>Attention:<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content"><strong>Please do not</strong> forget to disable <code>ssh</code> again after finishing the above steps.</div>
+            <div class="admonition-content"><strong>Please do not</strong> forget to stop <code>ssh</code> again after finishing the above steps. <code>systemctl stop sshd</code></div>
         </div>
     </div>
 <h3 id="step-2-preparations-for-the-dashboard">Step 2. Preparations for the dashboard</h3>

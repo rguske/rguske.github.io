@@ -55,9 +55,9 @@ Both are up and we will reach the cAdvisor page via `localhost:8080`. Navigate t
 
 This is the kind of data that vROps can put into a good looking shape. Now let's move on to deploy cAdvisor on VEBA.
 
-### Enabling SSH on VEBA
+### Start the `sshd` daemon on VEBA
 
-`SSH` is disabled by default on VEBA. To enable `ssh`, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the `sshd` daemon by executing `systemctl start sshd` and validate if it's running properly with `systemctl status sshd`.
+To deploy cAdvisor on VEBA, we have to establish a `ssh` connection to it because we will run the deployment steps directly from within the appliance. The `sshd` daemon is stopped by default. To start it, open a virtual machine console session (Web or VMware Remote Console) through the vSphere Client and login with your configured root credentials. Start the `sshd` daemon by executing `systemctl start sshd` and validate if it's running properly with `systemctl status sshd`.
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" caption="Figure II: PhotonOS - start sshd daemon" src-s="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" class="center" width="700" >}}
 
@@ -201,13 +201,18 @@ Before we continue with the configuration steps in vRealize Operations Manager, 
 To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it's necessary to import a Management Pack for it, which is available for free at the [VMware Marketplace](https://marketplace.vmware.com).
 
 1. Download the [Mangement Pack for Container Monitoring](https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring)
+
+{{< admonition note "Note:" true >}}
+vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continues to work with vRealize Operations Advanced and Enterprise editions.
+{{< /admonition >}}
+
 2. Import the Management Pack in vROps as follows:
 - Go to `Administration` -> `Repository` and select `ADD/UPGRADE`
 - Browse to the folder which contains the `vmware-MPforContainerMonitoring-1.4.3-15987816.pak` file for the Management Pack and upload it up to vROps
   - It will appear after the installation
 - Configure the Kubernetes Adapter to establish a connection to your VEBA node(s)
 
-{{< admonition note "Note" true >}}
+{{< admonition info "Info:" true >}}
 If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.
 {{< /admonition >}}
 
@@ -237,8 +242,8 @@ The last configuration at this point is to provide the FQDN of your vCenter Serv
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_081807.jpg" caption="Figure VI: Account Information for VEBA" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_081807.jpg" class="center" >}}
 
-{{< admonition warning "Attention" true >}}
-**Please do not** forget to disable `ssh` again after finishing the above steps.
+{{< admonition warning "Attention:" true >}}
+**Please do not** forget to stop `ssh` again after finishing the above steps. `systemctl stop sshd`
 {{< /admonition >}}
 
 ### Step 2. Preparations for the dashboard
