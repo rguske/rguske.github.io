@@ -12,7 +12,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
 
 cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.
 
-I'm going to start a [nginx](https://hub.docker.com/r/vmwarecna/nginx/) container from which we will grab the data from after deploying cAdvisor.
+I'm going to start an [nginx](https://hub.docker.com/r/vmwarecna/nginx/) container from which we will grab the data from after deploying cAdvisor.
 
 ```shell
 docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
@@ -203,7 +203,7 @@ To enable the capability to monitor Kubernetes Clusters in vRealize Operations M
 1. Download the [Mangement Pack for Container Monitoring](https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring)
 
 {{< admonition note "Note:" true >}}
-vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continues to work with vRealize Operations Advanced and Enterprise editions.
+vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continue to work with vRealize Operations Advanced and Enterprise editions.
 {{< /admonition >}}
 
 2. Import the Management Pack in vROps as follows:
