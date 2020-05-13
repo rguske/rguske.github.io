@@ -61,7 +61,7 @@ This is the kind of data that vROps can put into a good looking shape. Now let's
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" caption="Figure II: PhotonOS - start sshd daemon" src-s="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" class="center" width="700" >}}
 
-### Deploy the cAdvisor as a Kubernetes DeamonSet
+### Deploy the cAdvisor as a Kubernetes DaemonSet
 
 #### Environment with internet access
 
@@ -192,7 +192,7 @@ cadvisor-ccgcx   1/1     Running   0          4m
 
 ## A Dashboard to monitor the VMware Event Broker Appliance
 
-Before we continue with the configuration steps in vRealize Operations Manager, I wanted to give you a little sneak peak what you can expect by the end.
+Before we continue with the configuration steps in vRealize Operations Manager, I wanted to give you a little sneak peek what you can expect by the end.
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" caption="Figure III: vROps Dashboard to monitor VEBA" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" class="center" >}}
 
@@ -243,10 +243,11 @@ The last configuration at this point is to provide the FQDN of your vCenter Serv
 
 ### Step 2. Preparations for the dashboard
 
-#### VEBA Node Utilization Metric Configuration
-Before we can import the dashboard and the corresponding views to see some results finally, we need to configure two easy steps first.
+Before we can import the dashboard and the corresponding views, we need to configure two simple steps first. The creation of a `Custom Metric Configuration` and a `Dynamic Custom Group`.
 
-Go to `Administration` -> `Configuration` -> `Metric Configurations` -> `ReskndMetric` and select `ADD`. Forgive the name `veba_node_utilization` and paste the following content into the right opened field:
+#### VEBA Node Utilization Metric Configuration
+
+Go to `Administration` -> `Configuration` -> `Metric Configurations` -> `ReskndMetric` and select `ADD`. Enter the name `veba_node_utilization` and paste the following configuration into the right opened field:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -264,14 +265,14 @@ Go to `Administration` -> `Configuration` -> `Metric Configurations` -> `ReskndM
 
 #### VEBA openfaas-fn namespace Custom Group
 
-The dashboard includes a widget which will display all deployed functions and it's utilization in terms of CPU and MEM.
+The dashboard includes a widget which will display all deployed functions and it's utilization in terms of CPU and Memory (limit, current, average and maximum).
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" caption="Figure VII: vROps Widget to show function utilization" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" class="center" >}}
 
 
 I configured a `Dynamic Custom Group` in vROps to realize this. Like the above step for the `VEBA Node Utilization Metric Configuration`, this Dynamic Custom Group has to be configured before we import the dashboard. Otherwise, the widget(s) will be empty.
 
-Navigate to `Administration` -> `Configuration` -> and create a new `Group Type` called VEBA. The `Custom Group` can be configured under `Environment` -> `Groups and Applications` -> `Custom Group`. Select the before created Group Type VEBA and click `ADD`. Configure the Custom Group as shown in *Figure VIII*:
+Navigate to `Administration` -> `Configuration` -> and create a new `Group Type` called `VEBA`. The `Custom Group` can be configured under `Environment` -> `Groups and Applications` -> `Custom Group`. Select the before created Group Type VEBA and click `ADD`. Configure the Custom Group as shown in *Figure VIII*:
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_091451.jpg" caption="Figure VIII: Dynamic Custom Group for ƒ(x) in namespace openfaas-fn" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_091451.jpg" class="center" >}}
 
@@ -279,7 +280,7 @@ Navigate to `Administration` -> `Configuration` -> and create a new `Group Type`
 
 #### The Dashboard is available for download on [VMware {code}](https://code.vmware.com/samples?id=7241)
 
-Unpack the content and import the views first. `Dashboards` -> select any of the views, click on `ACTIONS` and select `Manage Views`. The `Import` button will appear after selecting the three points next to the `ADD` button. Go to the folder where you've unpacked the `dashboard.zip` and select the `views.zip`. This will import the Views.
+Unpack the zip file and import the views first. `Dashboards` -> select any of the views, click on `ACTIONS` and select `Manage Views`. The `Import` button will appear after clicking on the three points next to the `ADD` button. Go to the folder where you've unpacked the `dashboard.zip` and select the `views.zip`. This will import the Views.
 
 Similar procedure applies for the dashboard itself. `Dashboards` -> `ACTIONS` -> `Manage Dashboards` -> three points -> `Import` and this time, select the `dashboard.zip`.
 

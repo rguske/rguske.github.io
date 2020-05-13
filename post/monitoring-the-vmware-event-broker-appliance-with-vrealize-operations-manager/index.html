@@ -32,7 +32,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
                 "url": "https:\/\/rguske.github.io\/cover.png",
                 "width":  800 ,
                 "height":  600 
-            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1726 ,
+            },"genre": "posts","keywords": "May2020, VEBA, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1740 ,
         "url": "https:\/\/rguske.github.io\/post\/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager\/","datePublished": "2020-05-12T23:59:50+02:00","dateModified": "2020-05-13T00:06:17+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
                 "@type": "Organization",
                 "name": "Robert Guske",
@@ -131,7 +131,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
         </div><article class="page single"><h1 class="single-title animated flipInX">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-05-12>2020-05-12</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>about 1726 words&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>about 1740 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>9 min&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -150,7 +150,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
     <li><a href="#leveraging-google-cadvisor">Leveraging Google cAdvisor</a>
       <ul>
         <li><a href="#enabling-ssh-on-veba">Enabling SSH on VEBA</a></li>
-        <li><a href="#deploy-the-cadvisor-as-a-kubernetes-deamonset">Deploy the cAdvisor as a Kubernetes DeamonSet</a>
+        <li><a href="#deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</a>
           <ul>
             <li><a href="#environment-with-internet-access">Environment with internet access</a></li>
             <li><a href="#environment-without-internet-access">Environment without internet access</a></li>
@@ -266,7 +266,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
             alt="/img/posts/202005_vropsveba/CapturFiles-20200511_114121.jpg" width="700" />
     </a><figcaption class="image-caption">Figure II: PhotonOS - start sshd daemon</figcaption>
     </figure>
-<h3 id="deploy-the-cadvisor-as-a-kubernetes-deamonset">Deploy the cAdvisor as a Kubernetes DeamonSet</h3>
+<h3 id="deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</h3>
 <h4 id="environment-with-internet-access">Environment with internet access</h4>
 <p>Now it&rsquo;s on the time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreffer">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
 <p>Establish a <code>ssh</code> connection to your VEBA appliance and change into the <code>/tmp</code> directory. I have set up a repository on Github where I&rsquo;ve stored the necessary files for the deployment. From here (<code>/tmp</code>) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run <code>git clone https://github.com/rguske/monitoring-veba.git &amp;&amp; kubectl apply -k monitoring-veba/</code>.</p>
@@ -487,7 +487,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 </div><p><code>STATUS Running</code> is the desired state which will fulfill our requirements to continue with the import of the vROps Management Pack for Container Monitoring as well as with the configuration of the Kubernetes Adapter which is available after a successful import.</p>
 <hr>
 <h2 id="a-dashboard-to-monitor-the-vmware-event-broker-appliance">A Dashboard to monitor the VMware Event Broker Appliance</h2>
-<p>Before we continue with the configuration steps in vRealize Operations Manager, I wanted to give you a little sneak peak what you can expect by the end.</p>
+<p>Before we continue with the configuration steps in vRealize Operations Manager, I wanted to give you a little sneak peek what you can expect by the end.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" data-sub-html="<h2>Figure III: vROps Dashboard to monitor VEBA</h2>">
         <img
             class="lazyload"
@@ -590,9 +590,9 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
         </div>
     </div>
 <h3 id="step-2-preparations-for-the-dashboard">Step 2. Preparations for the dashboard</h3>
+<p>Before we can import the dashboard and the corresponding views, we need to configure two simple steps first. The creation of a <code>Custom Metric Configuration</code> and a <code>Dynamic Custom Group</code>.</p>
 <h4 id="veba-node-utilization-metric-configuration">VEBA Node Utilization Metric Configuration</h4>
-<p>Before we can import the dashboard and the corresponding views to see some results finally, we need to configure two easy steps first.</p>
-<p>Go to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; <code>Metric Configurations</code> -&gt; <code>ReskndMetric</code> and select <code>ADD</code>. Forgive the name <code>veba_node_utilization</code> and paste the following content into the right opened field:</p>
+<p>Go to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; <code>Metric Configurations</code> -&gt; <code>ReskndMetric</code> and select <code>ADD</code>. Enter the name <code>veba_node_utilization</code> and paste the following configuration into the right opened field:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -622,7 +622,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="veba-openfaas-fn-namespace-custom-group">VEBA openfaas-fn namespace Custom Group</h4>
-<p>The dashboard includes a widget which will display all deployed functions and it&rsquo;s utilization in terms of CPU and MEM.</p>
+<p>The dashboard includes a widget which will display all deployed functions and it&rsquo;s utilization in terms of CPU and Memory (limit, current, average and maximum).</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" data-sub-html="<h2>Figure VII: vROps Widget to show function utilization</h2>">
         <img
             class="lazyload"
@@ -634,7 +634,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     </a><figcaption class="image-caption">Figure VII: vROps Widget to show function utilization</figcaption>
     </figure>
 <p>I configured a <code>Dynamic Custom Group</code> in vROps to realize this. Like the above step for the <code>VEBA Node Utilization Metric Configuration</code>, this Dynamic Custom Group has to be configured before we import the dashboard. Otherwise, the widget(s) will be empty.</p>
-<p>Navigate to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; and create a new <code>Group Type</code> called VEBA. The <code>Custom Group</code> can be configured under <code>Environment</code> -&gt; <code>Groups and Applications</code> -&gt; <code>Custom Group</code>. Select the before created Group Type VEBA and click <code>ADD</code>. Configure the Custom Group as shown in <em>Figure VIII</em>:</p>
+<p>Navigate to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; and create a new <code>Group Type</code> called <code>VEBA</code>. The <code>Custom Group</code> can be configured under <code>Environment</code> -&gt; <code>Groups and Applications</code> -&gt; <code>Custom Group</code>. Select the before created Group Type VEBA and click <code>ADD</code>. Configure the Custom Group as shown in <em>Figure VIII</em>:</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200512_091451.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200512_091451.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200512_091451.jpg" data-sub-html="<h2>Figure VIII: Dynamic Custom Group for ƒ(x) in namespace openfaas-fn</h2>">
         <img
             class="lazyload"
@@ -647,7 +647,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     </figure>
 <h3 id="step-3-import-the-dashboard-and-its-views">Step 3. Import the Dashboard and it&rsquo;s Views</h3>
 <h4 id="the-dashboard-is-available-for-download-on-vmware-codehttpscodevmwarecomsamplesid7241">The Dashboard is available for download on <a href="https://code.vmware.com/samples?id=7241" target="_blank" rel="noopener noreffer">VMware {code}</a></h4>
-<p>Unpack the content and import the views first. <code>Dashboards</code> -&gt; select any of the views, click on <code>ACTIONS</code> and select <code>Manage Views</code>. The <code>Import</code> button will appear after selecting the three points next to the <code>ADD</code> button. Go to the folder where you&rsquo;ve unpacked the <code>dashboard.zip</code> and select the <code>views.zip</code>. This will import the Views.</p>
+<p>Unpack the zip file and import the views first. <code>Dashboards</code> -&gt; select any of the views, click on <code>ACTIONS</code> and select <code>Manage Views</code>. The <code>Import</code> button will appear after clicking on the three points next to the <code>ADD</code> button. Go to the folder where you&rsquo;ve unpacked the <code>dashboard.zip</code> and select the <code>views.zip</code>. This will import the Views.</p>
 <p>Similar procedure applies for the dashboard itself. <code>Dashboards</code> -&gt; <code>ACTIONS</code> -&gt; <code>Manage Dashboards</code> -&gt; three points -&gt; <code>Import</code> and this time, select the <code>dashboard.zip</code>.</p>
 <p>Here we go!</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200512_041624.jpg" data-sub-html="<h2>Figure IX: vROps Dashboard (again) to monitor VEBA</h2>">
