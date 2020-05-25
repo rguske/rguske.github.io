@@ -62,7 +62,7 @@ Change into the directory were the `Dockerfile` is located, create a fresh new i
 ```Shell
 $ cd ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
 
-$ docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest
+$ docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
 
 $ docker images
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
