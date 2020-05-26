@@ -342,7 +342,7 @@ asciinema rec
 
 ---
 
-## Shell Aliases
+## 5 Shell Aliases
 
 Put the following aliases for the individual commands to the end of your `.zshrc` file
 

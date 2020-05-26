@@ -297,7 +297,7 @@ ad_gpo_map_interactive = +gdm-vmwcred
 simple_allow_groups = labadmins@JARVIS.LAB
 ```
 
-We are going to use *Gnome Classic* for the SSO login for CentOS 8.0. Remove all the desktop startup files from the `/usr/share/xsession` directory, except the one for *Gnome Classic*.
+We are going to use *Gnome Classic* for the SSO login for CentOS 8.0. Remove all the desktop startup files from the `/usr/share/xsessions` directory, except the one for *Gnome Classic*.
 
 ```shell
 cd /usr/share/xsessions/

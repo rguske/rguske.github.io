@@ -293,7 +293,7 @@ sudo systemctl daemon-reload
 **Enable the new Dropbox service:**
 
 ```shell
-**sudo systemctl enable dropbox:**
+sudo systemctl enable dropbox
 ```
 
 **Start the service:**
