@@ -348,7 +348,7 @@ On the way down through the *viewagent-custom.conf* you came by a point where yo
 
 **In my case:** *Subnet=10.10.13.0/26*
 
-Otherwise you won´t be able to connect to your desktop anymore after installing Docker. Save and exit the file with `:wq!`.
+Otherwise you won´t be able to connect to your desktop anymore after installing Docker. Save and exit the file with `:wq`.
 
 ## 5 Create a Manual Desktop Pool
 
