@@ -162,7 +162,7 @@ read REGISTRY
 mkdir -p /etc/docker/certs.d/$REGISTRY
 
 # Download Registry Root Certificate
-wget -O etc/docker/certs.d/$REGISTRY/ca.crt https://$REGISTRY/api/systeminfo/getcert --no-check-certificate
+wget -O /etc/docker/certs.d/$REGISTRY/ca.crt https://$REGISTRY/api/systeminfo/getcert --no-check-certificate
 
 # Restart Docker service
 systemctl restart docker
