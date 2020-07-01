@@ -8,7 +8,7 @@ When you've read through this short post and you feel encouraged to take a step 
 I recently had the pleasure to suppport a really cool guy out of the [#VEBA Slack Community](https://vmwarecode.slack.com/archives/CQLT9B5AA), his name is Bob, with his function example contribution to the [VMware Event Broker](https://vmweventbroker.io/) project. On a remote session late at night, at least it was for me due to the different timezones CET :full_moon: and EST :sun:, Bob introduced his Powershell/ PowerCLI function to me and I was immediately thrilled about what the ƒ(x) does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them. Bob's engagement was really contagious and getting work done was quite fun.
 
 ### Code
-Bob told me that he developed a script some time ago, which will send out a notification via Email after a vSphere HA event occurred. This Email will have the effected host mentioned as well as all affected VMs which has been restarted through vSphere HA. The problem was, that the execution of the script was a manual task every time a ESXi host outage took place...**at least until he became aware of VEBA**.
+Bob told me that he developed a script some time ago, which will send out a notification via Email after a vSphere HA event occurred. This Email will have the affected host mentioned as well as all affected VMs which has been restarted through vSphere HA. The problem was, that the execution of the script was a manual task every time a ESXi host outage took place...**at least until he became aware of VEBA**.
 
 {{< admonition quote "Quote" true >}}
 *"...I knew VEBA would be a prime place to attempt to do this for me."*
