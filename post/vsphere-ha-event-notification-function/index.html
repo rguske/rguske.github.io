@@ -6,16 +6,14 @@
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
         <title>VMware Event Broker Appliance - vSphere HA Event Notification Function - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="VMware Event Broker Appliance - vSphere HA Event Notification Function" />
-<meta property="og:description" content="CCC When you&rsquo;ve read through this short post and you feel encouraged to take a step beyond your comfort zone, then this post and my intention reached its goal.
-Community I recently had the pleasure to suppport a really cool guy out of the #VEBA Slack Community, his name is Bob, with his function example contribution to the VMware Event Broker project. On a remote session late at night, at least it was for me due to the different timezones CET 🌕 and EST ☀, Bob introduced his Powershell/ PowerCLI function to me and I was immediately thrilled about what the ƒ(x) does." />
+<meta property="og:description" content="Community I recently had the pleasure to suppport a member out of the VMware Event Broker Appliance (VEBA) Slack Community with his function example contribution to the VEBA project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-ha-event-notification-function/" />
 <meta property="article:published_time" content="2020-06-29T15:19:05+02:00" />
 <meta property="article:modified_time" content="2020-06-29T15:19:05+02:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="VMware Event Broker Appliance - vSphere HA Event Notification Function"/>
-<meta name="twitter:description" content="CCC When you&rsquo;ve read through this short post and you feel encouraged to take a step beyond your comfort zone, then this post and my intention reached its goal.
-Community I recently had the pleasure to suppport a really cool guy out of the #VEBA Slack Community, his name is Bob, with his function example contribution to the VMware Event Broker project. On a remote session late at night, at least it was for me due to the different timezones CET 🌕 and EST ☀, Bob introduced his Powershell/ PowerCLI function to me and I was immediately thrilled about what the ƒ(x) does."/>
+<meta name="twitter:description" content="Community I recently had the pleasure to suppport a member out of the VMware Event Broker Appliance (VEBA) Slack Community with his function example contribution to the VEBA project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="prev" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
@@ -26,7 +24,7 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-ha-event-notification-function\/"
-        },"genre": "posts","keywords": "June2020, VEBA, FaaS","wordcount":  892 ,
+        },"genre": "posts","keywords": "June2020, VEBA, FaaS","wordcount":  910 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-ha-event-notification-function\/","datePublished": "2020-06-29T15:19:05+02:00","dateModified": "2020-06-29T15:19:05+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -117,7 +115,7 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">VMware Event Broker Appliance - vSphere HA Event Notification Function</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw"></i>FaaS</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-29">2020-06-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;892 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-06-29">2020-06-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;910 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;5 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -133,24 +131,19 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#ccc">CCC</a>
-      <ul>
-        <li><a href="#community">Community</a></li>
-        <li><a href="#code">Code</a></li>
-        <li><a href="#contribution">Contribution</a></li>
-      </ul>
-    </li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#code">Code</a></li>
+    <li><a href="#contribution">Contribution</a></li>
     <li><a href="#the-ha-restart-function">The HA Restart Function</a></li>
     <li><a href="#esxi-kernel-panic-command">ESXi Kernel Panic command</a></li>
     <li><a href="#you-have-mail">You have mail!</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="ccc">CCC</h2>
-<p>When you&rsquo;ve read through this short post and you feel encouraged to take a step beyond your comfort zone, then this post and my intention reached its goal.</p>
-<h3 id="community">Community</h3>
-<p>I recently had the pleasure to suppport a really cool guy out of the <a href="https://vmwarecode.slack.com/archives/CQLT9B5AA" target="_blank" rel="noopener noreffer">#VEBA Slack Community</a>, his name is Bob, with his function example contribution to the <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer">VMware Event Broker</a> project. On a remote session late at night, at least it was for me due to the different timezones CET 🌕 and EST ☀, Bob introduced his Powershell/ PowerCLI function to me and I was immediately thrilled about what the ƒ(x) does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them. Bob&rsquo;s engagement was really contagious and getting work done was quite fun.</p>
-<h3 id="code">Code</h3>
-<p>Bob told me that he developed a script some time ago, which will send out a notification via Email after a vSphere HA event occurred. This Email will have the affected host mentioned as well as all affected VMs which has been restarted through vSphere HA. The problem was, that the execution of the script was a manual task every time a ESXi host outage took place&hellip;<strong>at least until he became aware of VEBA</strong>.</p>
+            </div><div class="content" id="content"><h2 id="community">Community</h2>
+<p>I recently had the pleasure to suppport a member out of the <a href="https://vmwarecode.slack.com/archives/CQLT9B5AA" target="_blank" rel="noopener noreffer">VMware Event Broker Appliance (VEBA) Slack Community</a> with his function example contribution to the <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer">VEBA</a> project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them.</p>
+<p>Bob&rsquo;s engagement was really contagious and getting work done was quite fun. <strong>All credits goes out to Bob!</strong></p>
+<h2 id="code">Code</h2>
+<p>Bob developed a script some time ago, which functionality basically is, to send out a notification via Email after a vSphere HA event occurred. This Email will have the affected host mentioned as well as all affected VMs which has been restarted through vSphere HA. The problem was, that the execution of the script was a manual task every time a ESXi host outage took place&hellip;<strong>at least until he became aware of VEBA</strong>.</p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -161,14 +154,11 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
     </div>
 <p>Then he started digging into it.</p>
 <p>There is really good material available on <em>&ldquo;Getting started with VEBA&rdquo;</em> like for example this <a href="http://www.patrickkremer.com/veba/" target="_blank" rel="noopener noreffer">Series</a> by <a href="https://twitter.com/KremerPatrick" target="_blank" rel="noopener noreffer">Patrick Kremer</a> as well as articles and documentation on <em>&ldquo;Writing your own function&rdquo;</em> like e.g. <a href="https://medium.com/@pkblah/writing-your-first-serverless-function-23508cb4ea11" target="_blank" rel="noopener noreffer">Writing your first Serverless Function</a> by <a href="https://twitter.com/pkblah" target="_blank" rel="noopener noreffer">Partheeban Kandasamy (PK)</a> and also here at the <a href="https://vmweventbroker.io/kb/contribute-functions" target="_blank" rel="noopener noreffer">Documentation</a> section at VEBA&rsquo;s homepage.</p>
-<p><strong>You don&rsquo;t have to reinvent the wheel!</strong> If you have great <code>code</code>, like Bob, take it, make your hands dirty and write your first function in any of your preferred programming language! It is not that complicated and I promise you the joy of success when your first ƒ(x) does exactly what you built it for.</p>
+<p><strong>You don&rsquo;t have to reinvent the wheel!</strong> If you have great <code>code</code>, like Bob, take it, make your hands dirty and write your first function in any of your preferred programming language. It is not that complicated and I promise you the joy of success when your first function does exactly what you built it for.</p>
 <p>If you don&rsquo;t have own code available, start looking here: <a href="https://code.vmware.com/samples?categories=Sample&amp;keywords=&amp;tags=PowerShell%7CVMware%20PowerCLI&amp;groups=&amp;filters=&amp;sort=dateDesc&amp;page=" target="_blank" rel="noopener noreffer">VMware {code} Sample Exchange</a>. The community is diligent and willing to share.</p>
-<h3 id="contribution">Contribution</h3>
-<p>Filing my first Pull Request on Github to an OpenSource Project was a really great and unique feeling and even better when it was merged into the project.</p>
-<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Another moment for my &quot;I&#39;ll never forget this box&quot;. 1st (last week) the feeling of having contributed to an <a href="https://twitter.com/hashtag/OpenSource?src=hash&amp;ref_src=twsrc%5Etfw">#OpenSource</a> project, my 1st PR (ever) was merged 🥳and then on top of that, a ded. coding session with no one else than <a href="https://twitter.com/lamw?ref_src=twsrc%5Etfw">@lamw</a> today (PR#2 😬) 😀.  Thank you so much! <a href="https://twitter.com/hashtag/VEBA?src=hash&amp;ref_src=twsrc%5Etfw">#VEBA</a></p>&mdash; Robert (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1216830346135842820?ref_src=twsrc%5Etfw">January 13, 2020</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
- </center>
-<p>And I&rsquo;m sure Bob will agree to this 😁.</p>
+<h2 id="contribution">Contribution</h2>
+<p>You are probably wondering when I finally introduce the function, right? The reason for my long introduction in this post is that I want to encourage you to start building your own function(s) to unlock the potential of event-driven automation in your data center.</p>
+<p>Like Bob successfully did. 😁</p>
 <a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200629_040718.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200629_040718.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200629_040718.jpg">
         <img
             class="lazyload"
@@ -178,51 +168,15 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
             data-sizes="auto"
             alt="/img/posts/202006_harestartfunction/CapturFiles-20200629_040718.jpg" />
     </a>
-<a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg"
-            data-srcset="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg, /img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg 1.5x, /img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg 2x"
-            data-sizes="auto"
-            alt="/img/posts/202006_harestartfunction/CapturFiles-20200630_115600.jpg" />
-    </a>
-<p>Here we go and waiting for it to get merged: VMware Event Broker Appliance <i class='fab fa-github fa-fw'></i> PR #183 - <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/183" target="_blank" rel="noopener noreffer">Add function HA Restarted VMs Email Notification</a></p>
+<p>Here we go and waiting for it to get merged: <strong>VMware Event Broker Appliance</strong> <i class='fab fa-github fa-fw'></i> <strong>PR #183</strong> - <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/183" target="_blank" rel="noopener noreffer">Add function HA Restarted VMs Email Notification</a></p>
+<p>I had to share my excitment on Twitter when I first contributed to the project. It&rsquo;s a great and unique feeling and even better when the PR got merged.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Another moment for my &quot;I&#39;ll never forget this box&quot;. 1st (last week) the feeling of having contributed to an <a href="https://twitter.com/hashtag/OpenSource?src=hash&amp;ref_src=twsrc%5Etfw">#OpenSource</a> project, my 1st PR (ever) was merged 🥳and then on top of that, a ded. coding session with no one else than <a href="https://twitter.com/lamw?ref_src=twsrc%5Etfw">@lamw</a> today (PR#2 😬) 😀.  Thank you so much! <a href="https://twitter.com/hashtag/VEBA?src=hash&amp;ref_src=twsrc%5Etfw">#VEBA</a></p>&mdash; Robert (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1216830346135842820?ref_src=twsrc%5Etfw">January 13, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
 <h2 id="the-ha-restart-function">The HA Restart Function</h2>
-<p>Now let&rsquo;s have a quick look at the function itself.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">ha-restarted-vms
-├── handler
-│   └── script.ps1
-├── README.md
-├── stack.yml
-├── template
-│   └── powercli
-│       ├── Dockerfile
-│       ├── <span class="k">function</span>
-│       │   └── script.ps1
-│       └── template.yml
-└── vcconfig-ha-restarted-vms.json
-</code></pre></td></tr></table>
-</div>
-</div><p>The function basically works like the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email" target="_blank" rel="noopener noreffer">vSphere Datastore Usage Email Notification</a> function which deployment is explained step-by-step here: <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email" target="_blank" rel="noopener noreffer">vCenter Event Broker Appliance – Part IX – Deploying the Datastore Usage Email sample script in VMC</a>.</p>
-<p>You have to fill out all fields in the <code>vcconfig-ha-restarted-vms.json</code> to have all neccessary information for your function stored as a Kubernetes Secret.</p>
-<p>Example:</p>
+<p>I&rsquo;m not going into the details on how to deploy the function, because it works basically like the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email" target="_blank" rel="noopener noreffer">vSphere Datastore Usage Email Notification</a> function which deployment is well explained step-by-step here: <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email" target="_blank" rel="noopener noreffer">vCenter Event Broker Appliance – Part IX – Deploying the Datastore Usage Email sample script in VMC</a>.</p>
+<p>Exactly two files are important to deploy the function. The <code>vcconfig-ha-restarted-vms.json</code> and the <code>stack.yml.</code>
+You have to fill out all the fields in the <code>vcconfig-ha-restarted-vms.json</code> file to have the required information like e.g. for the vCenter Server as well as for the SMTP server stored as a Kubernetes Secret.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -251,8 +205,13 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>The <code>stack.yml</code> describes on which vCenter Event the function will be invoked (<code>topic: com.vmware.vc.HA.ClusterFailoverActionCompletedEvent</code>), where the function image is stored (<code>image: harbor.jarvis.lab/veba/veba-powercli-ha-restarted-vms:latest</code>) and on which VEBA instance the function will finally run (<code>gateway: https://veba041.jarvis.lab</code>).</p>
-<p>Validating the functionallity of the Pull Request is neccessary and therefore I built the function fresh from scratch (<code>faas-cli build -f stack.yml</code>) and pushed it to my local container registry Harbor (<code>faas-cli push -f stack.yml</code>). If you would like to read more about <em>&ldquo;How to push your function images to Harbor&rdquo;</em>, take a look here: <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreffer">Using Harbor with the VMware Event Broker Appliance</a>.</p>
+</div><p><em><center>vcconfig-ha-restarted-vms.json example</center></em></p>
+<p>The below listed <code>stack.yml</code> file describes on which vCenter Event the function will be invoked, where the function image is stored and on which VEBA instance the function will finally run.</p>
+<ul>
+<li><code>topic: com.vmware.vc.HA.ClusterFailoverActionCompletedEvent</code></li>
+<li><code>image: harbor.jarvis.lab/veba/veba-powercli-ha-restarted-vms:latest</code></li>
+<li><code>gateway: https://veba041.jarvis.lab</code></li>
+</ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -293,9 +252,11 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
 </span><span class="w">      </span><span class="k">topic</span><span class="p">:</span><span class="w"> </span>com.vmware.vc.HA.ClusterFailoverActionCompletedEvent<span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><p>After successfully deploying the function to my VEB-Appliance the next step is to simulate a host failure to trigger the aforementioned vCenter HA event.</p>
+</div><p><em><center>stack.yml example</center></em></p>
+<p>I have built the function from scratch and pushed it into my local container registry Harbor. If you would like to read more about <em>&ldquo;How to push your function images to Harbor&rdquo;</em>, take a look here: <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreffer">Using Harbor with the VMware Event Broker Appliance</a>.</p>
+<p>After successfully deploying the function to my VEBA the next step is to simulate a host outage to trigger the aforementioned vCenter HA event.</p>
 <h2 id="esxi-kernel-panic-command">ESXi Kernel Panic command</h2>
-<p>I&rsquo;m using a <a href="https://www.virtuallyghetto.com/nested-virtualization" target="_blank" rel="noopener noreffer">nested vSphere Cluster</a> in my Homelab to simulate the Host failure/ the vSphere HA event. Connect to your ESXi host via <code>ssh</code> and execute the following command to perform a ESXi Kernel Panic. Please use this command with caution!</p>
+<p>I&rsquo;m using a <a href="https://www.virtuallyghetto.com/nested-virtualization" target="_blank" rel="noopener noreffer">nested vSphere Cluster</a> in my Homelab to simulate the outage. Connect to your nested ESXi host via <code>ssh</code> and execute the following command to perform a ESXi Kernel Panic. Please use this command with caution!</p>
 <div class="details admonition danger open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-skull-crossbones fa-fw"></i>Danger<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -304,7 +265,17 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
             <div class="admonition-content">vsish -e set /reliability/crashMe/Panic 1</div>
         </div>
     </div>
-<p>The screenshot below shows the deployed <em>ha-restarted-vms</em> function running as a Kubernetes POD on VEBA (lower left), the ESXi Kernel Panic command (lower right) and the invocation of the <em>HA Restart Function</em> triggered by the occured vCenter HA event (top right).</p>
+<p>And here it goes! The below screenshot from the H5 vSphere client shows the affected host (top left: nesxi67-02.jarvis.lab) as well as the occurred vCenter event which triggers our function.</p>
+<a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg"
+            data-srcset="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg, /img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg 1.5x, /img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202006_harestartfunction/CapturFiles-20200701_023157.jpg" />
+    </a>
+<p>A more detailed view can be done via a terminal. Below you can see the deployed <em>ha-restarted-vms</em> function running as a Kubernetes POD on VEBA (lower left), the ESXi Kernel Panic command (lower right) and the invocation of the <em>HA Restart Function</em> triggered by the occurred vCenter HA event (top right).</p>
 <a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg">
         <img
             class="lazyload"
@@ -314,30 +285,19 @@ Community I recently had the pleasure to suppport a really cool guy out of the #
             data-sizes="auto"
             alt="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg" />
     </a>
-<p>Here&rsquo;s the view via the H5 vSphere client:</p>
-<a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg">
-        <img
-            class="lazyload"
-            src="/svg/loading.min.svg"
-            data-src="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg"
-            data-srcset="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg, /img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg 1.5x, /img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg 2x"
-            data-sizes="auto"
-            alt="/img/posts/202006_harestartfunction/CapturFiles-20200701_091956.jpg" />
-    </a>
 <h2 id="you-have-mail">You have mail!</h2>
-<p>Let&rsquo;s check my ✉️.</p>
-<a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg">
+<p>If everything operates as expected, you should have received an email according to the following screenshot of the one I received.</p>
+<a class="lightgallery" href="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg" title="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg" data-thumbnail="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
-            data-src="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg"
-            data-srcset="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg, /img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg 1.5x, /img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg 2x"
+            data-src="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg"
+            data-srcset="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg, /img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg 1.5x, /img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg 2x"
             data-sizes="auto"
-            alt="/img/posts/202006_harestartfunction/CapturFiles-20200629_100712.jpg" />
+            alt="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg" />
     </a>
-<p>Nice!</p>
-<p><strong>Thanks Bob!</strong></p>
-<center>Thanks for reading.</center></div><div class="post-footer" id="post-footer">
+<p><strong>Thanks Bob! Keep up the great work.</strong></p>
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
