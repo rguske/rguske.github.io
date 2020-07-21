@@ -1,4 +1,4 @@
-# Using Harbor with the vCenter Event Broker Appliance
+# Using Harbor with the VMware Event Broker Appliance
 
 
 The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance" target="_blank">vCenter Event Broker Appliance (VEBA)</a> is still one of my favorite open source projects these days and it is evolving rapidly and continuously through the great work of the two main contributors <a href="https://twitter.com/embano1" target="_blank">Michael Gasch</a> and <a href="https://twitter.com/lamw" target="_blank">William Lam</a> as well as through the valuable ***feedback*** from the community. I´m very proud to be part of the "inner circle" of folks who meet on a regular basis to discuss everything <a href="https://twitter.com/search?q=%23vcenter-event-broker-appliance&src=typed_query" target="_blank">#VEBA</a> and the keyword here is also ***feedback***.
@@ -138,7 +138,7 @@ Following the official Docker documentation, this behavior is expected: <a href=
 
 To solve this issue, I´ve created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.
 
-You can download the script <a href="https://github.com/rguske/using_harbor_with_veba" target="_blank">HERE</a> and copy it via `scp` into your VEBA appliance.
+You can download the script [HERE](https://github.com/rguske/download-harbor-cert-script) and copy it via `scp` into your VEBA appliance.
 
 ```shell
 $ scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
@@ -154,7 +154,7 @@ Make it executable with `chmod +x docker_harbor_cert.sh` and run it. The other o
 set -euo pipefail
 
 # Ask for the Harbor FQDN
-echo "Enter the FQDN (harbor.domain.com) of your Harbor registry:"
+echo "Enter the FQDN (e.g. harbor.domain.com) of your Harbor registry:"
 
 read REGISTRY
 
@@ -162,7 +162,7 @@ read REGISTRY
 mkdir -p /etc/docker/certs.d/$REGISTRY
 
 # Download Registry Root Certificate
-wget -O /etc/docker/certs.d/$REGISTRY/ca.crt https://$REGISTRY/api/systeminfo/getcert --no-check-certificate
+wget -O /etc/docker/certs.d/$REGISTRY/ca.crt https://$REGISTRY/api/v2.0/systeminfo/getcert --no-check-certificate
 
 # Restart Docker service
 systemctl restart docker
