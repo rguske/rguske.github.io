@@ -434,7 +434,7 @@ NAME                   READY   STATUS    RESTARTS   AGE
 blog-b68cddc4c-tckvp   1/1     Running   0          3h26m
 ```
 
-Our demo application Ghost should now be reachable via it's external IP address which was automatically assigned by NSX (*Figure VIII*)...
+Our demo application Ghost will be reachable via it’s external IP address which is automatically provided by the NSX Load Balancer Virtual Server (*Figure VIII*).
 
 {{< admonition quote "Quote" true >}}
 The creation of a Load Balancer type service causes NCP to orchestrate the creation of NSX Virtual Servers associated with the Load Balancer created in the initial Supervisor Cluster deployment. The virtual server is assigned an IP and port that is used to access the service.
@@ -444,7 +444,7 @@ Source: [vSphere 7 with Kubernetes Network Service Part 1: The Supervisor Cluste
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200721_025454.jpg" caption="Figure VIII: Automatically created NSX Virtual Server" src-s="/img/posts/202007_harborontkg/CapturFiles-20200721_025454.jpg" class="center" >}}
 
-...and the data will be written to it's Persistent Volume on vSAN (*Figure IX*)
+The data will be written to it's Persistent Volume on vSAN (*Figure IX*)
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200721_025614.jpg" caption="Figure IX: vSAN Persistent Volume" src-s="/img/posts/202007_harborontkg/CapturFiles-20200721_025614.jpg" class="center" >}}
 
