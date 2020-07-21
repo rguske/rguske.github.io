@@ -147,7 +147,7 @@ Resource Quotas
 No resource limits.
 ```
 
-### Deploying a Tanzu Kubernetes Grid Cluster
+---
 
 Enough summarized :wink: ! `kubectl apply -f tkg-cluster.yml` and let vSphere do it's magic. An increased count of **1** will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (*Figure IV*).
 
