@@ -1,11 +1,11 @@
 # Deploying Harbor on a VMware Tanzu Kubernetes Grid Cluster 
 
 
-I recently had to prepare my homelab for a customer workshop to demonstrate our new Tanzu Runtime & Hybrid Infrastructure Services which includes e.g. the deployment of a Tanzu Kubernetes Grid Cluster on vSphere in a declaritive way (TKG Service), the enterprise cloud native registry Harbor as well as the instantiation of a native Pod on vSphere (vSphere Pod Service).
+I recently had to prepare my homelab for a customer workshop to demo our new Tanzu Runtime & Hybrid Infrastructure Services as shown in *Figure I*.
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200715_083742.jpg" caption="Figure I: Tanzu Runtime & Hybrid Infrastructure Services" src-s="/img/posts/202007_harborontkg/CapturFiles-20200715_083742.jpg" class="center" >}}
 
-My demo was all about the deployment of a application running natively ([Native Pod](https://blogs.vmware.com/vsphere/2020/05/vsphere-7-vsphere-pods-explained.html)) on vSphere, whose container image I pushed beforehand into my [Harbor](https://goharbor.io) registry and which in turn was then obtained from there during the application deployment. It covered also the deep integration into vSAN and NSX by providing Persistent Volume Claims ([Storage Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-1B136277-E46C-41FC-9C8C-3E78E9B97F5C.html)) as well as LoadBalancing ([Network Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-B156CDA6-B056-4D1C-BBC5-07D1A701E402.html)) for my application.
+My demo was all about the deployment of an application running natively ([Native Pod](https://blogs.vmware.com/vsphere/2020/05/vsphere-7-vsphere-pods-explained.html)) on vSphere, whose container image I pushed beforehand into my [Harbor](https://goharbor.io) registry and which in turn was then obtained from there during the application deployment. It also covered the deep integration into vSAN and NSX by providing Persistent Volume Claims ([Storage Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-1B136277-E46C-41FC-9C8C-3E78E9B97F5C.html)) as well as LoadBalancing services ([Network Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-B156CDA6-B056-4D1C-BBC5-07D1A701E402.html)) for my application.
 
 {{< mermaid >}}
 graph LR;
@@ -13,17 +13,17 @@ graph LR;
     B -->| pull image | C(Harbor)
     C --> B
     B -->| App Deployment| D(Native Pod)
-    B -->| Persistent Volume Claim| E(vSAN)
+    B ---| Persistent Volume Claim| E(vSAN)
     E --> D
     F --> D
-    B -->| Create LoadBalancer| F(NSX)
+    B ---| Create LoadBalancer| F(NSX)
 {{< /mermaid >}}
 
 *<center>Figure II: Application Deployment Flowchart</center>*
 
-I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the [Registry Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html) of vSphere 7. The reason for this? I combined the possibilities to demonstrate on the one hand the latest features of Harbor version 2.0 and on the other hand the simplicity of deploying the registry via `Helm` on a Tanzu Kubernetes Grid Cluster.
+I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the [Registry Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html) of vSphere 7. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via `Helm` on a Tanzu Kubernetes Grid Cluster.
 
-In this post I will focus on the installation of Harbor using `Helm` and also on the preperations you have to do upfront before you are able to let the [Supervisor Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html) pull images out of Harbor and to consequently instantiate them as a native Pod on vSphere.
+In this post I will focus on the installation of Harbor using `Helm` and also on the preperations you have to do upfront before you are able to let the [Supervisor Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html) pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.
 
 ## Prerequisites
 - [x] [vSphere 7 with Kubernetes](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html) installed
@@ -48,7 +48,7 @@ Go to **Home** --> **Workload Management** and click on **NEW NAMESPACE**
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" caption="Figure III: Create a Namespace in vSphere" src-s="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" class="center" >}}
 
-Add a User or a Group to the Namespace, assign the appropriate permission and select the *vSphere Storage Policy(s)* for your *Persistent Volume Claims*.
+Add a user or a group to the Namespace, assign the appropriate permission and select the *vSphere Storage Policy(s)* for your *Persistent Volume Claims*.
 
 ### Declaritive deployment of a TKG Cluster
 
@@ -76,7 +76,7 @@ The context `harbor-on-tkg`, which was automatically created during the vSphere 
 
 `kubectl config use-context harbor-on-tkg`
 
-Now that we switched in our desired context, we can start deploying the TKG cluster and as already mentioned a couple of times before, this will be done in a declaritive way and by using a specification file like e.g. the following:
+Now that we switched into our desired context, we can start deploying the TKG cluster and as already mentioned a couple of times before, this will be done in a declaritive way and by using a specification file like e.g. the following:
 
 ```yml
 apiVersion: run.tanzu.vmware.com/v1alpha1
@@ -126,7 +126,7 @@ guaranteed-xsmall    90d
 
 `kubectl describe virtualmachineclasses best-effort-medium` for example gives you a detailed output of the specifications of a specific Virtual Machine Class.
 
-Also very important to specify in the file is the `storageClass`. You defined it during the vSphere Namespace creation. If you cannot exactly remember which class you have defined...you are also not logged in into the vSphere Client...you feel comfy...just type `kubectl describe ns harbor-on-tkg` and get the desired information back.
+Also very important is to specify the `storageClass`. You defined it during the vSphere Namespace creation. If you cannot exactly remember which class you have defined...you are also not logged in into the vSphere Client...you feel lazy...just type `kubectl describe ns harbor-on-tkg` and get the desired information back.
 
 ```shell
 Name:         harbor-on-tkg
@@ -211,7 +211,7 @@ For Harbor, you can use various Helm repositories. There exist e.g. the official
 
 Harbor - <i class='fab fa-github fa-fw'></i> https://github.com/goharbor/harbor-helm or also the one from
 
-[Bitnami](https://bitnami.com/) - <i class='fab fa-github fa-fw'></i> https://github.com/bitnami/charts/tree/master/bitnami/harbor which I'm gonna to use.
+[Bitnami](https://bitnami.com/) - <i class='fab fa-github fa-fw'></i> https://github.com/bitnami/charts/tree/master/bitnami/harbor which I'm going to use.
 
 Add the repository of your choice to your client...
 
@@ -236,7 +236,7 @@ helm install harbor bitnami/harbor \
 -n harbor
 ```
 
-I monitored the deployment progress by watching (`watch`) the command `kubectl get deployment -n harbor` and I became sceptical because nothing happened for a long time. Checking the events of my deployment `kubectl get events -n harbor` was the next logical consequence and the following `Message` immediateley catched my attention:
+I monitored the deployment progress by watching (`watch`) the command `kubectl get deployment -n harbor` and I became sceptical because nothing happened for a long time. Checking the events of my deployment `kubectl get events -n harbor` was the next logical step and the following `Message` immediateley catched my attention:
 
 {{< admonition failure "Message" true >}}
 forbidden: unable to validate against any pod security policy
@@ -280,11 +280,11 @@ Let's redo the Harbor deployment via `helm` again! By running `kubectl get pods 
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200719_114144.jpg" caption="Figure V: Harbor running on a Tanzu Kubernetes Grid Cluster" src-s="/img/posts/202007_harborontkg/CapturFiles-20200719_114144.jpg" class="center" >}}
 
-`kubectl get svc -n harbor` will give you the assigned external IP address through which you can access the Harbor Login page. See also the lower right terminal window in *Figure V*. Now that you have the IP address you can create an appropriate DNS entry. Remember that we've used `--set externalURL=harbor-dev.jarvis.lab` for our deployment.
+`kubectl get svc -n harbor` will give you the assigned external IP address through which you can access the Harbor Login page. See also the lower right terminal window in *Figure V*. With the gained IP address you can create an appropriate DNS entry. Remember that we've used `--set externalURL=harbor-dev.jarvis.lab` for our deployment.
 
  ## Deploy a Demo Application on vSphere 7
 
-You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. But it won't be possible at this point to login via Docker CLI by using `docker login`. This is because of the [Docker certificate-based client-server authentication](https://docs.docker.com/engine/security/certificates/). It's necessary to create a new directory under `/etc/docker/cert.d/` using the same name as the registry hostname (FQDN). I created a script for another [blog post](https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script) to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> https://github.com/rguske/download-harbor-cert-script.
+You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it's not possible to login via Docker CLI by using `docker login`. This is because of the [Docker certificate-based client-server authentication](https://docs.docker.com/engine/security/certificates/). It's necessary to create a new directory under `/etc/docker/cert.d/` using the same name as the registry hostname (FQDN). I created a script for another [blog post](https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script) to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> https://github.com/rguske/download-harbor-cert-script.
 
 Take a look at the post if you need additional information about the steps as well as to learn how you can create and configure projects in Harbor.
 
@@ -379,7 +379,7 @@ spec:
 ```
 
 2. Create a new vSphere Namespace called `ghost-demo-app` and configure it similar to the one for your TKG cluster.
-3. Login into your Supervisor Cluster again and change into the new context:
+3. Login into your Supervisor Cluster again and switch into the new context:
 `kubectl vsphere login --server=172.25.16.1 --vsphere-username jarvis@jarvis.lab --insecure-skip-tls-verify`
 
 - `kubectl config use-context ghost-demo-app`
