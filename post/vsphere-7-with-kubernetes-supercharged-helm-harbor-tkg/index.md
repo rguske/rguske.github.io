@@ -21,7 +21,7 @@ graph LR;
 
 *<center>Figure II: Application Deployment Flowchart</center>*
 
-I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the [Registry Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html) of vSphere 7. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via `Helm` on a Tanzu Kubernetes Grid Cluster.
+I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the [Registry Service](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html) of vSphere 7 with Kubernetes. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via `Helm` on a Tanzu Kubernetes Grid Cluster.
 
 In this post I will focus on the installation of Harbor using `Helm` and also on the preperations you have to do upfront before you are able to let the [Supervisor Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html) pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.
 
@@ -40,7 +40,7 @@ The simple way of creating a Tanzu Kubernetes Grid (TKG) cluster will be done by
 
 I recommend reading this post or of course VMware's official documentation first if you haven't deployed a TKG cluster yet.
 
-Otherwise, here is my *"How to" **in a nutshell...**
+Otherwise, here is my "How to" **in a nutshell...**
 
 ### Create a vSphere [Namespace](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-177C23C4-ED81-4ADD-89A2-61654C18201B.html)
 
@@ -236,7 +236,7 @@ helm install harbor bitnami/harbor \
 -n harbor
 ```
 
-I monitored the deployment progress by watching (`watch`) the command `kubectl get deployment -n harbor` and I became sceptical because nothing happened for a long time. Checking the events of my deployment `kubectl get events -n harbor` was the next logical step and the following `Message` immediateley catched my attention:
+I monitored the deployment progress by watching (`watch`) the command `kubectl get deployment -n harbor` and I became sceptical because nothing happened for a long time. Checking the events of my deployment `kubectl get events -n harbor` was the next logical step and the following `Message` immediately catched my attention:
 
 {{< admonition failure "Message" true >}}
 forbidden: unable to validate against any pod security policy
@@ -410,6 +410,7 @@ The warning indicates that my Supervisor Cluster cannot pull the image out of Ha
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200721_113854.jpg" caption="Figure VII: Kubernetes Configmap image-fetcher-ca-bundle" src-s="/img/posts/202007_harborontkg/CapturFiles-20200721_113854.jpg" class="center" >}}
 
+- save and close `:wq`
 4. Start the deployment again and watch the progress
 - `kubectl apply -f ghost.yml`
 

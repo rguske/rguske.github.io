@@ -26,7 +26,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/"
-        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2648 ,
+        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2654 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/","datePublished": "2020-07-21T15:30:38+02:00","dateModified": "2020-07-21T21:40:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -117,7 +117,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/cloud-native-registry/"><i class="far fa-folder fa-fw"></i>Cloud Native Registry</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/vsphere/"><i class="far fa-folder fa-fw"></i>vSphere</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2648 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2654 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;13 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -175,7 +175,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
 <p>My demo was basically all about the deployment of an application running natively (<a href="https://blogs.vmware.com/vsphere/2020/05/vsphere-7-vsphere-pods-explained.html" target="_blank" rel="noopener noreffer">Native Pod</a>) on vSphere, whose container image I pushed beforehand into my <a href="https://goharbor.io" target="_blank" rel="noopener noreffer">Harbor</a> registry and which in turn was then obtained from there during the application deployment. It also covered the deep integration into vSAN and NSX by providing Persistent Volume Claims (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-1B136277-E46C-41FC-9C8C-3E78E9B97F5C.html" target="_blank" rel="noopener noreffer">Storage Service</a>) as well as LoadBalancing services (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-B156CDA6-B056-4D1C-BBC5-07D1A701E402.html" target="_blank" rel="noopener noreffer">Network Service</a>) for my application.</p>
 <div class="mermaid" id="id-1"></div>
 <p><em><center>Figure II: Application Deployment Flowchart</center></em></p>
-<p>I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html" target="_blank" rel="noopener noreffer">Registry Service</a> of vSphere 7. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via <code>Helm</code> on a Tanzu Kubernetes Grid Cluster.</p>
+<p>I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html" target="_blank" rel="noopener noreffer">Registry Service</a> of vSphere 7 with Kubernetes. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via <code>Helm</code> on a Tanzu Kubernetes Grid Cluster.</p>
 <p>In this post I will focus on the installation of Harbor using <code>Helm</code> and also on the preperations you have to do upfront before you are able to let the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreffer">Supervisor Cluster</a> pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
@@ -189,7 +189,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
 <h2 id="tanzu-kubernetes-grid-cluster-recap">Tanzu Kubernetes Grid Cluster (Recap)</h2>
 <p>The simple way of creating a Tanzu Kubernetes Grid (TKG) cluster will be done by invoking the TKG Service declarative API. A very detailed <em>&ldquo;How to Guide&rdquo;</em> is provided by <a href="https://twitter.com/CormacJHogan" target="_blank" rel="noopener noreffer">Cormac Hogan</a> through this post: <strong><a href="https://cormachogan.com/2020/04/07/building-a-tkg-guest-cluster-in-vsphere-with-kubernetes/" target="_blank" rel="noopener noreffer">Building a TKG Cluster in vSphere with Kubernetes</a></strong></p>
 <p>I recommend reading this post or of course VMware&rsquo;s official documentation first if you haven&rsquo;t deployed a TKG cluster yet.</p>
-<p>Otherwise, here is my *&ldquo;How to&rdquo; <strong>in a nutshell&hellip;</strong></p>
+<p>Otherwise, here is my &ldquo;How to&rdquo; <strong>in a nutshell&hellip;</strong></p>
 <h3 id="create-a-vsphere-namespacehttpsdocsvmwarecomenvmware-vsphere70vmware-vsphere-with-kubernetesguid-177c23c4-ed81-4add-89a2-61654c18201bhtml">Create a vSphere <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-177C23C4-ED81-4ADD-89A2-61654C18201B.html" target="_blank" rel="noopener noreffer">Namespace</a></h3>
 <p>Go to <strong>Home</strong> &ndash;&gt; <strong>Workload Management</strong> and click on <strong>NEW NAMESPACE</strong></p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" title="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" data-thumbnail="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" data-sub-html="<h2>Figure III: Create a Namespace in vSphere</h2>">
@@ -490,7 +490,7 @@ vmware-system-csi              Active   2d1h
 -n harbor
 </code></pre></td></tr></table>
 </div>
-</div><p>I monitored the deployment progress by watching (<code>watch</code>) the command <code>kubectl get deployment -n harbor</code> and I became sceptical because nothing happened for a long time. Checking the events of my deployment <code>kubectl get events -n harbor</code> was the next logical step and the following <code>Message</code> immediateley catched my attention:</p>
+</div><p>I monitored the deployment progress by watching (<code>watch</code>) the command <code>kubectl get deployment -n harbor</code> and I became sceptical because nothing happened for a long time. Checking the events of my deployment <code>kubectl get events -n harbor</code> was the next logical step and the following <code>Message</code> immediately catched my attention:</p>
 <div class="details admonition failure open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-times-circle fa-fw"></i>Message<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -783,6 +783,9 @@ vmware-system-csi              Active   2d1h
             alt="/img/posts/202007_harborontkg/CapturFiles-20200721_113854.jpg" />
     </a><figcaption class="image-caption">Figure VII: Kubernetes Configmap image-fetcher-ca-bundle</figcaption>
     </figure>
+<ul>
+<li>save and close <code>:wq</code></li>
+</ul>
 <ol start="4">
 <li>Start the deployment again and watch the progress</li>
 </ol>
