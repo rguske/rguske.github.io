@@ -25,7 +25,8 @@ Source: https://en.wikipedia.org/wiki/Microsite
 
 I will keep this site up-to-date as good as I can.
 
----
+**If you have any other site(s) to add, please put it/ them in the comments below** :point_down:.
+
 ## List of Microsites [<span style="color:#0037ff">Update: March 2020</span>]
 
 |   **Site**                        |   **URL**                                      |  **Link**                                                                    |
@@ -57,7 +58,6 @@ I will keep this site up-to-date as good as I can.
 | VMware Pathfinder                 |   `https://pathfinder.vmware.com/`             |   <a href="https://pathfinder.vmware.com/" target="_blank">Click</a>         |
 | VMware Cloud Solutions            |   `https://cloudsolutions.vmware.com/`         |   <a href="https://cloudsolutions.vmware.com/" target="_blank">Click</a>     |
 
----
 ## More VMware Sites [<span style="color:#0037ff">Update: March 2020</span>]
 
 |   **Name**                        |   **Adress**                                   |  **Link**                                                                                        |
@@ -69,8 +69,11 @@ I will keep this site up-to-date as good as I can.
 | User Group Communities           |   `https://community.vmug.com/`                        |   <a href="https://community.vmug.com/" target="_blank">Click</a>                         |
 | VMworld Homepage                 |   `https://vmworld.com/`                               |   <a href="https://vmworld.com/" target="_blank">Click</a>                                |
 
----
-If you have any other site(s) to add, please DM me on Twitter. Thanks a lot in advance.
+
+
+<center>
+{{< typeit >}} Thanks a lot in advance. {{< /typeit >}}
+</center>
 
 ---
 
