@@ -1,7 +1,7 @@
 # VMware Microsites You should bookmark
 
 
-The idea behind this post was born as follows:
+The idea behind this post or collection was born as follows:
 
 {{< admonition quote "Quote" true >}}
 **Me:** ...it´s on vSphere Central.
@@ -13,7 +13,7 @@ The idea behind this post was born as follows:
 **Customer:** *I know Storagehub, but I´ve never heard of vSphere Central.*
 {{< /admonition >}}
 
-This is basically how the conversation went and I told him as well as my TAM peer <a href="https://twitter.com/TinaKrogull" target="_blank">Tina</a>, she was with me on this session, that I will provide a collection of the VMware Microsites I know, together in a post.
+This is basically how the conversation went and I told him as well as my TAM peer <a href="https://twitter.com/TinaKrogull" target="_blank">Tina</a>, who was with me on this session, that I will provide a collection of all the VMware Microsites I know, together in a post.
 
 {{< admonition info "Info" true >}}
 What is a Microsite?
