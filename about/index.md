@@ -6,7 +6,7 @@
 
 ## Contact
 
-- <a href="mailto:robert.guske@gmail.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a> Mail
+- <i class="far fa-envelope fa-fw"></i> [Mail](mailto:robert.guske@gmail.com)
 - <i class="fab fa-linkedin fa-fw"></i><a href="https://www.linkedin.com/in/robert-guske-830853111/" target="_blank"> Robert Guske</a>
 - <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/vmw_rguske" target="_blank"> @vmw_rguske</a>
 - <i class='fab fa-github fa-fw'></i><a href="https://github.com/rguske" target="_blank"> rguske</a>
