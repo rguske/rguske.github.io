@@ -46,7 +46,11 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 I am very delighted that I've already been elected into the program several times.
 
-{{< image src="/img/about/vexpert.png" src-s="/img/about/vcp65.png" height="300" width="400" >}}
+{{< image src="/img/about/vexpert.png" src-s="/img/about/vexpert.png" height="300" width="400" >}}
+
+The vExpert Application Modernization subprogram rewards those, who have stronger contributed on this specific topic (Application modernization).
+
+{{< image src="/img/about/vexpert_modernapps.jpg" src-s="/img/about/vexpert_modernapps.jpg" >}}
 
 ---
 ## Public Events - Speaking, Demoing, Staff and Initiatives
