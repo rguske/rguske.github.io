@@ -13,7 +13,7 @@
 
 ---
 ## Professional Information
-I´m an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements to clients and organizations. I´m very keen on all topics around Cloud-Native Technologies and software-defined-everything and I like to share this passion with you through this blog.
+I´m an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements to clients and organizations. I´m very keen on all topics around Cloud-Native technologies and software-defined-everything and I like to share this passion with you through this blog.
 
 Within VMware´s Professional Service Organization <a href="https://www.vmware.com/professional-services.html" target="_blank">(PSO)</a>, I´ve started my journey back in October 2016 as a Technical Account Manager. In case you don´t know exactly what a TAM does, I´d like to forward you to the following post which describes it very well: [What is a VMware Technical Account Manager?](https://blogs.vmware.com/services-education-insights/2017/11/vmware-technical-account-manager.html)
 
@@ -60,7 +60,7 @@ I am very delighted that I've already been elected into the program several time
 
 | **Event** | **My Part** | **Homepage** |
 |:---: | :---: | :---:|
-| **Container Days Hamburg 2019** | **STAFF** - at VMware's booth to present the *Modern Apps* strategy and vision. | https://www.containerdays.io/ |
+| **Container Days Hamburg 2019** | **STAFF** - at the VMware booth to present the *Modern Apps* strategy and vision. | https://www.containerdays.io/ |
 
 <center> {{< tweet 1143415424274620416 >}} {{< tweet 1143424062502440960 >}} </center>
 
@@ -92,7 +92,7 @@ I am very delighted that I've already been elected into the program several time
 
 {{< image src="/img/about/vmworld2017_staff.jpg" src-s="/img/about/vmworld2017_staff.jpg" caption="VMworld 2017 - Hands-on Labs Staff" width="550" >}}
 
-Providing our attendees a unique Hands-on Labs experience was part of my role and I took it seriously :blush:.
+Providing our attendees a unique Hands-on Labs experience was part of my role and I took it seriously :blush: .
 
 {{< image src="/img/about/hol_certificate.jpg" src-s="/img/about/hol_certificate.jpg" caption="Certificate of Achievement - VMworld 2017 HOL" width="550" >}}
 
