@@ -197,11 +197,30 @@ tree -L 2
 It's time now to create a Kubernetes node. **Note!** `vctl system start` has to be executed first before leveraging `kind` for a deployment! Otherwise you will get the following error message:
 
 {{< admonition type=failure title="Error" open=true >}}
-Failed to list clusters: command "docker ps -a --filter label=io.x-k8s.kind.cluster=kind-1.19.1 --format '{{.Names}}'" failed with error: exit status 1
-Command Output: level=fatal msg="Container engine is not running. Run 'vctl system start' to launch it.
+FATAL Container engine is not running. Run 'vctl system start' to launch it
 {{< /admonition >}}
 
-`vctl` assigns 2 GB of memory and 2 CPU cores by default for the CRX VM that hosts the node container. You can adjust the default configuration with the options `--k8s-cpus` and `--k8s-mem`. To create the Kubernetes node, basically `kind create cluster` is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official [Docker repository](https://hub.docker.com/r/kindest/node/tags), pick your version and run e.g. `kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1`.
+`vctl` assigns 2 GB of memory and 2 CPU cores by default for the CRX VM that hosts the Kubernetes node container. You can adjust the default `vctl system` configuration with the options `--k8s-cpus` and `--k8s-mem`.
+
+**Example:** `vctl system config --k8s-cpus 4 --k8s-mem 8192`
+
+The results can be seen in the `config.yaml` file: `cat ~/.vctl/config.yaml`
+
+```yml
+cache-location: /Users/rguske/.vctl
+k8s-cpus: 4
+k8s-mem: 8192
+log-level: info
+log-location: /Users/rguske/.vctl/containerd.log
+mount-name: Fusion Container Storage
+pid: 2671
+storage: 128g
+vm-cpus: 2
+vm-mem: 1024
+vmnet: vmnet8
+```
+
+To create the Kubernetes node, basically `kind create cluster` is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official [Docker repository](https://hub.docker.com/r/kindest/node/tags), pick your version and run e.g. `kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1`.
 
 After a minute or two, you will have a Kubernetes node running on your desktop locally.
 

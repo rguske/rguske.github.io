@@ -275,14 +275,14 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>kustomize.config.k8s.io/v1beta1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Kustomization<span class="w">
-</span><span class="w"></span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
-</span><span class="w"></span><span class="k">commonLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vrops-cadvisor<span class="w">
-</span><span class="w"></span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- daemonset.yaml<span class="w">
-</span><span class="w"></span>- namespace.yaml<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kustomize.config.k8s.io/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Kustomization</span><span class="w">
+</span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
+</span><span class="w"></span><span class="nt">commonLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vrops-cadvisor</span><span class="w">
+</span><span class="w"></span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w"></span>- <span class="l">daemonset.yaml</span><span class="w">
+</span><span class="w"></span>- <span class="l">namespace.yaml</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p><code>vim namespace.yaml</code></p>
@@ -294,10 +294,10 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Namespace<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p><code>vim daemonset.yaml</code></p>
@@ -378,79 +378,79 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">73
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>apps/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>DaemonSet<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">  </span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">        </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>k8s.gcr.io/cadvisor<span class="p">:</span>v0<span class="m">.35.0</span><span class="w">
-</span><span class="w">        </span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>200Mi<span class="w">
-</span><span class="w">            </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>150m<span class="w">
-</span><span class="w">          </span><span class="k">limits</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>2000Mi<span class="w">
-</span><span class="w">            </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>300m<span class="w">
-</span><span class="w">        </span><span class="k">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>rootfs<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/rootfs<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>var-run<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/var/run<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>sys<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/sys<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>docker<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/var/lib/docker<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>disk<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/dev/disk<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http<span class="w">
-</span><span class="w">            </span><span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
-</span><span class="w">            </span><span class="k">hostPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
-</span><span class="w">            </span><span class="k">protocol</span><span class="p">:</span><span class="w"> </span>TCP<span class="w">
-</span><span class="w">        </span><span class="k">securityContext</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">capabilities</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span><span class="k">drop</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span>- ALL<span class="w">
-</span><span class="w">              </span><span class="k">add</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span>- NET_BIND_SERVICE<span class="w">
-</span><span class="w">        </span><span class="k">args</span><span class="p">:</span><span class="w">
-</span><span class="w">         </span>- --port=<span class="m">31194</span><span class="w">
-</span><span class="w">         </span>- --profiling<span class="w">
-</span><span class="w">         </span>- --housekeeping_interval=1s<span class="w">
-</span><span class="w">      </span><span class="k">automountServiceAccountToken</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">      </span><span class="k">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="w">
-</span><span class="w">      </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>rootfs<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>var-run<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/var/run<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>sys<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/sys<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>docker<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/var/lib/docker<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>disk<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/dev/disk<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">k8s.gcr.io/cadvisor:v0.35.0</span><span class="w">
+</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">200Mi</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">150m</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">2000Mi</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">300m</span><span class="w">
+</span><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootfs</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/rootfs</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">var-run</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/run</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">sys</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/sys</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">docker</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/docker</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">disk</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/dev/disk</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">            </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
+</span><span class="w">            </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
+</span><span class="w">            </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">        </span><span class="nt">securityContext</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">capabilities</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span><span class="nt">drop</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span>- <span class="l">ALL</span><span class="w">
+</span><span class="w">              </span><span class="nt">add</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span>- <span class="l">NET_BIND_SERVICE</span><span class="w">
+</span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">port=31194</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">profiling</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">housekeeping_interval=1s</span><span class="w">
+</span><span class="w">      </span><span class="nt">automountServiceAccountToken</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">      </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootfs</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">var-run</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/var/run</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">sys</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/sys</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">docker</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/docker</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">disk</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/dev/disk</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ol>

@@ -24,7 +24,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/a-closer-look-at-vmwares-project-nautilus\/"
-        },"genre": "posts","keywords": "September2020, Fusion, Workstation, Kubernetes","wordcount":  2013 ,
+        },"genre": "posts","keywords": "September2020, Fusion, Workstation, Kubernetes","wordcount":  2029 ,
         "url": "https:\/\/rguske.github.io\/post\/a-closer-look-at-vmwares-project-nautilus\/","datePublished": "2020-09-20T11:45:57+02:00","dateModified": "2020-09-20T11:47:50+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">A closer look at VMware&#39;s Project Nautilus</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/fusion/"><i class="far fa-folder fa-fw"></i>Fusion</a>&nbsp;<a href="/categories/workstation/"><i class="far fa-folder fa-fw"></i>Workstation</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-09-20">2020-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2013 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-09-20">2020-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2029 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -475,11 +475,41 @@ which kind
             <i class="icon fas fa-times-circle fa-fw"></i>Error<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">Failed to list clusters: command &ldquo;docker ps -a &ndash;filter label=io.x-k8s.kind.cluster=kind-1.19.1 &ndash;format &lsquo;{{.Names}}'&rdquo; failed with error: exit status 1
-Command Output: level=fatal msg=&quot;Container engine is not running. Run &lsquo;vctl system start&rsquo; to launch it.</div>
+            <div class="admonition-content">FATAL Container engine is not running. Run &lsquo;vctl system start&rsquo; to launch it</div>
         </div>
     </div>
-<p><code>vctl</code> assigns 2 GB of memory and 2 CPU cores by default for the CRX VM that hosts the node container. You can adjust the default configuration with the options <code>--k8s-cpus</code> and <code>--k8s-mem</code>. To create the Kubernetes node, basically <code>kind create cluster</code> is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official <a href="https://hub.docker.com/r/kindest/node/tags" target="_blank" rel="noopener noreffer">Docker repository</a>, pick your version and run e.g. <code>kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1</code>.</p>
+<p><code>vctl</code> assigns 2 GB of memory and 2 CPU cores by default for the CRX VM that hosts the Kubernetes node container. You can adjust the default <code>vctl system</code> configuration with the options <code>--k8s-cpus</code> and <code>--k8s-mem</code>.</p>
+<p><strong>Example:</strong> <code>vctl system config --k8s-cpus 4 --k8s-mem 8192</code></p>
+<p>The results can be seen in the <code>config.yaml</code> file: <code>cat ~/.vctl/config.yaml</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">cache-location</span><span class="p">:</span><span class="w"> </span><span class="l">/Users/rguske/.vctl</span><span class="w">
+</span><span class="w"></span><span class="nt">k8s-cpus</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span><span class="w"></span><span class="nt">k8s-mem</span><span class="p">:</span><span class="w"> </span><span class="m">8192</span><span class="w">
+</span><span class="w"></span><span class="nt">log-level</span><span class="p">:</span><span class="w"> </span><span class="l">info</span><span class="w">
+</span><span class="w"></span><span class="nt">log-location</span><span class="p">:</span><span class="w"> </span><span class="l">/Users/rguske/.vctl/containerd.log</span><span class="w">
+</span><span class="w"></span><span class="nt">mount-name</span><span class="p">:</span><span class="w"> </span><span class="l">Fusion Container Storage</span><span class="w">
+</span><span class="w"></span><span class="nt">pid</span><span class="p">:</span><span class="w"> </span><span class="m">2671</span><span class="w">
+</span><span class="w"></span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">128g</span><span class="w">
+</span><span class="w"></span><span class="nt">vm-cpus</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span><span class="w"></span><span class="nt">vm-mem</span><span class="p">:</span><span class="w"> </span><span class="m">1024</span><span class="w">
+</span><span class="w"></span><span class="nt">vmnet</span><span class="p">:</span><span class="w"> </span><span class="l">vmnet8</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>To create the Kubernetes node, basically <code>kind create cluster</code> is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official <a href="https://hub.docker.com/r/kindest/node/tags" target="_blank" rel="noopener noreffer">Docker repository</a>, pick your version and run e.g. <code>kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1</code>.</p>
 <p>After a minute or two, you will have a Kubernetes node running on your desktop locally.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
