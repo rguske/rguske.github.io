@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" />
 <meta property="article:published_time" content="2020-09-20T11:45:57+02:00" />
-<meta property="article:modified_time" content="2020-09-20T11:47:50+02:00" />
+<meta property="article:modified_time" content="2020-09-24T10:12:35+02:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="A closer look at VMware&#39;s Project Nautilus"/>
 <meta name="twitter:description" content="General Availability Fusion 12 &amp; Workstation 16 VMware&rsquo;s Desktop Hypervisor solutions Fusion for Mac users and Workstation for the Windows and Linux userbase were launched in it&rsquo;s newest versions on September 15th. Lots of new features, enhancements and support around VM Guest Operating Systems, VM Scaling, GPU, Containers and Kubernetes has made it into these releases. The made enhancements will enrich Developers tool kit as well as will provide great new capabilities for IT Admins and everyone else who is keen on spinning up and down Virtual Machines, Containers and NOW also Kubernetes."/>
@@ -24,8 +24,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/a-closer-look-at-vmwares-project-nautilus\/"
-        },"genre": "posts","keywords": "September2020, Fusion, Workstation, Kubernetes","wordcount":  2029 ,
-        "url": "https:\/\/rguske.github.io\/post\/a-closer-look-at-vmwares-project-nautilus\/","datePublished": "2020-09-20T11:45:57+02:00","dateModified": "2020-09-20T11:47:50+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "September2020, Fusion, Workstation, Kubernetes","wordcount":  2095 ,
+        "url": "https:\/\/rguske.github.io\/post\/a-closer-look-at-vmwares-project-nautilus\/","datePublished": "2020-09-20T11:45:57+02:00","dateModified": "2020-09-24T10:12:35+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">A closer look at VMware&#39;s Project Nautilus</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/fusion/"><i class="far fa-folder fa-fw"></i>Fusion</a>&nbsp;<a href="/categories/workstation/"><i class="far fa-folder fa-fw"></i>Workstation</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-09-20">2020-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2029 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-09-20">2020-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2095 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -510,8 +510,40 @@ which kind
 </span></code></pre></td></tr></table>
 </div>
 </div><p>To create the Kubernetes node, basically <code>kind create cluster</code> is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official <a href="https://hub.docker.com/r/kindest/node/tags" target="_blank" rel="noopener noreffer">Docker repository</a>, pick your version and run e.g. <code>kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1</code>.</p>
-<p>After a minute or two, you will have a Kubernetes node running on your desktop locally.</p>
+<p>After a couple of seconds, you will have a Kubernetes node running on your desktop locally.</p>
 <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get nodes -o wide
+
+NAME                        STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
+kind-1.19.1-control-plane   Ready    master   65s   v1.19.1   192.168.43.153   &lt;none&gt;        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl cluster-info --context kind-kind-1.19.1
+
+Kubernetes master is running at https://127.0.0.1:63448
+KubeDNS is running at https://127.0.0.1:63448/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use &#39;kubectl cluster-info dump&#39;.
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -540,9 +572,11 @@ which kind
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
+</span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get all -A
+
 NAMESPACE            NAME                                                    READY   STATUS    RESTARTS   AGE
 kube-system          pod/coredns-f9fd979d6-spv95                             1/1     Running   0          116m
 kube-system          pod/coredns-f9fd979d6-vh22z                             1/1     Running   0          116m
@@ -638,8 +672,8 @@ COMMANDS:
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2020-09-20&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e68369d544efc9648f1b6048cb15eb814b961f40" target="_blank" title="commit by Robert Guske(rguske@mware.com) e68369d544efc9648f1b6048cb15eb814b961f40: finished post project nautilus">
-                                    <i class="fas fa-hashtag fa-fw"></i>e68369d</a></span>
+                <span>Updated on 2020-09-24&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/76f5452e87a60f334e3e2e032d0c00492b87ca95" target="_blank" title="commit by Robert Guske(rguske@mware.com) 76f5452e87a60f334e3e2e032d0c00492b87ca95: some adjustments on post Nautilus and About page">
+                                    <i class="fas fa-hashtag fa-fw"></i>76f5452</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>

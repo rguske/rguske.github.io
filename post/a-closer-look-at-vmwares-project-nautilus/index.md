@@ -222,10 +222,27 @@ vmnet: vmnet8
 
 To create the Kubernetes node, basically `kind create cluster` is all you need to get started. If you like to give the node(s) a name or if you like to use a specific Kubernetes version which should run on your node, checkout the official [Docker repository](https://hub.docker.com/r/kindest/node/tags), pick your version and run e.g. `kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1`.
 
-After a minute or two, you will have a Kubernetes node running on your desktop locally.
+After a couple of seconds, you will have a Kubernetes node running on your desktop locally.
+
+```
+kubectl get nodes -o wide
+
+NAME                        STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
+kind-1.19.1-control-plane   Ready    master   65s   v1.19.1   192.168.43.153   <none>        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
+```
+
+```
+kubectl cluster-info --context kind-kind-1.19.1
+
+Kubernetes master is running at https://127.0.0.1:63448
+KubeDNS is running at https://127.0.0.1:63448/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
 
 ```
 kubectl get all -A
+
 NAMESPACE            NAME                                                    READY   STATUS    RESTARTS   AGE
 kube-system          pod/coredns-f9fd979d6-spv95                             1/1     Running   0          116m
 kube-system          pod/coredns-f9fd979d6-vh22z                             1/1     Running   0          116m
