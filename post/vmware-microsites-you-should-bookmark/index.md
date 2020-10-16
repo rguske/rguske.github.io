@@ -31,9 +31,14 @@ I will keep this site up-to-date as good as I can.
 
 |   **Site**                        |   **URL**                                      |  **Link**                                                                    |
 |:----------                     |:-------:                                     |-------:                                                                      |
+<<<<<<< HEAD
 | VMware Docs 	                    |   `https://docs.vmware.com/ 	           `     |   <a href="https://docs.vmware.com/" target="_blank">Click</a>               |
 | VMware Download                   |   `https://downloads.vmware.com/ 	           ` |   <a href="https://downloads.vmware.com/" target="_blank">Click</a>          |
 | VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Click</a>                  |
+=======
+| VMware Tanzu                      |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Click</a>              |
+| VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Click</a>     |
+>>>>>>> vebawithfusion
 | Product Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Click</a> |
 | VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Click</a>              |
 | vSphere Central                   |   `https://vspherecentral.vmware.com/	   `     |   <a href="https://vspherecentral.vmware.com/" target="_blank">Click</a>     |
