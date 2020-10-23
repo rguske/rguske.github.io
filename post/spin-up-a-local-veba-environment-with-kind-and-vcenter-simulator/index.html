@@ -26,7 +26,7 @@ The question This post is intented to answer a question which came into my mind 
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/"
-        },"genre": "posts","keywords": "October2020, VEBA, Kubernetes, KinD, vcsim, FaaS, Fusion, Workstation","wordcount":  2403 ,
+        },"genre": "posts","keywords": "October2020, VEBA, Kubernetes, KinD, vcsim, FaaS, Fusion, Workstation","wordcount":  2420 ,
         "url": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/","datePublished": "2020-10-16T12:00:57+02:00","dateModified": "2020-08-20T11:48:02+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -117,7 +117,7 @@ The question This post is intented to answer a question which came into my mind 
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw"></i>FaaS</a>&nbsp;<a href="/categories/fusion/"><i class="far fa-folder fa-fw"></i>Fusion</a>&nbsp;<a href="/categories/workstation/"><i class="far fa-folder fa-fw"></i>Workstation</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-10-16">2020-10-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2403 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-10-16">2020-10-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2420 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;12 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -175,6 +175,14 @@ The question This post is intented to answer a question which came into my mind 
         </div>
     </div>
 <p>To be honest, the answer to this question was already partially answered with <strong>YES</strong> before the idea was born to leverage VMware Fusion (or Workstation) for this use case. Fortunately, now seems to be the right time to write about it. <a href="https://twitter.com/embano1" target="_blank" rel="noopener noreffer">Michael Gasch</a>, the maintainer of the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreffer">Event Router</a> helped me great in supporting the joint idea by not only creating a <code>vcsim</code> container image but also by making necessary code changes to the Event Router to support <code>vcsim</code> as a <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/231" target="_blank" rel="noopener noreffer">supported Event Provider (<i class='fab fa-github fa-fw'></i> PR #231) </a>.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>UPDATE: October 19, 2020<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The aforementioned PR #231 was merged in <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/237" target="_blank" rel="noopener noreffer"><i class='fab fa-github fa-fw'></i> PR #237</a>. <code>vcsim</code> is now supported as a <code>Event Provider</code> for the Event Router. Adjustments to this post were made accordingly.</div>
+        </div>
+    </div>
 <p><strong>Thanks Michael!</strong></p>
 <h2 id="modular-architecture">Modular Architecture</h2>
 <p>A look into the inners of VEBA shows us that it is built out of several pieces (modular approach) like e.g. VMware&rsquo;s Photon OS (Operating System), Kubernetes (Orchestrator/ Runtime) and the Event-Processor (Application). The event provider part is covered by the <a href="https://vmweventbroker.io/kb/event-router" target="_blank" rel="noopener noreffer">Event Router</a> which is responsible for connecting to event <code>stream</code> sources, such as the VMware vCenter Server and forward events to an event <code>processor</code> like e.g. <a href="https://www.openfaas.com/" target="_blank" rel="noopener noreffer">OpenFaaS</a> or <a href="https://aws.amazon.com/eventbridge/?nc1=h_ls" target="_blank" rel="noopener noreffer">AWS EventBridge</a>.</p>
@@ -335,14 +343,6 @@ The question This post is intented to answer a question which came into my mind 
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get nodes -o wide
-</code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -486,7 +486,7 @@ openfaas-fn          Active   55s
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">tree -L 2 yaml
+<pre class="chroma"><code class="language-shell" data-lang="shell">tree -L <span class="m">2</span> yaml
 
 yaml
 ├── README.md
@@ -836,7 +836,7 @@ Powering on VirtualMachine:vm-57... OK
 </code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>Download the Event Router deployment specification locally and change the image version from <code>latest</code> to <code>vcsim</code>:
+<li>Download the Event Router deployment specification locally and change the image version from <code>latest</code> to <code>development</code>:
 <ul>
 <li>Available Images on <a href="https://hub.docker.com/r/vmware/veba-event-router/tags" target="_blank" rel="noopener noreffer">Dockerhub</a></li>
 </ul>
@@ -918,7 +918,7 @@ Powering on VirtualMachine:vm-57... OK
 </span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
 </span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
 </span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">embano1/veba-event-router:vcsim       ### Will change after the merge of PR #231</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">vmware/veba-event-router:development</span><span class="w">
 </span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-config&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;/etc/vmware-event-router/event-router-config.yaml&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-verbose&#34;</span><span class="p">]</span><span class="w">
 </span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
 </span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">

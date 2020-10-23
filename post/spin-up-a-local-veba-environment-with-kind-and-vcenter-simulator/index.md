@@ -14,6 +14,10 @@ This post is intented to answer a question which came into my mind during my wor
 
 To be honest, the answer to this question was already partially answered with **YES** before the idea was born to leverage VMware Fusion (or Workstation) for this use case. Fortunately, now seems to be the right time to write about it. [Michael Gasch](https://twitter.com/embano1), the maintainer of the [Event Router](https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router) helped me great in supporting the joint idea by not only creating a `vcsim` container image but also by making necessary code changes to the Event Router to support `vcsim` as a [supported Event Provider (<i class='fab fa-github fa-fw'></i> PR #231) ](https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/231).
 
+{{< admonition info "UPDATE: October 19, 2020" true >}}
+The aforementioned PR #231 was merged in [<i class='fab fa-github fa-fw'></i> PR #237](https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/237). `vcsim` is now supported as a `Event Provider` for the Event Router. Adjustments to this post were made accordingly.
+{{< /admonition >}}
+
 **Thanks Michael!**
 
 ## Modular Architecture
@@ -85,8 +89,8 @@ Want to see it in action? I've putted a short recording in the [Conclusion](http
 vctl system start
 ```
 
-  - `vctl` assigns 2 GB of memory and 2 CPU cores by default for the CRX VM
-  - Depending on your needs, you can adjust the configuration by using e.g. `vctl system config --k8s-cpus 4 --k8s-mem 8192` to have more CPUs and Memory assigned
+- `vctl` assigns 2 GB of memory and 2 CPU cores by default for the CRX VM
+- Depending on your needs, you can adjust the configuration by using e.g. `vctl system config --k8s-cpus 4 --k8s-mem 8192` to have more CPUs and Memory assigned
 - The next step is the Kubenretes cluster creation itself by leveraging `KinD` which will be available after executing `vctl kind`
   - Create a new Kubernetes node with e.g. the following parameters:
 
@@ -96,10 +100,6 @@ kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1
 
 - More details here: [rguske - KinD create Cluster](https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/#kind-create-cluster)
 - Validate the creation of your Kubernetes cluster by executing:
-
-```shell
-kubectl get nodes -o wide
-```
 
 ```shell
 kubectl get nodes -o wide
@@ -135,7 +135,7 @@ kubectl config current-context
 kubectl apply -f namespaces.yml
 ```
 
-  - Validate that the namespaces `openfaas` and `openfaas-fn` were created:
+- Validate that the namespaces `openfaas` and `openfaas-fn` were created:
 
 ```shell
 kubectl get ns
@@ -174,7 +174,7 @@ kubectl -n openfaas create secret generic basic-auth \
 
 The basis is settled and now off to the main deployment. Every component of OpenFaaS® is described in a yaml file which is stored in the according `/yaml` directory:
 
-```
+```shell
 tree -L 2 yaml
 
 yaml
@@ -379,7 +379,7 @@ metricsProvider:
 kubectl -n vmware create secret generic event-router-config --from-file=event-router-config.yaml
 ```
 
-- Download the Event Router deployment specification locally and change the image version from `latest` to `vcsim`:
+- Download the Event Router deployment specification locally and change the image version from `latest` to `development`:
   - Available Images on [Dockerhub](https://hub.docker.com/r/vmware/veba-event-router/tags)
 
 ```shell
@@ -404,7 +404,7 @@ spec:
         app: vmware-event-router
     spec:
       containers:
-      - image: embano1/veba-event-router:vcsim       ### Will change after the merge of PR #231
+      - image: vmware/veba-event-router:development
         args: ["-config", "/etc/vmware-event-router/event-router-config.yaml", "-verbose"]
         name: vmware-event-router
         resources:
@@ -451,7 +451,6 @@ kubectl logs -f -n vmware vmware-event-router-7bb7fd8577-jhlg9
 Finally, we've reached the last step - The deployment of an example function.
 
 ### 5. Test with an example function
-
 
 - Clone the VEBA repository locally and directly change into the echo function folder:
 
@@ -505,7 +504,7 @@ powercli-tag                    vmware/veba-powercli-tagging:latest             
 veba-echo                       vmware/veba-python-echo:latest                  0               1
 ```
 
-  - And by using `kubectl get pods -n openfaas-fn -o wide`
+- And by using `kubectl get pods -n openfaas-fn -o wide`
 
 ```shell
 NAME                            READY   STATUS    RESTARTS   AGE   IP            NODE                        NOMINATED NODE   READINESS GATES
