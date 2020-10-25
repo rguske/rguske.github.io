@@ -6,14 +6,14 @@
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
         <title>vSphere Integrated Containers Part I: OVA Deployment - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere Integrated Containers Part I: OVA Deployment" />
-<meta property="og:description" content="Environment Pre-Requisites:  vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)   Dependency on the vDistributed Switch VIC also supports VMware NSX   User with administrative credentials to vCenter Internet Access for downloading images min. two vDistributed Switch Port Groups   for public communication (VCH to external network) for inter containers communication create a dedicated port group for use as the bridge network for each VCH If DHCP is not available on these segments, please, request a range of free IP-Addresses." />
+<meta property="og:description" content="Environment Pre-Requisites  vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)  Dependency on the vDistributed Switch VIC also supports VMware NSX   User with administrative credentials to vCenter Internet Access for downloading images min. two vDistributed Switch Port Groups  for public communication (VCH to external network) for inter containers communication create a dedicated port group for use as the bridge network for each VCH   If DHCP is not available on these segments, please, request a range of free IP-Addresses." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" />
 <meta property="article:published_time" content="2018-07-13T13:10:38+02:00" />
 <meta property="article:modified_time" content="2020-05-24T19:04:21+02:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="vSphere Integrated Containers Part I: OVA Deployment"/>
-<meta name="twitter:description" content="Environment Pre-Requisites:  vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)   Dependency on the vDistributed Switch VIC also supports VMware NSX   User with administrative credentials to vCenter Internet Access for downloading images min. two vDistributed Switch Port Groups   for public communication (VCH to external network) for inter containers communication create a dedicated port group for use as the bridge network for each VCH If DHCP is not available on these segments, please, request a range of free IP-Addresses."/>
+<meta name="twitter:description" content="Environment Pre-Requisites  vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)  Dependency on the vDistributed Switch VIC also supports VMware NSX   User with administrative credentials to vCenter Internet Access for downloading images min. two vDistributed Switch Port Groups  for public communication (VCH to external network) for inter containers communication create a dedicated port group for use as the bridge network for each VCH   If DHCP is not available on these segments, please, request a range of free IP-Addresses."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -24,7 +24,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-part-1-ova-deployment\/"
-        },"genre": "posts","keywords": "July2018, VIC, Container, VMware, vSphere","wordcount":  572 ,
+        },"genre": "posts","keywords": "July2018, VIC, Container, VMware, vSphere","wordcount":  569 ,
         "url": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-part-1-ova-deployment\/","datePublished": "2018-07-13T13:10:38+02:00","dateModified": "2020-05-24T19:04:21+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere Integrated Containers Part I: OVA Deployment</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vsphere/"><i class="far fa-folder fa-fw"></i>vSphere</a>&nbsp;<a href="/categories/docker/"><i class="far fa-folder fa-fw"></i>Docker</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2018-07-13">2018-07-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;572 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2018-07-13">2018-07-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;569 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;3 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -131,7 +131,7 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#environment-pre-requisites">Environment Pre-Requisites:</a></li>
+    <li><a href="#environment-pre-requisites">Environment Pre-Requisites</a></li>
     <li><a href="#deploying-the-ova">Deploying the OVA</a>
       <ul>
         <li><a href="#pick-the-ova-file">Pick the OVA file</a></li>
@@ -147,22 +147,22 @@
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="environment-pre-requisites">Environment Pre-Requisites:</h2>
+            </div><div class="content" id="content"><h2 id="environment-pre-requisites">Environment Pre-Requisites</h2>
 <ul>
-<li>vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)</li>
-</ul>
+<li>vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)
 <ul>
 <li>Dependency on the vDistributed Switch</li>
 <li>VIC also supports VMware NSX</li>
 </ul>
-<ul>
+</li>
 <li>User with administrative credentials to vCenter</li>
 <li>Internet Access for downloading images</li>
-<li>min. two vDistributed Switch Port Groups</li>
-</ul>
+<li>min. two vDistributed Switch Port Groups
 <ul>
 <li>for public communication (VCH to external network)</li>
 <li>for inter containers communication create a dedicated port group for use as the bridge network for each VCH</li>
+</ul>
+</li>
 <li>If DHCP is not available on these segments, please, request a range of free IP-Addresses.</li>
 </ul>
 <div class="details admonition info open">
@@ -296,7 +296,6 @@
             <div class="admonition-content">If you think <em>&ldquo;Hey this H5-Client Dark Theme looks very slick! Where I can toggle the switch?&quot;</em> unfortunately one has to name, that this is not a feature in the vSphere H5-Client, it´s a Browser-Extension by Jens L. aka BeryJu and available for Chrome and Firefox. You´ll find him on <a href="https://github.com/BeryJu" target="_blank">Github</a> as well as on his <a href="https://beryju.org/en" target="_blank">Blog</a>. Thanks, Jens for the nice work.</div>
         </div>
     </div>
-<hr>
 <div class="details admonition warning open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-exclamation-triangle fa-fw"></i>Attention<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -306,11 +305,9 @@
 And - I´d recommend using only browsers where the language is set to English! In other cases, you could hit the issue <a href="https://github.com/BeryJu/dark-vcenter/issues/36" target="_blank">Other browser language than English breaks CSS inject #36</a></div>
         </div>
     </div>
-<hr>
 <p><strong>Here you´ll find the extensions.</strong></p>
 <p><a href="https://chrome.google.com/webstore/search/Dark%20vCenter" target="_blank">Dark-vCenter for Google Chrome</a></p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/dark-vcenter/?src=search" target="_blank">Dark-vCenter for Mozilla Firefox</a></p>
-<hr>
 <p>The next step is to complete the VIC appliance installation through the establishment of the connection to our vCenter Server as well as Platform Service Controller. Here we have to enter the vCenter Server address (FQDN) and the Single Sign-on credentials for a vSphere administrator account. In my case, I´m using an embedded PSC and thus, I can leave the fields for the External PSC Instance empty.</p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105035.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105035.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105035.jpg">
         <img
@@ -336,8 +333,6 @@ And - I´d recommend using only browsers where the language is set to English! I
 <p><a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><strong>vSphere Integrated Containers Part II: vSphere Client Plug-In</strong></a></p>
 <p><a href="/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/"><strong>vSphere Integrated Containers Part III: Deployment of a Virtual Container Host</strong></a></p>
 <p><a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"><strong>vSphere Integrated Containers Part IV: docker run a Container-VM</strong></a></p>
-<hr>
-<p><strong><center>Thanks for reading!</center></strong></p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">

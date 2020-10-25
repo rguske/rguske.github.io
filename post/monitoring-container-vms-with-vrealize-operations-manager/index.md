@@ -5,6 +5,7 @@ Based on talks with customers who already made their experiences running contain
 {{< image src="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" caption="Figure I: VIC monitoring high level overview" src-s="/img/posts/201811_post_monitoring/CapturFiles-20190120_030628.jpg" class="center" width="900" >}}
 
 ## The Dashboard
+
 Treating Containers as <a href="https://en.wikipedia.org/wiki/First-class_citizen" target="_blank">"First-Class Citizens"</a> is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine.
 
 {{< admonition quote "Quote" true >}}
@@ -26,6 +27,7 @@ The <span style="color:orange">lower part</span> is focused on the **performance
 I also considered to build out each part in a separate dashboard, so one for the Virtual Container Host(s) and another one for the Container-VM(s), but nevertheless I decided to go with the "All-in-One" variant.
 
 ### Download via VMware {code}
+
 If you like the dashboard and you are interested to monitor your containerized applications in terms of performance and utilization, you can download it through the following link: https://code.vmware.com/samples?id=5283
 
 **But** before you can make use of it you have to do some preperations first.
@@ -149,12 +151,6 @@ And in case you are already a *vR Ops-Ninja* and you are not on this list https:
 <center> {{< tweet 1068561326216228865 >}} </center>
 
 {{< image src="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" caption="Figure XIV: vROps Ninja" src-s="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" class="center" width="400" >}}
-
----
-
-**<center>Thank's for reading</center>**
-
----
 
 ## Resources
 

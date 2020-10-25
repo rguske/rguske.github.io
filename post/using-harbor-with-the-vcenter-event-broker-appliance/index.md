@@ -1,6 +1,5 @@
 # Using Harbor with the VMware Event Broker Appliance
 
-
 The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance" target="_blank">vCenter Event Broker Appliance (VEBA)</a> is still one of my favorite open source projects these days and it is evolving rapidly and continuously through the great work of the two main contributors <a href="https://twitter.com/embano1" target="_blank">Michael Gasch</a> and <a href="https://twitter.com/lamw" target="_blank">William Lam</a> as well as through the valuable ***feedback*** from the community. I´m very proud to be part of the "inner circle" of folks who meet on a regular basis to discuss everything <a href="https://twitter.com/search?q=%23vcenter-event-broker-appliance&src=typed_query" target="_blank">#VEBA</a> and the keyword here is also ***feedback***.
 
 Version 0.3 was recently with big updates announced which can be viewed via the following link: <a href="https://www.virtuallyghetto.com/2020/03/big-updates-to-the-vcenter-event-broker-appliance-veba-fling.html" target="_blank">Big updates to the vCenter Event Broker Appliance (VEBA) Fling</a>
@@ -27,15 +26,15 @@ Instead of pulling the appropriate image(s) from Docker Hub, I wanted to use **H
 
 Before we continue with the deployment of a function and what I´ve observed when VEBA is trying to pull the images from Harbor, I´d like to give you a **short** intoduction "How to create a project in Harbor".
 
-**1)** Login with *admin*, select *Projects* and give it a name.
+1. Login with *admin*, select *Projects* and give it a name.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200323_113744.jpg" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200323_113744.jpg" class="center" caption="Figure III: New project" >}}
 
-**2)** Go to Members and add a new *User* to the project.
+2. Go to Members and add a new *User* to the project.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200323_113818.jpg" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200323_113818.jpg" class="center" width="800" height="800" caption="Figure IV: Add a user" >}}
 
-**3)** The last step for now is to mark the project as *Public* so it is accessible to everyone and no `docker login` is required before. I also enable the *Automatically scan image on push* option, to let <a href="https://github.com/quay/clair" target="_blank">Clair</a> immediately scan images when they are pushed.
+3. The last step for now is to mark the project as *Public* so it is accessible to everyone and no `docker login` is required before. I also enable the *Automatically scan image on push* option, to let <a href="https://github.com/quay/clair" target="_blank">Clair</a> immediately scan images when they are pushed.
 
 {{< image src="/img/posts/202003_veba_harbor/CapturFiles-20200322_061632.jpg" src-s="/img/posts/202003_veba_harbor/CapturFiles-20200322_061632.jpg" class="center" caption="Figure V: Project configuration page" >}}
 
@@ -60,11 +59,11 @@ We can build, tag and push the image in two ways:
 Change into the directory were the `Dockerfile` is located, create a fresh new image out of it and directly assign it with a tag subsequently:
 
 ```Shell
-$ cd ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
+cd ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
 
-$ docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
+docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
 
-$ docker images
+docker images
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
 harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326        15 seconds ago      368MB
 ```
@@ -72,13 +71,13 @@ harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326 
 Login into Harbor with an assigned user or a user of an assigned group:
 
 ```shell
-$ docker login -u rguske harbor.jarvis.lab/veba
+docker login -u rguske harbor.jarvis.lab/veba
 ```
 
 After a successful login, push the image to your project:
 
 ```shell
-$ docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest
+docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest
 ```
 
 ### The OpenFaaS way - faas-cli
@@ -141,7 +140,7 @@ To solve this issue, I´ve created a little script which downloads the root cert
 You can download the script [HERE](https://github.com/rguske/download-harbor-cert-script) and copy it via `scp` into your VEBA appliance.
 
 ```shell
-$ scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
+scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
 ```
 
 Make it executable with `chmod +x docker_harbor_cert.sh` and run it. The other option without using `scp` is, to establish a `ssh` connection and to copy and execute the neccessary lines directly.
@@ -171,12 +170,10 @@ systemctl restart docker
 VEBA is now able to `pull` and run the image from Harbor.
 
 ```shell
-$ kubectl -n openfaas-fn get pods
+kubectl -n openfaas-fn get pods
 
 NAME                            READY   STATUS    RESTARTS   AGE
 powercli-tag-5ff88775fb-wqqqf   1/1     Running   0          84s
 ```
 
----
-
-<center>Thanks for reading.</center>
+**<center>Thanks for reading.</center>**

@@ -70,7 +70,9 @@ Now it's time to deploy the cAdvisor as a Kubernetes `DaemonSet` onto VEBA. I've
 Establish a `ssh` connection to your VEBA appliance and change into the `/tmp` directory. I have set up a repository on Github where I've stored the necessary files for the deployment. From here (`/tmp`) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run `git clone https://github.com/rguske/monitoring-veba.git && kubectl apply -k monitoring-veba/`.
 
 #### Environment without internet access
+
 For air-gapped environments, three simple steps are neccessary:
+
 1. create a new directory in `/tmp` -> e.g. `mkdir /tmp/monitoring-veba`
 2. create the following three specification files inside the newly created directory:
 
@@ -174,7 +176,7 @@ spec:
           path: /dev/disk
 ```
 
-1. By executing `kubectl apply -k .` from within the new folder (`/tmp/monitoring-veba`), the daemonset will be deployed in a new namespace called `vrops`.
+3. By executing `kubectl apply -k .` from within the new folder (`/tmp/monitoring-veba`), the daemonset will be deployed in a new namespace called `vrops`.
 
 ### Validate the cAdvisor deployment
 
@@ -187,8 +189,6 @@ cadvisor-ccgcx   1/1     Running   0          4m
 ```
 
 `STATUS Running` is the desired state which will fulfill our requirements to continue with the import of the vROps Management Pack for Container Monitoring as well as with the configuration of the Kubernetes Adapter which is available after a successful import.
-
----
 
 ## A Dashboard to monitor the VMware Event Broker Appliance
 
@@ -207,6 +207,7 @@ vRealize Operations Management Pack for Container Monitoring 1.4.2 and above wil
 {{< /admonition >}}
 
 2. Import the Management Pack in vROps as follows:
+
 - Go to `Administration` -> `Repository` and select `ADD/UPGRADE`
 - Browse to the folder which contains the `vmware-MPforContainerMonitoring-1.4.3-15987816.pak` file for the Management Pack and upload it up to vROps
   - It will appear after the installation
@@ -273,7 +274,6 @@ Go to `Administration` -> `Configuration` -> `Metric Configurations` -> `ReskndM
 The dashboard includes a widget which will display all deployed functions and it's utilization in terms of CPU and Memory (limit, current, average and maximum).
 
 {{< image src="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" caption="Figure VII: vROps Widget to show function utilization" src-s="/img/posts/202005_vropsveba/CapturFiles-20200512_105442.jpg" class="center" >}}
-
 
 I configured a `Dynamic Custom Group` in vROps to realize this. Like the above step for the `VEBA Node Utilization Metric Configuration`, this Dynamic Custom Group has to be configured before we import the dashboard. Otherwise, the widget(s) will be empty.
 

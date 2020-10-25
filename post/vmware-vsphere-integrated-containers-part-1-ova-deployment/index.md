@@ -1,17 +1,16 @@
 # vSphere Integrated Containers Part I: OVA Deployment
 
-
-## Environment Pre-Requisites:
+## Environment Pre-Requisites
 
 - vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)
- * Dependency on the vDistributed Switch
- * VIC also supports VMware NSX
+  - Dependency on the vDistributed Switch
+  - VIC also supports VMware NSX
 - User with administrative credentials to vCenter
 - Internet Access for downloading images
 - min. two vDistributed Switch Port Groups
- * for public communication (VCH to external network)
- * for inter containers communication create a dedicated port group for use as the bridge network for each VCH
- * If DHCP is not available on these segments, please, request a range of free IP-Addresses.
+  - for public communication (VCH to external network)
+  - for inter containers communication create a dedicated port group for use as the bridge network for each VCH
+- If DHCP is not available on these segments, please, request a range of free IP-Addresses.
 
 {{< admonition info "Info" true >}}
 You´ll find all necessary pieces of information with regards to Licensing as well as Deployment Requirements on the official <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/vic_installation_prereqs.html" target="_blank">VIC Github Page</a>.
@@ -75,22 +74,16 @@ Lean back and let the vCenter do its job... ... ...FINISHED!
 If you think *"Hey this H5-Client Dark Theme looks very slick! Where I can toggle the switch?"* unfortunately one has to name, that this is not a feature in the vSphere H5-Client, it´s a Browser-Extension by Jens L. aka BeryJu and available for Chrome and Firefox. You´ll find him on <a href="https://github.com/BeryJu" target="_blank">Github</a> as well as on his <a href="https://beryju.org/en" target="_blank">Blog</a>. Thanks, Jens for the nice work.
 {{< /admonition >}}
 
----
-
 {{< admonition warning "Attention" true >}}
 When you add the extension, VMware will not provide support when you´re facing issues!
 And - I´d recommend using only browsers where the language is set to English! In other cases, you could hit the issue <a href="https://github.com/BeryJu/dark-vcenter/issues/36" target="_blank">Other browser language than English breaks CSS inject #36</a>
 {{< /admonition >}}
-
----
 
 **Here you´ll find the extensions.**
 
 <a href="https://chrome.google.com/webstore/search/Dark%20vCenter" target="_blank">Dark-vCenter for Google Chrome</a>
 
 <a href="https://addons.mozilla.org/en-US/firefox/addon/dark-vcenter/?src=search" target="_blank">Dark-vCenter for Mozilla Firefox</a>
-
----
 
 The next step is to complete the VIC appliance installation through the establishment of the connection to our vCenter Server as well as Platform Service Controller. Here we have to enter the vCenter Server address (FQDN) and the Single Sign-on credentials for a vSphere administrator account. In my case, I´m using an embedded PSC and thus, I can leave the fields for the External PSC Instance empty.
 
@@ -109,6 +102,3 @@ If you´ve entered your credentials correctly, you´ll be forwarded to the VIC G
 
 <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/">**vSphere Integrated Containers Part IV: docker run a Container-VM**</a>
 
----
-
-**<center>Thanks for reading!</center>**

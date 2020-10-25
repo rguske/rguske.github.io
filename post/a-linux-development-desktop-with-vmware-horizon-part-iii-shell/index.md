@@ -1,7 +1,6 @@
 # A Linux Development Desktop with VMware Horizon - Part III: Shell
 
-
-# High :zap: Way to Shell
+## High :zap: Way to Shell
 
 The operationalization of platforms such as e.g. Kubernetes, or the use of tools for building services or applications such as Docker, requires in both cases the use of the command-line. There are dozens of great plugins, themes and extensions out there to pimp your shell so that it´ll help you to increase velocity as well as useability.
 
@@ -10,7 +9,8 @@ The operationalization of platforms such as e.g. Kubernetes, or the use of tools
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" caption="Figure I: Default Terminal appearance before tuning" src-s="/img/posts/201912_development_desktop/CapturFiles-20200224_100043.jpg" class="center" >}}
 
 ## 1. ZSH aka Z shell
-http://www.zsh.org/
+
+<http://www.zsh.org/>
 
 ZSH is a extended shell with lots of features, support for plugins and themes.
 
@@ -29,7 +29,8 @@ sudo yum install zsh
 ```
 
 ## 2. Oh My ZSH
-https://ohmyz.sh/
+
+<https://ohmyz.sh/>
 
 A community-driven framework for managing your Z shell configuration.
 
@@ -53,7 +54,8 @@ cat /etc/passwd | grep "username"
 ```
 
 ### 2.1 ZSH Syntax Highlighting
-https://github.com/zsh-users/zsh-syntax-highlighting
+
+<https://github.com/zsh-users/zsh-syntax-highlighting>
 
 This plugin enables highlighting of commands whilst they are typed and it´ll help you to avoid syntax erros before you run a command.
 
@@ -74,7 +76,8 @@ plugins=(git pks zsh-syntax-highlighting)
 Restart your terminal.
 
 ### 2.2 Install Powerline Fonts
-https://github.com/powerline/fonts
+
+<https://github.com/powerline/fonts>
 
 Needed fonts for the Powerlevel9k theme (step 4.).
 
@@ -95,7 +98,8 @@ rm -rf fonts
 ```
 
 ### 2.3 Powerlevel9k
-https://github.com/Powerlevel9k/powerlevel9k
+
+<https://github.com/Powerlevel9k/powerlevel9k>
 
 This theme will give your shell a new shine.
 
@@ -145,7 +149,8 @@ A logout or reboot of the system is necessary for the changes to take effect.
 **More! More! More!**
 
 ## 3 Homebrew on Linux :beer:
-https://docs.brew.sh/Homebrew-on-Linux
+
+<https://docs.brew.sh/Homebrew-on-Linux>
 
 Homebrew is a package manager (like Snappy) which simplifies the installation of software on your OS and should not be missing if you ask me.
 
@@ -164,12 +169,11 @@ export PATH=$PATH:"/home/linuxbrew/.linuxbrew/bin"
 source ~/.zshrc
 ```
 
----
-
 ## 4 CLI´s and tools
+
 ...I´m using and I´d like to recommend
 
-**kubectl** - https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux
+**kubectl** - <https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux>
 
 {{< admonition info "Info" true >}}
 A command line tool for controlling Kubernetes clusters.
@@ -180,7 +184,8 @@ brew install kubectl
 ```
 
 ### 4.1 ZSH Autocompletion for `kubectl`
-https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete
+
+<https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete>
 
 ```shell
 source <(kubectl completion zsh)
@@ -188,7 +193,8 @@ echo "if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi" >> ~
 ```
 
 ### 4.2 Powershell
-https://snapcraft.io/powershell
+
+<https://snapcraft.io/powershell>
 
 {{< admonition info "Info" true >}}
 PowerShell is an cross-platform (Windows, Linux, and macOS) command-line shell for automation and configuration management.
@@ -201,7 +207,8 @@ sudo snap install powershell --classic
 ```
 
 ### 4.3 KinD - Kubernetes in Docker
-https://github.com/kubernetes-sigs/kind
+
+<https://github.com/kubernetes-sigs/kind>
 
 {{< admonition info "Info" true >}}
 kind is a tool for running local Kubernetes clusters using Docker container "nodes".
@@ -210,7 +217,8 @@ kind is a tool for running local Kubernetes clusters using Docker container "nod
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" caption="Figure III: kind create cluster" src-s="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" class="center" width="800" height="800" >}}
 
 ### 4.4 Octant
-https://github.com/vmware-tanzu/octant
+
+<https://github.com/vmware-tanzu/octant>
 
 {{< admonition info "Info" true >}}
 Octant is a tool for developers to understand how applications run on a Kubernetes cluster.
@@ -221,7 +229,8 @@ Octant is a tool for developers to understand how applications run on a Kubernet
 *<center>Source: https://github.com/vmware-tanzu/octant</center>*
 
 ### 4.5 tmux
-https://github.com/tmux/tmux
+
+<https://github.com/tmux/tmux>
 
 {{< admonition info "Info" true >}}
 `tmux` is a terminal multiplexer.
@@ -230,41 +239,47 @@ https://github.com/tmux/tmux
 **Enable Mouse-scrolling**: Scrolling the terminal pages by using the mouse-wheel is natural for me and because it´s not enabled by default when using `tmux` I need to enable it. Settings like this for example can be applied while running `tmux`. Press *ctrl + b* and then type `:set -g mouse on`.
 
 ### 4.6 bat
-https://github.com/sharkdp/bat
+
+<https://github.com/sharkdp/bat>
 
 {{< admonition info "Info" true >}}
 `bat` is a cat clone with syntax highlighting and Git integration.
 {{< /admonition >}}
 
 ### 4.7 glances
-https://github.com/nicolargo/glances
+
+<https://github.com/nicolargo/glances>
 
 {{< admonition info "Info" true >}}
 `glances` is a cross-platform monitoring tool.
 {{< /admonition >}}
 
 ### 4.8 htop
-https://github.com/hishamhm/htop
+
+<https://github.com/hishamhm/htop>
 
 {{< admonition info "Info" true >}}
 `htop` is an interactive process viewer.
 {{< /admonition >}}
 
 ### 4.9 ctop
-https://github.com/bcicen/ctop
+
+<https://github.com/bcicen/ctop>
 
 {{< admonition info "Info" true >}}
 `ctop` provides a concise and condensed overview of real-time metrics for multiple containers:
 {{< /admonition >}}
 
 ### 4.10 prettyping
-https://github.com/denilsonsa/prettyping
+
+<https://github.com/denilsonsa/prettyping>
 
 {{< admonition info "Info" true >}}
 `prettyping` is a wrapper around the standard ping tool with the objective of making the output prettier, more colorful, more compact, and easier to read.
 {{< /admonition >}}
 
 And all of them can be easily installed via `brew`:
+
 ```shell
 brew install kind octant tmux bat glances htop ctop prettyping
 ```
@@ -272,7 +287,8 @@ brew install kind octant tmux bat glances htop ctop prettyping
 Addtionally to `htop`, `ytop` (former gotop) is a pretty neat process and system monitor.
 
 ### 4.11 `ytop`
-https://github.com/cjbassi/ytop
+
+<https://github.com/cjbassi/ytop>
 
 ```shell
 brew tap cjbassi/ytop && brew install ytop
@@ -281,10 +297,12 @@ brew tap cjbassi/ytop && brew install ytop
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" caption="Figure IV: tmux, htop, ctop, prettyping & ytop" src-s="/img/posts/201912_development_desktop/CapturFiles-20200217_050729.jpg" class="center" >}}
 
 ### 4.12 figlet
-http://www.figlet.org/
+
+<http://www.figlet.org/>
 
 ### 4.13 lolcat
-https://github.com/busyloop/lolcat
+
+<https://github.com/busyloop/lolcat>
 
 ```shell
 brew install figlet lolcat
@@ -300,12 +318,11 @@ figlet cliFun | lolcat
  \___|_|_|_|   \__,_|_| |_|
 ```
 
----
-
 ### 4.14 cowsay
+
 You should have a look at this post regarding cowsay :smile:: <a href="https://medium.com/@jasonrigden/cowsay-is-the-most-important-unix-like-command-ever-35abdbc22b7f" target="_blank">"cowsay is the Most Important Unix-like Command Ever"</a>
 
-```shell
+```code
 brew install cowsay
 
 cowsay -f vader I am your...LOL!
@@ -323,12 +340,11 @@ cowsay -f vader I am your...LOL!
                Cowth Vader
 ```
 
----
-
 ***Last but not least!***
 
 ### 4.15 Asciinema
-https://asciinema.org/
+
+<https://asciinema.org/>
 
 A perfect way how you can easily record your terminal sessions.
 
@@ -356,9 +372,7 @@ alias ping=prettyping
 alias cat=bat
 ```
 
-# You´re good to go!
-
-**<center>Thanks for reading.</center>**
+**<center>You´re good to go - Thanks for reading.</center>**
 
 ---
 

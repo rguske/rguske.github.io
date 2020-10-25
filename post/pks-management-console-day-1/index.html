@@ -154,7 +154,7 @@ See: https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-mana
         <li><a href="#step-7-integrations">Step 7: Integrations</a></li>
         <li><a href="#step-8-harbor">Step 8: Harbor</a></li>
         <li><a href="#step-9-ceip">Step 9: CEIP</a></li>
-        <li><a href="#let-the-magic-happen">Let the magic happen!</a></li>
+        <li><a href="#let-the-magic-happen">Let the magic happen</a></li>
       </ul>
     </li>
     <li><a href="#troubleshooting">Troubleshooting</a></li>
@@ -269,9 +269,9 @@ See: https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-mana
 </span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">root@epmc <span class="o">[</span> /storage/data/artifacts <span class="o">]</span><span class="c1"># ls</span>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@epmc [ /storage/data/artifacts ]# ls
 artifacts.yaml  harbor-container-registry  ops-manager  pivotal-container-service  stemcells-ubuntu-xenial
-root@pksmgmt <span class="o">[</span> /storage/data/artifacts <span class="o">]</span><span class="c1"># cat artifacts.yaml</span>
+root@pksmgmt [ /storage/data/artifacts ]# cat artifacts.yaml
 opsman:
   name: ops-manager
   version: 2.7.3
@@ -286,17 +286,17 @@ pks:
   path: /storage/data/artifacts/pivotal-container-service/1.6.0-build.17/pivotal-container-service-1.6.0-build.17.pivotal
 pks-stemcell:
   name: pks-stemcell
-  version: <span class="s2">&#34;456.51&#34;</span>
+  version: &#34;456.51&#34;
   path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
 harbor-stemcell:
   name: harbor-stemcell
-  version: <span class="s2">&#34;456.51&#34;</span>
+  version: &#34;456.51&#34;
   path: /storage/data/artifacts/stemcells-ubuntu-xenial/456.51/bosh-stemcell-456.51-vsphere-esxi-ubuntu-xenial-go_agent.tgz
 bosh:
   name: bosh
   version: NA
   path: NA
-root@epmc <span class="o">[</span> /storage/data/artifacts <span class="o">]</span><span class="c1">#</span>
+root@epmc [ /storage/data/artifacts ]#
 </code></pre></td></tr></table>
 </div>
 </div><p><em><center>Figure I: Enterprise PKS Management Console component versions</center></em></p>
@@ -304,7 +304,6 @@ root@epmc <span class="o">[</span> /storage/data/artifacts <span class="o">]</sp
 <p>As always, before we come to the exciting part, we have to deal with the requirements as well as the prerequisuits in advance. The requirements for the Appliance are 2 vCPUs, 8 GB of vRAM and 40 GB of Diskspace. Since the Appliance must reach the vCenter Server as well as the NSX Manager, it should be assigned to a network with connectivity to the same.
 Furthermore, we have to define two Availability-Zones. From a vSphere point of view, an AZ can be a Cluster, a Host-Group or a Resource Pool. One AZ is for the PKS Management Plane components and the other one (at least) for the Kubernetes cluster Nodes. I´m running just one vSphere-Cluster in my Homelab and I´m using Resource-Pools to provide the two AZ´s.</p>
 <p><strong>IMPORTANT:</strong> The Resource-Pools should exist before starting with the PKS Configuration through the EPMC! Otherwise they will not show up if you configure them on-the-fly. Means, you have to restart from the beginning. Avoid this, trust me 😉.</p>
-<hr>
 <p>When it comes to Networking, EPMC offers three kinds of flavors:</p>
 <ul>
 <li><strong>Bring-Your-Own-Topology (BYOT):</strong>  Assumes that NSX-T is already preconfigured for the use of Ent. PKS.</li>
@@ -620,7 +619,7 @@ Furthermore, we have to define two Availability-Zones. From a vSphere point of v
             alt="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" />
     </a><figcaption class="image-caption">Figure XX: Generate configuration</figcaption>
     </figure>
-<h3 id="let-the-magic-happen">Let the magic happen!</h3>
+<h3 id="let-the-magic-happen">Let the magic happen</h3>
 <p>You can see now that every configuration we made in the past 9 steps, is available and still editable in an in-browser text editor. Export the configuration as an YAML file to have it availavle for further deployments (see <em>Figure V: Start or Import an Configuration</em>).</p>
 <p>Click <strong>APPLY CONFIGURATION</strong></p>
 <figure class="center"><a class="lightgallery" href="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" title="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" data-thumbnail="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094413.jpg" data-sub-html="<h2>Figure XXI: Configuration as YAML editable and exportable</h2>">
@@ -672,24 +671,24 @@ Furthermore, we have to define two Availability-Zones. From a vSphere point of v
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Nov <span class="m">27</span> 21:51:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:50Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-
-</span><span class="s2">42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) configuring Harbor product on ops_manager\n&#34;</span>
-Nov <span class="m">27</span> 21:51:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: configuring product...
-Nov <span class="m">27</span> 21:51:55 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: setting up networkfinished setting up networksetting propertiesfinished setting propertiesapplying resource configuration <span class="k">for</span> the following jobs:errands are not provided, nothing to <span class="k">do</span> here
-Nov <span class="m">27</span> 21:51:56 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:56Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for environment, _harbor.depl
-</span><span class="s2">oyment_config : **********&#34;</span>
-Nov <span class="m">27</span> 21:51:56 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: finished configuring <span class="nv">producttime</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:51:56Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) installing Harbor product on ops_manager\n&#34;</span>
-Nov <span class="m">27</span> 21:51:57 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: attempting to apply changes to the targeted Ops Manager
-Nov <span class="m">27</span> 21:52:02 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:02Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing BOSH\n&#34;</span>
-Nov <span class="m">27</span> 21:52:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Putting Tile Credentials into CredHub\n&#34;</span>
-Nov <span class="m">27</span> 21:52:50 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:52:50Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Updating runtime configs for harbor-container-registry\n&#34;</span>
-Nov <span class="m">27</span> 21:54:33 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T21:54:33Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing VMware Harbor Registry\n&#34;</span>
-Nov <span class="m">27</span> 22:08:57 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:08:57Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Running errand smoke-testing for VMware Harbor Registry\n&#34;</span>
-Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Failed to read channel\n&#34;</span>
-Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Cleaning up BOSH director\n&#34;</span>
-Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for environment, _harbor.is_deployed : true&#34;</span>
-Nov <span class="m">27</span> 22:11:38 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:38Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) checking harbor liveness\n&#34;</span>
-Nov <span class="m">27</span> 22:11:41 epmc.jarvis.lab pks-mgmt-server<span class="o">[</span>939<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2019-11-27T22:11:41Z&#34;</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( success) finished deploying Harbor\n&#34;</span>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Nov 27 21:51:50 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:51:50Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-
+42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) configuring Harbor product on ops_manager\n&#34;
+Nov 27 21:51:50 epmc.jarvis.lab pks-mgmt-server[939]: configuring product...
+Nov 27 21:51:55 epmc.jarvis.lab pks-mgmt-server[939]: setting up networkfinished setting up networksetting propertiesfinished setting propertiesapplying resource configuration for the following jobs:errands are not provided, nothing to do here
+Nov 27 21:51:56 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:51:56Z&#34; level=info msg=&#34;Update for environment, _harbor.depl
+oyment_config : **********&#34;
+Nov 27 21:51:56 epmc.jarvis.lab pks-mgmt-server[939]: finished configuring producttime=&#34;2019-11-27T21:51:56Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) installing Harbor product on ops_manager\n&#34;
+Nov 27 21:51:57 epmc.jarvis.lab pks-mgmt-server[939]: attempting to apply changes to the targeted Ops Manager
+Nov 27 21:52:02 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:52:02Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing BOSH\n&#34;
+Nov 27 21:52:38 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:52:38Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Putting Tile Credentials into CredHub\n&#34;
+Nov 27 21:52:50 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:52:50Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Updating runtime configs for harbor-container-registry\n&#34;
+Nov 27 21:54:33 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T21:54:33Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Installing VMware Harbor Registry\n&#34;
+Nov 27 22:08:57 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:08:57Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Running errand smoke-testing for VMware Harbor Registry\n&#34;
+Nov 27 22:11:38 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:11:38Z&#34; level=info msg=&#34;Failed to read channel\n&#34;
+Nov 27 22:11:38 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:11:38Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) Cleaning up BOSH director\n&#34;
+Nov 27 22:11:38 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:11:38Z&#34; level=info msg=&#34;Update for environment, _harbor.is_deployed : true&#34;
+Nov 27 22:11:38 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:11:38Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) checking harbor liveness\n&#34;
+Nov 27 22:11:41 epmc.jarvis.lab pks-mgmt-server[939]: time=&#34;2019-11-27T22:11:41Z&#34; level=info msg=&#34;Update for deployment 08fd9eeb-2ada-42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( success) finished deploying Harbor\n&#34;
 </code></pre></td></tr></table>
 </div>
 </div><p>When it comes to <strong>BOSH</strong> realted issues, also have a look at this post by my colleague <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a>: <a href="http://keithlee.ie/2019/03/31/pks-troubleshooting-part-1-using-bosh-cli/" target="_blank">PKS Troubleshooting – Part 1: Using BOSH CLI</a></p>

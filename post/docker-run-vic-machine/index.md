@@ -1,7 +1,7 @@
 # docker run vic-machine
 
-
 ## Introduction
+
 The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard.
 The far more efficient variant in my opinion is making use of the `vic-machine` utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle. Why do I think it is way better? Because it´s reproducible, independent from a browser, automatable as well as better documentable.
 
@@ -38,16 +38,11 @@ rguske@rguske-a01> ./vic-machine-darwin create \          ### vic-machine binary
 
 ...and thus, I was looking for a way how to apply this for `vic-machine`.
 
----
-
-## Credits goes out to Ben!
+## Credits goes out to Ben
 
 <a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with `vic-machine`, because it takes a lot of arguments for each action like `create`, `configure` or `debug` for example. He mentioned this in his video from VMworld 2017 :point_down:
 
-
 {{< youtube AD7CD8Haqdc >}}
-
----
 
 With this post I´d like to guide you through the various steps to consume `vic-machine` and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.
 
@@ -64,12 +59,15 @@ A short look into the innards of the VIC appliance shows us that all components 
 The prerequisites for this hack are that you have <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">Git</a> as well as <a href="https://docs.docker.com/install/" target="_blank">Docker</a> installed on your local machine or on a Jumphost.
 
 ### 1.1 Download or Clone Bens Github repository called *bensdoings*
+
 `git clone https://github.com/corrieb/bensdoings.git` (into a folder of your choice)
 
 ### 1.2 Create a new folder in which we´ll subsequently copy all necessary files into
+
 `mkdir ~/vic-dev`
 
 ### 1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo
+
 - /bensdoings/vic-machine/<span style="color:#32CD32">example-complete-empty.json, example-complete.json</span> as well as <span style="color:#32CD32">example-simple.json</span>
 - /bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32">build.sh</span> and <span style="color:#32CD32">push.sh</span>
 - /bensdoings/vic-machine/vic-machine-base/OVA/<span style="color:#32CD32">Dockerfile</span>
@@ -106,6 +104,7 @@ rguske@rguske-a01> ~/_DEV/Lab/vic-dev> tree -L 2
 ```
 
 ## 2. Create a new project in Harbor
+
 The target is to have all `vic-machine` actions available as a container-image and to `pull` as well as to `run` it from our own registry. Open the VIC Management-Portal via port 8282 (https://vic01.jarvis.lab:8282) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.
 
 Now let´s create a project in Harbor called e.g. *vic-machine* in which we will later push our images to.
@@ -133,6 +132,7 @@ Under Administration --> Projects --> vic-machine --> **Configuration** I´ve ch
 {{< image src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" caption="Figure IV: Vulnerability scanning automatically on push" src-s="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190715_104903.jpg" class="center" width="800" height="800" >}}
 
 ## 3. The `vic-machine` utility running inside a container
+
 The basis of a docker image is the <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Dockerfile</a>. Open the copied Dockerfile and replace the URL in the Dockerfile with the appropriate version of the VIC instance you´re running, to `curl` the VIC Engine bundle tarball from the appliance into the docker image during the building process.
 
 To avoid typos with the URL you can simply browse to the VIC appliance page (port 9443), right click the **DOWNLOAD** button which can be found under the section *Deploy a VCH* and choose *Copy Link Address*.
@@ -154,9 +154,11 @@ RUN mkdir /vic \
 
 CMD ["/bin/bash"]
 ```
+
 Save and close the Dockerfile.
 
 ## 3.2 Every `vic-machine` action as a docker image
+
 The **build.sh** script will build all docker images for each `vic-machine` action for us.
 
 **IMPORTANT:** It´s necessary to have the Dockerfile prepared before executing the build script! Because "<span style="color:#32CD32">`docker build -t vic-machine-base .`</span>" will start the build process, which creates the docker image as well as tag (`-t`) the image as *vic-machine-base*.
@@ -229,6 +231,7 @@ vic-machine-base                                              latest            
 ```
 
 ## 3.4 Pushing the docker images to Harbor
+
 The next step after creating a lot of new docker images is to have them available and well guarded in Harbor. We´ll make use of the push.sh script from our folder which will save us the work of handling each image separately. Let´s have a look into it as well.
 
 ```bash
@@ -268,6 +271,7 @@ Login Succeeded
 {{< image src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" caption="Figure V: vic-machine-(action) images deposited under Internal (Project) Repositories" src-s="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" class="center" width="800" height="800" >}}
 
 ## 4. Configure the config.json file for the VCH deployment
+
 Everything seems to be well prepared so far and we´re approaching the end of our efforts to deploy a VCH in a "simplified fashion". The intention is to make use of the `vic-machine` script, which in turn needs a JSON manifest as input to all commands lying in a subdirectory of our *vic-dev* folder. Before turning to the *config.json* file I don't want to embezzle this impressive piece of work.
 
 The `vic-machine` script:
@@ -277,7 +281,7 @@ The `vic-machine` script:
 
 # This script is designed to simplify vic-machine usage, but using a single JSON manifest as input to all commands
 # The expected layout is that a particular vic-machine configuration will be in a subdirectory of the current dir
-# In that subdirectory should be a config.json file which conforms to the format in example.json 
+# In that subdirectory should be a config.json file which conforms to the format in example.json
 # That subdirectory is then both the input and working directory of vic-machine
 # As such, generated certificates and log files will be written to that sub directory as root user
 # Note that if you don't specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it
@@ -299,7 +303,7 @@ usage()
 
 if [ $# -le 2 ]; then usage; fi
 
-case "$3" in 
+case "$3" in
   create|delete|inspect|ls|debug|upgrade|rollback|thumbprint|firewall-allow|firewall-deny|dumpargs)
     ;;
   *)
@@ -327,6 +331,7 @@ sudo docker run -it --rm -v $host_config_path:$docker_volume_path $REPO_NAME/vic
 ```
 
 ### 4.1. Preparing the config.json file
+
 Create a new folder in your main folder (vic-dev), give it the name of your VCH for example and also create the *config.json* file.
 
 ```shell
@@ -452,9 +457,9 @@ rguske@rguske-a01> ~/_DEV/Lab/vic-dev/actions> tree -L 2
 │   ├── parse.sh
 │   └── validate.sh
 ```
+
 Pick two identical files e.g. *map-create.json* from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.
 
----
 Depending on your requirements (VCH Networking, Log aggregation, Debug-Level and so on), you can build your own *config.json* from the examples (example-simple.json, example-complete.json & example-complete-empty.json) which we´ve copied in step 3.
 
 If you now execute "`sh ./vic-machine 1.0 (or latest) vch1 create`" and run a `watch` perhaps on container instances spinning up locally and also a `watch` on the folder *vch1* itself, you´ll see that the newly created image *vic-machine-create:1.0* will be used for having the `vic-machine` utility on board which will then receive the parsed arguments from the *config.json* and starts deploying the Virtual Container Host to your target.
@@ -465,7 +470,6 @@ By using e.g my deployment-example, you´ll see that a new folder with the given
 
 **<center>Let´s give it a try - I hope you´ll find it helpful.</center>**
 
----
 ## 5 (addition): Adding a VCH to your project
 
 As mentioned a few lines above, we can use the created certificates during the deployment, to add a Virtual Container Host to our project(s). 
@@ -488,12 +492,6 @@ Fill out the required fields and select under *Credentials* your previously crea
 The result should look like this if everything went well.
 
 {{< image src="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" caption="Figure IX: Virtual Container Host assigned to a Project" src-s="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" class="center" >}}
-
----
-
-**<center>Thanks for reading</center>**
-
----
 
 ## Resources
 

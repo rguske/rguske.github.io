@@ -8,8 +8,8 @@ The summary page of your Enterprise PKS deployment will appear after clicking th
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191116_062030.jpg" caption="Figure I: Enterprise PKS deployment summary" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191116_062030.jpg" class="center" >}}
 
----
 ## Identity Management
+
 Do you remember the following?
 
 ```shell
@@ -49,6 +49,7 @@ bosh vms
 ```
 
 to get the state of your deployment or
+
 ```shell
 bosh tasks --recent=20
 ```
@@ -76,6 +77,7 @@ pks create-cluster k8s-small --external-hostname k8s-small.jarvis.lab --plan sma
 ```
 
 You can use
+
 ```shell
 watch -n 2 pks cluster k8s-small
 ```
@@ -110,13 +112,14 @@ A SNAT entry will be configured in the Tier0 Logical Router for each Name Space 
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191117_091820.jpg" caption="Figure X: Logical diagram for created Logical Routers and Switches" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191117_091820.jpg" class="center" >}}
 
-*Source: https://blogs.vmware.com/networkvirtualization/2019/06/kubernetes-and-vmware-enterprise-pks-networking-security-operations-with-nsx-t-data-center.html/*
+*Source: <https://blogs.vmware.com/networkvirtualization/2019/06/kubernetes-and-vmware-enterprise-pks-networking-security-operations-with-nsx-t-data-center.html/>*
 
 The **Namespace** tab provides you the Hyperlinks to the NSX-T *Logical Switches (POD Network)* as well as the *T1-Router* were all the Kubernetes Namespaces are connected to.
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191113_100200.jpg" caption="Figure XI: Kubernetes Namespaces" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191113_100200.jpg" class="center" >}}
 
 ## Upgrade Enterprise PKS + Kubernetes
+
 Upgrading your VMware Enterprise PKS Management Plane components as well as your Kubernetes cluster(s) can also be done via the EPMC. If a new version of PKS is available, you´ll be notified by a message at the top. But before you can run the upgrade, you have to migrate your deployment to the newer version of the EPMC first. Therefore:
 
 - Download the new version via https://downloads.vmware.com
@@ -129,6 +132,7 @@ Upgrading your VMware Enterprise PKS Management Plane components as well as your
 **BTW:** As you can see on the screenshot above and below, I´ve duplicated the tab of my browser to highlight a pretty neat feature of the EPMC. By clicking the **?** icon, which can be found at the top bar as well as in some of the sections, a Contextual help will appear.
 
 ## VMware Enterprise PKS Component Patches
+
 Unfortunately, this section currently applies to the Enterprise PKS Management Console only. It´s planned to have the ability to patch the PKS Management Plane components in a future release too. For now applies, if an patch for the EPMC is available, you will be notified via a message at the top bar:
 
 `There are new patches to the VMware Enterprise PKS components`.
@@ -140,6 +144,7 @@ Unfortunately, this section currently applies to the Enterprise PKS Management C
 **<center>Thanks for reading.</center>**
 
 ---
+
 ## Resources
 
    **Site**                                       |   **URL**

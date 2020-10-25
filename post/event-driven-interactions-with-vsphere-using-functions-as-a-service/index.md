@@ -89,6 +89,7 @@ Having followed the instructions in the documentation, you will end up with the 
 client (`helm`) and the Helm server (Tiller - running in the namespace kube-system).
 
 2. OpenFaaS on Kubernetes
+
 * deployed into the namespace *openfaas*
 
 3. The faas-cli via e.g. `brew` or `curl`
@@ -102,12 +103,6 @@ The demo is based on a pending pull request (PR) in the vcenter-connector Github
 5. <a href="https://github.com/embano1/pytagfn" target="_blank">Github Repo `pytag-fn`</a> or <a href="https://github.com/embano1/gotagfn" target="_blank">Github Repo `gotag-fn`</a>
 
 I hope you enjoyed reading and liked the recording.
-
----
-
-**<center>Thanks for reading</center>**
-
----
 
 ## Resources
 

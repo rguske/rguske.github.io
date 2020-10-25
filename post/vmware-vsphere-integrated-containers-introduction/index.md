@@ -1,6 +1,5 @@
 # VMware vSphere Integrated Containers: Introduction
 
-
 I´m very keen on everything related to Cloud-Native and all topics around the decoupling of a process from the underlying operating system and as well much more on the infrastructure underneath in order to run those distributed systems, which are the result by the end of the day.
 
 For me personally, it became so present in 2016 for the first time and far more when I decided to work for VMware. Did you know that VMware is a huge contributor to Open Source Projects and a Platinum Member at the Cloud Native Computing Foundation - <a href="https://www.cncf.io/about/members/" target="_blank">CNCF</a>? You´ll find an overview of our open source projects <a href="https://vmware.github.io/" target="_blank"> here</a>.
@@ -36,27 +35,26 @@ And while I´m writing this series...
 
 More details through the Release-Notes <a href="https://docs.vmware.com/en/VMware-vSphere-Integrated-Containers/1.4.1/rn/vsphere-integrated-containers-141-release-notes.html" target="_blank">here</a>.
 
----
-
 ## VIC Component Overview
 
 You´ll get an quick overview over the VIC components through this Lightboard Video by <a href="https://twitter.com/pdaigle" target="_blank">Patrick Daigle</a>:
+
 {{< youtube phsVFTVK4t4 >}}
 
-### Components:
+### Components
 
 * <a href="http://vmware.github.io/vic/" target="_blank">**vSphere Integrated Containers Engine**</a>, a container runtime for vSphere that allows you to provision containers as virtual machines.
 
 * **vSphere Integrated Containers Plug-In for vSphere Client**, that provides information about your vSphere Integrated Containers setup and allows you to deploy virtual container hosts directly from the vSphere Client.
 
-* <a href="https://vmware.github.io/harbor/" target="_blank">**Harbor**</a>, **an enterprise-class container registry server** that stores and distributes container images. 
+* <a href="https://vmware.github.io/harbor/" target="_blank">**Harbor**</a>, **an enterprise-class container registry server** that stores and distributes container images.
 
- * Multi-tenant content signing and validation
- * Security and vulnerability analysis
- * Audit logging
- * Identity integration and role-based access control
- * Image replication between instances
- * Extensible API and graphical UI
+* Multi-tenant content signing and validation
+* Security and vulnerability analysis
+* Audit logging
+* Identity integration and role-based access control
+* Image replication between instances
+* Extensible API and graphical UI
 
 * **vSphere Integrated Containers Management Portal** based on project <a href="https://github.com/vmware/admiral" target="_blank">**Admiral**</a>.
 
@@ -128,7 +126,3 @@ You´ll get an quick overview over the VIC components through this Lightboard Vi
 <a href="/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/">**vSphere Integrated Containers Part III: Deployment of a Virtual Container Host**</a>
 
 <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/">**vSphere Integrated Containers Part IV: docker run a Container-VM**</a>
-
----
-
-**<center>Thanks for reading</center>**

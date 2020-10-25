@@ -1,6 +1,5 @@
 # Upgrade vSphere Integrated Containers
 
-
 I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues.
 In this post I´d like to guide you through the upgrade process of <a href="/post/vmware-vsphere-integrated-containers-introduction/">VMware vSphere Integrated Containers </a> from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.
 
@@ -90,7 +89,7 @@ Another way to get the desired info is to make use of the `vic-machine` command 
 
 The output will also show us the VCH version and the Installer version from which the VCH got deployed as well...
 
-```shell
+```code
 INFO[0000] vSphere password for adm.jarvis@LAB.JARVIS.LOCAL:
 INFO[0004] ### Inspecting VCH ####
 INFO[0005] Validating target
@@ -165,13 +164,13 @@ At this point I´d like to quote the following astracts from the <a href="https:
 You cannot upgrade between untagged, open source builds of the same release like 1.4.3 open source build to 1.4.3 official build for example.
 {{< /admonition >}}
 
-After the deployment of the new VIC Appliance we´ll establish a `ssh` connection to it. 
+After the deployment of the new VIC Appliance we´ll establish a `ssh` connection to it.
 
 ```shell
 ssh root@192.168.100.161
 ```
 
-```shell
+```code
 The authenticity of host '192.168.100.161 (192.168.100.161)' can't be established.
 ECDSA key fingerprint is SHA256:iVIdb5Sv1pxUsiqelop7DVubJcvjuHHbPSJWBg3No1g.
 Are you sure you want to continue connecting (yes/no)? yes
@@ -214,7 +213,7 @@ See: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsp
 
 The first time I ran the upgrade it ended up in an error which was related to the "**? letter**" which I´ve used in my password.
 
-```shell
+```code
 root@vic02 [ /etc/vmware/upgrade ]# ./upgrade.sh
 -------------------------------
 VIC Appliance Upgrade to v1.4.1
@@ -243,7 +242,7 @@ The output `govc: dial tcp: address tcp/VMware1234!: unknown port` gives us firs
 
 I´ve chosen the easy way ;-) and this is how it looks when the upgrade to **v1.4.1** went well:
 
-```shell
+```code
 root@vic02 [ /etc/vmware/upgrade ]# ./upgrade.sh
 -------------------------------
 VIC Appliance Upgrade to v1.4.1
@@ -344,11 +343,9 @@ Otherwise you can go directly to: https://*your VIC Appliance address*:9443/file
 
 Now that we have the new VIC Enginge Bundle available we´ll make use of the *Upgrade Script* for the *VIC vSphere Client Plug-In*.
 
-
 {{< admonition note "Note" true >}}
 This applies only until version VIC 1.4.1!
 {{< /admonition >}}
-
 
 Use a terminal and you´ll find the script deposited in the path **/vic141/ui/vcsa** on your local computer or remote execution host (wherever you´ve downloaded it).
 
@@ -364,7 +361,7 @@ drwxr-xr-x@ 8 rguske  staff    256 Jul  3 17:37 ..
 
 Execute `./upgrade.sh` so that the script starts prompting you after neccessary information regarding the vCenter Server target and user credentials. This is how it will look like:
 
-```shell
+```code
 -------------------------------------------------------------
 This script will upgrade vSphere Integrated Containers plugin
 for vSphere Client (HTML) and vSphere Web Client (Flex).
@@ -435,7 +432,7 @@ This phase (II) of the VIC Upgrade-process is now obsolete with version 1.4.3. T
 
 `Upgrade VIC UI Plugin? (y/n):` and of course I answered it with `y` (=yes)...what else?!
 
-```shell
+```code
 root@vic01 [ /etc/vmware/upgrade ]# ./upgrade.sh
 -------------------------------
 VIC Appliance Upgrade to v1.4.3
@@ -602,7 +599,7 @@ And I´ve also mentioned that I´ll come back to this point. Because we now will
 
 ...and the output will show us this time the following:
 
-```shell
+```code
 INFO[0000] vSphere password for adm.jarvis@LAB.JARVIS.LOCAL:
 INFO[0004] ### Inspecting VCH ####
 INFO[0004] Validating target
@@ -653,7 +650,7 @@ INFO[0005] Completed successfully
 
 ...and a couple of seconds later...
 
-```shell
+```code
 INFO[0000] vSphere password for administrator@jarvis.local:
 INFO[0004] ### Upgrading VCH ####
 INFO[0004] Validating target
@@ -732,6 +729,3 @@ Please find the Release Notes for vSphere Integrated Containers here: <a href="h
 
 I hope you won´t find this post not too long for this kind of topic, but I wanted to be as detailed as possible.
 
----
-
-**<center>Thanks for reading.</center>**

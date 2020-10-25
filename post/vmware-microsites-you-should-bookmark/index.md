@@ -1,6 +1,5 @@
 # VMware Microsites You should bookmark
 
-
 The idea behind this post or collection was born as follows:
 
 {{< admonition quote "Quote" true >}}
@@ -20,28 +19,24 @@ What is a Microsite?
 
 Microsites are typically used in web design to add a specialized group of information either editorial or commercial. Such sites may be linked in to a main site or not or taken completely off a site's server when the site is used for a temporary purpose. The main distinction of a microsite versus its parent site is its purpose and specific cohesiveness as compared to the microsite's broader overall parent website.
 
-Source: https://en.wikipedia.org/wiki/Microsite
+Source: <https://en.wikipedia.org/wiki/Microsite>
 {{< /admonition >}}
 
 I will keep this site up-to-date as good as I can.
 
 **If you have any other site(s) to add, please put it/ them in the comments below** :point_down:.
 
+<center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
+
 ## List of Microsites [<span style="color:#0037ff">Update: October 2020</span>]
 
 |   **Site**                        |   **URL**                                      |  **Link**                                                                    |
 |:----------                     |:-------:                                     |-------:                                                                      |
-<<<<<<< HEAD
 | VMware Docs 	                    |   `https://docs.vmware.com/ 	           `     |   <a href="https://docs.vmware.com/" target="_blank">Click</a>               |
 | VMware Download                   |   `https://downloads.vmware.com/ 	           ` |   <a href="https://downloads.vmware.com/" target="_blank">Click</a>          |
 | VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Click</a>                  |
-=======
-| VMware Tanzu                      |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Click</a>              |
-| VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Click</a>     |
->>>>>>> vebawithfusion
 | Product Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Click</a> |
 | VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Click</a>              |
-| vSphere Central                   |   `https://vspherecentral.vmware.com/	   `     |   <a href="https://vspherecentral.vmware.com/" target="_blank">Click</a>     |
 | VMware Configuration Maximums     |   `https://configmax.vmware.com/`              |  <a href="https://configmax.vmware.com/" target="_blank">Click</a>           |
 | Ports and Protocols	            |   `https://ports.vmware.com/	           `     |   <a href="https://ports.vmware.com/" target="_blank">Click</a>              |
 | Storagehub 	                    |   `https://storagehub.vmware.com/	       `     |   <a href="https://storagehub.vmware.com/" target="_blank">Click</a>         |
@@ -74,8 +69,6 @@ I will keep this site up-to-date as good as I can.
 | VMware Open Source               |   `https://github.com/vmware`                          |  <a href="https://github.com/vmware" target="_blank">Click</a>                            |
 | User Group Communities           |   `https://community.vmug.com/`                        |   <a href="https://community.vmug.com/" target="_blank">Click</a>                         |
 | VMworld Homepage                 |   `https://vmworld.com/`                               |   <a href="https://vmworld.com/" target="_blank">Click</a>                                |
-
-<center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
 
 ---
 

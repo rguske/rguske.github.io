@@ -26,7 +26,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/"
-        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2654 ,
+        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2657 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/","datePublished": "2020-07-21T15:30:38+02:00","dateModified": "2020-07-24T11:29:29+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -117,7 +117,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/cloud-native-registry/"><i class="far fa-folder fa-fw"></i>Cloud Native Registry</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/vsphere/"><i class="far fa-folder fa-fw"></i>vSphere</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2654 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2657 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;13 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -154,7 +154,12 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
     </li>
     <li><a href="#deploy-a-demo-application-on-vsphere-7">Deploy a Demo Application on vSphere 7</a>
       <ul>
-        <li><a href="#demo-application-ghost">Demo Application Ghost</a></li>
+        <li><a href="#demo-application-ghost">Demo Application Ghost</a>
+          <ul>
+            <li><a href="#application-deployment---ghostyml">Application deployment - <code>ghost.yml</code></a></li>
+            <li><a href="#persistent-volume-claim---ghost-pvcyml">Persistent Volume Claim - <code>ghost-pvc.yml</code></a></li>
+          </ul>
+        </li>
         <li><a href="#add-harbor-certificate-to-the-supervisor-cluster">Add Harbor Certificate to the Supervisor Cluster</a></li>
       </ul>
     </li>
@@ -364,8 +369,7 @@ Resource Quotas
 No resource limits.
 </code></pre></td></tr></table>
 </div>
-</div><hr>
-<p>Enough summarized 😉 ! <code>kubectl apply -f tkg-cluster.yml</code> and let vSphere do it&rsquo;s magic. An increased count of <strong>1</strong> will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (<em>Figure IV</em>).</p>
+</div><p><strong>Enough summarized</strong> 😉 ! <code>kubectl apply -f tkg-cluster.yml</code> and let vSphere do it&rsquo;s magic. An increased count of <strong>1</strong> will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (<em>Figure IV</em>).</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" title="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" data-thumbnail="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" data-sub-html="<h2>Figure IV: Deployed Tanzu Kubernetes Grid cluster</h2>">
         <img
             class="lazyload"
@@ -594,7 +598,7 @@ vmware-system-csi              Active   2d1h
 <ol>
 <li>Create two new files and name them e.g. <code>ghost.yml</code> and <code>ghost-pvc.yml</code>. Add the following specification parameters to the respective file:</li>
 </ol>
-<p><strong>Application specs</strong></p>
+<h4 id="application-deployment---ghostyml">Application deployment - <code>ghost.yml</code></h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -697,7 +701,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="w">          </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><p><strong>Persistent Volume Claim specs</strong></p>
+</div><h4 id="persistent-volume-claim---ghost-pvcyml">Persistent Volume Claim - <code>ghost-pvc.yml</code></h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1

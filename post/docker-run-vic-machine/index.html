@@ -24,7 +24,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/docker-run-vic-machine\/"
-        },"genre": "posts","keywords": "July2019, VIC, Docker, Hack, Harbor","wordcount":  3200 ,
+        },"genre": "posts","keywords": "July2019, VIC, Docker, Hack, Harbor","wordcount":  3197 ,
         "url": "https:\/\/rguske.github.io\/post\/docker-run-vic-machine\/","datePublished": "2019-07-04T22:52:18+02:00","dateModified": "2020-05-24T19:04:21+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">docker run vic-machine</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/docker/"><i class="far fa-folder fa-fw"></i>Docker</a>&nbsp;<a href="/categories/vsphere/"><i class="far fa-folder fa-fw"></i>vSphere</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-07-04">2019-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3200 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2019-07-04">2019-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3197 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;16 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -132,7 +132,7 @@
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#credits-goes-out-to-ben">Credits goes out to Ben!</a></li>
+    <li><a href="#credits-goes-out-to-ben">Credits goes out to Ben</a></li>
     <li><a href="#1-the-hack">1. The Hack</a>
       <ul>
         <li><a href="#11-download-or-clone-bens-github-repository-called-bensdoings">1.1 Download or Clone Bens Github repository called <em>bensdoings</em></a></li>
@@ -220,15 +220,13 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 <p>Constantly recurring executions should be automated or at least easier to handle</p>
 </blockquote>
 <p>&hellip;and thus, I was looking for a way how to apply this for <code>vic-machine</code>.</p>
-<hr>
-<h2 id="credits-goes-out-to-ben">Credits goes out to Ben!</h2>
+<h2 id="credits-goes-out-to-ben">Credits goes out to Ben</h2>
 <p><a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with <code>vic-machine</code>, because it takes a lot of arguments for each action like <code>create</code>, <code>configure</code> or <code>debug</code> for example. He mentioned this in his video from VMworld 2017 👇</p>
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
   <iframe src="https://www.youtube-nocookie.com/embed/AD7CD8Haqdc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
-<hr>
 <p>With this post I´d like to guide you through the various steps to consume <code>vic-machine</code> and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.</p>
 <p>To have Harbor as a cloud native registry deeply coupled and running inside of VIC is simply great. If you haven´t heard of <span style="color:#4A01D9"> <strong>Harbor</strong> </span> yet, check it out: <a href="https://goharbor.io/">https://goharbor.io/</a></p>
 <p>A short look into the innards of the VIC appliance shows us that all components of Harbor, including <a href="https://github.com/coreos/clair" target="_blank">Clair</a> for vulnerability scanning as well as <a href="https://github.com/theupdateframework/notary" target="_blank">Notary</a> for image signing, are running as a container inside of Harbor:</p>
@@ -642,7 +640,7 @@ Login Succeeded
 </span><span class="cp"></span>
 <span class="c1"># This script is designed to simplify vic-machine usage, but using a single JSON manifest as input to all commands</span>
 <span class="c1"># The expected layout is that a particular vic-machine configuration will be in a subdirectory of the current dir</span>
-<span class="c1"># In that subdirectory should be a config.json file which conforms to the format in example.json </span>
+<span class="c1"># In that subdirectory should be a config.json file which conforms to the format in example.json</span>
 <span class="c1"># That subdirectory is then both the input and working directory of vic-machine</span>
 <span class="c1"># As such, generated certificates and log files will be written to that sub directory as root user</span>
 <span class="c1"># Note that if you don&#39;t specify an admin password in the JSON, you will be prompted each time - this is why the script needs -it</span>
@@ -664,7 +662,7 @@ usage<span class="o">()</span>
 
 <span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -le <span class="m">2</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> usage<span class="p">;</span> <span class="k">fi</span>
 
-<span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$3</span><span class="s2">&#34;</span> in 
+<span class="k">case</span> <span class="s2">&#34;</span><span class="nv">$3</span><span class="s2">&#34;</span> in
   create<span class="p">|</span>delete<span class="p">|</span>inspect<span class="p">|</span>ls<span class="p">|</span>debug<span class="p">|</span>upgrade<span class="p">|</span>rollback<span class="p">|</span>thumbprint<span class="p">|</span>firewall-allow<span class="p">|</span>firewall-deny<span class="p">|</span>dumpargs<span class="o">)</span>
     <span class="p">;;</span>
   *<span class="o">)</span>
@@ -936,7 +934,6 @@ sudo docker run -it --rm -v <span class="nv">$host_config_path</span>:<span clas
 </code></pre></td></tr></table>
 </div>
 </div><p>Pick two identical files e.g. <em>map-create.json</em> from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.</p>
-<hr>
 <p>Depending on your requirements (VCH Networking, Log aggregation, Debug-Level and so on), you can build your own <em>config.json</em> from the examples (example-simple.json, example-complete.json &amp; example-complete-empty.json) which we´ve copied in step 3.</p>
 <p>If you now execute &ldquo;<code>sh ./vic-machine 1.0 (or latest) vch1 create</code>&rdquo; and run a <code>watch</code> perhaps on container instances spinning up locally and also a <code>watch</code> on the folder <em>vch1</em> itself, you´ll see that the newly created image <em>vic-machine-create:1.0</em> will be used for having the <code>vic-machine</code> utility on board which will then receive the parsed arguments from the <em>config.json</em> and starts deploying the Virtual Container Host to your target.</p>
 <p>By using e.g my deployment-example, you´ll see that a new folder with the given name of the VCH will be created, containing the VCH certificates, which can be used to add the VCH to a project for example as well as a vic-machine and vpxd logfile, which is really nice to have.</p>
@@ -951,7 +948,6 @@ sudo docker run -it --rm -v <span class="nv">$host_config_path</span>:<span clas
     </a><figcaption class="image-caption">Figure VI: vic-machine script with a watch on docker ps -a as well as ls -rtl</figcaption>
     </figure>
 <p><strong><center>Let´s give it a try - I hope you´ll find it helpful.</center></strong></p>
-<hr>
 <h2 id="5-addition-adding-a-vch-to-your-project">5 (addition): Adding a VCH to your project</h2>
 <p>As mentioned a few lines above, we can use the created certificates during the deployment, to add a Virtual Container Host to our project(s).</p>
 <p>Just go to:
@@ -991,9 +987,6 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
             alt="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190804_010708.jpg" />
     </a><figcaption class="image-caption">Figure IX: Virtual Container Host assigned to a Project</figcaption>
     </figure>
-<hr>
-<p><strong><center>Thanks for reading</center></strong></p>
-<hr>
 <h2 id="resources">Resources</h2>
 <table>
 <thead>

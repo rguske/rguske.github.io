@@ -26,13 +26,13 @@ I do have to mention that I used the upstream Harbor version for my demo and not
 In this post I will focus on the installation of Harbor using `Helm` and also on the preperations you have to do upfront before you are able to let the [Supervisor Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html) pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.
 
 ## Prerequisites
+
 - [x] [vSphere 7 with Kubernetes](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html) installed
 - [x] [Subscribed Content Library](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-77D01137-8C82-4477-A18E-DA935BC121BA.html) for Tanzu Kubernetes Grid Clusters
 - [x] A [Tanzu Kubernetes Grid Cluster](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-2597788E-2FA4-420E-B9BA-9423F8F7FD9F.html) running
 - [x] [Kubernetes CLI Tool for vSphere](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-0F6E45C4-3CB1-4562-9370-686668519FCA.html) installed
 - [x] [Helm](https://helm.sh/docs/intro/install/) installed
 - [x] [Docker CLI](https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/#docker-engine---community) installed
-
 
 ## Tanzu Kubernetes Grid Cluster (Recap)
 
@@ -147,9 +147,7 @@ Resource Quotas
 No resource limits.
 ```
 
----
-
-Enough summarized :wink: ! `kubectl apply -f tkg-cluster.yml` and let vSphere do it's magic. An increased count of **1** will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (*Figure IV*).
+**Enough summarized** :wink: ! `kubectl apply -f tkg-cluster.yml` and let vSphere do it's magic. An increased count of **1** will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (*Figure IV*).
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" caption="Figure IV: Deployed Tanzu Kubernetes Grid cluster" src-s="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" class="center" >}}
 
@@ -163,6 +161,7 @@ harbor-on-tkg   1               1        v1.17.7+vmware.1-tkg.1.154236c   26m   
 ## Installing Harbor via `Helm`
 
 ### Login into the TKG Cluster
+
 One important step has to be done before we pay our attention to this next part. You remember that we logged in into the Supervisor Cluster via `kubectl vsphere login --server=172.25.16.1 --vsphere-username jarvis@jarvis.lab --insecure-skip-tls-verify`. This means that we are still connected to it and even if you are in the right context (`harbor-on-tkg`), doesn't mean that a desired application deployment will be processed on the TKG cluster. Because the TKG cluster is running inside the vSphere Namespace (`harbor-on-tkg`) and we have to connect to it seperately. To verify, just run `kubectl get ns` to get all Namespaces displayed which your Supervisor Cluster provides and not those from your TKG cluster.
 
 ```shell
@@ -282,13 +281,13 @@ Let's redo the Harbor deployment via `helm` again! By running `kubectl get pods 
 
 `kubectl get svc -n harbor` will give you the assigned external IP address through which you can access the Harbor Login page. See also the lower right terminal window in *Figure V*. With the gained IP address you can create an appropriate DNS entry. Remember that we've used `--set externalURL=harbor-dev.jarvis.lab` for our deployment.
 
- ## Deploy a Demo Application on vSphere 7
+## Deploy a Demo Application on vSphere 7
 
 You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it's not possible to login via Docker CLI by using `docker login`. This is because of the [Docker certificate-based client-server authentication](https://docs.docker.com/engine/security/certificates/). It's necessary to create a new directory under `/etc/docker/cert.d/` using the same name as the registry hostname (FQDN). I created a script for another [blog post](https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script) to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> https://github.com/rguske/download-harbor-cert-script.
 
 Take a look at the post if you need additional information about the steps as well as to learn how you can create and configure projects in Harbor.
 
-Pushing the application container image onto Harbor shouldn't be a problem after a successful `docker login harbor-dev.jarvis.lab --username admin`. [Ghost](https://demo.ghost.io/) will serve us as a demo application here. It is quickly deployable and also pretty cool for demonstration purposes, because it needs a Kubernetes Persistent Volume Claim (--> vSAN) and `type: LoadBalancer` can also be configured as parameter in the specification `.yml` file (--> NSX). 
+Pushing the application container image onto Harbor shouldn't be a problem after a successful `docker login harbor-dev.jarvis.lab --username admin`. [Ghost](https://demo.ghost.io/) will serve us as a demo application here. It is quickly deployable and also pretty cool for demonstration purposes, because it needs a Kubernetes Persistent Volume Claim (--> vSAN) and `type: LoadBalancer` can also be configured as parameter in the specification `.yml` file (--> NSX).
 
 Even more cool demo applications were put together by [William Lam](https://twitter.com/lamw) in this post: [Interesting Kubernetes application demos](https://www.virtuallyghetto.com/2020/06/interesting-kubernetes-application-demos.html). Check-out the KubeDoom demo :grin: :thumbsup:
 
@@ -308,7 +307,7 @@ If you are following this post step-by-step, I assume that you are still connect
 
 1. Create two new files and name them e.g. `ghost.yml` and `ghost-pvc.yml`. Add the following specification parameters to the respective file:
 
-**Application specs**
+#### Application deployment - `ghost.yml`
 
 ```yml
 apiVersion: v1
@@ -361,7 +360,7 @@ spec:
           claimName: blog-content
 ```
 
-**Persistent Volume Claim specs**
+#### Persistent Volume Claim - `ghost-pvc.yml`
 
 ```yml
 ---
@@ -385,9 +384,11 @@ spec:
 - `kubectl config use-context ghost-demo-app`
 
 4. Deploy the Persistent Volume Claim first:
+
 - `kubectl apply -f ghost-pvc.yml`
 
 5. Deploy the demo application
+
 - `kubectl apply -f ghost.yml`
 
 While I was waiting for my demo application to become available, I noticed that several native vSphere Pod’s showed up in the vSphere Client and powered on and powered off again and again. This is not the expected behaviour!
@@ -403,15 +404,20 @@ esxi02: Failed to resolve image: Http request failed. Code 400: ErrorType(2) fai
 The warning indicates that my Supervisor Cluster cannot pull the image out of Harbor due to the unknown certificate. Adding it to our local machine is easy but how can we realize it for vSphere? Luckily, that's easy too.
 
 1. Interrupt the failed deployment loop of our application
+
 - `kubectl delete -f ghost.yml`
+
 2. Open the downloaded Harbor root certificate (`ca.crt`) and copy the whole content out of it
 3. Switch back to your terminal and add the copied certificate data to your `image-fetcher-ca-bundle` configmap as shown in *Figure VII*
+
 - `kubectl edit configmap image-fetcher-ca-bundle -n kube-system`
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200721_113854.jpg" caption="Figure VII: Kubernetes Configmap image-fetcher-ca-bundle" src-s="/img/posts/202007_harborontkg/CapturFiles-20200721_113854.jpg" class="center" >}}
 
 - save and close `:wq`
+
 4. Start the deployment again and watch the progress
+
 - `kubectl apply -f ghost.yml`
 
 ```shell

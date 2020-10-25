@@ -24,11 +24,9 @@ I´m running the <a href="https://themes.gohugo.io/hugo-casper-two/" target="_bl
 
 I´ll add the video <a href="https://www.youtube.com/watch?v=2xkNJL4gJ9E&list=PLLAZ4kZ9dFpOnyRlyS-liKL5ReHDcj4G3&index=9" target="_blank">"Shortcodes | Hugo - Static Site Generator | Tutorial 9"</a> here at this point of the post by using `{{</* youtube 2xkNJL4gJ9E */>}}` in my post `*.md` file. :point_down:
 
----
-
 Normally you would see the mentioned Youtube video here :point_up: but it seems that the Shortcode won´t work for my chosen theme.
 
-## You are not alone!
+## You are not alone
 
 The best thing to do first, from my point of view, is not to google the (mis-)behavior, but rather go to the Github-Repo from your theme and have a look at the *Issues*. If there exists one, comment...if not...raise one.
 
@@ -41,19 +39,19 @@ This is simply great and one of thousands of things I´m really impressed with r
 As Michael already described it in his post, we have to create a new empty file and this time we´ll call it `yt.html`.
 
 ```shell
-$ cd <HUGO_BLOG_ROOT>
-$ touch layouts/shortcodes/yt.html
+cd <HUGO_BLOG_ROOT>
+touch layouts/shortcodes/yt.html
 ```
 
 Put the following lines of code into the `yt.html` file and save it.
 
-{{< highlight html >}}
+```html
 <iframe src="https://www.youtube.com/embed/{{ index .Params 0 }}?start={{ index .Params 1 }}"
         style="position: absolute; top: 0; left: 0; width: 560; height: 315;"
         allowfullscreen frameborder="0"
         title="YouTube Video">
 </iframe>
-{{< /highlight >}}
+```
 
 This time I´ll make use of our new Shortcode `{{</* yt */>}}` instead of `{{</* youtube */>}}` *et voilà*...
 
@@ -68,7 +66,5 @@ Getting more interest in building your own Shortcodes?
 **Go here:** <a href="https://gohugo.io/templates/shortcode-templates/" target="_blank">Create Your Own Shortcodes</a>
 
 > *"You can extend Hugo’s built-in shortcodes by creating your own using the same templating syntax as that for single and list pages."*
-
----
 
 **<center>Thanks for reading.</center>**

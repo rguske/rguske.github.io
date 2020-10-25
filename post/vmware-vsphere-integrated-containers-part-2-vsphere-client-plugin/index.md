@@ -1,6 +1,5 @@
 # vSphere Integrated Containers Part II: vSphere Client Plug-In
 
-
 In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0. In general, it is important to know that a minimum version of vCenter Server 6.5.0d is required to make use of the plug-in.
 
 However! It is also worth to be mentioned that the plug-in is not necessary or a requirement to run VIC as well as for the deployment of a Virtual Container Host aka **VCH**. But it makes the initial deployment of a VCH easier at the first beginning until you are more and more familiar with the vic-machine utility.
@@ -8,7 +7,7 @@ The first step from the installation of the vSphere Client Plug-In is to downloa
 
 To set up the necessary commands from within the vCSA we first have to enable SSH over the Virtual Appliance Management Interface aka VAMI by using port 5480. By default SSH is disabled.
 
-https://lab-vcsa67-001:5480
+`https://lab-vcsa67-001:5480`
 
 {{< image src="/img/posts/201807_vic_getting_started/CapturFiles-20180616_092710.jpg" src-s="/img/posts/201807_vic_getting_started/CapturFiles-20180616_092710.jpg" class="center" width="800" >}}
 
@@ -18,7 +17,7 @@ Toggle the switch to enable SSH Login on the vCSA
 
 But wait! To make sure if everything went right after the installation, we should check before and after. And how can we check if there isn´t a vic plug-in before the installation and afterwards it gets shown? Correct - over the Managed Object Browser aka MOB.
 
-https://lab-vcsa67-001/mob
+`https://lab-vcsa67-001/mob`
 
 You won´t find anything declared with vic- under *content/ ExtensionManager/ extensionList*.
 
@@ -87,7 +86,6 @@ rm -R vic
 
 {{< image src="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" src-s="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" class="center" width="800" >}}
 
-
 **Disable** SSH when you are finished!
 
 The VIC plug-in should now be available under *Menu/ vSphere Integrated Containers*.
@@ -114,6 +112,3 @@ Now we have established the **Integration** into **vSphere** but what about the 
 
 <a href="/post/vmware-vsphere-integrated-containers-introduction/">**vSphere Integrated Containers: Introduction**</a>
 
----
-
-**<center>Thanks for reading!</center>**

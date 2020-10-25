@@ -1,15 +1,16 @@
 # A Linux Development Desktop with VMware Horizon - Part I: Horizon
 
+## The Universal Workbench
 
 I often thought about writing down my experiences on the topics of *Jumphosts*, *Shell-modifications* and *useful tools* in a series of blog posts, but I hadn´t found the right moment, until I saw the following Tweet, where Alex asked his followers how they get access to a Linux system if they aren´t running Linux on their workstation (locally).
 
 <center> {{< tweet 1210952121488728066 >}} </center>
 
-Similar to Mark´s answer, I´m also using a VDI (Virtual-Desktop-Infrastructure) desktop for my purposes and I began writing this series...back in January...time passed by and due to other projects I worked on and which demanded a lot of my attention (<a href="https://twitter.com/search?q=vCenter%20Event%20Broker%20Appliance&src=typed_query" target="_blank">#VEBA</a> :grin:), it took a little bit longer to publish them.
+Similar to Mark´s answer, I´m also using a VDI (Virtual-Desktop-Infrastructure) desktop for my purposes and I began writing this series...back in January...time passed by and due to other projects I worked on and which demanded a lot of my attention ([VEBA](https://www.vmweventbroker.io) :grin:), it took a little bit longer to publish them.
 
----
-
-**BIG THANKS** to <a href="https://de.linkedin.com/in/gerrit-lehr-b00a34a9" target="_blank">Gerrit Lehr</a>, <a href="https://twitter.com/HilkoLantinga" target="_blank">Hilko Lantinga</a> and <a href="https://twitter.com/ivirtualex" target="_blank">Alex Lopez</a> for your valuable input and feedback.
+{{< admonition type=success title="Thank You" open=true >}}
+Big thanks to [Gerrit Lehr](https://de.linkedin.com/in/gerrit-lehr-b00a34a9), [Hilko Lantinga](https://twitter.com/HilkoLantinga) and [Alex Lopez](https://twitter.com/ivirtualex) for your valuable input and feedback.
+{{< /admonition >}}
 
 ---
 
@@ -30,9 +31,9 @@ With this series of posts, I´d like to demonstrate how you can build such an en
 
 *<center>Video I: SSO and HTML5 feature in VMware Horizon</center>*
 
-## My Mindnode for building a Development Desktop
+## My Mindnode
 
-<a href="https://github.com/rguske/rguske.github.io/blob/master/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" target="_blank">**Download**</a>
+[**Download** on <i class='fab fa-github fa-fw'></i>](https://github.com/rguske/rguske.github.io/blob/master/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png)
 
 {{< image src="/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" caption="Figure I: Mindnode Development Desktop" src-s="/img/posts/201912_development_desktop/rg_022020_mindnode_post_devdesk.png" class="center" >}}
 
@@ -72,12 +73,12 @@ In this post, I´ll concentrate just on <span style="color:#018914">Ubuntu 18.04
 
 ### 2.2 Download Linux installation iso
 
-- <span style="color:#018914">**Ubuntu 18.04 LTS:** https://ubuntu.com/download/desktop/
-- <span style="color:#6003B6">**CentOS 8.0** (at this time only 8.0 is supported!): http://isoredirect.centos.org/centos/8/isos/x86_64/
+- <span style="color:#018914">**Ubuntu 18.04 LTS:** <https://ubuntu.com/download/desktop/>
+- <span style="color:#6003B6">**CentOS 8.0** (at this time only 8.0 is supported!): <http://isoredirect.centos.org/centos/8/isos/x86_64/>
 
 ### 2.3 Create a new Virtual Machine
 
-Now that your iso is ready to be mounted let´s create a new Virtual Machine. Choose your distro from the list and configure your vHardware. I followed the official recommendation for *"Improved video playback in a 2D desktop (<a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf" target="_blank">page 23</a>)*.
+Now that your iso is ready to be mounted let´s create a new Virtual Machine. Choose your distro from the list and configure your vHardware. I followed the official recommendation for *"Improved video playback in a 2D desktop ([page 23](https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf))*.
 
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200219_123512.jpg" caption="Figure III: Linux Distribution & vHardware Settings" src-s="/img/posts/201912_development_desktop/CapturFiles-20200224_093014.jpg" class="center" >}}
 
@@ -113,6 +114,7 @@ sudo apt install openssh-server
 **<span style="color:#6003B6">CentOS:</span>** *OpenSSH server is installed and enabled by default.*
 
 Check that the service is <span style="color:#168407">*Active*</span> and running:
+
 ```shell
 systemctl status sshd.service
 ```
@@ -127,7 +129,7 @@ Do not** run `yum update`!
 
 Normally, the first step I do after setting up a fresh Linux system, is the update of every currently installed package of it (`apt update` / `yum update`). You can run the update and upgrade "safely" for Ubuntu but **NOT** for CentOS 8.0. The *VMware Horizon View Agent v.7.11* does not support ***gnome-shell version 3.3x***. If you run the `sudo yum update` command, the gnome-shell will be updated and this leads to the following error:
 
-```shell
+```code
 The version of gnome shell 3.32.2 isn't matched,\n
                        try to replace default version.
 Don't support 8.1.1911, disable sso
@@ -179,17 +181,17 @@ sudo dnf -y install sssd oddjob oddjob-mkhomedir adcli samba-common-tools
 
 ## 3 Single Sign-On
 
-*Source: <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-4532309E-F219-4FEC-ADC4-B62B5E67BC8F.html" target="_blank">VMware Horizon 7: Setting Up Single Sign-On</a>*
+*Source: [VMware Horizon 7: Setting Up Single Sign-On](https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-4532309E-F219-4FEC-ADC4-B62B5E67BC8F.html)*
 
 The Horizon Single Sign-On feature gives us the great ability to connect to our Linux system via the Horizon View Client (*Video I & Figure II*) with an, on the Desktop-Pool level, entitled Active Directory user. This also includes the creation of users home directory if the user logs in for the first time. We have to integrate our Desktop with an Active Directory first to make use of SSO.
 
 ### 3.1 Integrating Ubuntu with Active Directory
 
-*Source: <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-66FC1A47-616D-4240-A874-2FA07F0C6EF2.html" target="_blank">VMware Horizon 7: PowerBroker Identity Services Open (PBISO)</a>*
+*Source: [VMware Horizon 7: PowerBroker Identity Services Open (PBISO)](https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-66FC1A47-616D-4240-A874-2FA07F0C6EF2.html)*
 
 **<span style="color:#018914">Ubuntu:</span>**
 
-Pbis-open Releases: https://github.com/BeyondTrust/pbis-open/releases
+Pbis-open Releases: <https://github.com/BeyondTrust/pbis-open/releases>
 
 **Download and installation:**
 
@@ -201,7 +203,7 @@ sudo ./pbis-open-9.1.0.551.linux.x86_64.deb.sh
 
 **Domain join:**
 
-```shell
+```code
 sudo domainjoin-cli --loglevel info join jarvis.lab admin@jarvis.lab
 
 Joining to AD Domain:   jarvis.lab
@@ -222,7 +224,7 @@ DNS_ERROR_BAD_PACKET [code 0x0000251e] A bad packet was received from a DNS serv
 
 **Default configuration for domain users:**
 
-```shell
+```code
 sudo /opt/pbis/bin/config UserDomainPrefix jarvis
 sudo /opt/pbis/bin/config AssumeDefaultDomain true
 sudo /opt/pbis/bin/config LoginShellTemplate /bin/bash
@@ -235,7 +237,7 @@ Edit the `/etc/pam.d/common-session` file and `replace` the line `session option
 
 ### 3.2 Integrating CentOS 8 with Active Directory
 
-*Source: <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-93F4CA16-5F47-47BE-B28C-E8A7901E0391.html" target="_blank"> VMware Horizon 7: Use the Realmd Join Solution for RHEL/CentOS 8.0</a>*
+*Source: [VMware Horizon 7: Use the Realmd Join Solution for RHEL/CentOS 8.0](https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-93F4CA16-5F47-47BE-B28C-E8A7901E0391.html)*
 
 To have the ability to connect with an AD user to our desktop, we have to join an Active Directory domain. `realmd` will be the tool of our choice to join an Active Directory domain. It´s installed on CentOS by default.
 
@@ -319,7 +321,7 @@ sudo mv backup/gnome-classic.desktop ./
 
 As a next step we´re going to install the VMware View Agent which must be installed on virtual machines that are managed by vCenter Server so that View Connection Server can communicate with them.
 
-**Download:** https://www.vmware.com/go/download-horizon
+**Download:** <https://www.vmware.com/go/download-horizon>
 
 {{< admonition tip "Tip" true >}}
 I´ve downloaded the Agent locally first and copied it then via `scp` into my VM(s).
@@ -337,9 +339,9 @@ cd VMware-horizonagent-linux-x86_64-7.11.0-15238356/
 ~/Downloads/VMware-horizonagent-linux-x86_64-7.11.0-15238356$ ./install_viewagent.sh -A yes
 ```
 
-- *Regarding the used command options and arguments* - https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC.html#GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC
+- *Regarding the used command options and arguments* - <https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup/GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC.html#GUID-09A3F97C-47FE-4ABF-B68C-E42AE26632CC>
 
-Now set the correct *SSO Desktop Type* for the View Agent (see <a href="https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf" target="_blank">page 18 and 107</a>). Run `sudo vim /etc/vmware/viewagent-custom.conf` and uncomment the necessary line for your desktop environment.
+Now set the correct *SSO Desktop Type* for the View Agent (see [page 18 and 107](https://docs.vmware.com/en/VMware-Horizon-7/7.11/linux-desktops-setup.pdf)). Run `sudo vim /etc/vmware/viewagent-custom.conf` and uncomment the necessary line for your desktop environment.
 
 - <span style="color:#018914">**Ubuntu 18.04**</span> = *SSODesktopType=UseGnomeUbuntu*
 - <span style="color:#6003B6">**CentOS**</span> = *SSODesktopType=UseGnomeClassic*
@@ -371,6 +373,7 @@ Since you´ve added the Linux-VM to your new desktop pool, it´ll appear under *
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200212_103007.jpg" caption="Figure VI: DNS Name = Shortname" src-s="/img/posts/201912_development_desktop/CapturFiles-20200212_103007.jpg" class="center" >}}
 
 Let´s bring this into the correct form:
+
 ```shell
 sudo hostnamectl set-hostname devdesk-ubuntu.jarvis.lab
 ```
@@ -385,7 +388,7 @@ Way better! :point_down:
 
 {{< image src="/img/posts/201912_development_desktop/CapturFiles-20200204_103350.jpg" caption="Figure VII: DNS Name = FQDN" src-s="/img/posts/201912_development_desktop/CapturFiles-20200204_103350.jpg" class="center" >}}
 
-You should now be able to connect to your Desktop-Pool via the <a href="https://my.vmware.com/en/web/vmware/info/slug/desktop_end_user_computing/vmware_horizon_clients/5_0" target="_blank">*Horizon Client*</a>.
+You should now be able to connect to your Desktop-Pool via the *[Horizon Client](https://my.vmware.com/en/web/vmware/info/slug/desktop_end_user_computing/vmware_horizon_clients/5_0)*</a>.
 
 ---
 

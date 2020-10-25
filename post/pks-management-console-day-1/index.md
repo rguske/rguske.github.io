@@ -1,10 +1,9 @@
 # VMware Enterprise PKS Management Console (EPMC) - Day 1
 
-
 {{< admonition info "Info" true >}}
 VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition
 
-See: https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/
+See: <https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/>
 {{< /admonition >}}
 
 Version 1.5.0 of VMware´s turnkey solution VMware Enterprise PKS, which brings production-grade Kubernetes to enterprises, was released back in August this year. This release introduced the beta (v.0.9) of the <span style="color:#60C12F">*VMware Enterprise PKS Management Console (EPMC)*</span> which offers an opinionated installation of Enterprise PKS. With the PKS minor release v.1.5.1, the EPMC went GA in version 1.0.0.
@@ -18,9 +17,11 @@ Further improvements and enhancements were made in version 1.6 (*1), which went 
 Thanks <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a> for reviewing both articles.
 
 ## Let´s start with my conclusion first
+
 The Enterprise PKS Management Console makes the adjective *TURNKEY*, which VMware uses when introducing Enterprise PKS, really well-rounded. It really improves the overall Day-1 and Day-2 experience by greatly simplifying the deployment process of Enterprise PKS (Day-1) and additionally providing a rich set of features around Visibility, User Management and Upgrades/Patches (Day-2).
 
 ## It´s an appliance
+
 EPMC will run as a Virtual Appliance in your Datacenter and can be downloaded through the provided link at the end of this post. It´s a 10,6 GB download and it´s that heavy because it´s all packaged together in one OVA, which in turn has the advantage, that you don´t have to work out the interoperability matrix.
 
 Included bits are:
@@ -51,7 +52,7 @@ Let´s have a look at the `artifacts.yaml` file to see the different component v
 
 `ssh root@epmc.jarvis.lab`
 
-```shell
+```code
 root@epmc [ /storage/data/artifacts ]# ls
 artifacts.yaml  harbor-container-registry  ops-manager  pivotal-container-service  stemcells-ubuntu-xenial
 root@pksmgmt [ /storage/data/artifacts ]# cat artifacts.yaml
@@ -81,6 +82,7 @@ bosh:
   path: NA
 root@epmc [ /storage/data/artifacts ]#
 ```
+
 *<center>Figure I: Enterprise PKS Management Console component versions</center>*
 
 ## Prerequisites
@@ -90,7 +92,6 @@ Furthermore, we have to define two Availability-Zones. From a vSphere point of v
 
 **IMPORTANT:** The Resource-Pools should exist before starting with the PKS Configuration through the EPMC! Otherwise they will not show up if you configure them on-the-fly. Means, you have to restart from the beginning. Avoid this, trust me :wink:.
 
----
 When it comes to Networking, EPMC offers three kinds of flavors:
 
 - **Bring-Your-Own-Topology (BYOT):**  Assumes that NSX-T is already preconfigured for the use of Ent. PKS.
@@ -103,10 +104,12 @@ and now my favorite...
 As always, I recommend reading the Prerequisite-sections in the documentation:
 
 ### Prereq for vSphere
-https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html
+
+<https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-vsphere.html>
 
 ### Prereq for an Automated NAT Deployment
-https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html
+
+<https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-prereqs-nsxt-automatednat.html>
 
 ## Nine simple steps
 
@@ -135,6 +138,7 @@ LOGINSIGHT_HOST=10.10.13.5
 LOGINSIGHT_PORT=9000
 LOGINSIGHT_ID=039daa6c-3d83-46a8-8b44-db273e9d11a5
 ```
+
 *<center>Figure II: Appliance configuration</center>*
 
 ---
@@ -153,6 +157,7 @@ The first cool capability already comes on the next page, because you can choose
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" caption="Figure V: Start or Import a Configuration" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191105_051338.jpg" class="center" >}}
 
 ### Step 1: vCenter Account
+
 Step One is the connection establishment to our vCenter Server which will be our deployment target. Just enter the FQDN/ IP, provide valid credentials of a user with the appropriate vSphere administrator permissions, wait for the validation and you will recognize that the Datacenter field will be auto-populated.
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" caption="Figure VI: vCenter Server Configuration" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092010.jpg" class="center" >}}
@@ -189,12 +194,13 @@ At this point, I´d also like to point out to the documentation regarding the au
 {{< admonition info "Info" true >}}
 If NSX-T Data Center uses custom certificates and you do not provide the CA certificate for NSX Manager, Enterprise PKS Management Console automatically generates one and registers it with NSX Manager. This can cause other services that are integrated with NSX Manager not to function correctly.
 
-*Source: https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html*
+*Source: <https://docs.vmware.com/en/VMware-Enterprise-PKS/1.6/vmware-enterprise-pks-16/GUID-console-deploy-ent-pks-wizard.html>*
 {{< /admonition >}}
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" caption="Figure VIII: Deployment, POD IP Block, Node IP Block and Floating IP range configuration" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_092600.jpg" class="center" >}}
 
 ### Step 3: Identity
+
 Specify in this Step how you would like to add *Users* and *Groups* to Enterprise PKS. EPMC offers three option here:
 
 1. Create Users and Groups and assign roles to those which will be stored into the **UAA database**:
@@ -255,7 +261,7 @@ The integration of vRealize Operations Manager, vRealize Log Insight and Wavefro
 
 New in EPMC version 1.1.0 is the ability to attach a by PKS created Kubernetes cluster to <a href="https://cloud.vmware.com/tanzu-mission-control" target="_blank">VMware Tanzu Mission Control (TMC)</a> :rocket:. **Tanzu Mission Control** provides you the ability to handle multi-cluster Kubernetes deployments across multiple clouds with operational consistency.
 
-More to find here: https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/
+More to find here: <https://blogs.vmware.com/cloudnative/2019/08/26/vmware-tanzu-mission-control/>
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" caption="Figure XVII: Integration into Tanzu Mission Control" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_093315.jpg" class="center" >}}
 
@@ -269,9 +275,9 @@ Running production grade Kubernetes in your organization requires the use of a c
 
 Please stay a moment here and read the following blog post from Pivotal regarding the *Enhanced Telemetry for PKS* before you proceed further.
 
-https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks
+<https://content.pivotal.io/blog/announcing-enhanced-telemetry-for-pks>
 
-Also: https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports
+Also: <https://docs-pcf-staging.cfapps.io/pks/1-6/telemetry.html#sample-reports>
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" caption="Figure XIX: Harbor Enterprise Container Registry configuration" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094305.jpg" class="center" >}}
 
@@ -280,7 +286,7 @@ Validate your deployment config and click on **Generate Configuration**.
 
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" caption="Figure XX: Generate configuration" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191106_091737.jpg" class="center" >}}
 
-### Let the magic happen!
+### Let the magic happen
 
 You can see now that every configuration we made in the past 9 steps, is available and still editable in an in-browser text editor. Export the configuration as an YAML file to have it availavle for further deployments (see *Figure V: Start or Import an Configuration*).
 
@@ -293,12 +299,13 @@ Observe the *Deployment status* and rejoice the green hooks.
 {{< image src="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" caption="Figure XXII: Deployment status page" src-s="/img/posts/201911_pksmgmtconsole/CapturFiles-20191112_094711.jpg" class="center" >}}
 
 ## Troubleshooting
+
 If you are running into troubles with the Enterprise PKS Management Console, you can connect to it via `ssh` (root) and execute the following command to obtain the server log:
 
 - **Either**: `journalctl -u pks-mgmt-server > server.log` **and than** `cat server.log`
 - **Or**: `journalctl -u pks-mgmt-server.service -f` to see more details like the following indicates:
 
-```shell
+```code
 Nov 27 21:51:50 epmc.jarvis.lab pks-mgmt-server[939]: time="2019-11-27T21:51:50Z" level=info msg="Update for deployment 08fd9eeb-2ada-
 42c0-8d41-dba9a1b9a2e6 - Deploy harbor-container-registry 1.9.3-build.2: state( running) configuring Harbor product on ops_manager\n"
 Nov 27 21:51:50 epmc.jarvis.lab pks-mgmt-server[939]: configuring product...
@@ -321,13 +328,14 @@ Nov 27 22:11:41 epmc.jarvis.lab pks-mgmt-server[939]: time="2019-11-27T22:11:41Z
 
 When it comes to **BOSH** realted issues, also have a look at this post by my colleague <a href="https://twitter.com/KeithRichardLee" target="_blank">Keith Lee</a>: <a href="http://keithlee.ie/2019/03/31/pks-troubleshooting-part-1-using-bosh-cli/" target="_blank">PKS Troubleshooting – Part 1: Using BOSH CLI</a>
 
-**All about the Day-2 capabilities of the Enterprise PKS Management Console can be read here:** https://rguske.github.io/post/pks-management-console-day-2/
+**All about the Day-2 capabilities of the Enterprise PKS Management Console can be read here:** <https://rguske.github.io/post/pks-management-console-day-2/>
 
 ---
 
 **<center>Thanks for reading.</center>**
 
 ---
+
 ## Resources
 
    **Site**                                       |   **URL**

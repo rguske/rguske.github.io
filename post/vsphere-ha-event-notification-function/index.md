@@ -2,11 +2,13 @@
 
 
 ## Community
+
 I recently had the pleasure to suppport a member out of the [VMware Event Broker Appliance (VEBA) Slack Community](https://vmwarecode.slack.com/archives/CQLT9B5AA) with his function example contribution to the [VEBA](https://vmweventbroker.io/) project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them.
 
 Bob's engagement was really contagious and getting work done was quite fun. **All credits goes out to Bob!**
 
 ## Code
+
 Bob developed a script some time ago, which functionality basically is, to send out a notification via Email after a vSphere HA event occurred. This Email will have the affected host mentioned as well as all affected VMs which has been restarted through vSphere HA. The problem was, that the execution of the script was a manual task every time a ESXi host outage took place...**at least until he became aware of VEBA**.
 
 {{< admonition quote "Quote" true >}}
@@ -22,6 +24,7 @@ There is really good material available on *"Getting started with VEBA"* like fo
 If you don't have own code available, start looking here: [VMware {code} Sample Exchange](https://code.vmware.com/samples?categories=Sample&keywords=&tags=PowerShell%7CVMware%20PowerCLI&groups=&filters=&sort=dateDesc&page=). The community is diligent and willing to share.
 
 ## Contribution
+
 You are probably wondering when I finally introduce the function, right? The reason for my long introduction in this post is that I want to encourage you to start building your own function(s) to unlock the potential of event-driven automation in your data center.
 
 Like Bob successfully did. :grin:
@@ -35,6 +38,7 @@ I had to share my excitment on Twitter when I first contributed to the project. 
 <center> {{< tweet 1216830346135842820 >}} </center>
 
 ## The HA Restart Function
+
 I'm not going into the details on how to deploy the function, because it works basically like the [vSphere Datastore Usage Email Notification](https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email) function which deployment is well explained step-by-step here: [vCenter Event Broker Appliance – Part IX – Deploying the Datastore Usage Email sample script in VMC](https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/datastore-usage-email).
 
 Exactly two files are important to deploy the function. The `vcconfig-ha-restarted-vms.json` and the `stack.yml.`
@@ -53,6 +57,7 @@ You have to fill out all the fields in the `vcconfig-ha-restarted-vms.json` file
     "EMAIL_FROM" : "Jarvis Lab"
 }
 ```
+
 *<center>vcconfig-ha-restarted-vms.json example</center>*
 
 The below listed `stack.yml` file describes on which vCenter Event the function will be invoked, where the function image is stored and on which VEBA instance the function will finally run.
@@ -80,6 +85,7 @@ functions:
     annotations:
       topic: com.vmware.vc.HA.ClusterFailoverActionCompletedEvent
 ```
+
 *<center>stack.yml example</center>*
 
 I have built the function from scratch and pushed it into my local container registry Harbor. If you would like to read more about *"How to push your function images to Harbor"*, take a look here: [Using Harbor with the VMware Event Broker Appliance](https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/).
@@ -87,6 +93,7 @@ I have built the function from scratch and pushed it into my local container reg
 After successfully deploying the function to my VEBA the next step is to simulate a host outage to trigger the aforementioned vCenter HA event.
 
 ## ESXi Kernel Panic command
+
 I'm using a [nested vSphere Cluster](https://www.virtuallyghetto.com/nested-virtualization) in my Homelab to simulate the outage. Connect to your nested ESXi host via `ssh` and execute the following command to perform a ESXi Kernel Panic. Please use this command with caution!
 
 {{< admonition danger "Danger" true >}}
@@ -102,8 +109,10 @@ A more detailed view can be done via a terminal. Below you can see the deployed 
 {{< image src="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg" src-s="/img/posts/202006_harestartfunction/CapturFiles-20200629_102941.jpg" class="center" >}}
 
 ## You have mail!
+
 If everything operates as expected, you should have received an email according to the following screenshot of the one I received.
 
 {{< image src="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg" src-s="/img/posts/202006_harestartfunction/CapturFiles-20200701_022720.jpg" class="center" >}}
 
 **Thanks Bob! Keep up the great work.**
+

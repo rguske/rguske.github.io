@@ -1,6 +1,5 @@
 # vSphere Integrated Containers Part III: Deployment of a Virtual Container Host
 
-
 In this part I´d like to guide you through the Deployment of a **Virtual Container Host** aka **VCH**. I definitely don ́t want to make it a habit to use already written descriptions, but this one described it very well, thus I had like to quote this:
 
 {{< admonition quote "" true >}}
@@ -45,7 +44,7 @@ Before we can really open up the required port it´s neccassary to know the Thum
 
 I´ll receive an certificate related error but the result counts - the output shows us the vCenter Server Thumbprint.
 
-```shell
+```code
 INFO[0000] vSphere password for administrator@jarvis.local:
 INFO[0003] ### Listing VCHs ####
 ERRO[0003] Failed to verify certificate for target=lab-vcsa67-001 (thumbprint=4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26)
@@ -72,6 +71,7 @@ You´ll get an output similar like this:
 Now let´s go to the point of what the title of Part III is promising you and we´ll start with the deployment of a VCH through the wizard which got available through the vic-plugin installation. Open the *vSphere Integrated Containers* subsection in your vSphere Client and under Virtual Conatiner Hosts choose + NEW VIRTUAL CONTAINER HOST.
 
 ## General
+
 The General section is more important than it appears at the first glance! Because besides the possibility to configure an endpoint for log aggregation and the level of logging deepness, we could  enter a naming-prefix for the instanciated Container-VMs what gives us, from a security point of view, more capabilities and flexibility.
 
 For instance, we could establish a <a href="https://docs.vmware.com/en/VMware-NSX-for-vSphere/6.4/com.vmware.nsx.admin.doc/GUID-16B3134E-DDF1-445A-8646-BB0E98C3C9B5.html" target="_blank"> NSX Security Group </a> by using the naming-prefix as a membership-criteria. Consequently, our Container-VMs becomes dynamically a member of the Security Group which gives us back the control of the East-West traffic within our Datacenter.
@@ -79,6 +79,7 @@ For instance, we could establish a <a href="https://docs.vmware.com/en/VMware-NS
 {{< image src="/img/posts/201807_vic_getting_started/CapturFiles-20180707_122841.jpg" src-s="/img/posts/201807_vic_getting_started/CapturFiles-20180707_122841.jpg" class="center" >}}
 
 ## Compute
+
 Next we have to chose our Compute-Resource where our VCH runs on. That can be an ESXi Host, a Cluster or a Resource-Pool.
 
 {{< image src="/img/posts/201807_vic_getting_started/CapturFiles-20180616_112753.jpg" src-s="/img/posts/201807_vic_getting_started/CapturFiles-20180616_112753.jpg" class="center" >}}
@@ -107,13 +108,9 @@ proportional weight) to each virtual machine..*
 VMware vSphere 6.5</a>
 {{< /admonition >}}
 
----
-
 {{< admonition tip "Tip" true >}}
 A **must have** with regards to Resource Management is definetely the <a href="https://www.amazon.com/VMware-vSphere-Host-Resources-Deep/dp/1540873064" target="_blank"> VMware vSphere 6.5 Host Resource Deep Dive </a> by <a href="http://frankdenneman.nl/" target="_blank"> Frank Dennemann </a> and <a href="https://nielshagoort.com/" target="_blank"> Niels Hagoort</a>
 {{< /admonition >}}
-
----
 
 ## Storage
 
@@ -180,6 +177,7 @@ If you are deploying the VCH to a standalone host that is managed by vCenter Ser
 {{< /admonition >}}
 
 ## Summary
+
 Like always when a summary appears by the end of a wizard - validate your configuration again!
 
 {{< image src="/img/posts/201807_vic_getting_started/CapturFiles-20180616_115031.jpg" src-s="/img/posts/201807_vic_getting_started/CapturFiles-20180616_115031.jpg" class="center" width="800" >}}
@@ -231,10 +229,6 @@ Alright, we´ve deployed our first Virtual Container Host we can go ahead with P
 
 ---
 
-**<center>Thanks for reading!</center>**
-
----
-
 **Continue with:**
 
 <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/">**vSphere Integrated Containers Part IV: docker run a Container-VM**</a>
@@ -247,3 +241,4 @@ Alright, we´ve deployed our first Virtual Container Host we can go ahead with P
 <a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/">**vSphere Integrated Containers Part I: OVA Deployment**</a>
 
 <a href="/post/vmware-vsphere-integrated-containers-introduction/">**vSphere Integrated Containers: Introduction**</a>
+
