@@ -6,7 +6,7 @@ You may have already heard and read about our latest changes regarding our Kuber
 
 Honestly! Doesn't matter of which kind of implementation we are talking, is it a Homelab (test environment), a Proof of Concept implementation or in production, our final goal is a working solution and this is why we should be prepared best. Through this article, I will even more stress this point because I did a mistake which did cost me time in troubleshooting the failure I've received. On the other hand and "*as always*", it enlightened me and enriched my wealth of experience.
 
-## Preperations
+## Preparations
 
 This article will not describe the vSphere with Tanzu installation itself. For this kind of details, I would like to point you to VMware's official documentation or to this [vSphere with Tanzu Quick Start Guide V1a](https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531) (**for evaluation purposes**) which VMware is maintaining on the [Cloud Platform Tech Zone](https://core.vmware.com/).
 
