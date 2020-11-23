@@ -17,7 +17,7 @@ The question This post is intented to answer a question which came into my mind 
 <meta name="twitter:description" content="Introduction In my previous blog post I took A closer look at VMware&rsquo;s Project Nautilus and went through some of the implementation details (Fusion 12). I described how it provides a single development platform on the desktop by enabling you to run, build and manage OCI compliant Containers as well as how easy it is now to instantiate Kubernetes Clusters besides Virtual Machines.
 The question This post is intented to answer a question which came into my mind during my work on VMware&rsquo;s Open Source project VMware Event Broker Appliance (VEBA) and as I&rsquo;ve heard of Project Nautilus for the first time."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -43,11 +43,11 @@ The question This post is intented to answer a question which came into my mind 
             <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-1" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
             <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
@@ -74,11 +74,11 @@ The question This post is intented to answer a question which came into my mind 
                 <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-2" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -206,35 +206,35 @@ The question This post is intented to answer a question which came into my mind 
 <table>
 <thead>
 <tr>
-<th style="text-align:center"><strong>Appliance</strong></th>
-<th style="text-align:center"><strong>CPU</strong></th>
-<th style="text-align:center"><strong>Memory</strong></th>
-<th style="text-align:center"><strong>Documentation</strong></th>
+<th align="center"><strong>Appliance</strong></th>
+<th align="center"><strong>CPU</strong></th>
+<th align="center"><strong>Memory</strong></th>
+<th align="center"><strong>Documentation</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">vCenter Server Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">12 GB</td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreffer">Documentation</a></td>
+<td align="center">vCenter Server Appliance</td>
+<td align="center">2</td>
+<td align="center">12 GB</td>
+<td align="center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreffer">Documentation</a></td>
 </tr>
 <tr>
-<td style="text-align:center">VMware Event Broker Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">8 GB</td>
-<td style="text-align:center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer">Documentation</a></td>
+<td align="center">VMware Event Broker Appliance</td>
+<td align="center">2</td>
+<td align="center">8 GB</td>
+<td align="center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer">Documentation</a></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
+<td align="center"></td>
+<td align="center"><strong>TOTAL</strong></td>
+<td align="center"><strong>TOTAL</strong></td>
 <td></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">4 vCPU&rsquo;s</td>
-<td style="text-align:center">20 GB Memory</td>
+<td align="center"></td>
+<td align="center">4 vCPU&rsquo;s</td>
+<td align="center">20 GB Memory</td>
 <td></td>
 </tr>
 </tbody>
@@ -247,36 +247,36 @@ The question This post is intented to answer a question which came into my mind 
 <table>
 <thead>
 <tr>
-<th style="text-align:center"><strong>Component</strong></th>
-<th style="text-align:center"><strong>Kind</strong></th>
-<th style="text-align:center"><strong>Installation via</strong></th>
-<th style="text-align:center">Documentation</th>
+<th align="center"><strong>Component</strong></th>
+<th align="center"><strong>Kind</strong></th>
+<th align="center"><strong>Installation via</strong></th>
+<th align="center">Documentation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">Kubernetes</td>
-<td style="text-align:center">1 Node</td>
-<td style="text-align:center">via Fusion - <code>vctl</code> and <code>kind</code></td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreffer">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
+<td align="center">Kubernetes</td>
+<td align="center">1 Node</td>
+<td align="center">via Fusion - <code>vctl</code> and <code>kind</code></td>
+<td align="center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreffer">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
 </tr>
 <tr>
-<td style="text-align:center">OpenFaaS</td>
-<td style="text-align:center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreffer">Deployment</a></td>
-<td style="text-align:center">via <code>.yaml</code> files</td>
-<td style="text-align:center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer">Deployment guide for Kubernetes</a></td>
+<td align="center">OpenFaaS</td>
+<td align="center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreffer">Deployment</a></td>
+<td align="center">via <code>.yaml</code> files</td>
+<td align="center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer">Deployment guide for Kubernetes</a></td>
 </tr>
 <tr>
-<td style="text-align:center">vcsim</td>
-<td style="text-align:center">Binary or Container</td>
-<td style="text-align:center">via <code>kubectl</code> or <code>vctl</code></td>
-<td style="text-align:center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreffer">govcsim Installation</a></td>
+<td align="center">vcsim</td>
+<td align="center">Binary or Container</td>
+<td align="center">via <code>kubectl</code> or <code>vctl</code></td>
+<td align="center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreffer">govcsim Installation</a></td>
 </tr>
 <tr>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">Container</td>
-<td style="text-align:center">via <code>faas-cli</code></td>
-<td style="text-align:center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreffer">Get started: Install the CLI</a></td>
+<td align="center">Function</td>
+<td align="center">Container</td>
+<td align="center">via <code>faas-cli</code></td>
+<td align="center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreffer">Get started: Install the CLI</a></td>
 </tr>
 </tbody>
 </table>
@@ -789,39 +789,39 @@ Powering on VirtualMachine:vm-57... OK
 </span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">event-router.vmware.com/v1alpha1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">RouterConfig</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">router-config-1</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">value</span><span class="w">
-</span><span class="w"></span><span class="nt">eventProvider</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba-demo-vcsim-01</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">vcsim</span><span class="w">
-</span><span class="w">  </span><span class="nt">vcsim</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">insecureSSL</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l">https://vcsim.vmware:8989/sdk</span><span class="w">
-</span><span class="w">    </span><span class="nt">auth</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">basic_auth</span><span class="w">
-</span><span class="w">      </span><span class="nt">basicAuth</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">administrator</span><span class="w">
-</span><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">REPLACEME</span><span class="w">
-</span><span class="w"></span><span class="nt">eventProcessor</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">openfaas</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba-demo-openfaas</span><span class="w">
-</span><span class="w">  </span><span class="nt">openfaas</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l">http://gateway.openfaas:8080</span><span class="w">
-</span><span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">    </span><span class="nt">auth</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">basic_auth</span><span class="w">
-</span><span class="w">      </span><span class="nt">basicAuth</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">admin</span><span class="w">
-</span><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">VMware1!</span><span class="w">
-</span><span class="w"></span><span class="nt">metricsProvider</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba-demo-metrics</span><span class="w">
-</span><span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">bindAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.0.0.0:8082&#34;</span><span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>event-router.vmware.com/v1alpha1<span class="w">
+</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>RouterConfig<span class="w">
+</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>router-config<span class="m">-1</span><span class="w">
+</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">key</span><span class="p">:</span><span class="w"> </span>value<span class="w">
+</span><span class="w"></span><span class="k">eventProvider</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>veba-demo-vcsim<span class="m">-01</span><span class="w">
+</span><span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>vcsim<span class="w">
+</span><span class="w">  </span><span class="k">vcsim</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">insecureSSL</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="k">address</span><span class="p">:</span><span class="w"> </span>https<span class="p">:</span>//vcsim.vmware<span class="p">:</span><span class="m">8989</span>/sdk<span class="w">
+</span><span class="w">    </span><span class="k">auth</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>basic_auth<span class="w">
+</span><span class="w">      </span><span class="k">basicAuth</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">username</span><span class="p">:</span><span class="w"> </span>administrator<span class="w">
+</span><span class="w">        </span><span class="k">password</span><span class="p">:</span><span class="w"> </span>REPLACEME<span class="w">
+</span><span class="w"></span><span class="k">eventProcessor</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>openfaas<span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>veba-demo-openfaas<span class="w">
+</span><span class="w">  </span><span class="k">openfaas</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">address</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//gateway.openfaas<span class="p">:</span><span class="m">8080</span><span class="w">
+</span><span class="w">    </span><span class="k">async</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="k">auth</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>basic_auth<span class="w">
+</span><span class="w">      </span><span class="k">basicAuth</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">username</span><span class="p">:</span><span class="w"> </span>admin<span class="w">
+</span><span class="w">        </span><span class="k">password</span><span class="p">:</span><span class="w"> </span>VMware1!<span class="w">
+</span><span class="w"></span><span class="k">metricsProvider</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>default<span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>veba-demo-metrics<span class="w">
+</span><span class="w">  </span><span class="k">default</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">bindAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.0.0.0:8082&#34;</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -901,53 +901,53 @@ Powering on VirtualMachine:vm-57... OK
 </span><span class="lnt">47
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">vmware/veba-event-router:development</span><span class="w">
-</span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-config&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;/etc/vmware-event-router/event-router-config.yaml&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-verbose&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">200m</span><span class="w">
-</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">200Mi</span><span class="w">
-</span><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config</span><span class="w">
-</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/etc/vmware-event-router/</span><span class="w">
-</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config</span><span class="w">
-</span><span class="w">        </span><span class="nt">secret</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">event-router-config</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
-</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span><span class="w">  </span><span class="nt">sessionAffinity</span><span class="p">:</span><span class="w"> </span><span class="l">None</span><span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>apps/v1<span class="w">
+</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Deployment<span class="w">
+</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="k">image</span><span class="p">:</span><span class="w"> </span>vmware/veba-event-router<span class="p">:</span>development<span class="w">
+</span><span class="w">        </span><span class="k">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-config&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;/etc/vmware-event-router/event-router-config.yaml&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-verbose&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">        </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">        </span><span class="k">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="k">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>200m<span class="w">
+</span><span class="w">            </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>200Mi<span class="w">
+</span><span class="w">        </span><span class="k">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>config<span class="w">
+</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/etc/vmware-event-router/<span class="w">
+</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">      </span><span class="k">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>config<span class="w">
+</span><span class="w">        </span><span class="k">secret</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="k">secretName</span><span class="p">:</span><span class="w"> </span>event-router-config<span class="w">
+</span><span class="w"></span>---<span class="w">
+</span><span class="w"></span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
+</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Service<span class="w">
+</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
+</span><span class="w">    </span><span class="k">protocol</span><span class="p">:</span><span class="w"> </span>TCP<span class="w">
+</span><span class="w">    </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
+</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vmware-event-router<span class="w">
+</span><span class="w">  </span><span class="k">sessionAffinity</span><span class="p">:</span><span class="w"> </span>None<span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -1017,20 +1017,20 @@ Powering on VirtualMachine:vm-57... OK
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
-</span><span class="w"></span><span class="nt">provider</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">openfaas</span><span class="w">
-</span><span class="w">  </span><span class="nt">gateway</span><span class="p">:</span><span class="w"> </span><span class="l">http://192.168.43.153:31112</span><span class="w">
-</span><span class="w"></span><span class="nt">functions</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">veba-echo</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">lang</span><span class="p">:</span><span class="w"> </span><span class="l">python</span><span class="w">
-</span><span class="w">    </span><span class="nt">handler</span><span class="p">:</span><span class="w"> </span><span class="l">./handler</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">vmware/veba-python-echo:latest</span><span class="w">
-</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">write_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="nt">read_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VmPoweredOnEvent,VmPoweredOffEvent&#34;</span><span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
+</span><span class="w"></span><span class="k">provider</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>openfaas<span class="w">
+</span><span class="w">  </span><span class="k">gateway</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//<span class="m">192.168.43.153</span><span class="p">:</span><span class="m">31112</span><span class="w">
+</span><span class="w"></span><span class="k">functions</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">veba-echo</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">lang</span><span class="p">:</span><span class="w"> </span>python<span class="w">
+</span><span class="w">    </span><span class="k">handler</span><span class="p">:</span><span class="w"> </span>./handler<span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>vmware/veba-python-echo<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">write_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">      </span><span class="k">read_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">    </span><span class="k">annotations</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">topic</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VmPoweredOnEvent,VmPoweredOffEvent&#34;</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -1126,7 +1126,8 @@ veba-echo-69cd854b7c-btjhn      1/1     Running   <span class="m">0</span>      
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/a-closer-look-at-vmwares-project-nautilus/" class="prev" rel="prev" title="A closer look at VMware&#39;s Project Nautilus"><i class="fas fa-angle-left fa-fw"></i>A closer look at VMware&#39;s Project Nautilus</a></div>
+    <div class="post-nav"><a href="/post/a-closer-look-at-vmwares-project-nautilus/" class="prev" rel="prev" title="A closer look at VMware&#39;s Project Nautilus"><i class="fas fa-angle-left fa-fw"></i>A closer look at VMware&#39;s Project Nautilus</a>
+            <a href="/post/vsphere-with-tanzu-troubleshooting-haproxy/" class="next" rel="next" title="vSphere with Tanzu - Troubleshooting HAProxy deployment">vSphere with Tanzu - Troubleshooting HAProxy deployment<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="gitalk" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.

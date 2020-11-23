@@ -7,15 +7,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
         <title>Monitoring Container VMs with vRealize Operations Manager - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Monitoring Container VMs with vRealize Operations Manager" />
 <meta property="og:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, vRealize Operations Manager (vR Ops).
-Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &ldquo;First-Class Citizens&rdquo; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine." />
+Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &quot;First-Class Citizens&quot; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" />
 <meta property="article:published_time" content="2019-01-21T23:00:09+01:00" />
-<meta property="article:modified_time" content="2020-05-24T19:04:21+02:00" />
+<meta property="article:modified_time" content="2020-10-25T17:38:02+01:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Monitoring Container VMs with vRealize Operations Manager"/>
 <meta name="twitter:description" content="Based on talks with customers who already made their experiences running containerized applications in test as well as in production and who are using vSphere Integrated Containers for their way to go, I decided to build a dashboard to monitor those workloads (Container-VMs) with VMware´s Cloud Management Solution, vRealize Operations Manager (vR Ops).
-Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &ldquo;First-Class Citizens&rdquo; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine."/>
+Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high level overview  The Dashboard Treating Containers as &quot;First-Class Citizens&quot; is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" /><link rel="next" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -27,7 +27,7 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/monitoring-container-vms-with-vrealize-operations-manager\/"
         },"genre": "posts","keywords": "January2019, VIC, Container, vSphere, Monitoring, vRealize Operations Manager, Dashboard","wordcount":  1585 ,
-        "url": "https:\/\/rguske.github.io\/post\/monitoring-container-vms-with-vrealize-operations-manager\/","datePublished": "2019-01-21T23:00:09+01:00","dateModified": "2020-05-24T19:04:21+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/monitoring-container-vms-with-vrealize-operations-manager\/","datePublished": "2019-01-21T23:00:09+01:00","dateModified": "2020-10-25T17:38:02+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -43,11 +43,11 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
             <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-1" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
             <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
@@ -74,11 +74,11 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
                 <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-2" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -160,7 +160,7 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
     </a><figcaption class="image-caption">Figure I: VIC monitoring high level overview</figcaption>
     </figure>
 <h2 id="the-dashboard">The Dashboard</h2>
-<p>Treating Containers as <a href="https://en.wikipedia.org/wiki/First-class_citizen" target="_blank">&ldquo;First-Class Citizens&rdquo;</a> is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine.</p>
+<p>Treating Containers as <a href="https://en.wikipedia.org/wiki/First-class_citizen" target="_blank">&quot;First-Class Citizens&quot;</a> is what vSphere Integrated Containers can offer to IT-(Dev)Ops Teams through instantiating a Container-Image as a Virtual Machine.</p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -438,26 +438,26 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
 <table>
 <thead>
 <tr>
-<th style="text-align:left"><strong>Article</strong></th>
-<th style="text-align:center"><strong>Link</strong></th>
+<th align="left"><strong>Article</strong></th>
+<th align="center"><strong>Link</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">[@VMware Blog] Dashboards Made Easy with vRealize Operations</td>
-<td style="text-align:center"><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html">https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html</a></td>
+<td align="left">[@VMware Blog] Dashboards Made Easy with vRealize Operations</td>
+<td align="center"><a href="https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html">https://blogs.vmware.com/management/2018/10/dashboards-made-easy-with-vrealize-operations.html</a></td>
 </tr>
 <tr>
-<td style="text-align:left">[@VMware Blog] Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</td>
-<td style="text-align:center"><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html">https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html</a></td>
+<td align="left">[@VMware Blog] Bigger, Stronger, Faster Dashboards using vRealize Operations 7.0</td>
+<td align="center"><a href="https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html">https://blogs.vmware.com/management/2018/10/bigger-stronger-faster-dashboards-using-vrealize-operations-7-0.html</a></td>
 </tr>
 <tr>
-<td style="text-align:left">[@VMware Blog] VMware´s Cloud Management Blog</td>
-<td style="text-align:center"><a href="https://blogs.vmware.com/management/">https://blogs.vmware.com/management/</a></td>
+<td align="left">[@VMware Blog] VMware´s Cloud Management Blog</td>
+<td align="center"><a href="https://blogs.vmware.com/management/">https://blogs.vmware.com/management/</a></td>
 </tr>
 <tr>
-<td style="text-align:left">[@VMware Blog] VMware´s Cloud-Native Blog</td>
-<td style="text-align:center"><a href="https://blogs.vmware.com/cloudnative">https://blogs.vmware.com/cloudnative</a></td>
+<td align="left">[@VMware Blog] VMware´s Cloud-Native Blog</td>
+<td align="center"><a href="https://blogs.vmware.com/cloudnative">https://blogs.vmware.com/cloudnative</a></td>
 </tr>
 </tbody>
 </table>
@@ -465,8 +465,8 @@ Figure I: VIC monitoring high level overview&#34; Figure I: VIC monitoring high 
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2020-05-24&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/32de4f2cc6db16f0f91e8ce63ce186e3b49a5d67" target="_blank" title="commit by Robert Guske(rguske@mware.com) 32de4f2cc6db16f0f91e8ce63ce186e3b49a5d67: updated favicon, added categories">
-                                    <i class="fas fa-hashtag fa-fw"></i>32de4f2</a></span>
+                <span>Updated on 2020-10-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/5e0ac3a949d4f994bd5f8acad06a0b3fce02277f" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 5e0ac3a949d4f994bd5f8acad06a0b3fce02277f: markdown cleanup on all posts">
+                                    <i class="fas fa-hashtag fa-fw"></i>5e0ac3a</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>

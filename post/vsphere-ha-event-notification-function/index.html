@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-ha-event-notification-function/" />
 <meta property="article:published_time" content="2020-06-29T15:19:05+02:00" />
-<meta property="article:modified_time" content="2020-07-13T09:03:23+02:00" />
+<meta property="article:modified_time" content="2020-10-25T17:38:02+01:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="VMware Event Broker Appliance - vSphere HA Event Notification Function"/>
 <meta name="twitter:description" content="Community I recently had the pleasure to suppport a member out of the VMware Event Broker Appliance (VEBA) Slack Community with his function example contribution to the VEBA project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them."/>
@@ -25,7 +25,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-ha-event-notification-function\/"
         },"genre": "posts","keywords": "June2020, VEBA, FaaS","wordcount":  911 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-ha-event-notification-function\/","datePublished": "2020-06-29T15:19:05+02:00","dateModified": "2020-07-13T09:03:23+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-ha-event-notification-function\/","datePublished": "2020-06-29T15:19:05+02:00","dateModified": "2020-10-25T17:38:02+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -41,11 +41,11 @@
             <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-1" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
             <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
@@ -72,11 +72,11 @@
                 <a href="/" title="Robert Guske"><img
         class="lazyload logo"
         src="/svg/loading.min.svg"
-        data-src="/img/avatar.png"
-        data-srcset="/img/avatar.png, /img/avatar.png 1.5x, /img/avatar.png 2x"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
         data-sizes="auto"
-        alt="/img/avatar.png"
-        title="/img/avatar.png" /><span id="id-2" class="typeit"></span></a>
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -149,7 +149,7 @@
             <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content"><em>&quot;&hellip;I knew VEBA would be a prime place to attempt to do this for me.&quot;</em></div>
+            <div class="admonition-content"><em>&rdquo;&hellip;I knew VEBA would be a prime place to attempt to do this for me.&quot;</em></div>
         </div>
     </div>
 <p>Then he started digging into it.</p>
@@ -233,23 +233,23 @@ You have to fill out all the fields in the <code>vcconfig-ha-restarted-vms.json<
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
-</span><span class="w"></span><span class="nt">provider</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">openfaas</span><span class="w">
-</span><span class="w">  </span><span class="nt">gateway</span><span class="p">:</span><span class="w"> </span><span class="l">https://veba041.jarvis.lab</span><span class="w">
-</span><span class="w"></span><span class="nt">functions</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">powercli-ha-restarted-vms</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">lang</span><span class="p">:</span><span class="w"> </span><span class="l">powercli</span><span class="w">
-</span><span class="w">    </span><span class="nt">handler</span><span class="p">:</span><span class="w"> </span><span class="l">./handler</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">harbor.jarvis.lab/veba/veba-powercli-ha-restarted-vms:latest</span><span class="w">
-</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">write_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="nt">read_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">      </span><span class="nt">function_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">    </span><span class="nt">secrets</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="l">vcconfig-ha-restarted-vms</span><span class="w">
-</span><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="l">com.vmware.vc.HA.ClusterFailoverActionCompletedEvent</span><span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
+</span><span class="w"></span><span class="k">provider</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>openfaas<span class="w">
+</span><span class="w">  </span><span class="k">gateway</span><span class="p">:</span><span class="w"> </span>https<span class="p">:</span>//veba041.jarvis.lab<span class="w">
+</span><span class="w"></span><span class="k">functions</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">powercli-ha-restarted-vms</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">lang</span><span class="p">:</span><span class="w"> </span>powercli<span class="w">
+</span><span class="w">    </span><span class="k">handler</span><span class="p">:</span><span class="w"> </span>./handler<span class="w">
+</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>harbor.jarvis.lab/veba/veba-powercli-ha-restarted-vms<span class="p">:</span>latest<span class="w">
+</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">write_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">      </span><span class="k">read_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">      </span><span class="k">function_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">    </span><span class="k">secrets</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- vcconfig-ha-restarted-vms<span class="w">
+</span><span class="w">    </span><span class="k">annotations</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="k">topic</span><span class="p">:</span><span class="w"> </span>com.vmware.vc.HA.ClusterFailoverActionCompletedEvent<span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p><em><center>stack.yml example</center></em></p>
@@ -301,8 +301,8 @@ You have to fill out all the fields in the <code>vcconfig-ha-restarted-vms.json<
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2020-07-13&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/a31932b5e53eef7bd45348fe7b55ab0c304c8800" target="_blank" title="commit by Robert Guske(rguske@mware.com) a31932b5e53eef7bd45348fe7b55ab0c304c8800: lots of changes on post ha restart function">
-                                    <i class="fas fa-hashtag fa-fw"></i>a31932b</a></span>
+                <span>Updated on 2020-10-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/5e0ac3a949d4f994bd5f8acad06a0b3fce02277f" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 5e0ac3a949d4f994bd5f8acad06a0b3fce02277f: markdown cleanup on all posts">
+                                    <i class="fas fa-hashtag fa-fw"></i>5e0ac3a</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
