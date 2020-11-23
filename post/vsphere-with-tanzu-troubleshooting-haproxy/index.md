@@ -6,6 +6,10 @@ You may have already heard and read about our latest changes regarding our Kuber
 
 Honestly! Doesn't matter of which kind of implementation we are talking, is it a Homelab (test environment), a Proof of Concept implementation or in production, our final goal is a working solution and this is why we should be prepared best. Through this article, I will even more stress this point because I did a mistake which did cost me time in troubleshooting the failure I've received. On the other hand and "*as always*", it enlightened me and enriched my wealth of experience.
 
+{{< admonition type=success title="Thank You" open=true >}}
+I want to give [James Lepthien](https://twitter.com/0x86DD) a big thanks for all of his help and guidance. He's my first go-to person when it comes to **all** networking related topics.
+{{< /admonition >}}
+
 ## Preperations
 
 This article will not describe the vSphere with Tanzu installation itself. For this kind of details, I would like to point you to VMware's official documentation or to this [vSphere with Tanzu Quick Start Guide V1a](https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531) (**for evaluation purposes**) which VMware is maintaining on the [Cloud Platform Tech Zone](https://core.vmware.com/).
@@ -196,6 +200,6 @@ root@haproxy [ /etc/vmware ]# cat anyip-routes.cfg
 
 Verifying the file and thus my made configuration finally brought me enlightenment. I changed it consequently from `10.10.18.18/28` to a valid Subnetwork range, which is the already mentioned `10.10.18.16/28` and rebooted the HAProxy appliance (`reboot`). Just restarting the service with `systemctl restart anyip-routes.service` does not apply all necessary changes.
 
-{{< image src="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" caption="Figure VIII: Adjusted anyip-routes.cfg file | restart service | ping Supervisor VIP" src-s="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" >}}
+{{< image src="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" caption="Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP" src-s="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" >}}
 
 DONE!
