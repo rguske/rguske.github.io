@@ -153,7 +153,7 @@ root@haproxy [ / ]# systemctl list-units --state=failed
 ● route-tables.service loaded failed failed route-tables.service
 ```
 
-Three services has failed to start. I'm starting from the top with verifying the `anyip-routes.service`.
+Three services have failed to start. I'm starting from the top with verifying the `anyip-routes.service`.
 
 ```code
 root@haproxy [ / ]# systemctl status anyip-routes.service
@@ -202,4 +202,24 @@ Verifying the file and thus my made configuration finally brought me enlightenme
 
 {{< image src="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" caption="Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP" src-s="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" >}}
 
-DONE!
+Finally, the validation of the restored functionality:
+
+```code
+kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@jarvis.lab --server=10.10.18.19
+
+Password:
+Logged in successfully.
+
+You have access to the following contexts:
+   10.10.18.19
+   tkg-app
+
+If the context you wish to use is not in this list, you may need to try
+logging in again later, or contact your cluster administrator.
+
+To change context, use `kubectl config use-context <workload name>
+```
+
+{{< image src="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" caption="Figure IX: Validating Supervisor VIP reachability" src-s="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" >}}
+
+<center> Done :white_check_mark: </center>

@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" />
 <meta property="article:published_time" content="2020-11-23T10:00:14+01:00" />
-<meta property="article:modified_time" content="2020-11-23T10:24:26+01:00" />
+<meta property="article:modified_time" content="2020-11-23T23:18:23+01:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment"/>
 <meta name="twitter:description" content="Introduction You may have already heard and read about our latest changes regarding our Kubernetes offering(s) vSphere with Tanzu also former known as vSphere with Kubernetes. Personally, I was totally excited and full of anticipation to make my first hands-on experience with this new deployment option &ndash;&gt; vSphere Networking as an alternative to NSX-T and how HAProxy is doing it&rsquo;s job within this construct. I don&rsquo;t know how you are dealing with installations of the &ldquo;NEW&rdquo; but I always read the documentation first&hellip; &hellip; not &hellip; 🙊 &hellip; but I should!"/>
@@ -24,8 +24,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/"
-        },"genre": "posts","keywords": "November2020, vSphere, Kubernetes, Tanzu, HAProxy","wordcount":  1514 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2020-11-23T10:24:26+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "November2020, vSphere, Kubernetes, Tanzu, HAProxy","wordcount":  1602 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2020-11-23T23:18:23+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere with Tanzu - Troubleshooting HAProxy deployment</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vsphere/"><i class="far fa-folder fa-fw"></i>vSphere</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/troubleshooting/"><i class="far fa-folder fa-fw"></i>Troubleshooting</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-23">2020-11-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1514 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-23">2020-11-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1602 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -374,7 +374,7 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
 ● route-tables.service loaded failed failed route-tables.service
 </code></pre></td></tr></table>
 </div>
-</div><p>Three services has failed to start. I&rsquo;m starting from the top with verifying the <code>anyip-routes.service</code>.</p>
+</div><p>Three services have failed to start. I&rsquo;m starting from the top with verifying the <code>anyip-routes.service</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -469,13 +469,55 @@ Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.serv
             alt="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" />
     </a><figcaption class="image-caption">Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP</figcaption>
     </figure>
-<p>DONE!</p>
-</div><div class="post-footer" id="post-footer">
+<p>Finally, the validation of the restored functionality:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@jarvis.lab --server=10.10.18.19
+
+Password:
+Logged in successfully.
+
+You have access to the following contexts:
+   10.10.18.19
+   tkg-app
+
+If the context you wish to use is not in this list, you may need to try
+logging in again later, or contact your cluster administrator.
+
+To change context, use `kubectl config use-context &lt;workload name&gt;
+</code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-sub-html="<h2>Figure IX: Validating Supervisor VIP reachability</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg"
+            data-srcset="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg, /img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg 1.5x, /img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" />
+    </a><figcaption class="image-caption">Figure IX: Validating Supervisor VIP reachability</figcaption>
+    </figure>
+<center> Done ✅ </center></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2020-11-23&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/12ea6914f49c68f0d3021a9e0d18bcfa6f2c7902" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 12ea6914f49c68f0d3021a9e0d18bcfa6f2c7902: finalized post haproxy troubleshooting">
-                                    <i class="fas fa-hashtag fa-fw"></i>12ea691</a></span>
+                <span>Updated on 2020-11-23&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/a6669253b40d69547641a0730b820e1ccf84ea21" target="_blank" title="commit by Robert Guske(rguske@vmware.com) a6669253b40d69547641a0730b820e1ccf84ea21: minor changes on post haproxy troubleshooting">
+                                    <i class="fas fa-hashtag fa-fw"></i>a666925</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
