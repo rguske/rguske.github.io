@@ -47,27 +47,21 @@ I tried to simplify the traffic flow coming from the client and/ or service thro
 
 {{< mermaid >}}
 graph LR;
-    A[ HAProxy ]
-    subgraph HAProxy Interfaces
-    B[Management Network]
-    C[Workload Network]
-    D[Frontend Network]
-    end
-    E(VIPs)
-    subgraph Cluster VIPs
-    F[Supervisor VMs]
-    G[Guestcluster VMs]
+    subgraph HAProxy Appliance
+    A[ Management ]
+    B[ Workload ]
+    C[ Frontend / VIPs ]
     end
     subgraph Traffic from
-    H(Client / Service)
+    G( Client / Service )
     end
-    A --- B & C & D
-    D --- E
+    subgraph Load Balancer VIPs
+    E[ Supervisor Cluster VMs ]
+    F[ Guest Cluster VMs ]
+    end
+    A & B & C --- E
     B & C --- F
-    C --- G
-    E -.-> F & G
-    H -.- A
-    A -.- E
+    G -.- C -.-> F & E
 {{< /mermaid >}}
 
 ### It must be a valid Subnetwork
