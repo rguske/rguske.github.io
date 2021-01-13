@@ -6,9 +6,11 @@ With the recent v0.5 release of the [VMware Event Broker Appliance (VEBA)](https
 
 Speaking of which, extensibility...
 
-During the v0.5 Pre-Release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware [vRealize Log Insight](https://www.vmware.com/products/vrealize-log-insight.html) or [vRealize Log Insight Cloud](https://cloud.vmware.com/log-insight-cloud). He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post *"Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"*[^1], in which I'm describing how I used cAdvisor[^2] to get resource usage and performance data from the various VEBA components and ultimately to monitor them.
+During the v0.5 pre-release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware [vRealize Log Insight](https://www.vmware.com/products/vrealize-log-insight.html) or [vRealize Log Insight Cloud](https://cloud.vmware.com/log-insight-cloud). He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post *"Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"*[^1], in which I'm describing how I used cAdvisor[^2] to get resource usage and performance data from the various VEBA components and ultimately to monitor them.
 
-The Open Source projects [Fluentd](https://www.fluentd.org/) and [Fluent Bit](https://fluentbit.io/) can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, running in a [Tanzu Kubernetes Grid - TKGs](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html) cluster (also referred to as *Guestcluster*) on VMware vSphere, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with less or better without dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.
+At this point, I have to be clear that I didn't used the [VEBA appliance](https://flings.vmware.com/vmware-event-broker-appliance) this time. Instead, I used Helm charts to deploy every component like e.g. the mentioned Event Router or the Event Processor to my [Tanzu Kubernetes Grid - TKGs](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html) cluster (also referred to as *Guestcluster*) running on VMware vSphere. However, I'm considering to write a small follow-up article which will cover the Appliance variant.
+
+The Open Source projects [Fluentd](https://www.fluentd.org/) and [Fluent Bit](https://fluentbit.io/) can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with few or no dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.
 
 ## The Hummingbird (Note: no technical relevance)
 
@@ -48,13 +50,27 @@ Both projects are very strong and feature-rich and great articles already exist 
 
 ## Logging Primitives
 
-Before we start deploying and leveraging Fluent Bit to read and forward logs to VMware's vRealize Log Insight, I wanted to briefly explain or refer you to some of the logging primitives of Cloud Native Applications or Services itself as well as how Fluent Bit is and can be configured. I found this good article during my research - *[Logging from Docker Containers to Elasticsearch with Fluent Bit](https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/)* -  in which the author quoted the following statement from the Twelve-Factor App[^7] website regarding `Logs`.
+Before we start deploying and leveraging Fluent Bit to read and forward logs to VMware's vRealize Log Insight, I wanted to briefly explain or refer you to some of the logging primitives of Cloud Native Applications or Services itself as well as how Fluent Bit is and can be configured. In general the following applies:
+
+{{< admonition quote "" true >}}
+*By default, container engines such as Docker capture the standard output or error and leverage the JSON-file driver on each host to write messages to files. Docker maintains a separate log file for each container and stores it in the /var/log/containers directory of the Docker host. Annotation for each log entry consists of the following:*
+
+- Log message
+- Message origin - stdout or stderr
+- Timestamp
+
+*Source: [The Big Easy: Visualizing Logging Data by Integrating Fluentd and vRealize Log Insight with VMware PKS](https://tanzu.vmware.com/content/blog/the-big-easy-visualizing-logging-data-by-integrating-fluentd-and-vrealize-log-insight-with-vmware-pks)*
+{{< /admonition >}}
+
+Also, I found this good article during my research - *[Logging from Docker Containers to Elasticsearch with Fluent Bit](https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/)* -  in which the author quoted the following statement from the Twelve-Factor App[^7] website regarding `Logs`.
 
 {{< admonition quote "https://12factor.net/logs" true >}}
 *A twelve-factor app never concerns itself with routing or storage of its output stream. It should not attempt to write to or manage logfiles. Instead, each running process writes its event stream, unbuffered, to stdout. During local development, the developer will view this stream in the foreground of their terminal to observe the app’s behavior.*
 {{< /admonition >}}
 
-Doesn't it make absolutely sense? Fluent Bit offers several `Input` plugins to collect logs and data from sources. From a high-level perspective, the structure of Fluent Bit looks as follows :
+Doesn't it make absolutely sense?
+
+Fluent Bit offers several `Input` plugins to collect logs and data from sources. From a high-level perspective, the structure of Fluent Bit looks as follows :
 
 {{< mermaid >}}
 graph LR;
@@ -79,32 +95,16 @@ graph LR;
     L --- A & B & C
 {{< /mermaid >}}
 
-To structure the collected data, `Parsers` can be used to convert them into a structured format. Also, `Filters` are configurable to e.g. append additional information or to filter out unwanted log statements. Links to even more details can also be found in the resource section.
+To structure the collected data, Fluent Bit provides `Parsers` which can be used to convert the collected data into a structured format. Also, `Filters` are configurable to e.g. append additional information or to filter out unwanted log statements. Links to even more details can also be found in the resource section.
 
 ## Prerequisites
 
-To get Fluent Bit in working state on your Kubernetes cluster, we do need a `ServiceAccount` with an assigned `ClusterRole` as well as with it's appropriate `ClusterRoleBinding`. We will deploy Fluent Bit as a Kubernetes DaemonSet[^8] in a `Namespace` called `fluent-bit`. I've created a repository on <i class='fab fa-github fa-fw'></i>Github which you can `clone`, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).
+To get Fluent Bit in working state on your Kubernetes cluster, we do need a `ServiceAccount` with an assigned `ClusterRole` as well as with it's appropriate `ClusterRoleBinding`. We will deploy Fluent Bit as a Kubernetes DaemonSet[^8] in a `Namespace` called `fluent-bit`. I've created the following repository on <i class='fab fa-github fa-fw'></i> - [rguske/fluent-bit-vmware-loginsight](https://github.com/rguske/fluent-bit-vmware-loginsight) - which you can `clone`, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).
 
 - `1-tkg-fluent-bit-preps.yaml`
 - `2-tkg-fluent-bit-configmap-cri.yaml`
 - `3-tkg-fluent-bit-ds.yaml`
 - `4-tkg-fluent-bit-configmap-docker.yaml`
-
-### Containerd as Runtime - CRI Parser used!
-
-As aforementioned, I'm using a TKG cluster for my example respectively in my environment. VMware is using Containerd[^9] as it's container runtime and therefore I had to adjust my configuration accordingly. If you are using Docker as your runtime, simply use the file `4-tkg-fluent-bit-configmap-docker.yaml` as an alternative.
-
-Even though, for both applies:
-
-{{< admonition quote "" true >}}
-*By default, container engines such as Docker capture the standard output or error and leverage the JSON-file driver on each host to write messages to files. Docker maintains a separate log file for each container and stores it in the /var/log/containers directory of the Docker host. Annotation for each log entry consists of the following:*
-
-- Log message
-- Message origin - stdout or stderr
-- Timestamp
-
-*Source: [The Big Easy: Visualizing Logging Data by Integrating Fluentd and vRealize Log Insight with VMware PKS](https://tanzu.vmware.com/content/blog/the-big-easy-visualizing-logging-data-by-integrating-fluentd-and-vrealize-log-insight-with-vmware-pks)*
-{{< /admonition >}}
 
 ### <i class='fab fa-github fa-fw'></i> Repository
 
@@ -116,6 +116,10 @@ Even though, for both applies:
 
 - `2-tkg-fluent-bit-configmap-cri.yaml`
 - `3-tkg-fluent-bit-ds.yaml`
+
+#### Containerd as Runtime - CRI Parser used!
+
+As mentioned at the beginning, I'm using a TKG cluster for my example respectively in my environment. VMware is using Containerd[^9] as it's container runtime and therefore I had to adjust my configuration accordingly. If you are using Docker as your runtime on Kubernetes, use the file `4-tkg-fluent-bit-configmap-docker.yaml` as an alternative.
 
 #### Fluent Bit Configmap
 

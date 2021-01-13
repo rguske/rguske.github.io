@@ -24,7 +24,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/"
-        },"genre": "posts","keywords": "FluentBit, vRLI, Kubernetes, VEBA, Tanzu, TKGs","wordcount":  2073 ,
+        },"genre": "posts","keywords": "FluentBit, vRLI, Kubernetes, VEBA, Tanzu, TKGs","wordcount":  2137 ,
         "url": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/","datePublished": "2021-01-13T11:50:23+01:00","dateModified": "2021-01-13T11:50:23+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -115,8 +115,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/vrealize-log-insight/"><i class="far fa-folder fa-fw"></i>vRealize Log Insight</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/logging/"><i class="far fa-folder fa-fw"></i>Logging</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2073 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;10 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2137 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;11 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -137,10 +137,10 @@
     <li><a href="#logging-primitives">Logging Primitives</a></li>
     <li><a href="#prerequisites">Prerequisites</a>
       <ul>
-        <li><a href="#containerd-as-runtime---cri-parser-used">Containerd as Runtime - CRI Parser used!</a></li>
         <li><a href="#i-classfab-fa-github-fa-fwi-repository"><i class='fab fa-github fa-fw'></i> Repository</a></li>
         <li><a href="#adjustments">Adjustments</a>
           <ul>
+            <li><a href="#containerd-as-runtime---cri-parser-used">Containerd as Runtime - CRI Parser used!</a></li>
             <li><a href="#fluent-bit-configmap">Fluent Bit Configmap</a></li>
             <li><a href="#fluent-bit-daemonset">Fluent Bit DaemonSet</a></li>
           </ul>
@@ -156,8 +156,9 @@
             </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
 <p>With the recent v0.5 release of the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer">VMware Event Broker Appliance (VEBA)</a> project, the ability of deploying the core component, the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreffer">VMware Event Router</a>, via a Helm chart to an existing Kubernetes cluster was introduced. <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreffer">William Lam</a> introduced this and all the other great new features and enhancements in his corresponding <a href="https://www.virtuallyghetto.com/2020/12/vcenter-event-broker-appliance-veba-v0-5-0.html" target="_blank" rel="noopener noreffer">blog post</a>. This earned very positive feedback from the community and opens even more doors in terms of flexibility as well as extensibility.</p>
 <p>Speaking of which, extensibility&hellip;</p>
-<p>During the v0.5 Pre-Release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware <a href="https://www.vmware.com/products/vrealize-log-insight.html" target="_blank" rel="noopener noreffer">vRealize Log Insight</a> or <a href="https://cloud.vmware.com/log-insight-cloud" target="_blank" rel="noopener noreffer">vRealize Log Insight Cloud</a>. He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post <em>&ldquo;Monitoring the VMware Event Broker Appliance with vRealize Operations Manager&rdquo;</em><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, in which I&rsquo;m describing how I used cAdvisor<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to get resource usage and performance data from the various VEBA components and ultimately to monitor them.</p>
-<p>The Open Source projects <a href="https://www.fluentd.org/" target="_blank" rel="noopener noreffer">Fluentd</a> and <a href="https://fluentbit.io/" target="_blank" rel="noopener noreffer">Fluent Bit</a> can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, running in a <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer">Tanzu Kubernetes Grid - TKGs</a> cluster (also referred to as <em>Guestcluster</em>) on VMware vSphere, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with less or better without dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.</p>
+<p>During the v0.5 pre-release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware <a href="https://www.vmware.com/products/vrealize-log-insight.html" target="_blank" rel="noopener noreffer">vRealize Log Insight</a> or <a href="https://cloud.vmware.com/log-insight-cloud" target="_blank" rel="noopener noreffer">vRealize Log Insight Cloud</a>. He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post <em>&ldquo;Monitoring the VMware Event Broker Appliance with vRealize Operations Manager&rdquo;</em><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, in which I&rsquo;m describing how I used cAdvisor<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to get resource usage and performance data from the various VEBA components and ultimately to monitor them.</p>
+<p>At this point, I have to be clear that I didn&rsquo;t used the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer">VEBA appliance</a> this time. Instead, I used Helm charts to deploy every component like e.g. the mentioned Event Router or the Event Processor to my <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer">Tanzu Kubernetes Grid - TKGs</a> cluster (also referred to as <em>Guestcluster</em>) running on VMware vSphere. However, I&rsquo;m considering to write a small follow-up article which will cover the Appliance variant.</p>
+<p>The Open Source projects <a href="https://www.fluentd.org/" target="_blank" rel="noopener noreffer">Fluentd</a> and <a href="https://fluentbit.io/" target="_blank" rel="noopener noreffer">Fluent Bit</a> can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with few or no dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.</p>
 <h2 id="the-hummingbird-note-no-technical-relevance">The Hummingbird (Note: no technical relevance)</h2>
 <p>The power of symbols thrills me. It&rsquo;s that power that makes you think or remember a specific brand, a company or an event. Just think about the Kubernetes steering wheel for example. If you feel home in the cloud native space and you see a steering wheel in real life nowadays, you will probably think of Kubernetes. This is the tremendous power of symbols<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. That is why there are fields of study for Symbology and movies with famous actors who are playing characters like Robert Langdon 😉.</p>
 <figure><a class="lightgallery" href="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" title="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" data-thumbnail="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" data-sub-html="<h2>Figure I: Project Logos Fluentd and Fluent Bit</h2>">
@@ -239,29 +240,7 @@
 </table>
 <p><em>Source: <a href="https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit" target="_blank" rel="noopener noreffer">Fluentd &amp; Fluent Bit</a></em></p>
 <h2 id="logging-primitives">Logging Primitives</h2>
-<p>Before we start deploying and leveraging Fluent Bit to read and forward logs to VMware&rsquo;s vRealize Log Insight, I wanted to briefly explain or refer you to some of the logging primitives of Cloud Native Applications or Services itself as well as how Fluent Bit is and can be configured. I found this good article during my research - <em><a href="https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/" target="_blank" rel="noopener noreffer">Logging from Docker Containers to Elasticsearch with Fluent Bit</a></em> -  in which the author quoted the following statement from the Twelve-Factor App<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> website regarding <code>Logs</code>.</p>
-<div class="details admonition quote open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-quote-right fa-fw"></i>https://12factor.net/logs<i class="details-icon fas fa-angle-right fa-fw"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content"><em>A twelve-factor app never concerns itself with routing or storage of its output stream. It should not attempt to write to or manage logfiles. Instead, each running process writes its event stream, unbuffered, to stdout. During local development, the developer will view this stream in the foreground of their terminal to observe the app’s behavior.</em></div>
-        </div>
-    </div>
-<p>Doesn&rsquo;t it make absolutely sense? Fluent Bit offers several <code>Input</code> plugins to collect logs and data from sources. From a high-level perspective, the structure of Fluent Bit looks as follows :</p>
-<div class="mermaid" id="id-1"></div>
-<p>To structure the collected data, <code>Parsers</code> can be used to convert them into a structured format. Also, <code>Filters</code> are configurable to e.g. append additional information or to filter out unwanted log statements. Links to even more details can also be found in the resource section.</p>
-<h2 id="prerequisites">Prerequisites</h2>
-<p>To get Fluent Bit in working state on your Kubernetes cluster, we do need a <code>ServiceAccount</code> with an assigned <code>ClusterRole</code> as well as with it&rsquo;s appropriate <code>ClusterRoleBinding</code>. We will deploy Fluent Bit as a Kubernetes DaemonSet<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> in a <code>Namespace</code> called <code>fluent-bit</code>. I&rsquo;ve created a repository on <i class='fab fa-github fa-fw'></i>Github which you can <code>clone</code>, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).</p>
-<ul>
-<li><code>1-tkg-fluent-bit-preps.yaml</code></li>
-<li><code>2-tkg-fluent-bit-configmap-cri.yaml</code></li>
-<li><code>3-tkg-fluent-bit-ds.yaml</code></li>
-<li><code>4-tkg-fluent-bit-configmap-docker.yaml</code></li>
-</ul>
-<h3 id="containerd-as-runtime---cri-parser-used">Containerd as Runtime - CRI Parser used!</h3>
-<p>As aforementioned, I&rsquo;m using a TKG cluster for my example respectively in my environment. VMware is using Containerd<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup> as it&rsquo;s container runtime and therefore I had to adjust my configuration accordingly. If you are using Docker as your runtime, simply use the file <code>4-tkg-fluent-bit-configmap-docker.yaml</code> as an alternative.</p>
-<p>Even though, for both applies:</p>
+<p>Before we start deploying and leveraging Fluent Bit to read and forward logs to VMware&rsquo;s vRealize Log Insight, I wanted to briefly explain or refer you to some of the logging primitives of Cloud Native Applications or Services itself as well as how Fluent Bit is and can be configured. In general the following applies:</p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
@@ -277,6 +256,27 @@
 </div>
         </div>
     </div>
+<p>Also, I found this good article during my research - <em><a href="https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/" target="_blank" rel="noopener noreffer">Logging from Docker Containers to Elasticsearch with Fluent Bit</a></em> -  in which the author quoted the following statement from the Twelve-Factor App<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> website regarding <code>Logs</code>.</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>https://12factor.net/logs<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><em>A twelve-factor app never concerns itself with routing or storage of its output stream. It should not attempt to write to or manage logfiles. Instead, each running process writes its event stream, unbuffered, to stdout. During local development, the developer will view this stream in the foreground of their terminal to observe the app’s behavior.</em></div>
+        </div>
+    </div>
+<p>Doesn&rsquo;t it make absolutely sense?</p>
+<p>Fluent Bit offers several <code>Input</code> plugins to collect logs and data from sources. From a high-level perspective, the structure of Fluent Bit looks as follows :</p>
+<div class="mermaid" id="id-1"></div>
+<p>To structure the collected data, Fluent Bit provides <code>Parsers</code> which can be used to convert the collected data into a structured format. Also, <code>Filters</code> are configurable to e.g. append additional information or to filter out unwanted log statements. Links to even more details can also be found in the resource section.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To get Fluent Bit in working state on your Kubernetes cluster, we do need a <code>ServiceAccount</code> with an assigned <code>ClusterRole</code> as well as with it&rsquo;s appropriate <code>ClusterRoleBinding</code>. We will deploy Fluent Bit as a Kubernetes DaemonSet<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> in a <code>Namespace</code> called <code>fluent-bit</code>. I&rsquo;ve created the following repository on <i class='fab fa-github fa-fw'></i> - <a href="https://github.com/rguske/fluent-bit-vmware-loginsight" target="_blank" rel="noopener noreffer">rguske/fluent-bit-vmware-loginsight</a> - which you can <code>clone</code>, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).</p>
+<ul>
+<li><code>1-tkg-fluent-bit-preps.yaml</code></li>
+<li><code>2-tkg-fluent-bit-configmap-cri.yaml</code></li>
+<li><code>3-tkg-fluent-bit-ds.yaml</code></li>
+<li><code>4-tkg-fluent-bit-configmap-docker.yaml</code></li>
+</ul>
 <h3 id="i-classfab-fa-github-fa-fwi-repository"><i class='fab fa-github fa-fw'></i> Repository</h3>
 <ol>
 <li>Clone the repository locally and change into the directory <code>fluent-bit-vmware-loginsight</code>: <code>git clone https://github.com/rguske/fluent-bit-vmware-loginsight.git &amp;&amp; cd fluent-bit-vmware-loginsight</code></li>
@@ -289,6 +289,8 @@
 <li><code>2-tkg-fluent-bit-configmap-cri.yaml</code></li>
 <li><code>3-tkg-fluent-bit-ds.yaml</code></li>
 </ul>
+<h4 id="containerd-as-runtime---cri-parser-used">Containerd as Runtime - CRI Parser used!</h4>
+<p>As mentioned at the beginning, I&rsquo;m using a TKG cluster for my example respectively in my environment. VMware is using Containerd<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup> as it&rsquo;s container runtime and therefore I had to adjust my configuration accordingly. If you are using Docker as your runtime on Kubernetes, use the file <code>4-tkg-fluent-bit-configmap-docker.yaml</code> as an alternative.</p>
 <h4 id="fluent-bit-configmap">Fluent Bit Configmap</h4>
 <p>The first adjustment you have to make is the replacement of your TKG clustername as well as the hostname of your vRealize Log Insight appliance.</p>
 <p>File <code>2-tkg-fluent-bit-configmap-cri.yaml</code>:</p>
