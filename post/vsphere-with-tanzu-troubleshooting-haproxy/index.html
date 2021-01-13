@@ -10,12 +10,12 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" />
 <meta property="article:published_time" content="2020-11-23T10:00:14+01:00" />
-<meta property="article:modified_time" content="2020-11-24T08:55:16+01:00" />
+<meta property="article:modified_time" content="2020-11-25T18:07:46+01:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment"/>
 <meta name="twitter:description" content="Introduction You may have already heard and read about our latest changes regarding our Kubernetes offering(s) vSphere with Tanzu also former known as vSphere with Kubernetes. Personally, I was totally excited and full of anticipation to make my first hands-on experience with this new deployment option &ndash;&gt; vSphere Networking as an alternative to NSX-T and how HAProxy is doing it&rsquo;s job within this construct. I don&rsquo;t know how you are dealing with installations of the &ldquo;NEW&rdquo; but I always read the documentation first&hellip; &hellip; not &hellip; 🙊 &hellip; but I should!"/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="prev" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="prev" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="next" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -25,7 +25,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/"
         },"genre": "posts","keywords": "November2020, vSphere, Kubernetes, Tanzu, HAProxy","wordcount":  1602 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2020-11-24T08:55:16+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2020-11-25T18:07:46+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -516,8 +516,8 @@ To change context, use `kubectl config use-context &lt;workload name&gt;
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2020-11-24&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/208b2930f185cc6910944eec3ec00a5bdd356928" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 208b2930f185cc6910944eec3ec00a5bdd356928: added final validation to post haproxy troubleshooting">
-                                    <i class="fas fa-hashtag fa-fw"></i>208b293</a></span>
+                <span>Updated on 2020-11-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/a04e3c1be0fa03811b2709a892e142b067b02252" target="_blank" title="commit by Robert Guske(rguske@vmware.com) a04e3c1be0fa03811b2709a892e142b067b02252: changed mermaid data haproxy post">
+                                    <i class="fas fa-hashtag fa-fw"></i>a04e3c1</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -538,13 +538,14 @@ To change context, use `kubectl config use-context &lt;workload name&gt;
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" class="prev" rel="prev" title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fas fa-angle-left fa-fw"></i>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator</a></div>
+    <div class="post-nav"><a href="/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" class="prev" rel="prev" title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fas fa-angle-left fa-fw"></i>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator</a>
+            <a href="/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" class="next" rel="next" title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="gitalk" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span></div>
         </div>
     </footer></div>
 
