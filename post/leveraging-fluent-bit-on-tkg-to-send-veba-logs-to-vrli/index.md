@@ -181,9 +181,9 @@ File `3-tkg-fluent-bit-ds.yaml`:
 [...]
 
 spec:
-      containers:
-      - name: fluent-bit
-        image: fluent/fluent-bit:1.6.9
+  containers:
+  - name: fluent-bit
+    image: fluent/fluent-bit:1.6.9
 
 [...]
 ```
