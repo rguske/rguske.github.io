@@ -28,52 +28,85 @@ I will keep this site up-to-date as good as I can.
 
 <center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
 
-## List of Microsites [<span style="color:#0037ff">Update: October 2020</span>]
+## List of Microsites [<span style="color:#0037ff">Update: February 2021</span>]
 
-|   **Site**                        |   **URL**                                      |  **Link**                                                                    |
-|:----------                     |:-------:                                     |-------:                                                                      |
-| VMware Docs 	                    |   `https://docs.vmware.com/ 	           `     |   <a href="https://docs.vmware.com/" target="_blank">Click</a>               |
-| VMware Download                   |   `https://downloads.vmware.com/ 	           ` |   <a href="https://downloads.vmware.com/" target="_blank">Click</a>          |
-| VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Click</a>                  |
-| Product Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Click</a> |
-| VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Click</a>              |
-| VMware Configuration Maximums     |   `https://configmax.vmware.com/`              |  <a href="https://configmax.vmware.com/" target="_blank">Click</a>           |
-| Ports and Protocols	            |   `https://ports.vmware.com/	           `     |   <a href="https://ports.vmware.com/" target="_blank">Click</a>              |
-| Storagehub 	                    |   `https://storagehub.vmware.com/	       `     |   <a href="https://storagehub.vmware.com/" target="_blank">Click</a>         |
-| vSAN Ready Node Sizer             |   `https://vsansizer.vmware.com/`              |  <a href="https://vsansizer.vmware.com/" target="_blank">Click</a>           |
-| VMware Tanzu                      |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Click</a>              |
-| vRealize Product Walkthroughs	    |   `https://vrealize.vmware.com/	       `     |   <a href="https://vrealize.vmware.com/" target="_blank">Click</a>           |
-| vRealize Operations Manager Sizing|   `https://vropssizer.vmware.com/`             |  <a href="https://vropssizer.vmware.com/" target="_blank">Click</a>          |
-| VMware {code}                     |   `https://code.vmware.com/`                   |  <a href="https://code.vmware.com/" target="_blank">Click</a>                |
-| VMware Hands-on Labs	            |   `https://labs.hol.vmware.com/ 	       `     |   <a href="https://labs.hol.vmware.com/" target="_blank">Click</a>           |
-| Solution Exchange	                |   `https://marketplace.vmware.com/ 	   `     |   <a href="https://marketplace.vmware.com/" target="_blank">Click</a>        |
-| VMware Education                  |   `https://mylearn.vmware.com/	       `     |   <a href="https://mylearn.vmware.com/" target="_blank">Click</a>            |
-| vExpert Portal 	                |   `https://vexpert.vmware.com/	       `     |   <a href="https://vexpert.vmware.com/" target="_blank">Click</a>            |
-| VMware Certified Design Experts 	|   `https://vcdx.vmware.com/ 	           `     |   <a href="https://vcdx.vmware.com/" target="_blank">Click</a>               |
-| VMware Blogs Beat 	            |   `https://blogs.vmware.com/	           `     |   <a href="https://blogs.vmware.com/" target="_blank">Click</a>              |
-| Office of the CTO Blog            |   `https://octo.vmware.com/`                   |   <a href="https://octo.vmware.com/" target="_blank">Click</a>               |
-| VMware Cloud Services Homepage 	|   `https://cloud.vmware.com/  	       `     |   <a href="https://cloud.vmware.com/" target="_blank">Click</a>              |
-| VMware Tech Zone                  |   `https://techzone.vmware.com/`               |   <a href="https://techzone.vmware.com/" target="_blank">Click</a>           |
-| VMware TAM Service Portal         |   `https://tamservices.vmware.com/`            |   <a href="https://tamservices.vmware.com/" target="_blank">Click</a>        |
-| VMware Pathfinder                 |   `https://pathfinder.vmware.com/`             |   <a href="https://pathfinder.vmware.com/" target="_blank">Click</a>         |
-| VMware Cloud Solutions            |   `https://cloudsolutions.vmware.com/`         |   <a href="https://cloudsolutions.vmware.com/" target="_blank">Click</a>     |
+### General resources
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| Find your Digital Transformation Path |   `https://pathfinder.vmware.com/`             |   <a href="https://pathfinder.vmware.com/" target="_blank">Open</a>         |
+| VMware Documentation              |   `https://docs.vmware.com/`     |   <a href="https://docs.vmware.com/" target="_blank">Open</a>               |
+| VMware Solution Download          |   `https://downloads.vmware.com/` |   <a href="https://downloads.vmware.com/" target="_blank">Open</a>          |
+| VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Open</a>                  |
+| VMware Configuration Maximums     |   `https://configmax.vmware.com/`              |  <a href="https://configmax.vmware.com/" target="_blank">Open</a>           |
+| Ports and Protocols             |   `https://ports.vmware.com/`     |   <a href="https://ports.vmware.com/" target="_blank">Open</a>              |
+| VMware Solution Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Open</a> |
+| VMware {code}                     |   `https://code.vmware.com/`                   |  <a href="https://code.vmware.com/" target="_blank">Open</a>                |
+| Solution Exchange                 |   `https://marketplace.vmware.com/`     |   <a href="https://marketplace.vmware.com/" target="_blank">Open</a>        |
+| vExpert Portal                  |   `https://vexpert.vmware.com/`     |   <a href="https://vexpert.vmware.com/" target="_blank">Open</a>            |
+| VMware Certified Design Experts  |   `https://vcdx.vmware.com/`     |   <a href="https://vcdx.vmware.com/" target="_blank">Open</a>               |
+| VMware Blogs              |   `https://blogs.vmware.com/`     |   <a href="https://blogs.vmware.com/" target="_blank">Open</a>              |
+| Office of the CTO Blog            |   `https://octo.vmware.com/`                   |   <a href="https://octo.vmware.com/" target="_blank">Open</a>               |
+| VMware TAM Service Portal         |   `https://tamservices.vmware.com/`            |   <a href="https://tamservices.vmware.com/" target="_blank">Open</a>        |
+
+### VMware Multi-Cloud
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Open</a>              |
+| VMware Cloud Services  |   `https://cloud.vmware.com/`     |   <a href="https://cloud.vmware.com/" target="_blank">Open</a>              |
+| VMware Cloud Provider             |   `https://cloudsolutions.vmware.com/`         |   <a href="https://cloudsolutions.vmware.com/" target="_blank">Open</a>     |
+
+### VMware Application Modernization
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| VMware Application Modernization |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Open</a>              |
+
+### VMware vSAN
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Open</a>              |
+| vSAN Ready Node Sizer             |   `https://vsansizer.vmware.com/`              |  <a href="https://vsansizer.vmware.com/" target="_blank">Open</a>           |
+
+### VMware vRealize
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| vRealize Product Walkthroughs     |   `https://vrealize.vmware.com/`     |   <a href="https://vrealize.vmware.com/" target="_blank">Open</a>           |
+| vRealize Operations Manager Sizing|   `https://vropssizer.vmware.com/`             |  <a href="https://vropssizer.vmware.com/" target="_blank">Open</a>          |
+
+### VMware Education
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| VMware Education                  |   `https://mylearn.vmware.com/`     |   <a href="https://mylearn.vmware.com/" target="_blank">Open</a>            |
+| VMware Hands-on Labs             |   `https://labs.hol.vmware.com/`     |   <a href="https://labs.hol.vmware.com/" target="_blank">Open</a>           |
+
+### VMware Digital Workspace (EUC)
+
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| VMware Digital Workspace Tech Zone |   `https://techzone.vmware.com/`               |   <a href="https://techzone.vmware.com/" target="_blank">Open</a>           |
 
 ## More VMware Sites [<span style="color:#0037ff">Update: March 2020</span>]
 
-|   **Name**                        |   **Adress**                                   |  **Link**                                                                                        |
-|:----------	                   |:-------:   	                                        |------:                                                                                    |
-| App Modernization                |   `https://www.vmware.com/uk/app-modernization.html`   |   <a href="https://www.vmware.com/uk/app-modernization.html" target="_blank">Click</a>    |
-| Kubernetes Academy by VMware     |   `https://kubernetes.academy/`                        |   <a href="https://kubernetes.academy/" target="_blank">Click</a>                         |
-| VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Click</a>     |
-| VMworld On-Demand Video Library  |   `https://videos.vmworld.com/ 	       `            |   <a href="https://videos.vmworld.com/" target="_blank">Click</a>                         |
-| VMware Open Source               |   `https://github.com/vmware`                          |  <a href="https://github.com/vmware" target="_blank">Click</a>                            |
-| User Group Communities           |   `https://community.vmug.com/`                        |   <a href="https://community.vmug.com/" target="_blank">Click</a>                         |
-| VMworld Homepage                 |   `https://vmworld.com/`                               |   <a href="https://vmworld.com/" target="_blank">Click</a>                                |
+|   **Site** |   **URL** |  **Link** |
+| :--- | :---: |---: |
+| App Modernization                |   `https://www.vmware.com/uk/app-modernization.html`   |   <a href="https://www.vmware.com/uk/app-modernization.html" target="_blank">Open</a>    |
+| Kubernetes Academy by VMware     |   `https://kubernetes.academy/`                        |   <a href="https://kubernetes.academy/" target="_blank">Open</a>                         |
+| VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Open</a>     |
+| VMworld On-Demand Video Library  |   `https://videos.vmworld.com/`            |   <a href="https://videos.vmworld.com/" target="_blank">Open</a>                         |
+| VMware Open Source               |   `https://github.com/vmware`                          |  <a href="https://github.com/vmware" target="_blank">Open</a>                            |
+| User Group Communities           |   `https://community.vmug.com/`                        |   <a href="https://community.vmug.com/" target="_blank">Open</a>                         |
+| VMworld Homepage                 |   `https://vmworld.com/`                               |   <a href="https://vmworld.com/" target="_blank">Open</a>                                |
 
 ---
 
 **Change Log:**
 
+- [2021-02-12]: removed *Storagehub VMware - now unified at Core Tech Zone*
 - [2020-10-07]: added *VMware Core Tech Zone*
 - [2020-03-13]: added *App Modernization in a Multi-Cloud World*
 - [2020-03-13]: added VMware Tanzu site
