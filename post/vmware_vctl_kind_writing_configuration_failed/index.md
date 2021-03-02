@@ -13,7 +13,7 @@
 
 <center> {{< tweet 1364258078410080270 >}} </center>
 
-Normally, there isn't a real issue with loosing a caching device in a vSAN cluster but let me put it that way, I'm really using all my given 2-node cluster resources and a risk of data-loss was calculated. Not everybody can have a "homelab" like the Homelab King[^1], right? :wink:
+Normally, there isn't a real issue with loosing a caching device in a vSAN cluster but let me put it that way, I'm really using all my given 2-node cluster resources and a potential risk of data-loss was calculated. Not everybody can have a "homelab" like the Homelab King[^1], right? :wink:
 
 Unfortunaltey, some of my Tanzu Kubernetes Grid clusters[^2] suffered from the outage and one of those clusters was the one, which is providing my Harbor[^3] registry service which I needed for my demo.
 
@@ -21,7 +21,7 @@ However, there are other ways to help yourself when your homelab is in "maintena
 
 ## Adjusting the CRX VM with appropriate resources
 
-By default `vctl` assigns 2 GB of memory and 2 CPU cores for the CRX VM that hosts the Kubernetes node container. For my Harbor one node deplyoment I've kept to the minimum requirements[^7] (2 CPUs, 4 GB Mem) but also decided to give the CRX VM a little bit more, to keep the option open to run a Multo-Node deployment as well. Therefore, I  applied the following configuration:
+By default `vctl` assigns 2 GB of memory and 2 CPU cores for the CRX VM that hosts the Kubernetes node container. For my Harbor one node deplyoment I've kept to the minimum requirements[^7] (2 CPUs, 4 GB Mem) for the Kubernetes node but also decided to give the CRX VM a little bit more, to keep the option open to run a Multo-Node deployment as well. Therefore, I  applied the following configuration:
 
 `vctl system config --vm-cpus 4 --vm-mem 8192 --k8s-cpus 2 --k8s-mem 4096` which will adjust the `config.yaml` in `~/.vctl/` accordingly.
 
@@ -58,7 +58,7 @@ ERROR: failed to create cluster: failed to generate kubeadm config content: fail
 Command Output: level=error msg="Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \"read init-p: connection reset by peer\": unknown"
 ```
 
-What is that `error msg` telling us? Let's activate `debug` mode by adding option `-v 1` to the command.
+What is this `error msg` telling us? Let's activate `debug` mode by adding option `-v 1` to the command.
 
 `kind create cluster --image kindest/node:v1.19.7 --name harbor -v 1`
 
@@ -93,7 +93,7 @@ runtime.goexit
 
 I have to admit that I couldn't really use the output for further debugging and also searching on the web helped me neither. Consequently, I reached out internally and got the hint that **v1.20.0** should work.
 
-:question: **v1.20.0** :question: WAIT! I haven't seen this version on the list of available images (*Figure I*) and so I went back to Docker Hub and searched for this particular version.
+**v1.20.0** :question: :exclamation: I haven't seen this version on the list of available images (*Figure I*) and so I went back to Docker Hub and searched for this particular version.
 
 Okay, it exists and besides it a **v1.20.2**. as well. I learned *Newest* isn't related to Tags, what IMO would make sense, but it's related to *last pushed*.
 
@@ -140,9 +140,9 @@ ERROR: failed to create cluster: failed to generate kubeadm config content: fail
 Command Output: level=error msg="Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \"read init-p: connection reset by peer\": unknown"
 ```
 
-:flushed:
+:flushed: **Failed**
 
-I retried it with a couple of other versions and created the following table with my observations subsequently:
+I repeated it with a couple of other versions and created the following table with my observations:
 
 ### My Test Results
 
@@ -154,22 +154,24 @@ I retried it with a couple of other versions and created the following table wit
 | 1.19.1 | :white_check_mark: |
 | 1.18.8 | :white_check_mark: |
 
-All my tests were made with the following `vctl version`:
+All my tests were made with the following versions:
 
-```
-vctl version: 1.1.1
-containerd github.com/containerd/containerd v1.3.2-vmw
-```
+|   **OS, App, CLI, Runtime** |   **Version** |
+| :---: | :---: |
+| macOS Big Sur  | 11.2.1 (20D75) |
+| Fusion | 12.1.0 (17195230) |
+| vctl | 1.1.1 |
+| containerd github.com/containerd/containerd | v1.3.2-vmw |
 
 ## Heads-up
 
 {{< admonition warning "No solution yet" true >}}
-This is the point were I have to tell you, that I don't have a solution for this issue yet but I will keep this post updated.
+I don't have a solution for this issue yet but I will keep this post updated. For the time being, I recommend using a version which passed my test.
 {{< /admonition >}}
 
 ## Bonus: Multi-Node Deployment
 
-I have mentioned at the beginning, that I have assigned enough resources to the CRX VM to run a Multi-Node KinD deployment and I'd like to show you now how to instantiate this by using the `--config` option.
+I have mentioned at the beginning, that I have assigned enough resources to the CRX VM to run a multi-node KinD deployment and I'd like to show you now how to instantiate this by using the `--config` option.
 
 Just create a file in a directory of your choice and add the following description to it:
 
@@ -230,6 +232,8 @@ kind-harbor-control-plane   Ready    control-plane,master   67s   v1.20.0   192.
 kind-harbor-worker          Ready    <none>                 39s   v1.20.0   192.168.43.5   <none>        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
 kind-harbor-worker2         Ready    <none>                 39s   v1.20.0   192.168.43.7   <none>        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
 ```
+
+Wohoo, a multi-node Kubernetes cluster running locally on my desktop.
 
 ## Commands I Used
 
