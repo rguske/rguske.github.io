@@ -13,15 +13,15 @@
 
 <center> {{< tweet 1364258078410080270 >}} </center>
 
-Normally, there isn't a real issue with loosing a caching device in a vSAN cluster but let me put it that way, I'm really using all my given 2-node cluster resources and a potential risk of data-loss was calculated. Not everybody can have a "homelab" like the Homelab King[^1], right? :wink:
+Normally there is no real issue with loosing a caching device in a vSAN cluster but let me put it that way, I'm really using all my given 2-node cluster resources and a potential risk of data-loss was calculated. Not everybody can have a "homelab" like the Homelab King[^1], right? :wink:
 
-Unfortunately, some of my Tanzu Kubernetes Grid clusters[^2] suffered from the outage and one of those clusters was the one, which provides my Harbor[^3] registry service which I needed for my demo.
+Unfortunately, some of my Tanzu Kubernetes Grid clusters[^2] suffered from the outage and was the one providing my Harbor[^3] registry service which I needed for my demo.
 
 However, there are other ways to help yourself when your homelab is in "maintenance" and I wanted to leverage VMware Fusion `vctl`[^4] to quickly instantiate a KinD[^5] cluster locally on my machine, to install Harbor via a Helm chart[^6] afterwards on it. For the purposes of my presentation this would have been totally sufficient. But then it turned out that I have to find an alternative again :facepalm:.
 
 ## Adjusting the CRX VM with appropriate resources
 
-By default `vctl` assigns 2 GB of memory and 2 CPU cores for the CRX VM that hosts the Kubernetes node container. For my Harbor one node deplyoment I've kept to the minimum requirements[^7] (2 CPUs, 4 GB Mem) for the Kubernetes node but also decided to give the CRX VM a little bit more, to keep the option open to run a Multo-Node deployment as well. Therefore, I  applied the following configuration:
+By default `vctl` assigns 2 GB of memory and 2 CPU cores for the CRX VM that hosts the Kubernetes node container. For my Harbor 1-node deployment I sticked to the minimum requirements[^7] (2 CPUs, 4 GB Mem) for the Kubernetes node but also decided to give the CRX VM a little bit more, to keep the option open to run a Multo-Node deployment as well. Therefore, I  applied the following configuration:
 
 `vctl system config --vm-cpus 4 --vm-mem 8192 --k8s-cpus 2 --k8s-mem 4096` which will adjust the `config.yaml` in `~/.vctl/` accordingly.
 
@@ -91,7 +91,7 @@ runtime.goexit
         runtime/asm_amd64.s:1374
 ```
 
-I have to admit that I couldn't really use the output for further debugging and also searching on the web helped me neither. Consequently, I reached out internally and got the hint that **v1.20.0** should work.
+I have to admit that I couldn't really use the output for further debugging and also searching the web helped me neither. Consequently, I reached out internally and got the hint that **v1.20.0** should work.
 
 **v1.20.0** :question: :exclamation: I haven't seen this version on the list of available images (*Figure I*) and so I went back to Docker Hub and searched for this particular version.
 
@@ -127,7 +127,7 @@ harbor-control-plane   Ready    control-plane,master   48s   v1.20.0   192.168.4
 
 **Created.** On the one hand that's a satisfying result but on the other hand of course not, because we want to have the flexibilty to create a KinD cluster with every available Kubernetes (`kindest/node`) version.
 
-If prior 1.20.0 won't work, will above 1.20.0 work?
+If prior 1.20.0 won't work, will the next above work?
 
  `kind create cluster --image kindest/node:v1.20.2 --name harbor`
 
@@ -179,7 +179,7 @@ Just create a file in a directory of your choice and add the following descripti
 
 `vim ~/.kube/kind_worker`
 
-```
+```code
 # two node (one ctrl plane & one worker node) cluster config
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -191,7 +191,7 @@ nodes:
 
 `kind create cluster --image kindest/node:v1.20.0 --name kind-cluster-harbor --config ~/.kube/kind_worker`
 
-```
+```shell
 Creating cluster "kind-cluster-harbor" ...
  ✓ Ensuring node image (kindest/node:v1.20.0) 🖼
  ✗ Preparing nodes 📦 📦 
@@ -207,7 +207,7 @@ Ooookay :roll_eyes: the given cluster name is too long. Shortened:
 
 `kind create cluster --image kindest/node:v1.20.0 --name kind-harbor --config ~/.kube/kind_worker`
 
-```
+```shell
 Creating cluster "kind-harbor" ...
  ✓ Ensuring node image (kindest/node:v1.20.0) 🖼
  ✓ Preparing nodes 📦 📦 📦
@@ -226,7 +226,7 @@ Thanks for using kind! 😊
 
 `kubectl get nodes -o wide`
 
-```
+```shell
 NAME                        STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
 kind-harbor-control-plane   Ready    control-plane,master   67s   v1.20.0   192.168.43.6   <none>        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
 kind-harbor-worker          Ready    <none>                 39s   v1.20.0   192.168.43.5   <none>        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
