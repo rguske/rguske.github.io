@@ -163,7 +163,7 @@ All my tests were made with the following versions:
 | vctl | 1.1.1 |
 | containerd github.com/containerd/containerd | v1.3.2-vmw |
 
-## Heads-up
+## Heads Up!
 
 {{< admonition warning "No solution yet" true >}}
 I don't have a solution for this issue yet but I will keep this post updated. For the time being, I recommend using a version which passed my test.
