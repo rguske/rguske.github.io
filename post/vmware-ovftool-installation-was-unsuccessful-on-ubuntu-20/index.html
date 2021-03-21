@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround" />
+<meta property="og:description" content="Introduction The VMware OVF Tool 1 is a powerful cli utility with which you can import and export Open Virtualization Format (OVF) packages to and from various VMware products. It&rsquo;s e.g. used for the creation of several awesome VMware Fling projects like the Demo Appliance for Tanzu Kubernetes Grid 2, the VMware Appliance for Folding@Home 3 as well as for the VMware Event Broker Appliance 4. Also non-fling open source projects like e." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" />
+<meta property="article:published_time" content="2021-03-21T21:00:34+01:00" />
+<meta property="article:modified_time" content="2021-03-21T21:54:47+01:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"/>
+<meta name="twitter:description" content="Introduction The VMware OVF Tool 1 is a powerful cli utility with which you can import and export Open Virtualization Format (OVF) packages to and from various VMware products. It&rsquo;s e.g. used for the creation of several awesome VMware Fling projects like the Demo Appliance for Tanzu Kubernetes Grid 2, the VMware Appliance for Folding@Home 3 as well as for the VMware Event Broker Appliance 4. Also non-fling open source projects like e."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20\/"
+        },"genre": "posts","keywords": "March2021, Linux, Desktop, Workaround, VMware","wordcount":  1539 ,
+        "url": "https:\/\/rguske.github.io\/post\/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20\/","datePublished": "2021-03-21T21:00:34+01:00","dateModified": "2021-03-21T21:54:47+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/workaround/"><i class="far fa-folder fa-fw"></i>Workaround</a>&nbsp;<a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-21">2021-03-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1539 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/ovftool_cover.jpg"
+        data-srcset="/img/ovftool_cover.jpg, /img/ovftool_cover.jpg 1.5x, /img/ovftool_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/ovftool_cover.jpg"
+        title="/img/ovftool_cover.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#ovftool-installation-options">Ovftool installation options</a></li>
+    <li><a href="#installation-was-unsuccessful">Installation was unsuccessful</a>
+      <ul>
+        <li><a href="#output-varlogvmware-installer">Output /var/log/vmware-installer</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-workaround">The workaround</a>
+      <ul>
+        <li><a href="#execute-ovftool-without-installing-it">Execute <code>ovftool</code> without installing it</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>The VMware OVF Tool <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is a powerful cli utility with which you can import and export Open Virtualization Format (OVF) packages to and from various VMware products. It&rsquo;s e.g. used for the creation of several awesome VMware Fling projects like the Demo Appliance for Tanzu Kubernetes Grid <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, the VMware Appliance for Folding@Home <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> as well as for the VMware Event Broker Appliance <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. Also non-fling open source projects like e.g. the Netshoot Virtual Appliance <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> using the <code>ovftool</code> in their appliance build process. William Lam blogged about it several times in the past and you could use this as a great reference for the tool <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>.</p>
+<p>I recently wanted to make use of the <code>ovftool</code> for the validation of a customer use-case and needed to install it on my &ldquo;<em>Universal Workbench</em>&rdquo; <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>, my Ubuntu 20.04 vDesk (<code>20.04.1-Ubuntu x86_64</code>), which I am using for all my homelab work. As of writing this article, the latest available version for the <code>ovftool</code> is version 4.4.1 <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>.</p>
+<h2 id="ovftool-installation-options">Ovftool installation options</h2>
+<p>I downloaded the appropriate 64 bit binary for my Linux system, which is the <code>VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle</code> file and made it executable for the installation:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ chmod +755 VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
+</code></pre></td></tr></table>
+</div>
+</div><p>By executing <code>./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help</code>, you will see that various options are available for the installation itself. The following listed are an abstract of the ones which are relevant for this post and which I&rsquo;ve used for my installation attempts.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Options:
+    --gtk               Use the Gtk+ UI <span class="o">(</span>Default<span class="o">)</span>
+    --console           Use the console UI
+    --required          Displays only questions absolutely required
+    --eulas-agreed      Agree to the EULA
+    --extract<span class="o">=</span>DIR       Extract the contents of the bundle into DIR
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="installation-was-unsuccessful">Installation was unsuccessful</h2>
+<p>On Linux, you can choose either to use the <code>--console</code> UI or the <code>--gtk</code> UI option. My first attempt, and I used this <strong>several</strong> times before, was with the <code>--console</code> option. In a Terminal window I executed <code>sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --console --required --eulas-agreed</code> and got the following output as a failed result:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">Extracting VMware Installer...done.
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/tmp/tmpt0pd6m09.vmis.env&#34;</span>, line 132, in &lt;module&gt;
+    exec<span class="o">(</span>fileObj.read<span class="o">()</span>, mod.__dict__<span class="o">)</span>
+  File <span class="s2">&#34;&lt;string&gt;&#34;</span>, line <span class="m">243</span>
+    except OSError, e:
+                  ^
+SyntaxError: invalid syntax
+Exception info : <span class="o">[</span>Component did not register an installer<span class="o">]</span>.
+Check the log /var/log/vmware-installer <span class="k">for</span> details.
+
+
+
+<span class="o">[</span><span class="c1">######################################################################] 100%</span>
+Installation was unsuccessful.
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><mark><em>Installation was unsuccessful</em></mark></li>
+</ul>
+<p>I couldn&rsquo;t really figure out the output and went straight for the <code>--gtk</code> option as my 2nd attempt:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --gtk --required --eulas-agreed
+
+Extracting VMware Installer...done.
+
+<span class="o">(</span>vmware-installer.py:233744<span class="o">)</span>: Gtk-WARNING **: Unable to locate theme engine in module_path: <span class="s2">&#34;adwaita&#34;</span>,
+
+<span class="o">(</span>vmware-installer.py:233744<span class="o">)</span>: Gtk-WARNING **: Unable to locate theme engine in module_path: <span class="s2">&#34;adwaita&#34;</span>,
+Gtk-Message: Failed to load module <span class="s2">&#34;canberra-gtk-module&#34;</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/tmp/tmp1nqoz5ld.vmis.env&#34;</span>, line 132, in &lt;module&gt;
+    exec<span class="o">(</span>fileObj.read<span class="o">()</span>, mod.__dict__<span class="o">)</span>
+  File <span class="s2">&#34;&lt;string&gt;&#34;</span>, line <span class="m">243</span>
+    except OSError, e:
+                  ^
+SyntaxError: invalid syntax
+Exception info : <span class="o">[</span>Component did not register an installer<span class="o">]</span>.
+Check the log /var/log/vmware-installer <span class="k">for</span> details.
+
+
+
+<span class="o">[</span><span class="c1">######################################################################] 100%</span>
+Installation was unsuccessful.
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><mark><em>Gtk-WARNING: Unable to locate theme engine in module_path: adwaita</em></mark></p>
+</li>
+<li>
+<p><mark><em>Gtk-Message: Failed to load module canberra-gtk-module</em></mark></p>
+</li>
+</ul>
+<p>Some research on both failure indications pointed me to presumable missing packages related to the <code>GTK graphical user interface library</code> in Ubuntu and therefore I followed some of the described hints which were for example:</p>
+<ul>
+<li><code>sudo apt install gnome-themes-standard</code><sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup></li>
+<li><code>sudo apt install canberra-gtk-module</code><sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup></li>
+</ul>
+<p>but non of those solved the problem nor changed the failure message. Also the <code>/var/log/vmware-installer</code> log couldn&rsquo;t really help (at least to me).</p>
+<h3 id="output-varlogvmware-installer">Output /var/log/vmware-installer</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ less /var/log/vmware-installer
+
+
+<span class="o">[</span>2021-02-25 11:28:13,465<span class="o">]</span> code <span class="k">for</span> <span class="nb">hash</span> sha256 was not found.
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 147, in &lt;module&gt;
+    globals<span class="o">()[</span>__func_name<span class="o">]</span> <span class="o">=</span> __get_hash<span class="o">(</span>__func_name<span class="o">)</span>
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 97, in __get_builtin_constructor
+    raise ValueError<span class="o">(</span><span class="s1">&#39;unsupported hash type &#39;</span> + name<span class="o">)</span>
+ValueError: unsupported <span class="nb">hash</span> <span class="nb">type</span> sha256
+<span class="o">[</span>2021-02-25 11:28:13,465<span class="o">]</span> code <span class="k">for</span> <span class="nb">hash</span> sha384 was not found.
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 147, in &lt;module&gt;
+    globals<span class="o">()[</span>__func_name<span class="o">]</span> <span class="o">=</span> __get_hash<span class="o">(</span>__func_name<span class="o">)</span>
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 97, in __get_builtin_constructor
+    raise ValueError<span class="o">(</span><span class="s1">&#39;unsupported hash type &#39;</span> + name<span class="o">)</span>
+ValueError: unsupported <span class="nb">hash</span> <span class="nb">type</span> sha384
+<span class="o">[</span>2021-02-25 11:28:13,465<span class="o">]</span> code <span class="k">for</span> <span class="nb">hash</span> sha512 was not found.
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 147, in &lt;module&gt;
+    globals<span class="o">()[</span>__func_name<span class="o">]</span> <span class="o">=</span> __get_hash<span class="o">(</span>__func_name<span class="o">)</span>
+  File <span class="s2">&#34;/tmp/vmis.Lu1nSs/install/vmware-installer/python/lib/hashlib.py&#34;</span>, line 97, in __get_builtin_constructor
+    raise ValueError<span class="o">(</span><span class="s1">&#39;unsupported hash type &#39;</span> + name<span class="o">)</span>
+ValueError: unsupported <span class="nb">hash</span> <span class="nb">type</span> sha512
+<span class="o">[</span>2021-02-25 11:28:13,494<span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:13,494<span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:13,494<span class="o">]</span> Installer running.
+<span class="o">[</span>2021-02-25 11:28:13,494<span class="o">]</span> Command Line Arguments:
+<span class="o">[</span>2021-02-25 11:28:13,494<span class="o">]</span> <span class="o">[</span><span class="s1">&#39;/tmp/vmis.Lu1nSs/install/vmware-installer/vmware-installer.py&#39;</span>, <span class="s1">&#39;--set-setting&#39;</span>, <span class="s1">&#39;vmware-installer&#39;</span>, <span class="s1">&#39;libconf&#39;</span>, <span class="s1">&#39;&#39;</span>, <span class="s1">&#39;--install-component&#39;</span>, <span class="s1">&#39;/tmp/vmis.Lu1nSs/install/vmware-installer&#39;</span>, <span class="s1">&#39;--install-bundle&#39;</span>, <span class="s1">&#39;/home/rguske/Downloads/./VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:13,740<span class="o">]</span> Successfully loaded GTK libraries.
+<span class="o">[</span>2021-02-25 11:28:13,789<span class="o">]</span> Using UI <span class="nb">type</span> gtk
+<span class="o">[</span>2021-02-25 11:28:13,795<span class="o">]</span> System installer version is: 3.0.0.17287072
+<span class="o">[</span>2021-02-25 11:28:13,795<span class="o">]</span> Running installer version is: 2.1.0.14928104
+<span class="o">[</span>2021-02-25 11:28:13,795<span class="o">]</span> Running newer system installer.
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span> Installer running.
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span> Command Line Arguments:
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span> <span class="o">[</span><span class="s1">&#39;/usr/lib/vmware-installer/3.0.0/vmware-installer.py&#39;</span>, <span class="s1">&#39;--set-setting&#39;</span>, <span class="s1">&#39;vmware-installer&#39;</span>, <span class="s1">&#39;libconf&#39;</span>, <span class="s1">&#39;&#39;</span>, <span class="s1">&#39;--install-component&#39;</span>, <span class="s1">&#39;/tmp/vmis.Lu1nSs/install/vmware-installer&#39;</span>, <span class="s1">&#39;--install-bundle&#39;</span>, <span class="s1">&#39;/home/rguske/Downloads/./VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+<span class="o">[</span>2021-02-25 11:28:14,151<span class="o">]</span> Failed to load GTK libraries, falling back to console.
+<span class="o">[</span>2021-02-25 11:28:14,157<span class="o">]</span> Using UI <span class="nb">type</span> console
+<span class="o">[</span>2021-02-25 11:28:14,158<span class="o">]</span> System installer version is: 3.0.0.17287072
+<span class="o">[</span>2021-02-25 11:28:14,158<span class="o">]</span> Running installer version is: 3.0.0.17287072
+<span class="o">[</span>2021-02-25 11:28:14,158<span class="o">]</span> Opening database file /etc/vmware-installer/database
+<span class="o">[</span>2021-02-25 11:28:14,236<span class="o">]</span> Could not locate installer App Control.
+<span class="o">[</span>2021-02-25 11:28:14,247<span class="o">]</span> Error: Cannot load installer <span class="k">for</span> component: vmware-installer.
+<span class="o">[</span>2021-02-25 11:28:14,248<span class="o">]</span> Top level exception handler
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&#34;/usr/lib/vmware-installer/3.0.0/vmis/core/transaction.py&#34;</span>, line 470, in RunThreadedTransaction
+    txn.Execute<span class="o">(</span>actions<span class="o">)</span>
+  File <span class="s2">&#34;/usr/lib/vmware-installer/3.0.0/vmis/core/transaction.py&#34;</span>, line 252, in Execute
+    i.Load<span class="o">(</span>self.temp<span class="o">)</span>
+  File <span class="s2">&#34;/usr/lib/vmware-installer/3.0.0/vmis/core/install.py&#34;</span>, line 325, in Load
+    self._module, self._installer <span class="o">=</span> LoadInstaller<span class="o">(</span>self.component,
+  File <span class="s2">&#34;/usr/lib/vmware-installer/3.0.0/vmis/core/env.py&#34;</span>, line 406, in LoadInstaller
+    raise ComponentError<span class="o">(</span><span class="s1">&#39;Component did not register an installer&#39;</span>, component<span class="o">)</span>
+vmis.core.errors.ComponentError: Component did not register an installer
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="the-workaround">The workaround</h2>
+<p>If we cannot reach our goal via the conventional way, we have to find a detour, a workaround to get there. For this particular issue with the failed installation on Ubuntu 20.04, it is the extraction of the <code>ovftool</code> binaries from the installation <code>.bundle</code>, copying it to <code>/usr/bin/</code> and configure an <code>alias</code> for the <code>ovftool</code> binary.</p>
+<h3 id="execute-ovftool-without-installing-it">Execute <code>ovftool</code> without installing it</h3>
+<p>The <code>ovftool</code> installation file is a bundled package (<code>.bundle</code>) which contains the <code>ovftool</code> as well as the <code>vmware-installer</code>, plus the associated files for those. As aforementioned the installation can be executed with various options and by running <code>./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help</code>, the <code>vmware-installer</code> will be temporarily extracted and provides these options.</p>
+<p>This is how it works step-by-step:</p>
+<ol>
+<li>Extract the files and change into directory ovftool (you can name the extracted directory as you want):</li>
+</ol>
+<p><code>sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --extract ovftool &amp;&amp; cd ovftool</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">ls -rtl
+
+total 16K
+drwxr-xr-x <span class="m">4</span> root   root         4,0K Mär  <span class="m">9</span> 14:07 .
+drwxr-xr-x <span class="m">5</span> rguske domain^users 4,0K Mär  <span class="m">9</span> 14:07 ..
+drwxr-xr-x <span class="m">9</span> root   root         4,0K Mär  <span class="m">9</span> 14:07 vmware-installer
+drwxr-xr-x <span class="m">6</span> root   root         4,0K Mär  <span class="m">9</span> 14:07 vmware-ovftool
+</code></pre></td></tr></table>
+</div>
+</div><p>Here&rsquo;s what&rsquo;s in it:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">$ tree -L <span class="m">2</span>
+.
+├── vmware-installer
+│   ├── artwork
+│   ├── bin
+│   ├── bootstrap
+│   ├── lib
+│   ├── manifest.xml
+│   ├── python
+│   ├── sopython
+│   ├── vmis
+│   ├── vmis-launcher
+│   ├── vmware-installer
+│   ├── vmware-installer.py
+│   ├── vmware-uninstall
+│   └── vmware-uninstall-downgrade
+└── vmware-ovftool
+    ├── certs
+    ├── env
+    ├── icudt44l.dat
+    ├── libcares.so.2
+    ├── libcrypto.so.1.0.2
+    ├── libcurl.so.4
+    ├── libexpat.so
+    ├── libgcc_s.so.1
+    ├── libgoogleurl.so.59
+    ├── libicudata.so.60
+    ├── libicuuc.so.60
+    ├── libssl.so.1.0.2
+    ├── libssoclient.so
+    ├── libstdc++.so.6
+    ├── libvim-types.so
+    ├── libvmacore.so
+    ├── libvmomi.so
+    ├── libxerces-c-3.2.so
+    ├── libz.so.1
+    ├── manifest.xml
+    ├── open_source_licenses.txt
+    ├── ovftool
+    ├── ovftool.bin
+    ├── README.txt
+    ├── schemas
+    ├── vmware.eula
+    └── vmware-eula.rtf
+
+<span class="m">11</span> directories, <span class="m">31</span> files
+</code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>Move the <code>vmware-ovftool</code> directory to <code>/usr/bin/</code>:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo mv vmware-ovftool /usr/bin/
+</code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>Make the two files <code>ovftool</code> as well as <code>ovftool.bin</code> executable:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">sudo chmod +x /usr/bin/vmware-ovftool/ovftool ovftool.bin
+</code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>Configure an <code>alias</code> for your used <code>shell</code> to execute it as usual: <code>alias ovftool=/usr/bin/vmware-ovftool/ovftool</code></li>
+</ol>
+<p>I am using <code>zsh</code> <sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup> as the <code>shell</code>of my choice and I created a dedicated file for all my aliases - it&rsquo;s named <code>~/.zsh_aliases</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ which ovftool
+
+ovftool: aliased to /usr/bin/vmware-ovftool/ovftool
+</code></pre></td></tr></table>
+</div>
+</div><p>This allows me to run the <code>ovftool</code> as usual again.</p>
+<h2 id="conclusion">Conclusion</h2>
+<ul>
+<li>Ovftool installation was unsuccessful and issued the following errors: <code>Unable to locate theme engine in module_path: &quot;adwaita&quot;</code> and <code>Failed to load module &quot;canberra-gtk-module</code></li>
+<li>Installation of Linux packages <code>gnome-themes-standard</code> and <code>canberra-gtk-module</code> didn&rsquo;t solve anything</li>
+<li>Extracted the <code>ovftool</code> binaries from the installation <code>.bundle</code> package by using <code>vmware-installer</code> option <code>--extract</code></li>
+<li>Moved extracted folder <code>vmware-ovftool</code> to <code>/usr/bin/</code></li>
+<li>Made files <code>ovftool</code> and <code>ovftool.bin</code> executable</li>
+<li>configured an <code>alias</code> for our shell to use it as usual</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://code.vmware.com/web/tool/4.4.0/ovf" target="_blank" rel="noopener noreffer">VMware ovftool {code} page</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://flings.vmware.com/demo-appliance-for-tanzu-kubernetes-grid" target="_blank" rel="noopener noreffer">Demo Appliance for Tanzu Kubernetes Grid</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://flings.vmware.com/vmware-appliance-for-folding-home" target="_blank" rel="noopener noreffer">VMware Appliance for Folding@Home</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer">VMware Event Broker Appliance</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://github.com/josemzr/netshoot-virtual-appliance" target="_blank" rel="noopener noreffer">Netshoot Virtual Appliance</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.virtuallyghetto.com/ovf" target="_blank" rel="noopener noreffer">virtuallyGhetto - OVF / OVFTOOL</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-i-horizon/" target="_blank" rel="noopener noreffer">A Linux Development Desktop with VMware Horizon - Part I: Horizon</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p><a href="https://my.vmware.com/group/vmware/downloads/get-download?downloadGroup=OVFTOOL441" target="_blank" rel="noopener noreffer">Download OVFTOOL 4.4.1</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p><a href="https://packages.ubuntu.com/search?keywords=gnome-themes-standard" target="_blank" rel="noopener noreffer">Package gnome-themes-standard</a> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10" role="doc-endnote">
+<p><a href="https://packages.ubuntu.com/focal/libcanberra-gtk-module" target="_blank" rel="noopener noreffer">Package libcanberra-gtk-module</a> <a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11" role="doc-endnote">
+<p><a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" target="_blank" rel="noopener noreffer">A Linux Development Desktop with VMware Horizon - Part III: Shell</a> <a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-03-21&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/72150473ab2e5c8b89a4f604234ff4708e397f3a" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 72150473ab2e5c8b89a4f604234ff4708e397f3a: last changes on ovftool post">
+                                    <i class="fas fa-hashtag fa-fw"></i>7215047</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround" data-via="vmw_rguske" data-hashtags="March2021,Linux,Desktop,Workaround,VMware"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" data-title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/march2021/">March2021</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/desktop/">Desktop</a>,&nbsp;<a href="/tags/workaround/">Workaround</a>,&nbsp;<a href="/tags/vmware/">VMware</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vmware-vctl-kind-writing-configuration-failed/" class="prev" rel="prev" title="VMware vctl KinD - Writing Configuration Failed"><i class="fas fa-angle-left fa-fw"></i>VMware vctl KinD - Writing Configuration Failed</a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2021-03-21T21:00:34+01:00","owner":"rguske","repo":"my-gitalk","title":"VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
