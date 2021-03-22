@@ -9,13 +9,13 @@ I recently wanted to make use of the `ovftool` for the validation of a customer 
 
 ## Ovftool installation options
 
-I downloaded the appropriate 64 bit binary for my Linux system, which is the `VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle` file and made it executable for the installation:
+I downloaded the appropriate 64 bit version for my Linux system, which is the `VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle` file and made it executable for the installation:
 
 ```shell
 $ chmod +755 VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
 ```
 
-By executing `./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help`, you will see that various options are available for the installation itself. The following listed are an abstract of the ones which are relevant for this post and which I've used for my installation attempts.
+The `ovftool` installation file is a bundled package (`.bundle`) which contains the `ovftool` as well as the `vmware-installer`, plus the associated files for those. The installation can be executed with various options and by running e.g. `./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help`, the `vmware-installer` will be temporarily extracted and provides these options. The following listed are an abstract of the ones which are relevant for this post and which I've used for my installation attempts.
 
 ```shell
 Options:
@@ -28,7 +28,7 @@ Options:
 
 ## Installation was unsuccessful
 
-On Linux, you can choose either to use the `--console` UI or the `--gtk` UI option. My first attempt, and I used this **several** times before, was with the `--console` option. In a Terminal window I executed `sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --console --required --eulas-agreed` and got the following output as a failed result:
+On Linux, you can choose either to use the `--gtk` UI (default) or the `--console` UI option. My first attempt, and I used this **several** times before, was with the `--console` option. In a Terminal window I executed `sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --console --required --eulas-agreed` and got the following output as a failed result:
 
 ```shell
 Extracting VMware Installer...done.
@@ -152,13 +152,11 @@ vmis.core.errors.ComponentError: Component did not register an installer
 
 ## The workaround
 
-If we cannot reach our goal via the conventional way, we have to find a detour, a workaround to get there. For this particular issue with the failed installation on Ubuntu 20.04, it is the extraction of the `ovftool` binaries from the installation `.bundle`, copying it to `/usr/bin/` and configure an `alias` for the `ovftool` binary.
+If we cannot reach our goal via the conventional way, we have to find a detour, a workaround to get there. For this particular issue with the failed installation on Ubuntu 20.04, it is the extraction of the `ovftool` files from the installation `.bundle`, copying them to `/usr/bin/` and configure an `alias` for the `ovftool` executable.
 
 ### Execute `ovftool` without installing it
 
-The `ovftool` installation file is a bundled package (`.bundle`) which contains the `ovftool` as well as the `vmware-installer`, plus the associated files for those. As aforementioned the installation can be executed with various options and by running `./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help`, the `vmware-installer` will be temporarily extracted and provides these options.
-
-This is how it works step-by-step:
+**This is how it works step-by-step:**
 
 1. Extract the files and change into directory ovftool (you can name the extracted directory as you want):
 
@@ -231,7 +229,7 @@ $ tree -L 2
 sudo mv vmware-ovftool /usr/bin/
 ```
 
-1. Make the two files `ovftool` as well as `ovftool.bin` executable:
+3. Make the two files `ovftool` as well as `ovftool.bin` executable:
 
 
 ```shell
@@ -248,7 +246,7 @@ $ which ovftool
 ovftool: aliased to /usr/bin/vmware-ovftool/ovftool
 ```
 
-This allows me to run the `ovftool` as usual again.
+This allows me to run the `ovftool` as usual.
 
 ## Conclusion
 

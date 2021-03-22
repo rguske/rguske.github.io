@@ -24,7 +24,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20\/"
-        },"genre": "posts","keywords": "March2021, Linux, Desktop, Workaround, VMware","wordcount":  1539 ,
+        },"genre": "posts","keywords": "March2021, Linux, Desktop, Workaround, VMware","wordcount":  1522 ,
         "url": "https:\/\/rguske.github.io\/post\/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20\/","datePublished": "2021-03-21T21:00:34+01:00","dateModified": "2021-03-21T21:54:47+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -115,7 +115,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/workaround/"><i class="far fa-folder fa-fw"></i>Workaround</a>&nbsp;<a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-21">2021-03-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1539 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-03-21">2021-03-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1522 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -150,7 +150,7 @@
 <p>The VMware OVF Tool <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is a powerful cli utility with which you can import and export Open Virtualization Format (OVF) packages to and from various VMware products. It&rsquo;s e.g. used for the creation of several awesome VMware Fling projects like the Demo Appliance for Tanzu Kubernetes Grid <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, the VMware Appliance for Folding@Home <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> as well as for the VMware Event Broker Appliance <sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. Also non-fling open source projects like e.g. the Netshoot Virtual Appliance <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> using the <code>ovftool</code> in their appliance build process. William Lam blogged about it several times in the past and you could use this as a great reference for the tool <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>.</p>
 <p>I recently wanted to make use of the <code>ovftool</code> for the validation of a customer use-case and needed to install it on my &ldquo;<em>Universal Workbench</em>&rdquo; <sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>, my Ubuntu 20.04 vDesk (<code>20.04.1-Ubuntu x86_64</code>), which I am using for all my homelab work. As of writing this article, the latest available version for the <code>ovftool</code> is version 4.4.1 <sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup>.</p>
 <h2 id="ovftool-installation-options">Ovftool installation options</h2>
-<p>I downloaded the appropriate 64 bit binary for my Linux system, which is the <code>VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle</code> file and made it executable for the installation:</p>
+<p>I downloaded the appropriate 64 bit version for my Linux system, which is the <code>VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle</code> file and made it executable for the installation:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -159,7 +159,7 @@
 <pre class="chroma"><code class="language-shell" data-lang="shell">$ chmod +755 VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
 </code></pre></td></tr></table>
 </div>
-</div><p>By executing <code>./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help</code>, you will see that various options are available for the installation itself. The following listed are an abstract of the ones which are relevant for this post and which I&rsquo;ve used for my installation attempts.</p>
+</div><p>The <code>ovftool</code> installation file is a bundled package (<code>.bundle</code>) which contains the <code>ovftool</code> as well as the <code>vmware-installer</code>, plus the associated files for those. The installation can be executed with various options and by running e.g. <code>./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help</code>, the <code>vmware-installer</code> will be temporarily extracted and provides these options. The following listed are an abstract of the ones which are relevant for this post and which I&rsquo;ve used for my installation attempts.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -179,7 +179,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="installation-was-unsuccessful">Installation was unsuccessful</h2>
-<p>On Linux, you can choose either to use the <code>--console</code> UI or the <code>--gtk</code> UI option. My first attempt, and I used this <strong>several</strong> times before, was with the <code>--console</code> option. In a Terminal window I executed <code>sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --console --required --eulas-agreed</code> and got the following output as a failed result:</p>
+<p>On Linux, you can choose either to use the <code>--gtk</code> UI (default) or the <code>--console</code> UI option. My first attempt, and I used this <strong>several</strong> times before, was with the <code>--console</code> option. In a Terminal window I executed <code>sudo ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --console --required --eulas-agreed</code> and got the following output as a failed result:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -406,10 +406,9 @@ vmis.core.errors.ComponentError: Component did not register an installer
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="the-workaround">The workaround</h2>
-<p>If we cannot reach our goal via the conventional way, we have to find a detour, a workaround to get there. For this particular issue with the failed installation on Ubuntu 20.04, it is the extraction of the <code>ovftool</code> binaries from the installation <code>.bundle</code>, copying it to <code>/usr/bin/</code> and configure an <code>alias</code> for the <code>ovftool</code> binary.</p>
+<p>If we cannot reach our goal via the conventional way, we have to find a detour, a workaround to get there. For this particular issue with the failed installation on Ubuntu 20.04, it is the extraction of the <code>ovftool</code> files from the installation <code>.bundle</code>, copying them to <code>/usr/bin/</code> and configure an <code>alias</code> for the <code>ovftool</code> executable.</p>
 <h3 id="execute-ovftool-without-installing-it">Execute <code>ovftool</code> without installing it</h3>
-<p>The <code>ovftool</code> installation file is a bundled package (<code>.bundle</code>) which contains the <code>ovftool</code> as well as the <code>vmware-installer</code>, plus the associated files for those. As aforementioned the installation can be executed with various options and by running <code>./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle --help</code>, the <code>vmware-installer</code> will be temporarily extracted and provides these options.</p>
-<p>This is how it works step-by-step:</p>
+<p><strong>This is how it works step-by-step:</strong></p>
 <ol>
 <li>Extract the files and change into directory ovftool (you can name the extracted directory as you want):</li>
 </ol>
@@ -544,7 +543,7 @@ drwxr-xr-x <span class="m">6</span> root   root         4,0K Mär  <span class="
 <pre class="chroma"><code class="language-shell" data-lang="shell">sudo mv vmware-ovftool /usr/bin/
 </code></pre></td></tr></table>
 </div>
-</div><ol>
+</div><ol start="3">
 <li>Make the two files <code>ovftool</code> as well as <code>ovftool.bin</code> executable:</li>
 </ol>
 <div class="highlight"><div class="chroma">
@@ -571,7 +570,7 @@ drwxr-xr-x <span class="m">6</span> root   root         4,0K Mär  <span class="
 ovftool: aliased to /usr/bin/vmware-ovftool/ovftool
 </code></pre></td></tr></table>
 </div>
-</div><p>This allows me to run the <code>ovftool</code> as usual again.</p>
+</div><p>This allows me to run the <code>ovftool</code> as usual.</p>
 <h2 id="conclusion">Conclusion</h2>
 <ul>
 <li>Ovftool installation was unsuccessful and issued the following errors: <code>Unable to locate theme engine in module_path: &quot;adwaita&quot;</code> and <code>Failed to load module &quot;canberra-gtk-module</code></li>
@@ -645,7 +644,7 @@ ovftool: aliased to /usr/bin/vmware-ovftool/ovftool
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vmware-vctl-kind-writing-configuration-failed/" class="prev" rel="prev" title="VMware vctl KinD - Writing Configuration Failed"><i class="fas fa-angle-left fa-fw"></i>VMware vctl KinD - Writing Configuration Failed</a></div>
+    <div class="post-nav"><a href="/post/vmware-vctl-kind-writing-configuration-failed/" class="prev" rel="prev" title="VMware vctl KinD - Writing configuration failed"><i class="fas fa-angle-left fa-fw"></i>VMware vctl KinD - Writing configuration failed</a></div>
 </div>
 <div id="comments"><div id="gitalk" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.

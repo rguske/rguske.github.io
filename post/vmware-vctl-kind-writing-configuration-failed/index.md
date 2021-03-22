@@ -1,4 +1,4 @@
-# VMware vctl KinD - Writing Configuration Failed
+# VMware vctl KinD - Writing configuration failed
 
 
 ## Introduction
@@ -163,13 +163,13 @@ All my tests were made with the following versions:
 | vctl | 1.1.1 |
 | containerd github.com/containerd/containerd | v1.3.2-vmw |
 
-## Heads Up!
+## Heads up!
 
 {{< admonition warning "No solution yet" true >}}
 I don't have a solution for this issue yet but I will keep this post updated. For the time being, I recommend using a version which passed my test.
 {{< /admonition >}}
 
-## Bonus: Multi-Node Deployment
+## Bonus: Multi-Node deployment
 
 I have mentioned at the beginning, that I have assigned enough resources to the CRX VM to run a multi-node KinD deployment and I'd like to show you now how to instantiate this by using the `--config` option.
 
@@ -235,7 +235,7 @@ kind-harbor-worker2         Ready    <none>                 39s   v1.20.0   192.
 
 Wohoo, a multi-node Kubernetes cluster running locally on my desktop.
 
-## Commands I Used
+## Commands I used
 
 These are the commands I used in this post:
 
