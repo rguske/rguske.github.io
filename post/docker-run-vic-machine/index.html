@@ -5,17 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>docker run vic-machine - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="docker run vic-machine" />
+        <title>docker run vic-machine - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="docker run vic-machine" />
 <meta property="og:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard. The far more efficient variant in my opinion is making use of the vic-machine utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/docker-run-vic-machine/" />
-<meta property="article:published_time" content="2019-07-04T22:52:18+02:00" />
-<meta property="article:modified_time" content="2021-01-19T14:59:49+01:00" />
+<meta property="og:url" content="https://rguske.github.io/post/docker-run-vic-machine/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-07-04T22:52:18&#43;02:00" />
+<meta property="article:modified_time" content="2021-01-19T14:59:49&#43;01:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="docker run vic-machine"/>
 <meta name="twitter:description" content="Introduction The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard. The far more efficient variant in my opinion is making use of the vic-machine utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="next" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="next" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.7c109789d1634c2b13017e89b274cc1d968471d213abac9cacad47deca582a11.css" integrity="sha256-fBCXidFjTCsTAX6JsnTMHZaEcdITq6ycrK1H3spYKhE="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -33,7 +34,7 @@
             },"description": ""
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -48,7 +49,7 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw"></i>
@@ -98,7 +99,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -312,7 +313,7 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="2-create-a-new-project-in-harbor">2. Create a new project in Harbor</h2>
-<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab">https://vic01.jarvis.lab</a>:8282) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
+<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab:8282">https://vic01.jarvis.lab:8282</a>) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
 <p>Now let´s create a project in Harbor called e.g. <em>vic-machine</em> in which we will later push our images to.</p>
 <p>Administration &ndash;&gt; Projects &ndash;&gt; <strong>+ PROJECT</strong></p>
 <p>If you want to make all repositories (images) of that project public, select the Public check box like I did.</p>
@@ -991,38 +992,38 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
 <table>
 <thead>
 <tr>
-<th align="left"><strong>Article</strong></th>
-<th align="right"><strong>Link</strong></th>
+<th style="text-align:left"><strong>Article</strong></th>
+<th style="text-align:right"><strong>Link</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
-<td align="right"><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
+<td style="text-align:left">[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
+<td style="text-align:right"><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
 </tr>
 <tr>
-<td align="left">[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
-<td align="right"><a href="https://youtu.be/AD7CD8Haqdc">https://youtu.be/AD7CD8Haqdc</a></td>
+<td style="text-align:left">[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
+<td style="text-align:right"><a href="https://youtu.be/AD7CD8Haqdc">https://youtu.be/AD7CD8Haqdc</a></td>
 </tr>
 <tr>
-<td align="left">[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
-<td align="right"><a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></td>
+<td style="text-align:left">[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
+<td style="text-align:right"><a href="https://github.com/rguske/vic-machine">https://github.com/rguske/vic-machine</a></td>
 </tr>
 <tr>
-<td align="left">[@harbor] <strong>Harbor Official Website</strong></td>
-<td align="right"><a href="https://goharbor.io/">https://goharbor.io/</a></td>
+<td style="text-align:left">[@harbor] <strong>Harbor Official Website</strong></td>
+<td style="text-align:right"><a href="https://goharbor.io/">https://goharbor.io/</a></td>
 </tr>
 <tr>
-<td align="left">[@github/coreos] <strong>Clair Github repo</strong></td>
-<td align="right"><a href="https://github.com/coreos/clair">https://github.com/coreos/clair</a></td>
+<td style="text-align:left">[@github/coreos] <strong>Clair Github repo</strong></td>
+<td style="text-align:right"><a href="https://github.com/coreos/clair">https://github.com/coreos/clair</a></td>
 </tr>
 <tr>
-<td align="left">[@github/theupdateframework] <strong>Notary Github repo</strong></td>
-<td align="right"><a href="https://github.com/theupdateframework/notary">https://github.com/theupdateframework/notary</a></td>
+<td style="text-align:left">[@github/theupdateframework] <strong>Notary Github repo</strong></td>
+<td style="text-align:right"><a href="https://github.com/theupdateframework/notary">https://github.com/theupdateframework/notary</a></td>
 </tr>
 <tr>
-<td align="left">[@docker] <strong>Dockerfile reference</strong></td>
-<td align="right"><a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></td>
+<td style="text-align:left">[@docker] <strong>Dockerfile reference</strong></td>
+<td style="text-align:right"><a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a></td>
 </tr>
 </tbody>
 </table>
@@ -1030,14 +1031,14 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
+                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
                                     <i class="fas fa-hashtag fa-fw"></i>e9b62a6</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/docker-run-vic-machine/index.md" target="_blank">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/docker-run-vic-machine/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
                 <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-via="vmw_rguske" data-hashtags="July2019,VIC,Docker,Hack,Harbor,vSphere"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
@@ -1059,7 +1060,8 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
@@ -1068,7 +1070,7 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2019-07-04T22:52:18+02:00","owner":"rguske","repo":"my-gitalk","title":"docker run vic-machine"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2019-07-04T22:52:18+02:00","owner":"rguske","repo":"my-gitalk","title":"docker run vic-machine"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d1b26d23ac62a6d4bfafb3292c82d97770d7585d5c60e8d254d46fd9555fc69b.js" integrity="sha256-0bJtI6xiptS/r7MpLILZd3DXWF1cYOjSVNRv2VVfxps="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

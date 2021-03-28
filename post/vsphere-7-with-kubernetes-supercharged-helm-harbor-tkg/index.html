@@ -5,19 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" />
+        <title>vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" />
 <meta property="og:description" content="I recently had to prepare my homelab for a customer workshop to demo our new Tanzu Runtime &amp; Hybrid Infrastructure Services. This includes e.g. the deployment of a Tanzu Kubernetes Grid Cluster on vSphere (TKG Service), the enterprise cloud native registry Harbor as well as the instantiation of a native Pod on vSphere (vSphere Pod Service).
 Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services  My demo was basically all about the deployment of an application running natively (Native Pod) on vSphere, whose container image I pushed beforehand into my Harbor registry and which in turn was then obtained from there during the application deployment." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" />
-<meta property="article:published_time" content="2020-07-21T15:30:38+02:00" />
-<meta property="article:modified_time" content="2021-01-19T14:59:49+01:00" />
+<meta property="og:url" content="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-07-21T15:30:38&#43;02:00" />
+<meta property="article:modified_time" content="2021-01-19T14:59:49&#43;01:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"/>
 <meta name="twitter:description" content="I recently had to prepare my homelab for a customer workshop to demo our new Tanzu Runtime &amp; Hybrid Infrastructure Services. This includes e.g. the deployment of a Tanzu Kubernetes Grid Cluster on vSphere (TKG Service), the enterprise cloud native registry Harbor as well as the instantiation of a native Pod on vSphere (vSphere Pod Service).
 Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services  My demo was basically all about the deployment of an application running natively (Native Pod) on vSphere, whose container image I pushed beforehand into my Harbor registry and which in turn was then obtained from there during the application deployment."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="next" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="next" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.7c109789d1634c2b13017e89b274cc1d968471d213abac9cacad47deca582a11.css" integrity="sha256-fBCXidFjTCsTAX6JsnTMHZaEcdITq6ycrK1H3spYKhE="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -35,7 +36,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
             },"description": ""
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -50,7 +51,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
         title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw"></i>
@@ -100,7 +101,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -177,25 +178,25 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
             alt="/img/posts/202007_harborontkg/CapturFiles-20200715_083742.jpg" />
     </a><figcaption class="image-caption">Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services</figcaption>
     </figure>
-<p>My demo was basically all about the deployment of an application running natively (<a href="https://blogs.vmware.com/vsphere/2020/05/vsphere-7-vsphere-pods-explained.html" target="_blank" rel="noopener noreffer">Native Pod</a>) on vSphere, whose container image I pushed beforehand into my <a href="https://goharbor.io" target="_blank" rel="noopener noreffer">Harbor</a> registry and which in turn was then obtained from there during the application deployment. It also covered the deep integration into vSAN and NSX by providing Persistent Volume Claims (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-1B136277-E46C-41FC-9C8C-3E78E9B97F5C.html" target="_blank" rel="noopener noreffer">Storage Service</a>) as well as LoadBalancing services (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-B156CDA6-B056-4D1C-BBC5-07D1A701E402.html" target="_blank" rel="noopener noreffer">Network Service</a>) for my application.</p>
+<p>My demo was basically all about the deployment of an application running natively (<a href="https://blogs.vmware.com/vsphere/2020/05/vsphere-7-vsphere-pods-explained.html" target="_blank" rel="noopener noreferrer">Native Pod</a>) on vSphere, whose container image I pushed beforehand into my <a href="https://goharbor.io" target="_blank" rel="noopener noreferrer">Harbor</a> registry and which in turn was then obtained from there during the application deployment. It also covered the deep integration into vSAN and NSX by providing Persistent Volume Claims (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-1B136277-E46C-41FC-9C8C-3E78E9B97F5C.html" target="_blank" rel="noopener noreferrer">Storage Service</a>) as well as LoadBalancing services (<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-B156CDA6-B056-4D1C-BBC5-07D1A701E402.html" target="_blank" rel="noopener noreferrer">Network Service</a>) for my application.</p>
 <div class="mermaid" id="id-1"></div>
 <p><em><center>Figure II: Application Deployment Flowchart</center></em></p>
-<p>I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html" target="_blank" rel="noopener noreffer">Registry Service</a> of vSphere 7 with Kubernetes. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via <code>Helm</code> on a Tanzu Kubernetes Grid Cluster.</p>
-<p>In this post I will focus on the installation of Harbor using <code>Helm</code> and also on the preperations you have to do upfront before you are able to let the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreffer">Supervisor Cluster</a> pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.</p>
+<p>I do have to mention that I used the upstream Harbor version for my demo and not the embedded Harbor registry which can be enabled through the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-5B0373CA-5379-47AF-9284-ED725FC79D89.html" target="_blank" rel="noopener noreferrer">Registry Service</a> of vSphere 7 with Kubernetes. The reason for this? I combined the possibilities to demonstrate the latest features of Harbor version 2.0 on the one hand and on the other hand the simplicity of deploying the registry via <code>Helm</code> on a Tanzu Kubernetes Grid Cluster.</p>
+<p>In this post I will focus on the installation of Harbor using <code>Helm</code> and also on the preperations you have to do upfront before you are able to let the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreferrer">Supervisor Cluster</a> pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreffer">vSphere 7 with Kubernetes</a> installed</li>
-<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-77D01137-8C82-4477-A18E-DA935BC121BA.html" target="_blank" rel="noopener noreffer">Subscribed Content Library</a> for Tanzu Kubernetes Grid Clusters</li>
-<li><i class="far fa-check-square fa-fw"></i> A <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-2597788E-2FA4-420E-B9BA-9423F8F7FD9F.html" target="_blank" rel="noopener noreffer">Tanzu Kubernetes Grid Cluster</a> running</li>
-<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-0F6E45C4-3CB1-4562-9370-686668519FCA.html" target="_blank" rel="noopener noreffer">Kubernetes CLI Tool for vSphere</a> installed</li>
-<li><i class="far fa-check-square fa-fw"></i> <a href="https://helm.sh/docs/intro/install/" target="_blank" rel="noopener noreffer">Helm</a> installed</li>
-<li><i class="far fa-check-square fa-fw"></i> <a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/#docker-engine---community" target="_blank" rel="noopener noreffer">Docker CLI</a> installed</li>
+<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreferrer">vSphere 7 with Kubernetes</a> installed</li>
+<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-77D01137-8C82-4477-A18E-DA935BC121BA.html" target="_blank" rel="noopener noreferrer">Subscribed Content Library</a> for Tanzu Kubernetes Grid Clusters</li>
+<li><i class="far fa-check-square fa-fw"></i> A <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-2597788E-2FA4-420E-B9BA-9423F8F7FD9F.html" target="_blank" rel="noopener noreferrer">Tanzu Kubernetes Grid Cluster</a> running</li>
+<li><i class="far fa-check-square fa-fw"></i> <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-0F6E45C4-3CB1-4562-9370-686668519FCA.html" target="_blank" rel="noopener noreferrer">Kubernetes CLI Tool for vSphere</a> installed</li>
+<li><i class="far fa-check-square fa-fw"></i> <a href="https://helm.sh/docs/intro/install/" target="_blank" rel="noopener noreferrer">Helm</a> installed</li>
+<li><i class="far fa-check-square fa-fw"></i> <a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/#docker-engine---community" target="_blank" rel="noopener noreferrer">Docker CLI</a> installed</li>
 </ul>
 <h2 id="tanzu-kubernetes-grid-cluster-recap">Tanzu Kubernetes Grid Cluster (Recap)</h2>
-<p>The simple way of creating a Tanzu Kubernetes Grid (TKG) cluster will be done by invoking the TKG Service declarative API. A very detailed <em>&ldquo;How to Guide&rdquo;</em> is provided by <a href="https://twitter.com/CormacJHogan" target="_blank" rel="noopener noreffer">Cormac Hogan</a> through this post: <strong><a href="https://cormachogan.com/2020/04/07/building-a-tkg-guest-cluster-in-vsphere-with-kubernetes/" target="_blank" rel="noopener noreffer">Building a TKG Cluster in vSphere with Kubernetes</a></strong></p>
+<p>The simple way of creating a Tanzu Kubernetes Grid (TKG) cluster will be done by invoking the TKG Service declarative API. A very detailed <em>&ldquo;How to Guide&rdquo;</em> is provided by <a href="https://twitter.com/CormacJHogan" target="_blank" rel="noopener noreferrer">Cormac Hogan</a> through this post: <strong><a href="https://cormachogan.com/2020/04/07/building-a-tkg-guest-cluster-in-vsphere-with-kubernetes/" target="_blank" rel="noopener noreferrer">Building a TKG Cluster in vSphere with Kubernetes</a></strong></p>
 <p>I recommend reading this post or of course VMware&rsquo;s official documentation first if you haven&rsquo;t deployed a TKG cluster yet.</p>
 <p>Otherwise, here is my &ldquo;How to&rdquo; <strong>in a nutshell&hellip;</strong></p>
-<h3 id="create-a-vsphere-namespacehttpsdocsvmwarecomenvmware-vsphere70vmware-vsphere-with-kubernetesguid-177c23c4-ed81-4add-89a2-61654c18201bhtml">Create a vSphere <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-177C23C4-ED81-4ADD-89A2-61654C18201B.html" target="_blank" rel="noopener noreffer">Namespace</a></h3>
+<h3 id="create-a-vsphere-namespacehttpsdocsvmwarecomenvmware-vsphere70vmware-vsphere-with-kubernetesguid-177c23c4-ed81-4add-89a2-61654c18201bhtml">Create a vSphere <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-177C23C4-ED81-4ADD-89A2-61654C18201B.html" target="_blank" rel="noopener noreferrer">Namespace</a></h3>
 <p>Go to <strong>Home</strong> &ndash;&gt; <strong>Workload Management</strong> and click on <strong>NEW NAMESPACE</strong></p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" title="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" data-thumbnail="/img/posts/202007_harborontkg/CapturFiles-20200715_010656.jpg" data-sub-html="<h2>Figure III: Create a Namespace in vSphere</h2>">
         <img
@@ -209,7 +210,7 @@ Figure I: Tanzu Runtime &amp; Hybrid Infrastructure Services&#34; Figure I: Tanz
     </figure>
 <p>Add a user or a group to the Namespace, assign the appropriate permission and select the <em>vSphere Storage Policy(s)</em> for your <em>Persistent Volume Claims</em>.</p>
 <h3 id="declaritive-deployment-of-a-tkg-cluster">Declaritive deployment of a TKG Cluster</h3>
-<p>We first login into our vSphere Supervisor Cluster by making use of the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-0F6E45C4-3CB1-4562-9370-686668519FCA.html" target="_blank" rel="noopener noreffer">Kubernetes CLI Tool for vSphere</a> with the before assigned user:</p>
+<p>We first login into our vSphere Supervisor Cluster by making use of the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-0F6E45C4-3CB1-4562-9370-686668519FCA.html" target="_blank" rel="noopener noreferrer">Kubernetes CLI Tool for vSphere</a> with the before assigned user:</p>
 <p><code>kubectl vsphere login --server=172.25.16.1 --vsphere-username jarvis@jarvis.lab --insecure-skip-tls-verify</code></p>
 <p>A successful login will show you the following output:</p>
 <div class="highlight"><div class="chroma">
@@ -264,23 +265,23 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>run.tanzu.vmware.com/v1alpha1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>TanzuKubernetesCluster<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>harbor-on-tkg<span class="w">
-</span><span class="w">  </span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>harbor-on-tkg<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">distribution</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">version</span><span class="p">:</span><span class="w"> </span>v1<span class="m">.17.7</span><span class="w">
-</span><span class="w">  </span><span class="k">topology</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">controlPlane</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">      </span><span class="k">class</span><span class="p">:</span><span class="w"> </span>best-effort-small<span class="w">
-</span><span class="w">      </span><span class="k">storageClass</span><span class="p">:</span><span class="w"> </span>ftt1-r1<span class="w">
-</span><span class="w">    </span><span class="k">workers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">      </span><span class="k">class</span><span class="p">:</span><span class="w"> </span>best-effort-medium<span class="w">
-</span><span class="w">      </span><span class="k">storageClass</span><span class="p">:</span><span class="w"> </span>ftt1-r1<span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">run.tanzu.vmware.com/v1alpha1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">TanzuKubernetesCluster</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">distribution</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l">v1.17.7</span><span class="w">
+</span><span class="w">  </span><span class="nt">topology</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">controlPlane</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-small</span><span class="w">
+</span><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
+</span><span class="w">    </span><span class="nt">workers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-medium</span><span class="w">
+</span><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p>A few words to the parameters <code>version</code>, <code>class</code> and <code>storageClass</code>. The available Kubernetes versions depend on which versions are provided by VMware through the Subscribed Content Library. You can verify which versions are available by executing <code>kubectl get virtualmachineimages</code> which in turn will show you e.g.:</p>
@@ -459,12 +460,12 @@ vmware-system-csi              Active   2d1h
 </div><p><strong>Let&rsquo;s turn our attention to Helm - The modern package manager</strong></p>
 <p>Helm helps us to define, deploy and upgrade applications easily. I&rsquo;m going to use Helm to deploy Harbor on the Tanzu Kubernetes Grid cluster.</p>
 <ul>
-<li>ICYMI: <a href="https://helm.sh/docs/intro/install/" target="_blank" rel="noopener noreffer">Installing Helm</a></li>
+<li>ICYMI: <a href="https://helm.sh/docs/intro/install/" target="_blank" rel="noopener noreferrer">Installing Helm</a></li>
 </ul>
 <h3 id="add-harbor-helm-repository">Add Harbor Helm repository</h3>
 <p>For Harbor, you can use various Helm repositories. There exist e.g. the official repo from</p>
 <p>Harbor - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/goharbor/harbor-helm">https://github.com/goharbor/harbor-helm</a> or also the one from</p>
-<p><a href="https://bitnami.com/" target="_blank" rel="noopener noreffer">Bitnami</a> - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/bitnami/charts/tree/master/bitnami/harbor">https://github.com/bitnami/charts/tree/master/bitnami/harbor</a> which I&rsquo;m going to use.</p>
+<p><a href="https://bitnami.com/" target="_blank" rel="noopener noreferrer">Bitnami</a> - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/bitnami/charts/tree/master/bitnami/harbor">https://github.com/bitnami/charts/tree/master/bitnami/harbor</a> which I&rsquo;m going to use.</p>
 <p>Add the repository of your choice to your client&hellip;</p>
 <ul>
 <li><code>helm repo add harbor https://helm.goharbor.io</code></li>
@@ -504,7 +505,7 @@ vmware-system-csi              Active   2d1h
         </div>
     </div>
 <h4 id="tkg-pod-security-policies-psp">TKG Pod Security Policies (PSP)</h4>
-<p>The Tanzu Kubernetes Grid Service does not provide default RoleBinding and ClusterRoleBinding for Tanzu Kubernetes clusters. Thus we have to apply a <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-CD033D1D-BAD2-41C4-A46F-647A560BAEAB.html" target="_blank" rel="noopener noreffer">Pod Security Policy (PSP)</a> to our TKG cluster. My well appreciated colleague <a href="https://twitter.com/Alec1823" target="_blank" rel="noopener noreffer">Alexander Ullah</a> has written a great article about PSP&rsquo;s on Tanzu Kubernetes Grid Integrated Edition (former Enterprise PKS) &ndash;&gt; <a href="https://beyondelastic.com/2019/07/14/pks-1-4-pod-security-policies/" target="_blank" rel="noopener noreffer">LINK</a>.</p>
+<p>The Tanzu Kubernetes Grid Service does not provide default RoleBinding and ClusterRoleBinding for Tanzu Kubernetes clusters. Thus we have to apply a <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-kubernetes/GUID-CD033D1D-BAD2-41C4-A46F-647A560BAEAB.html" target="_blank" rel="noopener noreferrer">Pod Security Policy (PSP)</a> to our TKG cluster. My well appreciated colleague <a href="https://twitter.com/Alec1823" target="_blank" rel="noopener noreferrer">Alexander Ullah</a> has written a great article about PSP&rsquo;s on Tanzu Kubernetes Grid Integrated Edition (former Enterprise PKS) &ndash;&gt; <a href="https://beyondelastic.com/2019/07/14/pks-1-4-pod-security-policies/" target="_blank" rel="noopener noreferrer">LINK</a>.</p>
 <p>Apply the following Pod Security Policy example to your TKG cluster: <code>kubectl apply -f tkg-psp.yml</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -533,29 +534,29 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>psp<span class="p">:</span>privileged<span class="w">
-</span><span class="w"></span><span class="k">rules</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="k">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="k">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;podsecuritypolicies&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="k">verbs</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s1">&#39;use&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="k">resourceNames</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- vmware-system-privileged<span class="w">
-</span><span class="w"></span>---<span class="w">
-</span><span class="w"></span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>ClusterRoleBinding<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>all<span class="p">:</span>psp<span class="p">:</span>privileged<span class="w">
-</span><span class="w"></span><span class="k">roleRef</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>ClusterRole<span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>psp<span class="p">:</span>privileged<span class="w">
-</span><span class="w">  </span><span class="k">apiGroup</span><span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io<span class="w">
-</span><span class="w"></span><span class="k">subjects</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="k">kind</span><span class="p">:</span><span class="w"> </span>Group<span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>system<span class="p">:</span>serviceaccounts<span class="w">
-</span><span class="w">  </span><span class="k">apiGroup</span><span class="p">:</span><span class="w"> </span>rbac.authorization.k8s.io<span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
+</span><span class="w"></span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span><span class="w"></span>- <span class="nt">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;podsecuritypolicies&#39;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span><span class="nt">verbs</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s1">&#39;use&#39;</span><span class="p">]</span><span class="w">
+</span><span class="w">  </span><span class="nt">resourceNames</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="l">vmware-system-privileged</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">all:psp:privileged</span><span class="w">
+</span><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
+</span><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Group</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">system:serviceaccounts</span><span class="w">
+</span><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><h3 id="installing-harbor---2nd-attempt">Installing Harbor - 2nd attempt</h3>
@@ -572,10 +573,10 @@ vmware-system-csi              Active   2d1h
     </figure>
 <p><code>kubectl get svc -n harbor</code> will give you the assigned external IP address through which you can access the Harbor Login page. See also the lower right terminal window in <em>Figure V</em>. With the gained IP address you can create an appropriate DNS entry. Remember that we&rsquo;ve used <code>--set externalURL=harbor-dev.jarvis.lab</code> for our deployment.</p>
 <h2 id="deploy-a-demo-application-on-vsphere-7">Deploy a Demo Application on vSphere 7</h2>
-<p>You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it&rsquo;s not possible to login via Docker CLI by using <code>docker login</code>. This is because of the <a href="https://docs.docker.com/engine/security/certificates/" target="_blank" rel="noopener noreffer">Docker certificate-based client-server authentication</a>. It&rsquo;s necessary to create a new directory under <code>/etc/docker/cert.d/</code> using the same name as the registry hostname (FQDN). I created a script for another <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script" target="_blank" rel="noopener noreffer">blog post</a> to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> <a href="https://github.com/rguske/download-harbor-cert-script">https://github.com/rguske/download-harbor-cert-script</a>.</p>
+<p>You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it&rsquo;s not possible to login via Docker CLI by using <code>docker login</code>. This is because of the <a href="https://docs.docker.com/engine/security/certificates/" target="_blank" rel="noopener noreferrer">Docker certificate-based client-server authentication</a>. It&rsquo;s necessary to create a new directory under <code>/etc/docker/cert.d/</code> using the same name as the registry hostname (FQDN). I created a script for another <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script" target="_blank" rel="noopener noreferrer">blog post</a> to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> <a href="https://github.com/rguske/download-harbor-cert-script">https://github.com/rguske/download-harbor-cert-script</a>.</p>
 <p>Take a look at the post if you need additional information about the steps as well as to learn how you can create and configure projects in Harbor.</p>
-<p>Pushing the application container image onto Harbor shouldn&rsquo;t be a problem after a successful <code>docker login harbor-dev.jarvis.lab --username admin</code>. <a href="https://demo.ghost.io/" target="_blank" rel="noopener noreffer">Ghost</a> will serve us as a demo application here. It is quickly deployable and also pretty cool for demonstration purposes, because it needs a Kubernetes Persistent Volume Claim (&ndash;&gt; vSAN) and <code>type: LoadBalancer</code> can also be configured as parameter in the specification <code>.yml</code> file (&ndash;&gt; NSX).</p>
-<p>Even more cool demo applications were put together by <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreffer">William Lam</a> in this post: <a href="https://www.virtuallyghetto.com/2020/06/interesting-kubernetes-application-demos.html" target="_blank" rel="noopener noreffer">Interesting Kubernetes application demos</a>. Check-out the KubeDoom demo 😁 👍</p>
+<p>Pushing the application container image onto Harbor shouldn&rsquo;t be a problem after a successful <code>docker login harbor-dev.jarvis.lab --username admin</code>. <a href="https://demo.ghost.io/" target="_blank" rel="noopener noreferrer">Ghost</a> will serve us as a demo application here. It is quickly deployable and also pretty cool for demonstration purposes, because it needs a Kubernetes Persistent Volume Claim (&ndash;&gt; vSAN) and <code>type: LoadBalancer</code> can also be configured as parameter in the specification <code>.yml</code> file (&ndash;&gt; NSX).</p>
+<p>Even more cool demo applications were put together by <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreferrer">William Lam</a> in this post: <a href="https://www.virtuallyghetto.com/2020/06/interesting-kubernetes-application-demos.html" target="_blank" rel="noopener noreferrer">Interesting Kubernetes application demos</a>. Check-out the KubeDoom demo 😁 👍</p>
 <p>Follow the next steps to have the image safely stored in Harbor:</p>
 <ol>
 <li><code>docker pull ghost:3.25.0</code></li>
@@ -651,54 +652,54 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">48
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Service<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="k">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">      </span><span class="k">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span>LoadBalancer<span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span>---<span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
 </span><span class="w">
-</span><span class="w"></span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>apps/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Deployment<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">  </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>blog<span class="w">
-</span><span class="w">        </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>harbor-dev.jarvis.lab/ghost/ghost<span class="p">:</span><span class="m">3.25.0</span><span class="w">
-</span><span class="w">        </span><span class="k">imagePullPolicy</span><span class="p">:</span><span class="w"> </span>Always<span class="w">
-</span><span class="w">        </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
-</span><span class="w">        </span><span class="k">env</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>url<span class="w">
-</span><span class="w">          </span><span class="k">value</span><span class="p">:</span><span class="w"> </span>http<span class="p">:</span>//my-blog.corp.local<span class="w">
-</span><span class="w">        </span><span class="k">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/var/lib/ghost/content<span class="w">
-</span><span class="w">          </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>content<span class="w">
-</span><span class="w">      </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>content<span class="w">
-</span><span class="w">        </span><span class="k">persistentVolumeClaim</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">claimName</span><span class="p">:</span><span class="w"> </span>blog-content<span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-dev.jarvis.lab/ghost/ghost:3.25.0</span><span class="w">
+</span><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Always</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
+</span><span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">url</span><span class="w">
+</span><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l">http://my-blog.corp.local</span><span class="w">
+</span><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/ghost/content</span><span class="w">
+</span><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
+</span><span class="w">        </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><h4 id="persistent-volume-claim---ghost-pvcyml">Persistent Volume Claim - <code>ghost-pvc.yml</code></h4>
@@ -718,18 +719,18 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml">---<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>PersistentVolumeClaim<span class="w">
-</span><span class="w"></span><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>blog-content<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">accessModes</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- ReadWriteOnce<span class="w">
-</span><span class="w">  </span><span class="k">storageClassName</span><span class="p">:</span><span class="w"> </span>ftt0-r0<span class="w">
-</span><span class="w">  </span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">storage</span><span class="p">:</span><span class="w"> </span>5Gi<span class="w">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">ReadWriteOnce</span><span class="w">
+</span><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">ftt0-r0</span><span class="w">
+</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">5Gi</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ol start="2">
@@ -845,7 +846,7 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>The creation of a Load Balancer type service causes NCP to orchestrate the creation of NSX Virtual Servers associated with the Load Balancer created in the initial Supervisor Cluster deployment. The virtual server is assigned an IP and port that is used to access the service.</p>
-<p>Source: <a href="https://blogs.vmware.com/vsphere/2020/05/vsphere-7-with-kubernetes-network-service-part-1-the-supervisor-cluster.html" target="_blank" rel="noopener noreffer">vSphere 7 with Kubernetes Network Service Part 1: The Supervisor Cluster</a></p>
+<p>Source: <a href="https://blogs.vmware.com/vsphere/2020/05/vsphere-7-with-kubernetes-network-service-part-1-the-supervisor-cluster.html" target="_blank" rel="noopener noreferrer">vSphere 7 with Kubernetes Network Service Part 1: The Supervisor Cluster</a></p>
 </div>
         </div>
     </div>
@@ -876,7 +877,7 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
 <p>Deploying a <strong>VMware Tanzu Kubernetes Grid cluster</strong> on vSphere by invoking the TKG Service declarative API is simple, flexible and pretty cool. You should bare in mind, that it is necessary to apply a <strong>Pod Security Policy</strong> first in order to deploy Pod&rsquo;s on your TKG Cluster.</p>
 </li>
 <li>
-<p><code>Helm</code> is powerful and can support you with defining, deploying and upgrading your applications fast and easily. BTW: <a href="https://goharbor.io/docs/2.0.0/working-with-projects/working-with-images/managing-helm-charts/" target="_blank" rel="noopener noreffer">Harbor supports Helm charts as well!</a></p>
+<p><code>Helm</code> is powerful and can support you with defining, deploying and upgrading your applications fast and easily. BTW: <a href="https://goharbor.io/docs/2.0.0/working-with-projects/working-with-images/managing-helm-charts/" target="_blank" rel="noopener noreferrer">Harbor supports Helm charts as well!</a></p>
 </li>
 <li>
 <p>Running Containers/ Pods natively alongside Virtual Machines in vSphere 7 is amazing and will support you by running any application on a single platform - vSphere. We&rsquo;ve covered the topic, how you can add a certificate or a certificate bundle to your Supervisor Cluster in order to pull images from an external registry like e.g Harbor.</p>
@@ -887,14 +888,14 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
+                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
                                     <i class="fas fa-hashtag fa-fw"></i>e9b62a6</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/index.md" target="_blank">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
                 <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" data-via="vmw_rguske" data-hashtags="July2020,Harbor,Helm,Kubernetes,Tanzu,TKG,vSphere"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" data-title="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
@@ -916,7 +917,8 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
@@ -925,7 +927,7 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2020-07-21T15:30:38+02:00","owner":"rguske","repo":"my-gitalk","title":"vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( User ) --\u003e| 1. kubectl apply -f app.yml | B(Supervisor Cluster)\n    B --\u003e| 2. pull image | C(Harbor)\n    C --\u003e B\n    B --\u003e| 3. App Deployment| D(Native Pod)\n    B ---| 3a. Persistent Volume Claim| E(vSAN)\n    E --\u003e D\n    F --\u003e D\n    B ---| 3b. Create LoadBalancer| F(NSX)","id-2":"   rguske.github.io","id-3":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.c74697cbf094b0b3067a5d8f0371e74671e1331b371ef3a3c7e291a17745ce93.css" integrity="sha256-x0aXy/CUsLMGel2PA3HnRnHhMxs3HvOjx&#43;KRoXdFzpM="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2020-07-21T15:30:38+02:00","owner":"rguske","repo":"my-gitalk","title":"vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( User ) --\u003e| 1. kubectl apply -f app.yml | B(Supervisor Cluster)\n    B --\u003e| 2. pull image | C(Harbor)\n    C --\u003e B\n    B --\u003e| 3. App Deployment| D(Native Pod)\n    B ---| 3a. Persistent Volume Claim| E(vSAN)\n    E --\u003e D\n    F --\u003e D\n    B ---| 3b. Create LoadBalancer| F(NSX)","id-2":"   rguske.github.io","id-3":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d1b26d23ac62a6d4bfafb3292c82d97770d7585d5c60e8d254d46fd9555fc69b.js" integrity="sha256-0bJtI6xiptS/r7MpLILZd3DXWF1cYOjSVNRv2VVfxps="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

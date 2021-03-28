@@ -5,19 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>Monitoring the VMware Event Broker Appliance with vRealize Operations Manager - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" />
+        <title>Monitoring the VMware Event Broker Appliance with vRealize Operations Manager - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" />
 <meta property="og:description" content="Since the VMware Event Broker Appliance (VEBA) is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought 😉.
 Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" />
-<meta property="article:published_time" content="2020-05-12T23:59:50+02:00" />
-<meta property="article:modified_time" content="2021-01-19T14:59:49+01:00" />
+<meta property="og:url" content="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-12T23:59:50&#43;02:00" />
+<meta property="article:modified_time" content="2021-01-19T14:59:49&#43;01:00" />
+
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"/>
 <meta name="twitter:description" content="Since the VMware Event Broker Appliance (VEBA) is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought 😉.
 Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods?"/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.7c109789d1634c2b13017e89b274cc1d968471d213abac9cacad47deca582a11.css" integrity="sha256-fBCXidFjTCsTAX6JsnTMHZaEcdITq6ycrK1H3spYKhE="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -35,7 +36,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
             },"description": ""
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('light' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'light' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -50,7 +51,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw"></i>
@@ -100,7 +101,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -163,13 +164,13 @@ Monitoring in terms of utilization and performance captured my interest. So, how
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>Since the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer">VMware Event Broker Appliance (VEBA)</a> is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought 😉.</p>
+            </div><div class="content" id="content"><p>Since the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreferrer">VMware Event Broker Appliance (VEBA)</a> is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought 😉.</p>
 <p>Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore, not only the workload is of interest but also the dependencies of the individual components to each other are interesting. Beyond that and because I&rsquo;m just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.</p>
-<p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreffer">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
+<p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreferrer">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
 <h2 id="leveraging-google-cadvisor">Leveraging Google cAdvisor</h2>
 <p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor">https://github.com/google/cadvisor</a></p>
 <p>cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.</p>
-<p>I&rsquo;m going to start an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreffer">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
+<p>I&rsquo;m going to start an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreferrer">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -178,7 +179,7 @@ Monitoring in terms of utilization and performance captured my interest. So, how
 <pre class="chroma"><code class="language-shell" data-lang="shell">docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
 </code></pre></td></tr></table>
 </div>
-</div><p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreffer">latest version</a> also as a docker container (for now).</p>
+</div><p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreferrer">latest version</a> also as a docker container (for now).</p>
 <p>Export the desired version as an environment variable. We will use this variable (<code>$VERSION</code>) for the container deployment.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -254,7 +255,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
     </figure>
 <h3 id="deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</h3>
 <h4 id="environment-with-internet-access">Environment with internet access</h4>
-<p>Now it&rsquo;s time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreffer">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
+<p>Now it&rsquo;s time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreferrer">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
 <p>Establish a <code>ssh</code> connection to your VEBA appliance and change into the <code>/tmp</code> directory. I have set up a repository on Github where I&rsquo;ve stored the necessary files for the deployment. From here (<code>/tmp</code>) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run <code>git clone https://github.com/rguske/monitoring-veba.git &amp;&amp; kubectl apply -k monitoring-veba/</code>.</p>
 <h4 id="environment-without-internet-access">Environment without internet access</h4>
 <p>For air-gapped environments, three simple steps are neccessary:</p>
@@ -275,14 +276,14 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>kustomize.config.k8s.io/v1beta1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Kustomization<span class="w">
-</span><span class="w"></span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
-</span><span class="w"></span><span class="k">commonLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">app</span><span class="p">:</span><span class="w"> </span>vrops-cadvisor<span class="w">
-</span><span class="w"></span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- daemonset.yaml<span class="w">
-</span><span class="w"></span>- namespace.yaml<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kustomize.config.k8s.io/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Kustomization</span><span class="w">
+</span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
+</span><span class="w"></span><span class="nt">commonLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vrops-cadvisor</span><span class="w">
+</span><span class="w"></span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w"></span>- <span class="l">daemonset.yaml</span><span class="w">
+</span><span class="w"></span>- <span class="l">namespace.yaml</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p><code>vim namespace.yaml</code></p>
@@ -294,10 +295,10 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>Namespace<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p><code>vim daemonset.yaml</code></p>
@@ -378,79 +379,79 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">73
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">apiVersion</span><span class="p">:</span><span class="w"> </span>apps/v1<span class="w">
-</span><span class="w"></span><span class="k">kind</span><span class="p">:</span><span class="w"> </span>DaemonSet<span class="w">
-</span><span class="w"></span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">  </span><span class="k">namespace</span><span class="p">:</span><span class="w"> </span>vrops<span class="w">
-</span><span class="w"></span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">  </span><span class="k">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">    </span><span class="k">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>cadvisor<span class="w">
-</span><span class="w">        </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>k8s.gcr.io/cadvisor<span class="p">:</span>v0<span class="m">.35.0</span><span class="w">
-</span><span class="w">        </span><span class="k">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>200Mi<span class="w">
-</span><span class="w">            </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>150m<span class="w">
-</span><span class="w">          </span><span class="k">limits</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">memory</span><span class="p">:</span><span class="w"> </span>2000Mi<span class="w">
-</span><span class="w">            </span><span class="k">cpu</span><span class="p">:</span><span class="w"> </span>300m<span class="w">
-</span><span class="w">        </span><span class="k">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>rootfs<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/rootfs<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>var-run<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/var/run<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>sys<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/sys<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>docker<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/var/lib/docker<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>disk<span class="w">
-</span><span class="w">          </span><span class="k">mountPath</span><span class="p">:</span><span class="w"> </span>/dev/disk<span class="w">
-</span><span class="w">          </span><span class="k">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">        </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>http<span class="w">
-</span><span class="w">            </span><span class="k">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
-</span><span class="w">            </span><span class="k">hostPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
-</span><span class="w">            </span><span class="k">protocol</span><span class="p">:</span><span class="w"> </span>TCP<span class="w">
-</span><span class="w">        </span><span class="k">securityContext</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="k">capabilities</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span><span class="k">drop</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span>- ALL<span class="w">
-</span><span class="w">              </span><span class="k">add</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span>- NET_BIND_SERVICE<span class="w">
-</span><span class="w">        </span><span class="k">args</span><span class="p">:</span><span class="w">
-</span><span class="w">         </span>- --port=<span class="m">31194</span><span class="w">
-</span><span class="w">         </span>- --profiling<span class="w">
-</span><span class="w">         </span>- --housekeeping_interval=1s<span class="w">
-</span><span class="w">      </span><span class="k">automountServiceAccountToken</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="w">      </span><span class="k">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="w">
-</span><span class="w">      </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>rootfs<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>var-run<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/var/run<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>sys<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/sys<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>docker<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/var/lib/docker<span class="w">
-</span><span class="w">      </span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span>disk<span class="w">
-</span><span class="w">        </span><span class="k">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="k">path</span><span class="p">:</span><span class="w"> </span>/dev/disk<span class="w">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">k8s.gcr.io/cadvisor:v0.35.0</span><span class="w">
+</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">200Mi</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">150m</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">2000Mi</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">300m</span><span class="w">
+</span><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootfs</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/rootfs</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">var-run</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/run</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">sys</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/sys</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">docker</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/docker</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">disk</span><span class="w">
+</span><span class="w">          </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/dev/disk</span><span class="w">
+</span><span class="w">          </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">            </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
+</span><span class="w">            </span><span class="nt">hostPort</span><span class="p">:</span><span class="w"> </span><span class="m">31194</span><span class="w">
+</span><span class="w">            </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">        </span><span class="nt">securityContext</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">capabilities</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span><span class="nt">drop</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span>- <span class="l">ALL</span><span class="w">
+</span><span class="w">              </span><span class="nt">add</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span>- <span class="l">NET_BIND_SERVICE</span><span class="w">
+</span><span class="w">        </span><span class="nt">args</span><span class="p">:</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">port=31194</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">profiling</span><span class="w">
+</span><span class="w">         </span>- --<span class="l">housekeeping_interval=1s</span><span class="w">
+</span><span class="w">      </span><span class="nt">automountServiceAccountToken</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="w">      </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootfs</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">var-run</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/var/run</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">sys</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/sys</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">docker</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/docker</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">disk</span><span class="w">
+</span><span class="w">        </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/dev/disk</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><ol start="3">
@@ -484,9 +485,9 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     </a><figcaption class="image-caption">Figure III: vROps Dashboard to monitor VEBA</figcaption>
     </figure>
 <h3 id="step-1-import-vrops-management-pack-for-container-monitoring">Step 1. Import vROps Management Pack for Container Monitoring</h3>
-<p>To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it&rsquo;s necessary to import a Management Pack for it, which is available for free at the <a href="https://marketplace.vmware.com" target="_blank" rel="noopener noreffer">VMware Marketplace</a>.</p>
+<p>To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it&rsquo;s necessary to import a Management Pack for it, which is available for free at the <a href="https://marketplace.vmware.com" target="_blank" rel="noopener noreferrer">VMware Marketplace</a>.</p>
 <ol>
-<li>Download the <a href="https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring" target="_blank" rel="noopener noreffer">Mangement Pack for Container Monitoring</a></li>
+<li>Download the <a href="https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring" target="_blank" rel="noopener noreferrer">Mangement Pack for Container Monitoring</a></li>
 </ol>
 <div class="details admonition note open">
         <div class="details-summary admonition-title">
@@ -641,7 +642,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     </a><figcaption class="image-caption">Figure VIII: Dynamic Custom Group for ƒ(x) in namespace openfaas-fn</figcaption>
     </figure>
 <h3 id="step-3-import-the-dashboard-and-its-views">Step 3. Import the Dashboard and it&rsquo;s Views</h3>
-<h4 id="the-dashboard-is-available-for-download-on-vmware-codehttpscodevmwarecomsamplesid7241">The Dashboard is available for download on <a href="https://code.vmware.com/samples?id=7241" target="_blank" rel="noopener noreffer">VMware {code}</a></h4>
+<h4 id="the-dashboard-is-available-for-download-on-vmware-codehttpscodevmwarecomsamplesid7241">The Dashboard is available for download on <a href="https://code.vmware.com/samples?id=7241" target="_blank" rel="noopener noreferrer">VMware {code}</a></h4>
 <p>Unpack the zip file and import the views first. <code>Dashboards</code> -&gt; select any of the views, click on <code>ACTIONS</code> and select <code>Manage Views</code>. The <code>Import</code> button will appear after clicking on the three points next to the <code>ADD</code> button. Go to the folder where you&rsquo;ve unpacked the <code>dashboard.zip</code> and select the <code>views.zip</code>. This will import the Views.</p>
 <p>Similar procedure applies for the dashboard itself. <code>Dashboards</code> -&gt; <code>ACTIONS</code> -&gt; <code>Manage Dashboards</code> -&gt; three points -&gt; <code>Import</code> and this time, select the <code>dashboard.zip</code>.</p>
 <p>Here we go!</p>
@@ -660,14 +661,14 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
+                <span>Updated on 2021-01-19&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) e9b62a66e60e5cfb779fd7ab1869fe98f1929cbf: backup 19012021">
                                     <i class="fas fa-hashtag fa-fw"></i>e9b62a6</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/index.md" target="_blank">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
                 <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-via="vmw_rguske" data-hashtags="May2020,VEBA,Monitoring,vRealize Operations Manager"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
@@ -689,7 +690,8 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
                 Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
@@ -698,7 +700,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2020-05-12T23:59:50+02:00","owner":"rguske","repo":"my-gitalk","title":"Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"gitalk":{"admin":["rguske"],"clientID":"dac5316ea2f4d94cc34a","clientSecret":"295c1cbf7f708263cbe7e63de8856790bc549f37","id":"2020-05-12T23:59:50+02:00","owner":"rguske","repo":"my-gitalk","title":"Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d1b26d23ac62a6d4bfafb3292c82d97770d7585d5c60e8d254d46fd9555fc69b.js" integrity="sha256-0bJtI6xiptS/r7MpLILZd3DXWF1cYOjSVNRv2VVfxps="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

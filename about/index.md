@@ -61,7 +61,7 @@ He holds several industry certifications which are mostly infrastructure focused
 
 ### Recently achieved
 
-{{< image src="/img/about/double_vcp.png" src-s="/img/about/double_vcp.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_Cert_P_DCV.png" src-s="/img/about/VMware_Cert_P_DCV.png" height="200" width="200" >}}
 
 ## vExpert
 
