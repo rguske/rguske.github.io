@@ -57,15 +57,19 @@ He's very keen on cloud native technologies and an active team-member and contri
 - **VEBA @ vBrownBag:** https://www.youtube.com/watch?v=tOjp5_qn-Fg&feature=youtu.be
 - **VEBA related articles written by Robert:** https://rguske.github.io/tags/veba/
 
-## Certifications
+## Achievements
 
-He holds several industry certifications which are mostly infrastructure focused. More at [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/).
+Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/) profile.
 
-### Recently achieved
+### Certifications
 
 {{< image src="/img/about/VMware_Cert_P_DCV.png" src-s="/img/about/VMware_Cert_P_DCV.png" height="200" width="200" >}}
 
-## vExpert
+{{< image src="/img/about/VMware_Cert_P_Tanzu.png" src-s="/img/about/VMware_Cert_P_Tanzu.png" height="200" width="200" >}}
+
+### vExpert
+
+**Status**: Active 2019 - 2021
 
 Acknowledgement by sharing passion and gained experience with the community.
 
@@ -73,13 +77,18 @@ Acknowledgement by sharing passion and gained experience with the community.
 The annual VMware vExpert title is given to individuals who have significantly contributed to the community of VMware users over the past year. The title is awarded to individuals (not employers) for their commitment to sharing their knowledge and passion for VMware technology above and beyond their job requirements.
 {{< /admonition >}}
 
-<center> {{< image src="/img/about/vexpert.png" src-s="/img/about/vexpert.png" height="200" width="300" >}} </center>
+{{< image src="/img/about/vexpert.png" src-s="/img/about/vexpert.png" height="200" width="300" >}}
+
+### vExpert Subprograms
 
 The vExpert Application Modernization subprogram rewards those, who have stronger contributed on this specific topic (Application modernization).
 
-<center> {{< image src="/img/about/vexpert_modernapps.jpg" src-s="/img/about/vexpert_modernapps.jpg" height="200" width="300" >}} </center>
+{{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="200" width="300" >}}
+
+{{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="200" width="300" >}}
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
+
 ## 2019
 
 | **Event** | **My Part** | **Homepage** |
