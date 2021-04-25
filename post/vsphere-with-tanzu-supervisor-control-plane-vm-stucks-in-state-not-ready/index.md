@@ -140,7 +140,7 @@ Immediately after the selection, the affected VM got deleted and a new one was o
 
 At the end, my cluster reached the *Config Status* `Running`, all three Nodes were `Ready` and the `wcp` service never became (until now) `unhealthy` again.
 
-{{< image src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" caption="Figure I: " src-s="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" >}}
+{{< image src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" caption="Figure VIII: Cluster config status Running again" src-s="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" >}}
 
 ```shell
 kubectl get nodes
