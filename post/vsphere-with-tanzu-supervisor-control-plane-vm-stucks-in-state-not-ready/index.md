@@ -123,18 +123,19 @@ The three Supervisor Control Plane VMs can be found via the *Configure* tab and 
 
 {{< image src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" caption="Figure V: vSphere ESXi Agent Manager - List of Agency's" src-s="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" >}}
 
-But which of the three *"Agency's"* is our affected one? I've never recognized this used naming pattern before, not in the vSphere Client nor by using `kubectl` (e.g. `kubectl describe node`). I finally had a look at the summary page of the VM and the **Notes** widget enlightened me finally.
+But which of the three *"Agency's"* is our affected one? I've never recognized this used naming pattern before, not in the vSphere Client nor by using `kubectl` (e.g. `kubectl describe node`). Ultimately, I took a look at the summary page of the VM and the **Notes** widget enlightened me.
 
-> This Virtual Machine is a VMware agent implementing support for vSphere Workloads. Its lifecycle operations are managed by VMware vCenter Server. EAM Agency: vmware-vsc-apiserver-w8mqd8
+> This Virtual Machine is a VMware agent implementing support for vSphere Workloads. Its lifecycle operations are managed by VMware vCenter Server. **EAM Agency: vmware-vsc-apiserver-w8mqd8**
+
 See also *Figure VI*:
 
 {{< image src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" caption="Figure VI: Agency name displayed on Notes widget" src-s="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" >}}
 
 Having found the missing piece, I first went with the *Remove All Issues* option but it didn't solve my problem.
 
-With having in mind, that the Supervisor Cluster is a high available construct consisting of three members and it's current state is *degraded*, I checked twice if the one I picked is the right one before selecting the option *Delete Agency*.
+With having in mind, that the Supervisor Cluster is a high available construct consisting of three members and it's current *degraded* state, I checked twice if the one I picked is the right one before hitting the *Delete Agency* :red_circle: button.
 
-Immediately after the selection, the affected VM got deleted and a new one was on it's way.
+Immediately thereafter, the affected VM got deleted and a new one was on it's way.
 
 {{< image src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" caption="Figure VII: Deployment of a new *SupervisorControlPlaneVM* " src-s="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" >}}
 
