@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" />
+<meta property="og:description" content="Introduction Power outage related circumstances recently brought my vSphere with Tanzu Workload Management1 enabled homelab cluster (Supervisor Cluster) into a not desired state which of course I had to fix.
+And I do not mean that I have to protect my homelab against the next power outage by finally installing a UPS 😉.
+ Hello #vExpert&#39;s, I&#39;m looking for a recommendation regarding a ~300W #homelab suitable UPS which has a good price &amp; reliability balance." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-04-22T10:14:39&#43;02:00" />
+<meta property="article:modified_time" content="2021-04-25T16:15:44&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"/>
+<meta name="twitter:description" content="Introduction Power outage related circumstances recently brought my vSphere with Tanzu Workload Management1 enabled homelab cluster (Supervisor Cluster) into a not desired state which of course I had to fix.
+And I do not mean that I have to protect my homelab against the next power outage by finally installing a UPS 😉.
+ Hello #vExpert&#39;s, I&#39;m looking for a recommendation regarding a ~300W #homelab suitable UPS which has a good price &amp; reliability balance."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" /><link rel="prev" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.a575d2c3da101008e22d66ee32af3a65a841559b12be00de1f258ab07d02b41a.css" integrity="sha256-pXXSw9oQEAjiLWbuMq86ZahBVZsSvgDeHyWKsH0CtBo="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready\/"
+        },"genre": "posts","keywords": "April2021, Kubernetes, Tanzu, TKGs, vSphere","wordcount":  1250 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready\/","datePublished": "2021-04-22T10:14:39+02:00","dateModified": "2021-04-25T16:15:44+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-04-22">2021-04-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1250 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/v7k8s_svcp_not_ready_cover.png"
+        data-srcset="/img/v7k8s_svcp_not_ready_cover.png, /img/v7k8s_svcp_not_ready_cover.png 1.5x, /img/v7k8s_svcp_not_ready_cover.png 2x"
+        data-sizes="auto"
+        alt="/img/v7k8s_svcp_not_ready_cover.png"
+        title="/img/v7k8s_svcp_not_ready_cover.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#failed-to-get-available-workloads-bad-gateway">Failed to get available workloads: bad gateway</a></li>
+    <li><a href="#into-troubleshooting">Into troubleshooting</a>
+      <ul>
+        <li><a href="#healthstate-wcp-service-unhealthy">HealthState WCP service unhealthy</a></li>
+        <li><a href="#supervisor-control-plane-node-status-notready">Supervisor Control Plane node status <code>NotReady</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#vsphere-esxi-agent-manager">vSphere ESXi Agent Manager</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>Power outage related circumstances recently brought my vSphere with Tanzu Workload Management<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> enabled homelab cluster (Supervisor Cluster) into a not desired state which of course I had to fix.</p>
+<p>And I do not mean that I have to protect my homelab against the next power outage by finally installing a UPS 😉.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Hello <a href="https://twitter.com/hashtag/vExpert?src=hash&amp;ref_src=twsrc%5Etfw">#vExpert</a>&#39;s, I&#39;m looking for a recommendation regarding a ~300W <a href="https://twitter.com/hashtag/homelab?src=hash&amp;ref_src=twsrc%5Etfw">#homelab</a> suitable UPS which has a good price &amp; reliability balance. Thanks a lot 🙏🙂</p>&mdash; Robert Guske (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1384421366154285056?ref_src=twsrc%5Etfw">April 20, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>What I actually mean is the following&hellip;</p>
+<h2 id="failed-to-get-available-workloads-bad-gateway">Failed to get available workloads: bad gateway</h2>
+<p>The last couple of weeks I spent a lot of time using my Tanzu Kubernetes Cluster(s)<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to get my head around as well as my hands dirty on this awesome project Knative<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. More to come soon 😉. Interacting with a healthy vSphere Supervisor Cluster<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> is necessary for e.g. the provisioning of new Tanzu Kubernetes Cluster or the instantiation of vSphere Native Pods.</p>
+<p>Unfortunately, my attempt to login into mine ends quicker than expected with the error message:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl vsphere login --server<span class="o">=</span>10.10.18.10 --vsphere-username administrator@jarvis.lab --insecure-skip-tls-verify
+
+Password:
+FATA<span class="o">[</span>0004<span class="o">]</span> Failed to get available workloads: bad gateway
+Please contact your vSphere server administrator <span class="k">for</span> assistance.
+</code></pre></td></tr></table>
+</div>
+</div><p>My first instinct was to quickly have a look at the Workload Management subsection in the vSphere Client (<em>Menu &ndash;&gt; Workload Management or ctrl + alt + 7</em>) and here my suspicion that something is wrong was confirmed. The <em>Config Status</em> of my cluster <em>Malibu</em> was in <code>Configuring</code> state and the following two <em>Status Messages</em> as shown in <em>Figure I</em> were displayed.</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" data-sub-html="<h2>Figure I: Supervisor Cluster stucks in configuring state</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" />
+    </a><figcaption class="image-caption">Figure I: Supervisor Cluster stucks in configuring state</figcaption>
+    </figure>
+<p>I observed this <code>Configuring</code> state for a while longer and I was hoping it gets fixed automagically but it didn&rsquo;t.</p>
+<blockquote>
+<p>Seriously, I do believe that this is really due to various (again) circumstances which I was facing with my homelab and normally the desired state (<code>ready</code>) for the Supervisor Cluster or more specifically, for the Supervisor Control Plane VMs, will be recovered automatically.</p>
+</blockquote>
+<h2 id="into-troubleshooting">Into troubleshooting</h2>
+<h3 id="healthstate-wcp-service-unhealthy">HealthState WCP service unhealthy</h3>
+<p>The next move I did was checking the state of my Tanzu Kubernetes Cluster also via the vSphere Client but they were no longer displayed at all. Things went strange 👻.</p>
+<p>Consequently, I checked the overall health of my vCenter Server as well as the health state of the services and especially my attention was on the <code>wcp</code> service (Workload Control Plane). Checking the service state can be done in two ways:</p>
+<ol>
+<li>vCenter Appliance Management Interface aka VAMI (<em>vcenter url</em>:5480)</li>
+<li>via the <code>shell</code> - which requires an enabled and running <code>ssh</code> service on the vCenter Server Appliance</li>
+</ol>
+<p>The <code>shell</code> output was the following:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
+Name: wcp
+Starttype: AUTOMATIC
+RunState: STARTED
+RunAsUser: root
+CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">72360341</span>
+HealthState: UNHEALTHY
+FailStop: N/A
+MainProcessId: <span class="m">15679</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>HealthState: UNHEALTHY</p>
+</blockquote>
+<p>And here a little bit more coloured:</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg" data-sub-html="<h2>Figure II: vCenter Server service wcp state unhealthy</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092113.jpg" />
+    </a><figcaption class="image-caption">Figure II: vCenter Server service wcp state unhealthy</figcaption>
+    </figure>
+<p>Let&rsquo;s see if the <em>HealthState</em> will change after restarting the service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --restart wcp</span>
+Completed Restart service request.
+root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
+Name: wcp
+Starttype: AUTOMATIC
+RunState: STARTED
+RunAsUser: root
+CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">9709</span>
+HealthState: HEALTHY
+FailStop: N/A
+MainProcessId: <span class="m">46317</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>HealthState: HEALTHY</p>
+</blockquote>
+<p>Well, way better. Let&rsquo;s move on from here.</p>
+<h3 id="supervisor-control-plane-node-status-notready">Supervisor Control Plane node status <code>NotReady</code></h3>
+<p>Having the <code>wcp</code> service back in operating state led me to start over from where I began. This time logging in to my Supervisor Cluster went well and I checked the state of the three Control Plane Nodes by executing <code>kubectl get nodes</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get nodes
+NAME                               STATUS     ROLES    AGE     VERSION
+42100ed03ae877fd39716f909d57822e   NotReady   master   7d19h   v1.19.1+wcp.2
+4210a2e2fa945c1a13308fac6d00ed96   Ready      master   7d19h   v1.19.1+wcp.2
+4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready      master   7d19h   v1.19.1+wcp.2
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>Control Plane Node 1: STATUS NotReady</p>
+</blockquote>
+<p>With this new gains, I also checked the Virtual Machine state via the Remote Console and surprisingly, it seems that the power outages affected this particular Node (VM) badly. The Remote Console window was swarmed with error messages saying <code>print_req_error: I/O error, dev sda, sector ...[counting up]</code></p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png" data-sub-html="<h2>Figure III: Control Plane VM status NotReady</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png, /img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CaptureFiles-20-04-22.png" />
+    </a><figcaption class="image-caption">Figure III: Control Plane VM status NotReady</figcaption>
+    </figure>
+<p>I was also trying to figure out if there&rsquo;s a way to get this fixed on the Operating System level but there was no chance or at least there wasn&rsquo;t one for my expertise.</p>
+<h2 id="vsphere-esxi-agent-manager">vSphere ESXi Agent Manager</h2>
+<p>If the desired state cannot be recovered automatically again, what option remains?</p>
+<p>Well, there&rsquo;s always something to learn. My well appreciated colleague <a href="https://www.why-did-it.fail/" target="_blank" rel="noopener noreferrer">Dominik Zorgnotti</a> was pointing me to the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.monitoring.doc/GUID-D56ABFF4-4529-409C-9AA2-8D8D4E235601.html" target="_blank" rel="noopener noreferrer">vSphere ESXi Agent Manager (EAM)</a>, which in the end turned out to be the solution for my problem. To be honest, I never was in the situation to make use of the EAM before and therefore it wasn&rsquo;t on my radar at all but I was quite happy to get to know this component now. What it does?</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>vSphere ESX Agent Manager<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The vSphere ESX Agent Manager automates the process of deploying and managing ESX and ESXi agents, which extend the function of the host to provide additional services to a vSphere solution.</div>
+        </div>
+    </div>
+<p>You will find the EAM in the vSphere Client under <em>Menu -&gt; Administration -&gt; vCenter Server Extensions -&gt; vSphere ESXi Agent Manager</em>.</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" data-sub-html="<h2>Figure IV: vSphere ESXi Agent Manager</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" />
+    </a><figcaption class="image-caption">Figure IV: vSphere ESXi Agent Manager</figcaption>
+    </figure>
+<p>The three Supervisor Control Plane VMs can be found via the <em>Configure</em> tab and are listed in the column as <em>Agency</em> named with prefix <code>vmware-vsc-apiserver-xxxxxx</code>. By selecting the three dots besides the name, it gives us the two options <em>Delete Agency</em> as well as <em>Remove All Issues</em>. See <em>Figure V</em>.</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" data-sub-html="<h2>Figure V: vSphere ESXi Agent Manager - List of Agency&rsquo;s</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095429.jpg" />
+    </a><figcaption class="image-caption">Figure V: vSphere ESXi Agent Manager - List of Agency&rsquo;s</figcaption>
+    </figure>
+<p>But which of the three <em>&ldquo;Agency&rsquo;s&rdquo;</em> is our affected one? I&rsquo;ve never recognized this used naming pattern before, not in the vSphere Client nor by using <code>kubectl</code> (e.g. <code>kubectl describe node</code>). I finally had a look at the summary page of the VM and the <strong>Notes</strong> widget enlightened me finally.</p>
+<blockquote>
+<p>This Virtual Machine is a VMware agent implementing support for vSphere Workloads. Its lifecycle operations are managed by VMware vCenter Server. EAM Agency: vmware-vsc-apiserver-w8mqd8
+See also <em>Figure VI</em>:</p>
+</blockquote>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" data-sub-html="<h2>Figure VI: Agency name displayed on Notes widget</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095346.jpg" />
+    </a><figcaption class="image-caption">Figure VI: Agency name displayed on Notes widget</figcaption>
+    </figure>
+<p>Having found the missing piece, I first went with the <em>Remove All Issues</em> option but it didn&rsquo;t solve my problem.</p>
+<p>With having in mind, that the Supervisor Cluster is a high available construct consisting of three members and it&rsquo;s current state is <em>degraded</em>, I checked twice if the one I picked is the right one before selecting the option <em>Delete Agency</em>.</p>
+<p>Immediately after the selection, the affected VM got deleted and a new one was on it&rsquo;s way.</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" data-sub-html="<h2>Figure VII: Deployment of a new SupervisorControlPlaneVM</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_095620.jpg" />
+    </a><figcaption class="image-caption">Figure VII: Deployment of a new <em>SupervisorControlPlaneVM</em></figcaption>
+    </figure>
+<p>At the end, my cluster reached the <em>Config Status</em> <code>Running</code>, all three Nodes were <code>Ready</code> and the <code>wcp</code> service never became (until now) <code>unhealthy</code> again.</p>
+<figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" data-sub-html="<h2>Figure I:</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg"
+            data-srcset="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg 1.5x, /img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_100748.jpg" />
+    </a><figcaption class="image-caption">Figure I:</figcaption>
+    </figure>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get nodes
+NAME                               STATUS   ROLES    AGE     VERSION
+42103deb5d43d5f75f4623a336165684   Ready    master   3m37s   v1.19.1+wcp.2
+4210a2e2fa945c1a13308fac6d00ed96   Ready    master   7d20h   v1.19.1+wcp.2
+4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready    master   7d20h   v1.19.1+wcp.2
+</code></pre></td></tr></table>
+</div>
+</div><section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html" target="_blank" rel="noopener noreferrer">vSphere Workload Domain</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-DC22EA6A-E086-4CFE-A7DA-2654891F5A12.html" target="_blank" rel="noopener noreferrer">What Is a Tanzu Kubernetes Cluster?</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://www.knative.dev" target="_blank" rel="noopener noreferrer">Knative Homepage</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreferrer">Configuring and Managing a Supervisor Cluster</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-04-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/eb6bc60019c7d0c3357fe81165883251047f9008" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) eb6bc60019c7d0c3357fe81165883251047f9008: finalized post supervisorcontrolplanevm stucks in not ready state post">
+                                    <i class="fas fa-hashtag fa-fw"></i>eb6bc60</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-via="vmw_rguske" data-hashtags="April2021,Kubernetes,Tanzu,TKGs,vSphere"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/april2021/">April2021</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/tkgs/">TKGs</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" class="prev" rel="prev" title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fas fa-angle-left fa-fw"></i>VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround</a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d1b26d23ac62a6d4bfafb3292c82d97770d7585d5c60e8d254d46fd9555fc69b.js" integrity="sha256-0bJtI6xiptS/r7MpLILZd3DXWF1cYOjSVNRv2VVfxps="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
