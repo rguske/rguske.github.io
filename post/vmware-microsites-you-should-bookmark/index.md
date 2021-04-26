@@ -1,6 +1,6 @@
 # VMware Microsites You should bookmark
 
-The idea behind this post or collection was born as follows:
+The idea behind this post or collection of links was born as follows:
 
 {{< admonition quote "Quote" true >}}
 **Me:** ...it´s on vSphere Central.
@@ -28,7 +28,7 @@ I will keep this site up-to-date as good as I can.
 
 <center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
 
-## List of Microsites [<span style="color:#0037ff">Update: February 2021</span>]
+## List of Microsites [<span style="color:#0037ff">Update: April 2021</span>]
 
 ### General resources
 
@@ -42,7 +42,7 @@ I will keep this site up-to-date as good as I can.
 | Ports and Protocols             |   `https://ports.vmware.com/`     |   <a href="https://ports.vmware.com/" target="_blank">Open</a>              |
 | VMware Solution Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Open</a> |
 | VMware {code}                     |   `https://code.vmware.com/`                   |  <a href="https://code.vmware.com/" target="_blank">Open</a>                |
-| Solution Exchange                 |   `https://marketplace.vmware.com/`     |   <a href="https://marketplace.vmware.com/" target="_blank">Open</a>        |
+| VMware Marketplace | `https://marketplace.cloud.vmware.com/` | [Open](https://marketplace.cloud.vmware.com/ ) |
 | vExpert Portal                  |   `https://vexpert.vmware.com/`     |   <a href="https://vexpert.vmware.com/" target="_blank">Open</a>            |
 | VMware Certified Design Experts  |   `https://vcdx.vmware.com/`     |   <a href="https://vcdx.vmware.com/" target="_blank">Open</a>               |
 | VMware Blogs              |   `https://blogs.vmware.com/`     |   <a href="https://blogs.vmware.com/" target="_blank">Open</a>              |
@@ -56,6 +56,8 @@ I will keep this site up-to-date as good as I can.
 | VMware Core Tech Zone |   `https://core.vmware.com/`                  |   <a href="https://core.vmware.com/" target="_blank">Open</a>              |
 | VMware Cloud Services  |   `https://cloud.vmware.com/`     |   <a href="https://cloud.vmware.com/" target="_blank">Open</a>              |
 | VMware Cloud Provider             |   `https://cloudsolutions.vmware.com/`         |   <a href="https://cloudsolutions.vmware.com/" target="_blank">Open</a>     |
+| VMware Cloud Services Status Page | `https://status.vmware-services.io/` | [Open](https://status.vmware-services.io/) |
+| VMware Cloud Services - GovCloud Status Page | `https://status.gov.vmware-services.io/` | [Open](https://status.gov.vmware-services.io//) |
 
 ### VMware Application Modernization
 
@@ -76,6 +78,7 @@ I will keep this site up-to-date as good as I can.
 | :--- | :---: |---: |
 | vRealize Product Walkthroughs     |   `https://vrealize.vmware.com/`     |   <a href="https://vrealize.vmware.com/" target="_blank">Open</a>           |
 | vRealize Operations Manager Sizing|   `https://vropssizer.vmware.com/`             |  <a href="https://vropssizer.vmware.com/" target="_blank">Open</a>          |
+| vRealize Log Insight Sizing Calculator| `https://vrlisizer.vmware.com/` | [Open](https://vrlisizer.vmware.com/) |
 
 ### VMware Education
 
@@ -83,19 +86,26 @@ I will keep this site up-to-date as good as I can.
 | :--- | :---: |---: |
 | VMware Education                  |   `https://mylearn.vmware.com/`     |   <a href="https://mylearn.vmware.com/" target="_blank">Open</a>            |
 | VMware Hands-on Labs             |   `https://labs.hol.vmware.com/`     |   <a href="https://labs.hol.vmware.com/" target="_blank">Open</a>           |
+| VMware Customer Connect Learning | `https://learning.customerconnect.vmware.com` | [Open](https://learning.customerconnect.vmware.com) |
+| VMware Tanzu Developer Center Hand-On Workshops | `https://tanzu.vmware.com/developer/workshops/` | [Open](https://tanzu.vmware.com/developer/workshops/) |
+| VMware Tanzu ModernApps Ninja | `https://modernapps.ninja/` | [Open](https://modernapps.ninja/) |
+| Kubernetes Academy by VMware | `https://kubernetes.academy/` | [Open](https://kubernetes.academy/) |
+| VMware Podcasts on Soundcloud | `https://soundcloud.com/vmware` | [Open](https://soundcloud.com/vmware) |
+| Der deutschsprachige VMware Podcast | `https://der-deutschsprachige-vmware-podcast-v2.zencast.website/` | [Open](https://der-deutschsprachige-vmware-podcast-v2.zencast.website/) |
 
 ### VMware Digital Workspace (EUC)
 
 |   **Site** |   **URL** |  **Link** |
 | :--- | :---: |---: |
 | VMware Digital Workspace Tech Zone |   `https://techzone.vmware.com/`               |   <a href="https://techzone.vmware.com/" target="_blank">Open</a>           |
+| VMware WorkspaceONE Status Page | `https://status.workspaceone.com/` | [Open](https://status.workspaceone.com/) |
 
-## More VMware Sites [<span style="color:#0037ff">Update: March 2020</span>]
+## More VMware Sites [<span style="color:#0037ff">Update: April 2021</span>]
 
 |   **Site** |   **URL** |  **Link** |
 | :--- | :---: |---: |
 | App Modernization                |   `https://www.vmware.com/uk/app-modernization.html`   |   <a href="https://www.vmware.com/uk/app-modernization.html" target="_blank">Open</a>    |
-| Kubernetes Academy by VMware     |   `https://kubernetes.academy/`                        |   <a href="https://kubernetes.academy/" target="_blank">Open</a>                         |
+| VMware TAM Lab | `https://www.youtube.com/c/VMwareTAMLab` | [Open](https://www.youtube.com/c/VMwareTAMLab) |
 | VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Open</a>     |
 | VMworld On-Demand Video Library  |   `https://videos.vmworld.com/`            |   <a href="https://videos.vmworld.com/" target="_blank">Open</a>                         |
 | VMware Open Source               |   `https://github.com/vmware`                          |  <a href="https://github.com/vmware" target="_blank">Open</a>                            |
@@ -106,7 +116,17 @@ I will keep this site up-to-date as good as I can.
 
 **Change Log:**
 
-- [2021-02-12]: removed *Storagehub VMware - now unified at Core Tech Zone*
+- [2021-04-26]: added *VMware TAM Lab YouTube channel*
+- [2021-04-26]: added *VMware Podcasts on Soundcloud*
+- [2021-04-26]: added *Der deutschsprachige VMware Podcast*
+- [2021-04-26]: added *VMware Tanzu ModernApps Ninja*
+- [2021-04-26]: added *VMware Tanzu Developer Center Hand-On Workshops*
+- [2021-04-26]: added *VMware Customer Connect Learning*
+- [2021-04-26]: added *vRealize Log Insight Sizing Calculator*
+- [2021-04-26]: added *VMware Cloud Services Status Page*
+- [2021-04-26]: added *VMware Cloud Services - GovCloud Status Page*
+- [2021-04-26]: added *VMware WorkspaceONE Status Page*
+- [2021-02-12]: added *VMware Tanzu Developer Center Hand-On Workshops*
 - [2020-10-07]: added *VMware Core Tech Zone*
 - [2020-03-13]: added *App Modernization in a Multi-Cloud World*
 - [2020-03-13]: added VMware Tanzu site
