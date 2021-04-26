@@ -1,5 +1,8 @@
 # VMware Microsites You should bookmark
 
+
+<!--more-->
+
 The idea behind this post or collection of links was born as follows:
 
 {{< admonition quote "Quote" true >}}

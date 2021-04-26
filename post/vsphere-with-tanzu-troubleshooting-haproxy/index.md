@@ -1,5 +1,8 @@
 # vSphere with Tanzu - Troubleshooting HAProxy deployment
 
+
+<!--more-->
+
 ## Introduction
 
 You may have already heard and read about our latest changes regarding our Kubernetes offering(s) [vSphere with Tanzu](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C163490C-BE03-4DFE-8A03-5316D3245765.html) also former known as *vSphere with Kubernetes*. Personally, I was totally excited and full of anticipation to make my first hands-on experience with this new deployment option --> [vSphere Networking](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C3048E95-6E9D-4AC3-BE96-44446D288A7D.html) as an alternative to [NSX-T](https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-B1388E77-2EEC-41E2-8681-5AE549D50C77.html) and how HAProxy is doing it's job within this construct. I don't know how you are dealing with installations of the "NEW" but I always read the documentation first... ... not ... :speak_no_evil: ... but I should!

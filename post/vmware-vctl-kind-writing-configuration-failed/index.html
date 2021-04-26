@@ -5,24 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>VMware vctl KinD - Writing configuration failed - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="VMware vctl KinD - Writing configuration failed" />
-<meta property="og:description" content="Introduction Quote  “Everything fails all the time”
-&ndash; Werner Vogels, Amazon CTO
-   ^^But why always at the most inappropriate moments?! Just recently it happened to me, that one day before I needed my homelab for a presentation, the vSAN caching disk failed and had to be replaced.
- Nooooooooooo 😩👹 pic.twitter.com/GHELTrPeTn
-&mdash; Robert Guske (@vmw_rguske) February 23, 2021   Normally there is no real issue with loosing a caching device in a vSAN cluster but let me put it that way, I&rsquo;m really using all my given 2-node cluster resources and a potential risk of data-loss was calculated." />
+        <title>VMware vctl KinD - Writing configuration failed - Robert Guske</title><meta name="description" content="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><meta property="og:title" content="VMware vctl KinD - Writing configuration failed" />
+<meta property="og:description" content="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-03-02T10:50:00&#43;01:00" />
-<meta property="article:modified_time" content="2021-03-25T23:02:38&#43;01:00" />
+<meta property="article:modified_time" content="2021-04-26T23:26:38&#43;02:00" />
 
-<meta name="twitter:card" content="summary"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
 <meta name="twitter:title" content="VMware vctl KinD - Writing configuration failed"/>
-<meta name="twitter:description" content="Introduction Quote  “Everything fails all the time”
-&ndash; Werner Vogels, Amazon CTO
-   ^^But why always at the most inappropriate moments?! Just recently it happened to me, that one day before I needed my homelab for a presentation, the vSAN caching disk failed and had to be replaced.
- Nooooooooooo 😩👹 pic.twitter.com/GHELTrPeTn
-&mdash; Robert Guske (@vmw_rguske) February 23, 2021   Normally there is no real issue with loosing a caching device in a vSAN cluster but let me put it that way, I&rsquo;m really using all my given 2-node cluster resources and a potential risk of data-loss was calculated."/>
+<meta name="twitter:description" content="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="prev" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="next" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.a575d2c3da101008e22d66ee32af3a65a841559b12be00de1f258ab07d02b41a.css" integrity="sha256-pXXSw9oQEAjiLWbuMq86ZahBVZsSvgDeHyWKsH0CtBo="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -34,12 +28,12 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vmware-vctl-kind-writing-configuration-failed\/"
         },"genre": "posts","keywords": "March2021, Fusion, Workstation, Kubernetes, Desktop","wordcount":  1579 ,
-        "url": "https:\/\/rguske.github.io\/post\/vmware-vctl-kind-writing-configuration-failed\/","datePublished": "2021-03-02T10:50:00+01:00","dateModified": "2021-03-25T23:02:38+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vmware-vctl-kind-writing-configuration-failed\/","datePublished": "2021-03-02T10:50:00+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
-            },"description": ""
+            },"description": "VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I'm explaining in this post."
     }
     </script></head>
     <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -133,7 +127,7 @@
         data-srcset="/img/vctlissue_cover.jpg, /img/vctlissue_cover.jpg 1.5x, /img/vctlissue_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vctlissue_cover.jpg"
-        title="/img/vctlissue_cover.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+        title="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post." /></div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
                     <span><i class="details-icon fas fa-angle-right"></i></span>
@@ -579,13 +573,12 @@ kind-harbor-worker2         Ready    &lt;none&gt;                 39s   v1.20.0 
 <p><a href="https://goharbor.io/docs/1.10/install-config/installation-prereqs/" target="_blank" rel="noopener noreferrer">Harbor Installation Prerequisites</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
-</div><div class="post-footer" id="post-footer">
+</section></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-03-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/8a412473f7cac1688cfc0455bc0e456dc2622869" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 8a412473f7cac1688cfc0455bc0e456dc2622869: backup 2021-03-25">
-                                    <i class="fas fa-hashtag fa-fw"></i>8a41247</a></span>
+                <span>Updated on 2021-04-26&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/0319acd558942a83319f4b63c836dd5ad1f214c3" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 0319acd558942a83319f4b63c836dd5ad1f214c3: added a post description to every single post as well as website image for twitter">
+                                    <i class="fas fa-hashtag fa-fw"></i>0319acd</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -594,7 +587,7 @@ kind-harbor-worker2         Ready    &lt;none&gt;                 39s   v1.20.0 
                             <a class="link-to-markdown" href="/post/vmware-vctl-kind-writing-configuration-failed/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-via="vmw_rguske" data-hashtags="March2021,Fusion,Workstation,Kubernetes,Desktop"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-via="vmw_rguske" data-hashtags="March2021,Fusion,Workstation,Kubernetes,Desktop"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-trello fa-fw"></i></a></span>
             </div>
         </div>
     </div>

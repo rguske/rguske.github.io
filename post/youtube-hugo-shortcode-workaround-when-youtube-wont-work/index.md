@@ -1,6 +1,9 @@
 # Youtube Hugo-Shortcode workaround - when {{< youtube >}} won´t work
 
+
 Inspired by a recent post from my friend, <a href="https://gohugo.io/" target="_blank">(Go)Hugo</a> and Git mentor <a href="https://twitter.com/embano1" target="_blank">Michael Gasch</a> :wink:, where he describes how he fixed the Hugo <a href="https://gohugo.io/content-management/shortcodes/" target="_blank">Shortcode</a> for Twitter to suppress the default thread view, it came to my mind immediately that I faced a similar issue when I started blogging with the Shortcode which embeds a Youtube-Video into your post.
+
+<!--more-->
 
 See how Michael fixed the normal behavior for the Twitter Shortcode `{{</* tweet */>}}` here...
 

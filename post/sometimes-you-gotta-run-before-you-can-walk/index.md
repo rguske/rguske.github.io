@@ -1,5 +1,8 @@
 # Sometimes you gotta run before you can walk
 
+
+<!--more-->
+
 ...and the first lines are the main ones when you´re working on your first post.
 Many, many thoughts had been running through my head before I decided to write a blog…“Where to start?”…“Is it just another blog?”…and the most frightening idea…“What if YOU, the reader, don´t like what I´m writing about?”
 

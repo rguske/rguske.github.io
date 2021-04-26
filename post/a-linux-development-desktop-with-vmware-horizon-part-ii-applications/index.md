@@ -1,6 +1,8 @@
 # A Linux Development Desktop with VMware Horizon - Part II: Applications 
 
 
+<!--more-->
+
 ## Applications
 
 In this section I´m going to list a couple of applications which I´m using for my desktop and how you can easily install them from your shell. Of course, it´s not a must and it´s up to you which of them you´d like to install.

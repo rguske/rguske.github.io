@@ -1,5 +1,8 @@
 # VMware Enterprise PKS Management Console (EPMC) - Day 2
 
+
+<!--more-->
+
 In the <a href="https://rguske.github.io/post/pks-management-console-day-1/" target="_blank">previous blog post</a> we went through the Day-1 capabilities of the new version of the Enterprise PKS Management Console (EPMC). Let´s have a look at what´s in for **Day-2**.
 
 ## Summary Page

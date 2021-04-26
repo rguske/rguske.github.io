@@ -1,5 +1,8 @@
 # VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition
 
+
+<!--more-->
+
 ...and thus also the Enterprise PKS Management Console (EPMC), which is now inferring named as **Tanzu Kubernetes Grid Integrated Edition Management Console (TKGIMC)**.
 
 {{< admonition quote "" true >}}

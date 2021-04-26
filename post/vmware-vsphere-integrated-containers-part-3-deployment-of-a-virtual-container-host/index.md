@@ -1,6 +1,11 @@
 # vSphere Integrated Containers Part III: Deployment of a Virtual Container Host
 
-In this part I´d like to guide you through the Deployment of a **Virtual Container Host** aka **VCH**. I definitely don ́t want to make it a habit to use already written descriptions, but this one described it very well, thus I had like to quote this:
+
+In this part I´d like to guide you through the Deployment of a **Virtual Container Host** aka **VCH**. 
+
+<!--more-->
+
+I definitely don ́t want to make it a habit to use already written descriptions, but this one described it very well, thus I had like to quote this:
 
 {{< admonition quote "" true >}}
 *A VCH is the virtual functional equivalent of a Linux VM running Docker. From a Docker client point of view, the Virtual Container Host looks very similar to a native Docker host. Hence, there are differences between a native Docker host and a Virtual Container Host (VCH), and between a Linux container and a container VM.*

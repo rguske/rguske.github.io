@@ -1,6 +1,8 @@
 # vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid
 
 
+<!--more-->
+
 I recently had to prepare my homelab for a customer workshop to demo our new Tanzu Runtime & Hybrid Infrastructure Services. This includes e.g. the deployment of a Tanzu Kubernetes Grid Cluster on vSphere (TKG Service), the enterprise cloud native registry Harbor as well as the instantiation of a native Pod on vSphere (vSphere Pod Service).
 
 {{< image src="/img/posts/202007_harborontkg/CapturFiles-20200715_083742.jpg" caption="Figure I: Tanzu Runtime & Hybrid Infrastructure Services" src-s="/img/posts/202007_harborontkg/CapturFiles-20200715_083742.jpg" class="center" >}}

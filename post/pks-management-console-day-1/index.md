@@ -1,5 +1,8 @@
 # VMware Enterprise PKS Management Console (EPMC) - Day 1
 
+
+<!--more-->
+
 {{< admonition info "Info" true >}}
 VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition
 

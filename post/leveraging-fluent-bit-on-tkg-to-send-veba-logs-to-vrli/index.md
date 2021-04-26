@@ -1,5 +1,8 @@
 # Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight
 
+
+<!--more-->
+
 ## Introduction
 
 With the recent v0.5 release of the [VMware Event Broker Appliance (VEBA)](https://vmweventbroker.io) project, the ability of deploying the core component, the [VMware Event Router](https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router), via a Helm chart to an existing Kubernetes cluster was introduced. [William Lam](https://twitter.com/lamw) introduced this and all the other great new features and enhancements in his corresponding [blog post](https://www.virtuallyghetto.com/2020/12/vcenter-event-broker-appliance-veba-v0-5-0.html). This earned very positive feedback from the community and opens even more doors in terms of flexibility as well as extensibility.

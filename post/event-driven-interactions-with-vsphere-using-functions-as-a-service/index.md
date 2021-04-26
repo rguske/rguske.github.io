@@ -1,5 +1,8 @@
 # Event-driven interactions with vSphere using Functions as a Service
 
+
+<!--more-->
+
 {{< admonition note "Note" true >}}
 I am very happy to inform you that the below described idea has become a VMware Fling (completely OpenSource).
 

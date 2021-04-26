@@ -1,5 +1,8 @@
 # vSphere Integrated Containers Part I: OVA Deployment
 
+
+<!--more-->
+
 ## Environment Pre-Requisites
 
 - vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)

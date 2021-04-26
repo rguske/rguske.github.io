@@ -1,6 +1,11 @@
 # vSphere Integrated Containers Part II: vSphere Client Plug-In
 
-In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0. In general, it is important to know that a minimum version of vCenter Server 6.5.0d is required to make use of the plug-in.
+
+In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0.
+
+<!--more-->
+
+In general, it is important to know that a minimum version of vCenter Server 6.5.0d is required to make use of the plug-in.
 
 However! It is also worth to be mentioned that the plug-in is not necessary or a requirement to run VIC as well as for the deployment of a Virtual Container Host aka **VCH**. But it makes the initial deployment of a VCH easier at the first beginning until you are more and more familiar with the vic-machine utility.
 The first step from the installation of the vSphere Client Plug-In is to download the vic-machine-bundle from the VIC-Appliance by using <a href="https://en.wikipedia.org/wiki/CURL" target="_blank">`curl`</a>.

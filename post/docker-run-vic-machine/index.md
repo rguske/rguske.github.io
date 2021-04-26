@@ -1,5 +1,8 @@
 # docker run vic-machine
 
+
+<!--more-->
+
 ## Introduction
 
 The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard.

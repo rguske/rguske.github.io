@@ -1,6 +1,8 @@
 # VMware Event Broker Appliance - vSphere HA Event Notification Function
 
 
+<!--more-->
+
 ## Community
 
 I recently had the pleasure to suppport a member out of the [VMware Event Broker Appliance (VEBA) Slack Community](https://vmwarecode.slack.com/archives/CQLT9B5AA) with his function example contribution to the [VEBA](https://vmweventbroker.io/) project. His name is Bob. He introduced his Powershell/ PowerCLI function on a remote session to me and I was immediately thrilled about what the function does. It covers a use case that one of my customers brought up some time ago when I first introduced VEBA to them.

@@ -1,5 +1,8 @@
 # A Linux Development Desktop with VMware Horizon - Part I: Horizon
 
+
+<!--more-->
+
 ## The Universal Workbench
 
 I often thought about writing down my experiences on the topics of *Jumphosts*, *Shell-modifications* and *useful tools* in a series of blog posts, but I hadn´t found the right moment, until I saw the following Tweet, where Alex asked his followers how they get access to a Linux system if they aren´t running Linux on their workstation (locally).

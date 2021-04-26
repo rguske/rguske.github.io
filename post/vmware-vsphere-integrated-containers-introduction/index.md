@@ -1,5 +1,8 @@
 # VMware vSphere Integrated Containers: Introduction
 
+
+<!--more-->
+
 I´m very keen on everything related to Cloud-Native and all topics around the decoupling of a process from the underlying operating system and as well much more on the infrastructure underneath in order to run those distributed systems, which are the result by the end of the day.
 
 For me personally, it became so present in 2016 for the first time and far more when I decided to work for VMware. Did you know that VMware is a huge contributor to Open Source Projects and a Platinum Member at the Cloud Native Computing Foundation - <a href="https://www.cncf.io/about/members/" target="_blank">CNCF</a>? You´ll find an overview of our open source projects <a href="https://vmware.github.io/" target="_blank"> here</a>.

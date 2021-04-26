@@ -1,5 +1,8 @@
 # A practitioner's guide - Spin up a local VEBA environment with KinD and vCenter simulator
 
+
+<!--more-->
+
 ## Introduction
 
 In my previous blog post I took *[A closer look at VMware's Project Nautilus](https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/)* and went through some of the implementation details (Fusion 12). I described how it provides a single development platform on the desktop by enabling you to run, build and manage [OCI](https://opencontainers.org/) compliant Containers as well as how easy it is now to instantiate Kubernetes Clusters besides Virtual Machines.

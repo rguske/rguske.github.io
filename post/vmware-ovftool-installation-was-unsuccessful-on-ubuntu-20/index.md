@@ -1,6 +1,8 @@
 # VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround
 
 
+<!--more-->
+
 ## Introduction
 
 The VMware OVF Tool [^1] is a powerful cli utility with which you can import and export Open Virtualization Format (OVF) packages to and from various VMware products. It's e.g. used for the creation of several awesome VMware Fling projects like the Demo Appliance for Tanzu Kubernetes Grid [^2], the VMware Appliance for Folding@Home [^3] as well as for the VMware Event Broker Appliance [^4]. Also non-fling open source projects like e.g. the Netshoot Virtual Appliance [^5] using the `ovftool` in their appliance build process. William Lam blogged about it several times in the past and you could use this as a great reference for the tool [^6].

@@ -1,5 +1,8 @@
 # vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady
 
+
+<!--more-->
+
 ## Introduction
 
 Power outage related circumstances recently brought my vSphere with Tanzu Workload Management[^1] enabled homelab cluster (Supervisor Cluster) into a not desired state which of course I had to fix.
