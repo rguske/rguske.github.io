@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Hands on the Avi Kubernetes Operator (AKO) - Robert Guske</title><meta name="description" content="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer."><meta property="og:title" content="Hands on the Avi Kubernetes Operator (AKO)" />
+<meta property="og:description" content="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-30T11:00:59&#43;02:00" />
+<meta property="article:modified_time" content="2021-07-30T11:00:59&#43;02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="Hands on the Avi Kubernetes Operator (AKO)"/>
+<meta name="twitter:description" content="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.252ceac3394227a2af376c36717723a87800c0d014eaee6f31c0b339ae192a78.css" integrity="sha256-JSzqwzlCJ6KvN2w2cXcjqHgAwNAU6u5vMcCzOa4ZKng="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Hands on the Avi Kubernetes Operator (AKO)",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer\/"
+        },"genre": "posts","keywords": "July2021, Helm, Kubernetes, Tanzu, NSX, Avi","wordcount":  3013 ,
+        "url": "https:\/\/rguske.github.io\/post\/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer\/","datePublished": "2021-07-30T11:00:59+02:00","dateModified": "2021-07-30T11:00:59+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware's Next Gen Load Balancer."
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Hands on the Avi Kubernetes Operator (AKO)</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw"></i>Open Source</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-30">2021-07-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3013 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;15 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/handsonako_cover.jpg"
+        data-srcset="/img/handsonako_cover.jpg, /img/handsonako_cover.jpg 1.5x, /img/handsonako_cover.jpg 2x"
+        data-sizes="auto"
+        alt="/img/handsonako_cover.jpg"
+        title="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer." /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#vmug-usercon-2021">VMUG UserCon 2021</a></li>
+    <li><a href="#may-i-introduce---the-avi-kubernetes-operator">May I introduce - The Avi Kubernetes Operator</a></li>
+    <li><a href="#deploy-the-ako-via-helm">Deploy the AKO via Helm</a>
+      <ul>
+        <li><a href="#1-add-the-ako-repo">1. Add the AKO repo</a></li>
+        <li><a href="#2-deploy-ako-on-kubernetes">2. Deploy AKO on Kubernetes</a>
+          <ul>
+            <li><a href="#method-1-using-the-valuesyaml-file-as-your-configuration-source-of-truth">Method 1: Using the <code>values.yaml</code> file as your configuration source of truth</a></li>
+            <li><a href="#method-2-pass-over-all-configuration-parameters-directly-via-helm">Method 2: Pass over all configuration parameters directly via <code>helm</code></a></li>
+          </ul>
+        </li>
+        <li><a href="#3-validate-the-deployment">3. Validate the deployment</a>
+          <ul>
+            <li><a href="#additionally-uninstalling-the-ako">Additionally: Uninstalling the AKO</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#configure-a-subdomain-delegation-in-nsx-alb">Configure a Subdomain Delegation in NSX-ALB</a>
+      <ul>
+        <li><a href="#the-nsx-alb-part---virtual-service-for-dns">The NSX-ALB part - Virtual Service for DNS</a>
+          <ul>
+            <li><a href="#dns-profile">DNS Profile</a></li>
+            <li><a href="#create-a-virtual-service-for-dns">Create a Virtual Service for DNS</a></li>
+            <li><a href="#dns-service-in-avi-vantage">DNS Service in Avi Vantage</a></li>
+          </ul>
+        </li>
+        <li><a href="#the-windows-server-part---new-delegation">The Windows Server part - New Delegation</a></li>
+      </ul>
+    </li>
+    <li><a href="#layer-4-load-balancing--type-loadbalancer">Layer 4 Load Balancing | <code>type: LoadBalancer</code></a>
+      <ul>
+        <li><a href="#demo-1-web-app-deployment-with-l4-service">Demo #1: Web App deployment with L4 Service</a></li>
+      </ul>
+    </li>
+    <li><a href="#layer-7-load-balancing--type-ingress">Layer 7 Load Balancing | <code>type: Ingress</code></a>
+      <ul>
+        <li><a href="#ako-is-also-an-ingress-controller">AKO is also an Ingress Controller</a></li>
+        <li><a href="#demo-2-web-app-deployment-with-l7-service">Demo #2: Web App deployment with L7 Service</a></li>
+      </ul>
+    </li>
+    <li><a href="#advanced-analytics-in-nsx-alb">Advanced Analytics in NSX-ALB</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="vmug-usercon-2021">VMUG UserCon 2021</h2>
+<p>It was this exiting time of the year again where lots of great <a href="https://www.vmug.com/home" target="_blank" rel="noopener noreferrer">VMware User Group</a> events happened around the globe and this year, I had the pleasure to present two topics at the VMUG UserCon DACH (🇩🇪 🇦🇹 🇨🇭). One of the sessions had the title &ldquo;<em><strong>NSX Advanced Load Balancer (Avi) - Next Gen Load Balancer for Next Gen (&amp; Traditional) Apps</strong></em>&rdquo;. This was my first session in which I teamed up for a presentation and I was very happy to have it done with no one else than <a href="https://twitter.com/0x86DD" target="_blank" rel="noopener noreferrer">James Lepthien</a>, a luminary in networking.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Next up <a href="https://twitter.com/vmw_rguske?ref_src=twsrc%5Etfw">@vmw_rguske</a> and <a href="https://twitter.com/0x86DD?ref_src=twsrc%5Etfw">@0x86DD</a> at DACH <a href="https://twitter.com/hashtag/UserCon?src=hash&amp;ref_src=twsrc%5Etfw">#UserCon</a> <br>about AVI Loadbalancer<a href="https://twitter.com/hashtag/NSX?src=hash&amp;ref_src=twsrc%5Etfw">#NSX</a> <a href="https://twitter.com/hashtag/Kubernetes?src=hash&amp;ref_src=twsrc%5Etfw">#Kubernetes</a> <a href="https://t.co/veccoK4Fkj">pic.twitter.com/veccoK4Fkj</a></p>&mdash; Michael Schroeder - Microlytix 🇪🇺 (@microlytix) <a href="https://twitter.com/microlytix/status/1417449553364721679?ref_src=twsrc%5Etfw">July 20, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>James and I prepared two demos for our session and both rest on the <a href="https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/README.md" target="_blank" rel="noopener noreferrer">Avi Kubernetes Operator - AKO</a>. Our goal was to demonstrate L4 and L7 enterprise-grade app services of VMware&rsquo;s software-defined <a href="https://www.vmware.com/products/nsx-advanced-load-balancer.html" target="_blank" rel="noopener noreferrer">NSX Advanced Load Balancer</a> as well as the simplicity when it is used for Kubernetes based application deployments.</p>
+<h2 id="may-i-introduce---the-avi-kubernetes-operator">May I introduce - The Avi Kubernetes Operator</h2>
+<p>The Avi Kubernetes Operator is this necessary entity which has to be installed on a Kubernetes cluster to translate the <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/" target="_blank" rel="noopener noreferrer">Kubernetes Objects</a> to Avi objects and automates the implementation of L4 and L7 services on the Service Engines (SE) via the Avi Controller API. As the name suggests, the AKO is a Kubernetes Operator and runs as a stateless POD within the cluster. It&rsquo;s onward Kubernetes 1.16 supported <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<h2 id="deploy-the-ako-via-helm">Deploy the AKO via Helm</h2>
+<p>The deployment is made easy by using Helm (v3)<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> for it. Of course it requires an already existing NSX Advanced Load Balancer deployment, which e.g. comes as a deployment option for the <a href="https://core.vmware.com/blog/vsphere-tanzu-nsx-advanced-load-balancer-essentials" target="_blank" rel="noopener noreferrer">vSphere with Tanzu</a> solution. I won&rsquo;t cover the deployment of the Avi Controller in this post but be sure, lot&rsquo;s of great content already exists which will serve you well. However, what I can do, is to recommend the usage of this awesome Fling: <a href="https://nicovibert.com/2021/04/09/new-fling-easy-deploy-for-nsx-load-balancing-a-k-a-easyavi/" target="_blank" rel="noopener noreferrer">New Fling: Easy Deploy for NSX Load Balancing a.k.a EasyAvi</a>.</p>
+<p>Presuming that you have an Avi Controller instance running and vSphere is configured as your Default Cloud, we will kick of the tires now.</p>
+<h3 id="1-add-the-ako-repo">1. Add the AKO repo</h3>
+<p>To have the ability to deploy the AKO version of our choice (mostly the latest), we have to add the Helm repository first.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">helm repo add ako https://projects.registry.vmware.com/chartrepo/ako
+</code></pre></td></tr></table>
+</div>
+</div><p>As of writing this post, version 1.4.2 is the latest available version.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">helm search repo ako/ako --versions
+
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+ako/ako                 1.4.2           1.4.2           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.4.1           1.4.1           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.3.4           1.3.4           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.3.3           1.3.3           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.3.1           1.3.1           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.2.3           1.2.3           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.2.2           1.2.2           A helm chart for Avi Kubernetes Operator
+ako/ako                 1.2.1           1.2.1           A helm chart for Avi Kubernetes Operator
+ako/ako-operator        1.3.1           1.3.1           A Helm chart for Kubernetes AKO Operator
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-deploy-ako-on-kubernetes">2. Deploy AKO on Kubernetes</h3>
+<p>To get the AKO into the desired operating state, it is necessary to hand over the appropriate configuration parameters as a Kubernetes Configmap as well as Secret, to our Kubernetes Cluster. This can be done in two ways.</p>
+<h4 id="method-1-using-the-valuesyaml-file-as-your-configuration-source-of-truth">Method 1: Using the <code>values.yaml</code> file as your configuration source of truth</h4>
+<p>The command <code>helm show values ako/ako --version 1.4.2 &gt; values.yaml</code> will create the <code>values.yaml</code> file into the folder in which you are currently in (<code>pwd</code>). Open the file and adjust the parameters accordingly to your setup:</p>
+<ul>
+<li>Avi Controller <code>ControllerSettings.controllerHost=''</code></li>
+<li>Avi Controller Version <code>ControllerSettings.controllerVersion=''</code></li>
+<li>The Log Level (INFO, WARN, ERROR, DEBUG) <code>AKOSettings.logLevel=''</code></li>
+<li>Username for the Avi Controller <code>avicredentials.username=''</code></li>
+<li>Password for the User <code>avicredentials.password=''</code></li>
+<li>Virtual IP network for the Virtual Service <code>NetworkSettings.subnetIP=''</code></li>
+<li>Virtual IP network subnetmask <code>NetworkSettings.subnetPrefix=''</code></li>
+<li>Virtual IP network name (dPG) <code>NetworkSettings.networkName=''</code></li>
+<li>Name of your IaaS Cloud <code>ControllerSettings.cloudName=''</code></li>
+<li>Name of the Service Engine Group <code>ControllerSettings.serviceEngineGroupName=''</code></li>
+<li>Name of your Kubernetes Cluster <code>AKOSettings.clusterName=''</code></li>
+<li><code>AKOSettings.cniPlugin=''</code></li>
+<li>Optional: Define the AKO function mode (default is <code>ClusterIP</code>) <code>L7Settings.serviceType=''</code></li>
+</ul>
+<p>The description for the specific parameters/ tunables can be studied here: <a href="https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/values.md" target="_blank" rel="noopener noreferrer">TUNABLES</a>.</p>
+<p>Save your adjusted configuration for now and create the namespace for the AKO first.</p>
+<p><code>kubectl create ns avi-system</code></p>
+<p>Finally install the AKO:</p>
+<p><code>helm install ako/ako --generate-name --version 1.4.2 -f values.yaml --namespace=avi-system</code></p>
+<h4 id="method-2-pass-over-all-configuration-parameters-directly-via-helm">Method 2: Pass over all configuration parameters directly via <code>helm</code></h4>
+<p>This method is propably the way to go if you like to automate the AKO deployment. Just replace my used values with yours.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">helm install ako/ako  \
+--generate-name \
+--version 1.4.2 \
+--set ControllerSettings.controllerHost=&#39;avi-ctrl.jarvis.lab&#39; \
+--set ControllerSettings.controllerVersion=&#39;20.1.5&#39; \
+--set AKOSettings.logLevel=&#39;WARNING&#39; \
+--set avicredentials.username=&#39;admin&#39; \
+--set avicredentials.password=&#39;VMware1!&#39; \
+--set NetworkSettings.subnetIP=&#39;10.10.18.0&#39; \
+--set NetworkSettings.subnetPrefix=&#39;26&#39; \
+--set NetworkSettings.networkName=&#39;dpg-sedatapath-18&#39; \
+--set ControllerSettings.cloudName=&#39;Default-Cloud&#39; \
+--set ControllerSettings.serviceEngineGroupName=&#39;vmug-se-group&#39; \
+--set AKOSettings.clusterName=&#39;veba-of&#39; \
+--set L7Settings.serviceType=&#39;NodePort&#39; \
+--namespace=avi-system
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-validate-the-deployment">3. Validate the deployment</h3>
+<p>Directly after firing up the <code>helm install</code> command, you should see:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">NAME: ako-1627467371
+LAST DEPLOYED: Wed Jul 28 12:16:11 2021
+NAMESPACE: avi-system
+STATUS: deployed
+REVISION: 1
+</code></pre></td></tr></table>
+</div>
+</div><p>Furthermore, you can check your helm deployments (all or specific ones) by using <code>helm list</code> and with appending the respective namespace.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">helm list -n avi-system
+
+NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART           APP VERSION
+ako-1627467371  avi-system      1               2021-07-28 12:16:11.301093764 +0200 CEST        deployed        ako-1.3.1       1.3.1
+</code></pre></td></tr></table>
+</div>
+</div><p>And numero tres - The validation with <code>kubectl</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n avi-system get po,secret,configmap
+
+NAME        READY   STATUS    RESTARTS   AGE
+pod/ako-0   1/1     Running   0          10m
+
+NAME                                          TYPE                                  DATA   AGE
+secret/ako-sa-token-cvjx5                     kubernetes.io/service-account-token   3      10m
+secret/avi-secret                             Opaque                                2      10m
+secret/default-token-5kx5g                    kubernetes.io/service-account-token   3      27d
+secret/sh.helm.release.v1.ako-1627481569.v1   helm.sh/release.v1                    1      10m
+
+NAME                         DATA   AGE
+configmap/avi-k8s-config     32     10m
+configmap/kube-root-ca.crt   1      27d
+</code></pre></td></tr></table>
+</div>
+</div><p>Of course, it&rsquo;s always helpful and enlightend to check the logs of the fresh deployed pod, to get first impressions if everything is working as expected.</p>
+<p><strong>Pro Tip</strong>: Make use of <code>cli</code> tools which makes your life easier on the shell. I&rsquo;m using <a href="https://github.com/derailed/k9s" target="_blank" rel="noopener noreferrer">k9s</a> a lot to check my Kubernetes poppy&rsquo;s as well as <a href="https://github.com/wercker/stern" target="_blank" rel="noopener noreferrer">stern</a> for a greater log view.</p>
+<p><strong>K9s:</strong></p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg" data-sub-html="<h2>Figure I: Kubernetes Cluster Management with K9s</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_021045.jpg" />
+    </a><figcaption class="image-caption">Figure I: Kubernetes Cluster Management with K9s</figcaption>
+    </figure>
+<h4 id="additionally-uninstalling-the-ako">Additionally: Uninstalling the AKO</h4>
+<p>Uninstalling AKO is as simple as the installtion. Just use the full name of the <code>helm</code> deployment and execute it as follows: <code>helm uninstall ako-1627467371 -n avi-system</code>.</p>
+<h2 id="configure-a-subdomain-delegation-in-nsx-alb">Configure a Subdomain Delegation in NSX-ALB</h2>
+<h3 id="the-nsx-alb-part---virtual-service-for-dns">The NSX-ALB part - Virtual Service for DNS</h3>
+<p>Before heading to my first demo example, it&rsquo;s worth to stop by the setup and configuration of DNS Provider in Avi Vantage. This allows us to make Kubernetes Services (e.g. <code>type: LoadBalancer</code>) reachable via a resolvable DNS name by using a delegated subdomain configuration with a specified DNS Service Domain name which is or which are (in case of multiple) configured in the Avi DNS Profile.</p>
+<p>I followed the documentation to setup the DNS Service: <a href="https://avinetworks.com/docs/20.1/dns-provider-avi-vantage/" target="_blank" rel="noopener noreferrer">DNS Provider (Avi Vantage)</a></p>
+<p>Parent topic: <a href="https://avinetworks.com/docs/20.1/avi-dns-architecture/" target="_blank" rel="noopener noreferrer">Avi DNS Architecture and Features</a></p>
+<p><em>Figure I, II and III</em> gives you an idea on how it will look like by configuring it.</p>
+<h4 id="dns-profile">DNS Profile</h4>
+<ol>
+<li>Templates -&gt; Profiles -&gt; IPAM/DNS Profiles</li>
+</ol>
+<p>Create a new DNS Profile and configure the DNS Service Domain(s).</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg" data-sub-html="<h2>Figure II: DNS Profile in Avi Vantage</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_030128.jpg" />
+    </a><figcaption class="image-caption">Figure II: DNS Profile in Avi Vantage</figcaption>
+    </figure>
+<h4 id="create-a-virtual-service-for-dns">Create a Virtual Service for DNS</h4>
+<ol start="2">
+<li>Applications -&gt; Virtual Services -&gt; Create Virtual Service</li>
+</ol>
+<p>Create a new DNS Virtual Service which will host FQDN records for your applications .</p>
+<ul>
+<li>Uncheck <em>Auto Allocate</em></li>
+<li>Assign a static IP Address</li>
+<li>Set <em>Application Profile</em> to System-DNS</li>
+<li>Set <em>Services</em> to port 53</li>
+</ul>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg" data-sub-html="<h2>Figure III: Virtual Service for DNS</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_024037.jpg" />
+    </a><figcaption class="image-caption">Figure III: Virtual Service for DNS</figcaption>
+    </figure>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>DNS A-Reord for this new Virtual Service<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">Don&rsquo;t forget to configure the DNS A-Record for the new created Virtual Service on your DNS Server!</div>
+        </div>
+    </div>
+<h4 id="dns-service-in-avi-vantage">DNS Service in Avi Vantage</h4>
+<ol start="3">
+<li>Administration -&gt; Settings -&gt; DNS Service</li>
+</ol>
+<p>Finally, select the new DNS Virtual Service in your Avi Vantage system settings.</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg" data-sub-html="<h2>Figure IV: Select the configured DNS Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_031204.jpg" />
+    </a><figcaption class="image-caption">Figure IV: Select the configured DNS Service</figcaption>
+    </figure>
+<p>Test if you can resolve the DNS name of the created VS:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">dig avi-dns.avi.jarvis.lab
+
+; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.15-Ubuntu &lt;&lt;&gt;&gt; avi-dns.avi.jarvis.lab
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 54355
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;avi-dns.avi.jarvis.lab.                IN      A
+
+;; ANSWER SECTION:
+avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
+
+;; Query time: 1 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53)
+;; WHEN: Wed Jul 28 15:16:32 CEST 2021
+;; MSG SIZE  rcvd: 67
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="the-windows-server-part---new-delegation">The Windows Server part - New Delegation</h3>
+<p>On the Windows Server (if you are using a Windows Server for your Domain Services) you have to add a <em>New Delegation</em> to your DNS configuration. It&rsquo;s straight forward.</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg" data-sub-html="<h2>Figure V: New Delegation</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_023625.jpg" />
+    </a><figcaption class="image-caption">Figure V: New Delegation</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg" data-sub-html="<h2>Figure VI: Configured Delegation for DNS</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_023817.jpg" />
+    </a><figcaption class="image-caption">Figure VI: Configured Delegation for DNS</figcaption>
+    </figure>
+<p>Having done this, Avi Vantage DNS will be serving records for these particular domain(s).</p>
+<p>Next - <strong>Demo time</strong> 👨‍💻</p>
+<h2 id="layer-4-load-balancing--type-loadbalancer">Layer 4 Load Balancing | <code>type: LoadBalancer</code></h2>
+<p>Our first demo was basic Kubernetes magic and covered the deployment of a web application which had a Kubernetes Service <code>type: LoadBalancer</code> configured. The deployment will request a VIP from the Avi Service Engine through the AKO, to make our app reachable via <code>http</code>(port: 80).</p>
+<p>The following slide was used to visualize and explain what we&rsquo;ve demoed (start with <em>Helm</em>):</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/layer4service.jpg" title="/img/posts/202107_handsonako/layer4service.jpg" data-thumbnail="/img/posts/202107_handsonako/layer4service.jpg" data-sub-html="<h2>Figure VII: Overview Demo 1 - Layer-4 Load Balancing</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/layer4service.jpg"
+            data-srcset="/img/posts/202107_handsonako/layer4service.jpg, /img/posts/202107_handsonako/layer4service.jpg 1.5x, /img/posts/202107_handsonako/layer4service.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/layer4service.jpg" />
+    </a><figcaption class="image-caption">Figure VII: Overview Demo 1 - Layer-4 Load Balancing</figcaption>
+    </figure>
+<p>The cool thing even though is, that we made use of a pretty nice feature from the NSX-ALB which is called <em>Auto FQDN</em> (<code>L4Settings.autoFQDN</code>). This feature is used to control how the layer 4 service of type Loadbalancer&rsquo;s FQDN is generated. This tunable can also be configured via the <code>value.yaml</code> file or directly used as a <code>--set</code> configuration for the <code>helm install</code> CLI:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">### This section outlines all the knobs used to control Layer 4 loadbalancing settings in AKO.</span><span class="w">
+</span><span class="w"></span><span class="nt">L4Settings</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">autoFQDN: default   # ENUM</span><span class="p">:</span><span class="w"> </span><span class="l">default(&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;), flat (&lt;svc&gt;-&lt;ns&gt;.&lt;subdomain&gt;), &#34;disabled&#34; If the value is disabled then the FQDN generation is disabled.</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>As you can read from the description, the generated FQDN will have the following structure by default: <code>&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;</code>. Let&rsquo;s validate the generation of the FQDN by deploying the demo web application <code>hackazon</code>, which simulates an e-commerce shop. This application was deployed into a seperate namespace named <code>vmug</code> (<code>kubectl create ns vmug</code>).</p>
+<h3 id="demo-1-web-app-deployment-with-l4-service">Demo #1: Web App deployment with L4 Service</h3>
+<ul>
+<li><strong>Application specification:</strong> <code>kind: Deployment</code> + <code>kind: Service</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">kubectl -n vmug create -f - &lt;&lt;EOF</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>kubectl</code> validation of the deployment:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n vmug get deploy,po,svc
+
+NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/avitest-deployment   2/2     2            2           23m
+
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/avitest-deployment-66645bdb9b-nw9f2   1/1     Running   0          23m
+pod/avitest-deployment-66645bdb9b-r5c84   1/1     Running   0          23m
+
+NAME                TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+service/avisvc-lb   LoadBalancer   10.98.85.14   10.10.18.15   80:31851/TCP   23m
+</code></pre></td></tr></table>
+</div>
+</div><p>The Controller Management GUI (Avi Vantage) is showing that the Virtual Service is up and provided by the Service Engine Group <code>vmug-se-group</code> which I&rsquo;ve defined at the deployment of the AKO (<code>--set ControllerSettings.serviceEngineGroupName='vmug-se-group'</code>).</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" data-sub-html="<h2>Figure VIII: Overview and health state SE&rsquo;s, vSphere DPG, VIP</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" />
+    </a><figcaption class="image-caption">Figure VIII: Overview and health state SE&rsquo;s, vSphere DPG, VIP</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg" data-sub-html="<h2>Figure IX: Virtual Service Details</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg, /img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210728_112536.jpg" />
+    </a><figcaption class="image-caption">Figure IX: Virtual Service Details</figcaption>
+    </figure>
+<p><em>Figure IX</em> is showing that the <code>autoFQDN</code> feature generated an App Domain Name (remember <code>&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;</code>), which is <code>avisvc-lb.vmug.avi.jarvis.lab</code>, and on which our application is now reachable at via <code>http</code>.</p>
+<p>I would like to spare you another screenshot and use a <code>curl</code> output instead of:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -I http://avisvc-lb.vmug.avi.jarvis.lab
+
+HTTP/1.1 200 OK
+Date: Wed, 28 Jul 2021 21:40:46 GMT
+Server: Apache/2.4.7 (Ubuntu)
+X-Powered-By: PHP/5.5.9-1ubuntu4.11
+Set-Cookie: PHPSESSID=j174pd3706i2cm6ecemdv0g0k1; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-Length: 64734
+Content-Type: text/html; charset=utf-8
+</code></pre></td></tr></table>
+</div>
+</div><p><code>HTTP/1.1 200 OK</code> The app is reachable via it&rsquo;s App Domain Name.</p>
+<p><strong>Onto Demo #2!</strong></p>
+<h2 id="layer-7-load-balancing--type-ingress">Layer 7 Load Balancing | <code>type: Ingress</code></h2>
+<p>In this second demo, James and I wanted to show the Layer-7 Ingress capabilities of the NSX-ALB and added the necessary <code>kind: Ingress</code> to our web app.</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Kubernetes Ingress<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.</p>
+<p>Source: <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener noreferrer">Kubernetes Documentation</a></p>
+</div>
+        </div>
+    </div>
+<p>At <em>Figure X</em>, you see now the Ingress icon is showing up as well as the Ingress <code>rule</code>, which specifies the URL for our application.</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/layer7service.jpg" title="/img/posts/202107_handsonako/layer7service.jpg" data-thumbnail="/img/posts/202107_handsonako/layer7service.jpg" data-sub-html="<h2>Figure X: Overview Demo 2 - Layer-7 Load Balancing | Ingress</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/layer7service.jpg"
+            data-srcset="/img/posts/202107_handsonako/layer7service.jpg, /img/posts/202107_handsonako/layer7service.jpg 1.5x, /img/posts/202107_handsonako/layer7service.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/layer7service.jpg" />
+    </a><figcaption class="image-caption">Figure X: Overview Demo 2 - Layer-7 Load Balancing | Ingress</figcaption>
+    </figure>
+<h3 id="ako-is-also-an-ingress-controller">AKO is also an Ingress Controller</h3>
+<p><strong>First and foremost!</strong> To leverage such functionalities, we need an Ingress Controller, don&rsquo;t we?!</p>
+<p>We do! And this is <strong>another great value add</strong> of the Avi Kubernetes Operator. If not specifically disabled during the deployment, the AKO will serve your Kubernetes Cluster as an Ingress controller too. Here&rsquo;s the according snipped from the <code>values.yaml</code> file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">### This section outlines all the knobs  used to control Layer 7 loadbalancing settings in AKO.</span><span class="w">
+</span><span class="w"></span><span class="nt">L7Settings</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">defaultIngController</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Deploying the AKO will add the missing Kubernetes resource <code>ingressclasses.networking.k8s.io</code> to your cluster.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get ingressclasses.networking.k8s.io
+
+NAME     CONTROLLER              PARAMETERS                                     AGE
+avi-lb   ako.vmware.com/avi-lb   IngressParameters.ako.vmware.com/external-lb   32m
+</code></pre></td></tr></table>
+</div>
+</div><p>In more detail:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl describe ingressclasses.networking.k8s.io avi-lb -n avi-system
+
+Name:         avi-lb
+Labels:       app.kubernetes.io/managed-by=Helm
+Annotations:  ingressclass.kubernetes.io/is-default-class: true
+              meta.helm.sh/release-name: ako-1627507213
+              meta.helm.sh/release-namespace: avi-system
+Controller:   ako.vmware.com/avi-lb
+Parameters:
+  APIGroup:  ako.vmware.com
+  Kind:      IngressParameters
+  Name:      external-lb
+Events:      &lt;none&gt;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="demo-2-web-app-deployment-with-l7-service">Demo #2: Web App deployment with L7 Service</h3>
+<p>Now that we&rsquo;ve set the scene right, let&rsquo;s add the Ingress specification to our existing web app and apply the new configuration.</p>
+<ul>
+<li><strong>Application specification:</strong> <code>kind: Deployment</code> + <code>kind: Service</code> + <code>kind: Ingress</code>:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">kubectl -n vmug apply -f - &lt;&lt;EOF</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
+</span><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span><span class="w">   </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l">avi</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon.avi.jarvis.lab</span><span class="w">
+</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l">Prefix</span><span class="w">
+</span><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">service</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w">
+</span><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>We should now see the new Ingress service available for our web app.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n vmug get po,svc,ingress
+
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/avitest-deployment-66645bdb9b-c52gv   1/1     Running   0          59s
+pod/avitest-deployment-66645bdb9b-st9z7   1/1     Running   0          59s
+
+NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/avisvc-lb   LoadBalancer   10.101.249.194   10.10.18.15   80:32678/TCP   59s
+
+NAME                                      CLASS    HOSTS                     ADDRESS       PORTS   AGE
+ingress.networking.k8s.io/avisvcingress   &lt;none&gt;   hackazon.avi.jarvis.lab   10.10.18.19   80      12h
+</code></pre></td></tr></table>
+</div>
+</div><p>When we now have a look at the Avi Controller, we are noticing a complete new VIP was assigned for our Ingress configuration and <strong>another striking aspect is</strong>, that the NSX-ALB automatically creates a <code>https</code> service port for our app. To be clear, we&rsquo;ve deployed an <code>Insecure Ingress</code> configuration and the NSX-ALB takes care of it for us (SSL Termination).</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" data-sub-html="<h2>Figure XI: New Virtual Service for Ingress | SSL Termination</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg, /img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" />
+    </a><figcaption class="image-caption">Figure XI: New Virtual Service for Ingress | SSL Termination</figcaption>
+    </figure>
+<p>Furthermore, if we are deploying another application with an Ingress config specified, the NSX-ALB will assign a complete new VIP to it and will not share the already existing one.</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg" data-sub-html="<h2>Figure XII: New Virtual Service for Ingress | SSL Termination</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg, /img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210729_021654.jpg" />
+    </a><figcaption class="image-caption">Figure XII: New Virtual Service for Ingress | SSL Termination</figcaption>
+    </figure>
+<p>You can read more about how the AKO handles <code>Insecure Ingress</code> and <code>Secure Ingress</code> at the <i class='fab fa-github fa-fw'></i> repo - <a href="https://github.com/avinetworks/avi-helm-charts/blob/4b38fd30d28298f871f5ca56b781af73f3b4f174/docs/AKO/objects.md#insecure-ingress" target="_blank" rel="noopener noreferrer">AKO Objects</a></p>
+<h2 id="advanced-analytics-in-nsx-alb">Advanced Analytics in NSX-ALB</h2>
+<p>With the configuration of the Ingress, our NSX-ALB is now fuelled with plenty of processable data for the Analytics Engine. I&rsquo;m not an expert in this topic 🤷‍♂️ and therefore I&rsquo;m making use of the following:</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>VMware NSX-ALB Data Sheet<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>The Avi SE represent full-featured, enterprise-grade load balancers, web application firewall (WAF), and analytics that provide traffic management and application security while collecting real-time analytics from the traffic flows. The Avi Controller provides comprehensive observability based on closed-loop telemetry and presents actionable insights to make decisions based on application monitoring, end-to-end timing, searchable traffic logs, security insights, log insights, client insights, and more.</p>
+<p>Source: <a href="https://info.avinetworks.com/hubfs/Avi_Website_Resource_Center/VMware-nsx-advanced-load-balancer-data-sheet.pdf" target="_blank" rel="noopener noreferrer">VMware NSX Advanced Load Balancer (by Avi Networks)</a></p>
+</div>
+        </div>
+    </div>
+<p>To really get an idea what kind of application related informations are available for the VS, I had to tick the boxes for <code>Log all headers</code> as well as <code>Non-significant logs</code> within the configuration of the VS.</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg" data-sub-html="<h2>Figure XIII: Virtual Service - Analytics option</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg, /img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210729_123957.jpg" />
+    </a><figcaption class="image-caption">Figure XIII: Virtual Service - Analytics option</figcaption>
+    </figure>
+<p>And here&rsquo;s a glimpse into how extensively and beautiful (&amp; of course useful) the data is prepared and presented:</p>
+<figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg" data-sub-html="<h2>Figure XIV: Available data for my Web App</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg"
+            data-srcset="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg, /img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg 1.5x, /img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg 2x"
+            data-sizes="auto"
+            alt="/img/posts/202107_handsonako/CapturFiles-20210729_124205.jpg" />
+    </a><figcaption class="image-caption">Figure XIV: Available data for my Web App</figcaption>
+    </figure>
+<h2 id="conclusion">Conclusion</h2>
+<p>Deploying the Avi Kubernetes Operator on any Kubernetes Cluster is made simple and straight forward. The VMware NSX Advanced Load Balancer is enorm feature-rich and can perfectly serve your traditional as well as modern application demands. Features like the introduced <em>Auto FQDN for Layer 4 services</em> as well as the <em>Ingress Capabilities</em> are really just a short outlook what the AKO and NSX Advanced Load Balancer are capable of. I hope this post touched your points of interest and you are considering to put your hands on it as well.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://github.com/avinetworks" target="_blank" rel="noopener noreferrer">Avi on Github</a></li>
+<li><a href="https://avinetworks.com/docs/ako/1.4/ako-faq/" target="_blank" rel="noopener noreferrer">Frequently Asked Questions for AKO</a></li>
+<li><a href="https://avinetworks.com/docs/ako/1.4/networking-v1-ingress/" target="_blank" rel="noopener noreferrer">AKO - Networking/v1 Ingress Support</a></li>
+<li><a href="https://avinetworks.com/docs/ako/1.4/default-secret-for-tls-ingresses/" target="_blank" rel="noopener noreferrer">Default Secret for TLS Ingresses</a></li>
+<li><a href="https://github.com/avinetworks/avi-helm-charts/tree/4b38fd30d28298f871f5ca56b781af73f3b4f174/docs/AKO" target="_blank" rel="noopener noreferrer">Docs Avi Kubernetes OPerator</a></li>
+<li><a href="https://labs.hol.vmware.com/HOL/catalogs/catalog/1892" target="_blank" rel="noopener noreferrer">VMware Hands-on Labs NSX Advanced Load Balancer</a></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://avinetworks.com/docs/ako/0.9/ako-compatibility-guide/" target="_blank" rel="noopener noreferrer">Compatibility Guide for AKO</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/README.md#pre-requisites" target="_blank" rel="noopener noreferrer">AKO: Avi Kubernetes Operator - Pre-requisites</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-07-30</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)" data-via="vmw_rguske" data-hashtags="July2021,Helm,Kubernetes,Tanzu,NSX,Avi"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)" data-description="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" data-title="Hands on the Avi Kubernetes Operator (AKO)" data-description="A hands on guide which covers the deployment and configuration of the Avi Kubernetes Operator and to ultimately integrate it with the NSX Advanced Load Balancer to make use of the modern and comprehensive features of VMware&#39;s Next Gen Load Balancer."><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/july2021/">July2021</a>,&nbsp;<a href="/tags/helm/">Helm</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/nsx/">NSX</a>,&nbsp;<a href="/tags/avi/">Avi</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" class="prev" rel="prev" title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fas fa-angle-left fa-fw"></i>vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady</a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d1b26d23ac62a6d4bfafb3292c82d97770d7585d5c60e8d254d46fd9555fc69b.js" integrity="sha256-0bJtI6xiptS/r7MpLILZd3DXWF1cYOjSVNRv2VVfxps="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
