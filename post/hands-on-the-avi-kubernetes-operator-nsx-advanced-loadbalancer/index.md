@@ -1,4 +1,4 @@
-# Hands on the Avi Kubernetes Operator (AKO)
+# Hands-on the Avi Kubernetes Operator (AKO)
 
 
 <!--more-->
