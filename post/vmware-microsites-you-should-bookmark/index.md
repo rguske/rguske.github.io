@@ -31,7 +31,7 @@ I will keep this site up-to-date as good as I can.
 
 <center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
 
-## List of Microsites [<span style="color:#0037ff">Update: April 2021</span>]
+## List of Microsites [<span style="color:#55BDE2">Updated: August 2021</span>]
 
 ### General resources
 
@@ -41,6 +41,9 @@ I will keep this site up-to-date as good as I can.
 | VMware Documentation              |   `https://docs.vmware.com/`     |   <a href="https://docs.vmware.com/" target="_blank">Open</a>               |
 | VMware Solution Download          |   `https://downloads.vmware.com/` |   <a href="https://downloads.vmware.com/" target="_blank">Open</a>          |
 | VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Open</a>                  |
+| VMware Developers | `https://developer.vmware.com/` | <a href="https://developer.vmware.com/" target="_blank">Open</a> |
+| VMware Product Interoperability Matrix | `https://interopmatrix.vmware.com/` | <a href="https://interopmatrix.vmware.com/" target="_blank">Open</a> |
+| VMware Product Lifecycle Matrix | `https://lifecycle.vmware.com/` | <a href="https://lifecycle.vmware.com/" target="_blank">Open</a> |
 | VMware Configuration Maximums     |   `https://configmax.vmware.com/`              |  <a href="https://configmax.vmware.com/" target="_blank">Open</a>           |
 | Ports and Protocols             |   `https://ports.vmware.com/`     |   <a href="https://ports.vmware.com/" target="_blank">Open</a>              |
 | VMware Solution Walkthrough               |   `https://featurewalkthrough.vmware.com/`     |   <a href="https://featurewalkthrough.vmware.com/" target="_blank">Open</a> |
@@ -66,7 +69,8 @@ I will keep this site up-to-date as good as I can.
 
 |   **Site** |   **URL** |  **Link** |
 | :--- | :---: |---: |
-| VMware Application Modernization |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Open</a>              |
+| VMware Application Modernization |   `https://tanzu.vmware.com/`                  |   <a href="https://tanzu.vmware.com/" target="_blank">Open</a> |
+| App Modernization | `https://www.vmware.com/uk/app-modernization.html` | <a href="https://www.vmware.com/uk/app-modernization.html" target="_blank">Open</a> |
 
 ### VMware vSAN
 
@@ -103,11 +107,10 @@ I will keep this site up-to-date as good as I can.
 | VMware Digital Workspace Tech Zone |   `https://techzone.vmware.com/`               |   <a href="https://techzone.vmware.com/" target="_blank">Open</a>           |
 | VMware WorkspaceONE Status Page | `https://status.workspaceone.com/` | [Open](https://status.workspaceone.com/) |
 
-## More VMware Sites [<span style="color:#0037ff">Update: April 2021</span>]
+## More VMware Sites [<span style="color:#55BDE2">Updated: August 2021</span>]
 
 |   **Site** |   **URL** |  **Link** |
 | :--- | :---: |---: |
-| App Modernization                |   `https://www.vmware.com/uk/app-modernization.html`   |   <a href="https://www.vmware.com/uk/app-modernization.html" target="_blank">Open</a>    |
 | VMware TAM Lab | `https://www.youtube.com/c/VMwareTAMLab` | [Open](https://www.youtube.com/c/VMwareTAMLab) |
 | VMware Tanzu Mission Control      |   `https://k8s.vmware.com/tanzu-mission-control/`|   <a href="https://k8s.vmware.com/tanzu-mission-control/" target="_blank">Open</a>     |
 | VMworld On-Demand Video Library  |   `https://videos.vmworld.com/`            |   <a href="https://videos.vmworld.com/" target="_blank">Open</a>                         |
@@ -119,6 +122,9 @@ I will keep this site up-to-date as good as I can.
 
 **Change Log:**
 
+- [2021-08-25]: added *VMware Developers*
+- [2021-08-25]: added *VMware Product Lifecycle Matrix*
+- [2021-08-25]: added *VMware Product Interoperability Matrix*
 - [2021-04-26]: added *VMware TAM Lab YouTube channel*
 - [2021-04-26]: added *VMware Podcasts on Soundcloud*
 - [2021-04-26]: added *Der deutschsprachige VMware Podcast*
