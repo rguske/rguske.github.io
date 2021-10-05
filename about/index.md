@@ -20,7 +20,7 @@ metadata:
   region: EMEA
   country: Germany
   company: VMware Global, Inc.
-  businessUnit: Customer Success Organization
+  businessUnit: Modern Applications Platform Business Unit (MAPBU)
 replicas: 2
 
 ---
@@ -28,21 +28,21 @@ replicas: 2
 apiVersion: v1
 kind: Role
 metadata:
-  name: ["Staff Technical Account Manager", "Office of the CTO, Ambassador"]
+  name: ["Lead Tanzu Emerging Solution Engineer", "Office of the CTO, Ambassador"]
 subject:
   - kind: Experise
     args:
+      - Cloud Native Technologies
       - Strategic & Technical Guidance
       - Application Platforms
       - Virtualization
-      - Cloud Native Technologies
 ```
 
 {{< mapbox lng=9.9938316 lat=53.5396594 marked=false zoom=11 light-style="mapbox://styles/mapbox/navigation-preview-day-v4" dark-style="mapbox://styles/mapbox/navigation-preview-night-v4" >}}
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Staff Technical Account Manager within VMware's Customer Success Organization, he's a strategic advocate by helping clients and organizations in achieving business and IT objectives using VMware's technologies and by bridging people, process and technology gaps.
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emerging Solution Engineer within VMware's Modern Applications Platform Business Unit, he's helping clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
