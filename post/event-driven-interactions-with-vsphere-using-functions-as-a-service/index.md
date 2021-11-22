@@ -15,7 +15,7 @@ For me, it's only been a few days ago and it was in one of these afterwork-calls
 
 Michael told me that he had spent some time in digging deeper and deeper into the topic **Functions as a Service**...
 
-<center> {{< tweet 1055452330064334848 >}} </center>
+<center> {{< tweet user="embano1" id="1055452330064334848" >}} </center>
 
 which was far away from being experienced by myself, but he got me right away from the very beginning of his telling. For those of you who want to know more about the topic but haven't put your nose into it yet, like me before, you´ll find some links at the *Resources section* at the buttom.
 
@@ -68,7 +68,7 @@ The following flowchart will give you a high-level overview what it´s all about
 
 All you need is <a href="https://www.openfaas.com/" target="_blank">OpenFaaS</a> running in Kubernetes. As shown in the flowchart as well as having been mentioned in the recording, I´m running VMware´s Enterprise-grade Kubernetes solution <a href="https://cloud.vmware.com/vmware-pks" target="_blank">**VMware PKS**</a> in my <a href="https://twitter.com/search?q=%23homelab&src=typd" target="_blank">#Homelab</a> in order to make all necessary pieces available.
 
-<center> {{< twitter 1089501596042649600 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1089501596042649600" >}} </center>
 
 Another pretty cool alternative way to run OpenFaaS on k8s is <a href="https://github.com/kubernetes-sigs/kind" target="_blank">KinD</a> which is a new tool from the Kubernetes community named **Kubernetes in Docker**.
 

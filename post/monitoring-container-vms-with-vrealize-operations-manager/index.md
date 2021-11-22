@@ -147,11 +147,11 @@ Here are two posts I would like to recommend to read with regard to:
 
 The <a href="https://twitter.com/search?q=%23vcommunity&src=typd" target="_blank">#vCommunity</a> is more active than ever on sharing great work and if you like to make use of what the #vCommunity already cooked or even better if you like to share your own creations, please go here: https://vrealize.vmware.com/sample-exchange/ and give it a shout-out on Twitter. Our great Product-Manager´s will hear you :sunglasses:.
 
-<center> {{< tweet 1081415672712679429 >}} </center>
+<center> {{< tweet user="Sunny_Dua" id="1081415672712679429" >}} </center>
 
 And in case you are already a *vR Ops-Ninja* and you are not on this list https://twitter.com/johnddias/lists/vrops-friends1 reach out to <a href="https://twitter.com/johnddias" target="_blank">John Dias</a> and he´ll put your name on the list as well.
 
-<center> {{< tweet 1068561326216228865 >}} </center>
+<center> {{< tweet user="johndias" id="1068561326216228865" >}} </center>
 
 {{< image src="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" caption="Figure XIV: vROps Ninja" src-s="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" class="center" width="400" >}}
 

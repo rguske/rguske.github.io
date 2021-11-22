@@ -9,8 +9,8 @@
 <meta property="og:description" content="This post covers how to monitor the VMware Event Broker Appliance (VM), plus it&#39;s Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-05-12T23:59:50&#43;02:00" />
-<meta property="article:modified_time" content="2021-04-26T23:26:38&#43;02:00" />
+<meta property="article:published_time" content="2020-05-12T23:59:50+02:00" />
+<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"/>
 <meta name="twitter:description" content="This post covers how to monitor the VMware Event Broker Appliance (VM), plus it&#39;s Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.4446c9fc5d4f2707d38c9510fa2a6675dd61151cb639d003ca65a9e5ac9f5ab1.css" integrity="sha256-REbJ/F1PJwfTjJUQ&#43;ipmdd1hFRy2OdADymWp5ayfWrE="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -51,7 +51,7 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw"></i>
@@ -101,7 +101,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -168,31 +168,31 @@
 <p>Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore, not only the workload is of interest but also the dependencies of the individual components to each other are interesting. Beyond that and because I&rsquo;m just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.</p>
 <p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreferrer">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
 <h2 id="leveraging-google-cadvisor">Leveraging Google cAdvisor</h2>
-<p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor">https://github.com/google/cadvisor</a></p>
+<p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreferrer">https://github.com/google/cadvisor</a></p>
 <p>cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.</p>
 <p>I&rsquo;m going to start an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreferrer">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx
 </code></pre></td></tr></table>
 </div>
 </div><p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreferrer">latest version</a> also as a docker container (for now).</p>
 <p>Export the desired version as an environment variable. We will use this variable (<code>$VERSION</code>) for the container deployment.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">VERSION</span><span class="o">=</span>v0.35.0
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">VERSION</span><span class="o">=</span>v0.35.0
 </code></pre></td></tr></table>
 </div>
 </div><p>The following shows how the container deployment looks like and important for this example is the usage of the <code>docker</code> option <code>--publish=8080:8080</code> which will expose the port through which we can reach the cAdvisor website.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -204,7 +204,7 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">sudo docker run <span class="se">\
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">sudo docker run <span class="se">\
 </span><span class="se"></span>  --volume<span class="o">=</span>/:/rootfs:ro <span class="se">\
 </span><span class="se"></span>  --volume<span class="o">=</span>/var/run:/var/run:ro <span class="se">\
 </span><span class="se"></span>  --volume<span class="o">=</span>/sys:/sys:ro <span class="se">\
@@ -219,12 +219,12 @@
 </div><p><code>docker ps</code> will show us if both containers are up and running as well as if they are listening on the specified ports:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS                      PORTS                           NAMES
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS                      PORTS                           NAMES
 ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2">&#34;/usr/bin/cadvisor -…&#34;</span>   <span class="m">3</span> minutes ago       Up <span class="m">3</span> minutes <span class="o">(</span>healthy<span class="o">)</span>      0.0.0.0:8080-&gt;8080/tcp          cadvisor
 48da3118416f        vmwarecna/nginx                             <span class="s2">&#34;nginx -g &#39;daemon of…&#34;</span>   <span class="m">6</span> minutes ago       Up <span class="m">6</span> minutes                443/tcp, 0.0.0.0:8181-&gt;80/tcp   vmware-nginx
 </code></pre></td></tr></table>
@@ -266,7 +266,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 <p><code>vim kustomization.yaml</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -276,7 +276,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kustomize.config.k8s.io/v1beta1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kustomize.config.k8s.io/v1beta1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Kustomization</span><span class="w">
 </span><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
 </span><span class="w"></span><span class="nt">commonLabels</span><span class="p">:</span><span class="w">
@@ -289,13 +289,13 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </div><p><code>vim namespace.yaml</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
@@ -304,7 +304,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </div><p><code>vim daemonset.yaml</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -379,7 +379,7 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 </span><span class="lnt">73
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cadvisor</span><span class="w">
@@ -461,12 +461,12 @@ ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2"
 <p>To ensure that our procedure was correct, we will check the deployment of the pod.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">root@veba040 <span class="o">[</span> /tmp/monitoring-veba <span class="o">]</span><span class="c1"># kubectl -n vrops get pods</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">root@veba040 <span class="o">[</span> /tmp/monitoring-veba <span class="o">]</span><span class="c1"># kubectl -n vrops get pods</span>
 NAME             READY   STATUS    RESTARTS   AGE
 cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 </code></pre></td></tr></table>
@@ -538,10 +538,10 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 <p>We need to configure <code>Client Certificate Auth</code> as credential kind. To get the data for <code>Certificate Authority Data</code>, <code>Client Certificate Data</code> as well as for the <code>Client Key Data</code> we need to <code>ssh</code> again into our VEBA appliance. Execute the following to get the data:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">grep <span class="s1">&#39;client-certificate-data\|client-key-data\|certificate-authority-data&#39;</span> ~/.kube/config
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">grep <span class="s1">&#39;client-certificate-data\|client-key-data\|certificate-authority-data&#39;</span> ~/.kube/config
 </code></pre></td></tr></table>
 </div>
 </div><p>This is how the output should look like:</p>
@@ -591,7 +591,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 <p>Go to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; <code>Metric Configurations</code> -&gt; <code>ReskndMetric</code> and select <code>ADD</code>. Enter the name <code>veba_node_utilization</code> and paste the following configuration into the right opened field:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -604,7 +604,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
 <span class="nt">&lt;AdapterKinds&gt;</span>
     <span class="nt">&lt;AdapterKind</span> <span class="na">adapterKindKey=</span><span class="s">&#34;KubernetesAdapter&#34;</span><span class="nt">&gt;</span>
         <span class="nt">&lt;ResourceKind</span> <span class="na">resourceKindKey=</span><span class="s">&#34;K8S-Minion&#34;</span><span class="nt">&gt;</span>
@@ -690,7 +690,7 @@ cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.89.4">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

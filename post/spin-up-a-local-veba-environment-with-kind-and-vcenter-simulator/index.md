@@ -255,7 +255,7 @@ kubectl create ns vmware
 - Start deploying and running `vcsim` in Kubernetes:
 
 ```shell
-kubectl run vcsim --image=embano1/vcsim:0.23.0 --port=8989 --image-pull-policy=Always -n vmware
+kubectl run vcsim --image=embano1/vcsim:0.24.0 --port=8989 --image-pull-policy=Always -n vmware
 ```
 
 - Inspect the logs of the Pod to get to know the username and password which we are going to use for the Event Router configuration later on:
@@ -314,9 +314,14 @@ vcsim@vcsim:~$ govc ls "/DC0/vm/*"
 /DC0/vm/DC0_C0_RP0_VM1
 ```
 
-- Power On a Virtual Machine:
+- Power Off and On a Virtual Machine:
 
 ```Bash
+# By default, the VMs are in Powered On state
+# Trying to power on a powered on VM would throw a "govc: *types.InvalidPowerState" error 
+vcsim@vcsim:~$ govc vm.power -off /DC0/vm/DC0_H0_VM0
+
+Powering off VirtualMachine:vm-57... OK
 vcsim@vcsim:~$ govc vm.power -on /DC0/vm/DC0_H0_VM0
 
 Powering on VirtualMachine:vm-57... OK
@@ -528,3 +533,4 @@ To finally test our deployed functions, we had to invoke them by creating events
 **Watch it here:**
 
 {{< youtube LfceWRNNoCM >}}
+

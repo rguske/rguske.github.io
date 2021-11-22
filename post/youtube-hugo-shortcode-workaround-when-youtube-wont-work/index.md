@@ -7,7 +7,7 @@ Inspired by a recent post from my friend, <a href="https://gohugo.io/" target="_
 
 See how Michael fixed the normal behavior for the Twitter Shortcode `{{</* tweet */>}}` here...
 
-<center> {{< tweet 1071143487528206336 >}} </center>
+<center> {{< tweet user="embano1" id="1071143487528206336" >}} </center>
 
 ...and add it to your Shortcode folder to make advantages from.
 
@@ -62,7 +62,7 @@ This time I´ll make use of our new Shortcode `{{</* yt */>}}` instead of `{{</*
 
 ...here we go :thumbsup:. Thanks again Salar!
 
-<center>{{< tweet 1024709843712724993 >}}</center>
+<center>{{< tweet user="vmw_rguske" id="1024709843712724993" >}}</center>
 
 Getting more interest in building your own Shortcodes?
 

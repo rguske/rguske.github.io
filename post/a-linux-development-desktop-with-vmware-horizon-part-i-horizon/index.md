@@ -7,7 +7,7 @@
 
 I often thought about writing down my experiences on the topics of *Jumphosts*, *Shell-modifications* and *useful tools* in a series of blog posts, but I hadn´t found the right moment, until I saw the following Tweet, where Alex asked his followers how they get access to a Linux system if they aren´t running Linux on their workstation (locally).
 
-<center> {{< tweet 1210952121488728066 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1210952121488728066" >}} </center>
 
 Similar to Mark´s answer, I´m also using a VDI (Virtual-Desktop-Infrastructure) desktop for my purposes and I began writing this series...back in January...time passed by and due to other projects I worked on and which demanded a lot of my attention ([VEBA](https://www.vmweventbroker.io) :grin:), it took a little bit longer to publish them.
 

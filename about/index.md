@@ -20,7 +20,7 @@ metadata:
   region: EMEA
   country: Germany
   company: VMware Global, Inc.
-  businessUnit: Modern Applications Platform Business Unit (MAPBU)
+  businessUnit: Modern Applications & Management Business Group (MAMBG)
 replicas: 2
 
 ---
@@ -28,7 +28,7 @@ replicas: 2
 apiVersion: v1
 kind: Role
 metadata:
-  name: ["Lead Tanzu Emerging Solution Engineer", "Office of the CTO, Ambassador"]
+  name: ["Lead Tanzu Emerging Solutions Engineer", "Office of the CTO, Ambassador"]
 subject:
   - kind: Experise
     args:
@@ -42,7 +42,7 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emerging Solution Engineer within VMware's Modern Applications Platform Business Unit, he's helping clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications Platform Business Unit, he’s helping clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
@@ -50,7 +50,7 @@ Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmwa
 
 He's very keen on cloud native technologies and an active team-member and contributor of the open source project VMware Event Broker Appliance (https://vmweventbroker.io). This project has the intention to reveal the hidden potential of events in VMware's SDDC by providing event-driven interactions with VMware solutions like e.g. vSphere.
 
-<center> {{< image src="/img/about/veba_otto_the_orca_640x640.png" src-s="/img/about/veba_otto_the_orca_640x640.png" caption="Official VEBA Mascot - Otto the Orca" width="300" >}} </center>
+<center> {{< image src="/img/about/veba_otto_the_orca_640x640_v2.png" src-s="/img/about/veba_otto_the_orca_640x640_v2.png" caption="Unofficial VEBA Mascot - Otto the Orca" width="300" >}} </center>
 
 - **VMware Event Broker Appliance Homepage:** https://vmweventbroker.io
 - **Official VEBA <i class='fab fa-github fa-fw'></i> Repository:** https://github.com/vmware-samples/vcenter-event-broker-appliance/
@@ -89,45 +89,71 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
 
+## 2021
+
+### VMworld 2021
+
+| **Activity @** | **Outcome** | **Evidence** |
+|:---: | :---: | :---:|
+| **VMworld {Code} Connect 2021, Virtual Event** | **SPEAKER** - Presented: *DIY Deployment of Event-Driven Automation in vSphere Environments #CODE2762* | https://youtu.be/ieUqfir5Oag |
+
+<center> {{< youtube ieUqfir5Oag >}} </center>
+
+### VMware UserCon 2021
+
+| **Activity @** | **Outcome** | **Evidence** |
+|:---: | :---: | :---:|
+| **UserCon Germany 2021, Virtual Event** | **CO-SPEAKER** - Presented (in German): *NSX Advanced Load Balancer (Avi) - Load Balancer für Next Gen und traditionelle Apps*. | https://youtu.be/8fLXPXs23GI |
+
+<center> {{< youtube 8fLXPXs23GI >}} </center>
+
+## 2020
+
+| **Activity @** | **Outcome** | **Evidence** |
+|:---: | :---: | :---:|
+| **UserCon Germany 2020, Virtual Event** | **CO-SPEAKER** - Presented: *Event-Diven Automation with the VMware Event Broker Appliance - Reloaded*. | https://www.vmug.com/events/all-events/ |
+
+<center> {{< tweet user="virtMark" id="1338794413103976448" >}} </center>
+
 ## 2019
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **UserCon Germany 2019, Frankfurt** | **SPEAKER** - Presenting about the topic *Event-Driven interactions with vSphere using Functions as a Service*. | https://www.vmug.com/events2/vmug-usercon |
+| **UserCon Germany 2019, Frankfurt** | **SPEAKER** - Presented: *Event-Driven interactions with vSphere using Functions as a Service*. | https://www.vmug.com/events/all-events/ |
 
-<center> {{< tweet 1131196019243442178 >}} </center>
+<center> {{< tweet user="bbrundert" id="1131196019243442178" >}} </center>
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **Container Days Hamburg 2019** | **STAFF** - at the VMware booth to present the *Modern Apps* strategy and vision. | https://www.containerdays.io/ |
+| **Container Days Hamburg 2019** | **STAFF** - at the VMware booth to present the *Modern Apps* strategy and vision. | Tweet below |
 
-<center> {{< tweet 1143415424274620416 >}} {{< tweet 1143424062502440960 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1143415424274620416" >}} {{< tweet user="vmw_rguske" id="1143424062502440960" >}} </center>
 
 ## 2018
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **VMworld 2018, Barcelona** | **STAFF** - at the VMware Cloud Foundation booth - VMworld Expo Area. | https://www.vmworld.com/ |
+| **VMworld 2018, Barcelona** | **STAFF** - at the VMware Cloud Foundation booth - VMworld Expo Area. | Tweet below |
 
-<center> {{< tweet 1060522730263580672 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1060522730263580672" >}} </center>
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **VMworld 2018, Barcelona** | **STAFF** - Representing the VMware TAM program at the VMworld TAM Customer Central area. | https://www.vmworld.com/ |
+| **VMworld 2018, Barcelona** | **STAFF** - Representing the VMware TAM program at the VMworld TAM Customer Central area. | Tweet below |
 
-<center> {{< tweet 1059546779744657409 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1059546779744657409" >}} </center>
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **VMware TAM Customer Roundtable 2018, Hamburg** | **HOST & SPEAKER** - An exclusive event for VMware TAM customers. Robert organized and hosted the event as well as presented on it. | https://www.vmware.com/professional-services/optimization-advocacy.html |
+| **VMware TAM Customer Roundtable 2018, Hamburg** | **HOST & SPEAKER** - An exclusive event for VMware TAM customers. Robert organized and hosted the event as well as presented on it. | Tweet below |
 
-<center> {{< tweet 1004045827025883146 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1004045827025883146" >}} </center>
 
 ## 2017
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **VMworld 2017, Barcelona** | **STAFF** - VMworld Hands-on Labs team-member. | https://www.vmworld.com/ |
+| **VMworld 2017, Barcelona** | **STAFF** - VMworld Hands-on Labs team-member. | Tweet below |
 
 {{< image src="/img/about/vmworld2017_staff.jpg" src-s="/img/about/vmworld2017_staff.jpg" caption="VMworld 2017 - Hands-on Labs Staff" width="550" >}}
 
@@ -137,8 +163,8 @@ Providing conference attendees a unique Hands-on Labs experience was part of his
 
 ## 2016
 
-| **Event** | **My Part** | **Homepage** |
+| **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **Bechtle IT Forum Nord, Hamburg** | **SPEAKER** - The IT Forum Nord is a customer facing event hosted by the Bechtle IT Systemhaus Hamburg GmbH. Employed as a Datacenter Consultant at this time, he presented on the topic *Hyperconverged Solutions by Hewlett Packard Enterprise*. Link to the Customer Invitation can be found here: https://bit.ly/32gBxfW. | https://www.bechtle.com/de-en/ |
+| **Bechtle IT Forum Nord, Hamburg** | **SPEAKER** - The IT Forum Nord is a customer facing event hosted by the Bechtle IT Systemhaus Hamburg GmbH. Employed as a Datacenter Consultant at this time, he presented on the topic *Hyperconverged Solutions by Hewlett Packard Enterprise*. | [Link to the customer invitation ](https://bit.ly/32gBxfW) |
 
 {{< image src="/img/about/bechtle_it_forum.jpg" src-s="/img/about/bechtle_it_forum.jpg" caption="Speaker - Bechtle IT Forum Nord 2016" width="550" >}}

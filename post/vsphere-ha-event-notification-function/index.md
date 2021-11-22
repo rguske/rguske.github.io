@@ -37,7 +37,7 @@ Here we go and waiting for it to get merged: **VMware Event Broker Appliance** <
 
 I had to share my excitment on Twitter when I first contributed to the project. It's a great and unique feeling and even better when the PR got merged.
 
-<center> {{< tweet 1216830346135842820 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1216830346135842820" >}} </center>
 
 ## The HA Restart Function
 

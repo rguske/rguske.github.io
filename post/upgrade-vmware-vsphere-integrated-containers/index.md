@@ -584,7 +584,7 @@ Server:
 
 Now let´s upgrade our VCH from version 1.4.1 to our latest version:
 
-<center> {{< tweet 1041955154910740480 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1041955154910740480" >}} </center>
 
 The `upgrade` option from `vic-machine` requires the VM-ID from our VCH and we can get this ID by using `vic-machine inspect`. 
 

@@ -7,7 +7,7 @@
 
 It was this exiting time of the year again where lots of great [VMware User Group](https://www.vmug.com/home) events happened around the globe and this year, I had the pleasure to present two topics at the VMUG UserCon DACH (🇩🇪 🇦🇹 🇨🇭). One of the sessions had the title "***NSX Advanced Load Balancer (Avi) - Next Gen Load Balancer for Next Gen (& Traditional) Apps***". This was my first session in which I teamed up for a presentation and I was very happy to have it done with no one else than [James Lepthien](https://twitter.com/0x86DD), a luminary in networking.
 
-<center> {{< tweet 1417449553364721679 >}} </center>
+<center> {{< tweet user="microlytix" id="1417449553364721679" >}} </center>
 
 James and I prepared two demos for our session and both rest on the [Avi Kubernetes Operator - AKO](https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/README.md). Our goal was to demonstrate L4 and L7 enterprise-grade app services of VMware's software-defined [NSX Advanced Load Balancer](https://www.vmware.com/products/nsx-advanced-load-balancer.html) as well as the simplicity when it is used for Kubernetes based application deployments.
 

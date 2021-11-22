@@ -20,11 +20,11 @@ In my role as a VMware Technical Account Manager I have the chance to meet indiv
 vSphere Integrated Containers can leverage a solution for use cases like <a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/solutionbrief/vmware-vic-app-repackaging-use-case.pdf" target="_blank">App Repackaging</a> and <a href="https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/solutionbrief/vmware-vic-developer-sandbox-use-case.pdf" target="_blank">Developer Sandbox</a>. Just to name a few.
 
 VMware vSphere Integrated Containers Version 1.4 was already launched by our Cloud-Native Business Unit (CNABU) on the 15th of March this year.
-<center> {{< tweet 996453354812342274 >}} </center>
+<center> {{< tweet user="pdaigle" id="996453354812342274" >}} </center>
 
 And while I´m writing this series...
 
-<center> {{< tweet 1017665789258813440 >}} </center>
+<center> {{< tweet user="bbrundert" id="1017665789258813440" >}} </center>
 
 ...VIC version 1.4.1. has been released and includes:
 

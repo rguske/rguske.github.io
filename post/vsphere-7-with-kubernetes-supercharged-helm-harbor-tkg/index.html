@@ -9,8 +9,8 @@
 <meta property="og:description" content="In this post I will focus on the installation of Harbor using Helm and also on the preperations you have to do upfront before you are able to let the Supervisor Cluster pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-07-21T15:30:38&#43;02:00" />
-<meta property="article:modified_time" content="2021-04-26T23:26:38&#43;02:00" />
+<meta property="article:published_time" content="2020-07-21T15:30:38+02:00" />
+<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid"/>
 <meta name="twitter:description" content="In this post I will focus on the installation of Harbor using Helm and also on the preperations you have to do upfront before you are able to let the Supervisor Cluster pull images out of Harbor and to subsequently instantiate them as a native Pod on vSphere."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="next" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.4446c9fc5d4f2707d38c9510fa2a6675dd61151cb639d003ca65a9e5ac9f5ab1.css" integrity="sha256-REbJ/F1PJwfTjJUQ&#43;ipmdd1hFRy2OdADymWp5ayfWrE="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="next" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -51,7 +51,7 @@
         title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw"></i>
@@ -101,7 +101,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -215,7 +215,7 @@
 <p>A successful login will show you the following output:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -228,7 +228,7 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Logged in successfully.
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Logged in successfully.
 
 You have access to the following contexts:
    172.25.16.1
@@ -246,7 +246,7 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 <p>Now that we switched into our desired context, we can start deploying the TKG cluster and as already mentioned a couple of times before, this will be done in a declaritive way and by using a specification file like e.g. the following:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -265,7 +265,7 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">run.tanzu.vmware.com/v1alpha1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">run.tanzu.vmware.com/v1alpha1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">TanzuKubernetesCluster</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
@@ -287,14 +287,14 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 </div><p>A few words to the parameters <code>version</code>, <code>class</code> and <code>storageClass</code>. The available Kubernetes versions depend on which versions are provided by VMware through the Subscribed Content Library. You can verify which versions are available by executing <code>kubectl get virtualmachineimages</code> which in turn will show you e.g.:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                                                         AGE
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                                                         AGE
 ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd    83d
 ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c    8d
 ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7   13h
@@ -304,7 +304,7 @@ ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466    13h
 </div><p><code>v1.17.7</code> is the version I&rsquo;ve picked for my deployment. The next one is <code>class</code>. You can choose between two types of Virtual Machine Classes to define the virtual hardware settings as well as the requests and limits on those. Just type <code>kubectl get virtualmachineclasses</code> to let you show the available classes.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -317,7 +317,7 @@ ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466    13h
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                 AGE
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                 AGE
 best-effort-large    90d
 best-effort-medium   90d
 best-effort-small    90d
@@ -334,7 +334,7 @@ guaranteed-xsmall    90d
 <p>Also very important is to specify the <code>storageClass</code>. You defined it during the vSphere Namespace creation. If you cannot exactly remember which class you have defined&hellip;you are also not logged in into the vSphere Client&hellip;you feel lazy&hellip;just type <code>kubectl describe ns harbor-on-tkg</code> and get the desired information back.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -352,7 +352,7 @@ guaranteed-xsmall    90d
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">Name:         harbor-on-tkg
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Name:         harbor-on-tkg
 Labels:       <span class="nv">vSphereClusterID</span><span class="o">=</span>domain-c7
 Annotations:  ncp/extpoolid: domain-c7:a4b59b96-9e94-4158-95ff-e1dfeb58c6bf-ippool-172-25-64-1-172-25-127-254
               ncp/snat_ip: 172.25.88.14
@@ -384,11 +384,11 @@ No resource limits.
 <p>The terminal can also be used for verification. <code>kubectl get tanzukubernetescluster</code> or in short <code>kubectl get tkc</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">NAME            CONTROL PLANE   WORKER   DISTRIBUTION                     AGE   PHASE
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME            CONTROL PLANE   WORKER   DISTRIBUTION                     AGE   PHASE
 harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span>        v1.17.7+vmware.1-tkg.1.154236c   26m   running
 </code></pre></td></tr></table>
 </div>
@@ -397,7 +397,7 @@ harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span> 
 <p>One important step has to be done before we pay our attention to this next part. You remember that we logged in into the Supervisor Cluster via <code>kubectl vsphere login --server=172.25.16.1 --vsphere-username jarvis@jarvis.lab --insecure-skip-tls-verify</code>. This means that we are still connected to it and even if you are in the right context (<code>harbor-on-tkg</code>), doesn&rsquo;t mean that a desired application deployment will be processed on the TKG cluster. Because the TKG cluster is running inside the vSphere Namespace (<code>harbor-on-tkg</code>) and we have to connect to it seperately. To verify, just run <code>kubectl get ns</code> to get all Namespaces displayed which your Supervisor Cluster provides and not those from your TKG cluster.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -415,7 +415,7 @@ harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span> 
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                      STATUS   AGE
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                      STATUS   AGE
 default                   Active   90d
 ghost-app                 Active   4d8h
 harbor-on-tkg             Active   4d4h
@@ -437,7 +437,7 @@ vmware-system-vmop        Active   90d
 <p>Enter <code>kubectl get ns</code> again to verify the established connection:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -447,7 +447,7 @@ vmware-system-vmop        Active   90d
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">NAME                           STATUS   AGE
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                           STATUS   AGE
 default                        Active   2d1h
 kube-node-lease                Active   2d1h
 kube-public                    Active   2d1h
@@ -464,8 +464,8 @@ vmware-system-csi              Active   2d1h
 </ul>
 <h3 id="add-harbor-helm-repository">Add Harbor Helm repository</h3>
 <p>For Harbor, you can use various Helm repositories. There exist e.g. the official repo from</p>
-<p>Harbor - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/goharbor/harbor-helm">https://github.com/goharbor/harbor-helm</a> or also the one from</p>
-<p><a href="https://bitnami.com/" target="_blank" rel="noopener noreferrer">Bitnami</a> - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/bitnami/charts/tree/master/bitnami/harbor">https://github.com/bitnami/charts/tree/master/bitnami/harbor</a> which I&rsquo;m going to use.</p>
+<p>Harbor - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/goharbor/harbor-helm" target="_blank" rel="noopener noreferrer">https://github.com/goharbor/harbor-helm</a> or also the one from</p>
+<p><a href="https://bitnami.com/" target="_blank" rel="noopener noreferrer">Bitnami</a> - <i class='fab fa-github fa-fw'></i> <a href="https://github.com/bitnami/charts/tree/master/bitnami/harbor" target="_blank" rel="noopener noreferrer">https://github.com/bitnami/charts/tree/master/bitnami/harbor</a> which I&rsquo;m going to use.</p>
 <p>Add the repository of your choice to your client&hellip;</p>
 <ul>
 <li><code>helm repo add harbor https://helm.goharbor.io</code></li>
@@ -477,7 +477,7 @@ vmware-system-csi              Active   2d1h
 <p>We will deploy Harbor in a new Kubernetes Namespace which we will name (suprise) <strong>harbor</strong>. Create the Namespace with <code>kubectl create ns harbor</code> and start the deployment process by executing the following <code>helm</code> command with some corresponding options:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -486,7 +486,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">helm install harbor bitnami/harbor \
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">helm install harbor bitnami/harbor \
 --set harborAdminPassword=&#39;VMware1!&#39; \
 --set global.storageClass=ftt1-r1 \
 --set service.type=LoadBalancer \
@@ -509,7 +509,7 @@ vmware-system-csi              Active   2d1h
 <p>Apply the following Pod Security Policy example to your TKG cluster: <code>kubectl apply -f tkg-psp.yml</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -534,7 +534,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
@@ -573,7 +573,7 @@ vmware-system-csi              Active   2d1h
     </figure>
 <p><code>kubectl get svc -n harbor</code> will give you the assigned external IP address through which you can access the Harbor Login page. See also the lower right terminal window in <em>Figure V</em>. With the gained IP address you can create an appropriate DNS entry. Remember that we&rsquo;ve used <code>--set externalURL=harbor-dev.jarvis.lab</code> for our deployment.</p>
 <h2 id="deploy-a-demo-application-on-vsphere-7">Deploy a Demo Application on vSphere 7</h2>
-<p>You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it&rsquo;s not possible to login via Docker CLI by using <code>docker login</code>. This is because of the <a href="https://docs.docker.com/engine/security/certificates/" target="_blank" rel="noopener noreferrer">Docker certificate-based client-server authentication</a>. It&rsquo;s necessary to create a new directory under <code>/etc/docker/cert.d/</code> using the same name as the registry hostname (FQDN). I created a script for another <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script" target="_blank" rel="noopener noreferrer">blog post</a> to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> <a href="https://github.com/rguske/download-harbor-cert-script">https://github.com/rguske/download-harbor-cert-script</a>.</p>
+<p>You should now be able to login into your fresh deployed Harbor instance via the GUI and also to start creating and configuring your first projects. So far it&rsquo;s not possible to login via Docker CLI by using <code>docker login</code>. This is because of the <a href="https://docs.docker.com/engine/security/certificates/" target="_blank" rel="noopener noreferrer">Docker certificate-based client-server authentication</a>. It&rsquo;s necessary to create a new directory under <code>/etc/docker/cert.d/</code> using the same name as the registry hostname (FQDN). I created a script for another <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/#the-script" target="_blank" rel="noopener noreferrer">blog post</a> to simplify this process. The script is available on my Github repository here: <i class='fab fa-github fa-fw'></i> <a href="https://github.com/rguske/download-harbor-cert-script" target="_blank" rel="noopener noreferrer">https://github.com/rguske/download-harbor-cert-script</a>.</p>
 <p>Take a look at the post if you need additional information about the steps as well as to learn how you can create and configure projects in Harbor.</p>
 <p>Pushing the application container image onto Harbor shouldn&rsquo;t be a problem after a successful <code>docker login harbor-dev.jarvis.lab --username admin</code>. <a href="https://demo.ghost.io/" target="_blank" rel="noopener noreferrer">Ghost</a> will serve us as a demo application here. It is quickly deployable and also pretty cool for demonstration purposes, because it needs a Kubernetes Persistent Volume Claim (&ndash;&gt; vSAN) and <code>type: LoadBalancer</code> can also be configured as parameter in the specification <code>.yml</code> file (&ndash;&gt; NSX).</p>
 <p>Even more cool demo applications were put together by <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreferrer">William Lam</a> in this post: <a href="https://www.virtuallyghetto.com/2020/06/interesting-kubernetes-application-demos.html" target="_blank" rel="noopener noreferrer">Interesting Kubernetes application demos</a>. Check-out the KubeDoom demo 😁 👍</p>
@@ -602,7 +602,7 @@ vmware-system-csi              Active   2d1h
 <h4 id="application-deployment---ghostyml">Application deployment - <code>ghost.yml</code></h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -652,7 +652,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">48
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
@@ -705,7 +705,7 @@ vmware-system-csi              Active   2d1h
 </div><h4 id="persistent-volume-claim---ghost-pvcyml">Persistent Volume Claim - <code>ghost-pvc.yml</code></h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -719,7 +719,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nn">---</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nn">---</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
 </span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -760,7 +760,7 @@ vmware-system-csi              Active   2d1h
             <i class="icon fas fa-exclamation-triangle fa-fw"></i>Warning<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">esxi02: Failed to resolve image: Http request failed. Code 400: ErrorType(2) failed to do request: Head <a href="https://harbor-dev.jarvis.lab/v2/ghost/ghost/manifests/3.25.0:">https://harbor-dev.jarvis.lab/v2/ghost/ghost/manifests/3.25.0:</a> x509: certificate signed by unknown authority</div>
+            <div class="admonition-content">esxi02: Failed to resolve image: Http request failed. Code 400: ErrorType(2) failed to do request: Head <a href="https://harbor-dev.jarvis.lab/v2/ghost/ghost/manifests/3.25.0" target="_blank" rel="noopener noreferrer">https://harbor-dev.jarvis.lab/v2/ghost/ghost/manifests/3.25.0</a>: x509: certificate signed by unknown authority</div>
         </div>
     </div>
 <h3 id="add-harbor-certificate-to-the-supervisor-cluster">Add Harbor Certificate to the Supervisor Cluster</h3>
@@ -799,7 +799,7 @@ vmware-system-csi              Active   2d1h
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -819,7 +819,7 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get deployment -n ghost-demo-app
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl get deployment -n ghost-demo-app
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 blog   1/1     <span class="m">1</span>            <span class="m">1</span>           3h26m
 
@@ -916,7 +916,7 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.82.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.89.4">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -13,7 +13,7 @@
 
 ^^But why always at the most inappropriate moments?! Just recently it happened to me, that one day before I needed my homelab for a presentation, the vSAN caching disk failed and had to be replaced.
 
-<center> {{< tweet 1364258078410080270 >}} </center>
+<center> {{< tweet user="vmw_rguske" id="1364258078410080270" >}} </center>
 
 Normally there is no real issue with loosing a caching device in a vSAN cluster but let me put it that way, I'm really using all my given 2-node cluster resources and a potential risk of data-loss was calculated. Not everybody can have a "homelab" like the Homelab King[^1], right? :wink:
 

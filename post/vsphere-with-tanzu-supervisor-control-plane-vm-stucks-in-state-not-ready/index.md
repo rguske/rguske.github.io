@@ -3,21 +3,11 @@
 
 <!--more-->
 
-## Introduction
-
-Power outage related circumstances recently brought my vSphere with Tanzu Workload Management[^1] enabled homelab cluster (Supervisor Cluster) into a not desired state which of course I had to fix.
-
-And I do not mean that I have to protect my homelab against the next power outage by finally installing a UPS :wink:.
-
-<center> {{< tweet 1384421366154285056 >}} </center>
-
-What I actually mean is the following...
-
 ## Failed to get available workloads: bad gateway
 
-The last couple of weeks I spent a lot of time using my Tanzu Kubernetes Cluster(s)[^2] to get my head around as well as my hands dirty on this awesome project Knative[^3]. More to come soon :wink:. Interacting with a healthy vSphere Supervisor Cluster[^4] is necessary for e.g. the provisioning of new Tanzu Kubernetes Cluster or the instantiation of vSphere Native Pods.
+The last couple of weeks I spent a lot of time using my Tanzu Kubernetes Cluster(s)[^2] to get my head around as well as my hands dirty on this awesome project Knative[^3]. More to come soon :wink: Interacting with a healthy vSphere Supervisor Cluster[^4] is necessary for e.g. the provisioning of new Tanzu Kubernetes Cluster or the instantiation of vSphere Native Pods.
 
-Unfortunately, my attempt to login into mine ends quicker than expected with the error message:
+Unfortunately, my attempt to login into mine after a recent power outage ends quicker than expected with the error message:
 
 ```shell
 kubectl vsphere login --server=10.10.18.10 --vsphere-username administrator@jarvis.lab --insecure-skip-tls-verify
