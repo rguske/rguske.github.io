@@ -42,7 +42,7 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications Platform Business Unit, he’s helping clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
@@ -62,6 +62,8 @@ He's very keen on cloud native technologies and an active team-member and contri
 Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/) profile.
 
 ### Certifications
+
+{{< image src="/img/about/cka-certified-kubernetes-administrator.png" src-s="/img/about/cka-certified-kubernetes-administrator.png" height="220" width="220" >}}
 
 {{< image src="/img/about/VMware_Cert_P_DCV.png" src-s="/img/about/VMware_Cert_P_DCV.png" height="200" width="200" >}}
 
