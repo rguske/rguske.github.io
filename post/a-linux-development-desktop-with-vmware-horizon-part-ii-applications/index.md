@@ -324,25 +324,30 @@ sudo snap install docker
 **<span style="color:#018914">Ubuntu:</span>**
 
 ```code
-sudo apt-get install \
-    apt-transport-https \
+sudo apt -y install \
     ca-certificates \
-    gnupg-agent \
-    software-properties-common
+    curl \
+    gnupg \
+    lsb-release
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-sudo apt-key fingerprint 0EBFCD88
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
+sudo apt  update
 
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt -y install docker-ce docker-ce-cli containerd.io
 ```
+
+**Manage Docker as a non-root user**
+
+The usergroup `docker` should be created after the installation. If not, run:
+
+`sudo groupadd docker`
+
+Add your `$USER` to the group by executing `sudo usermod -aG docker $USER`.
 
 **<span style="color:#6003B6">CentOS:</span>**
 

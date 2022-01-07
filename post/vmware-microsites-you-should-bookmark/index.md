@@ -31,16 +31,18 @@ I will keep this site up-to-date as good as I can.
 
 <center> {{< typeit >}} Thanks a lot in advance. {{< /typeit >}} </center>
 
-## List of Microsites [<span style="color:#55BDE2">Updated: August 2021</span>]
+## List of Microsites [<span style="color:#55BDE2">Updated: January 2022</span>]
 
 ### General resources
 
 |   **Site** |   **URL** |  **Link** |
 | :--- | :---: |---: |
+| VMware Careers | `https://careers.vmware.com/` | <a href="https://careers.vmware.com" target="_blank">Open</a>
 | Find your Digital Transformation Path |   `https://pathfinder.vmware.com/`             |   <a href="https://pathfinder.vmware.com/" target="_blank">Open</a>         |
 | VMware Documentation              |   `https://docs.vmware.com/`     |   <a href="https://docs.vmware.com/" target="_blank">Open</a>               |
 | VMware Solution Download          |   `https://downloads.vmware.com/` |   <a href="https://downloads.vmware.com/" target="_blank">Open</a>          |
 | VMware Knowledge Base             |   `https://kb.vmware.com/`                     |  <a href="https://kb.vmware.com/" target="_blank">Open</a>                  |
+| VMware Technical Papers | `https://www.vmware.com/techpapers.html` | <a href="https://www.vmware.com/techpapers.html" target="_blank">Open</a>
 | VMware Developers | `https://developer.vmware.com/` | <a href="https://developer.vmware.com/" target="_blank">Open</a> |
 | VMware Product Interoperability Matrix | `https://interopmatrix.vmware.com/` | <a href="https://interopmatrix.vmware.com/" target="_blank">Open</a> |
 | VMware Product Lifecycle Matrix | `https://lifecycle.vmware.com/` | <a href="https://lifecycle.vmware.com/" target="_blank">Open</a> |
@@ -86,6 +88,9 @@ I will keep this site up-to-date as good as I can.
 | vRealize Product Walkthroughs     |   `https://vrealize.vmware.com/`     |   <a href="https://vrealize.vmware.com/" target="_blank">Open</a>           |
 | vRealize Operations Manager Sizing|   `https://vropssizer.vmware.com/`             |  <a href="https://vropssizer.vmware.com/" target="_blank">Open</a>          |
 | vRealize Log Insight Sizing Calculator| `https://vrlisizer.vmware.com/` | [Open](https://vrlisizer.vmware.com/) |
+| Learn Cloud Assembly | `https://learncloudassembly.github.io/` | [Open](https://learncloudassembly.github.io/) |
+| Learn Service Broker| `https://learnservicebroker.github.io/` | [Open](https://learnservicebroker.github.io/) |
+| Learn SaltStack Config| `https://learnsaltstackconfig.github.io/` | [Open](https://learnsaltstackconfig.github.io/) |
 
 ### VMware Education
 
@@ -122,6 +127,11 @@ I will keep this site up-to-date as good as I can.
 
 **Change Log:**
 
+- [2022-01-07]: added *VMware Careers*
+- [2022-01-07]: added *VMware Technical Papers*
+- [2022-01-07]: added *Learn Cloud Assembly*
+- [2022-01-07]: added *Learn Service Broker*
+- [2022-01-07]: added *Learn SaltStack Config*
 - [2021-08-25]: added *VMware Developers*
 - [2021-08-25]: added *VMware Product Lifecycle Matrix*
 - [2021-08-25]: added *VMware Product Interoperability Matrix*

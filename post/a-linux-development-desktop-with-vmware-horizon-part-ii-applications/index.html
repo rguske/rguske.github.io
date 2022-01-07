@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/a-linux-development-desktop-with-vmware-horizon-part-ii-applications\/"
-        },"genre": "posts","keywords": "February2020, Linux, Horizon, VDI, Application","wordcount":  1476 ,
+        },"genre": "posts","keywords": "February2020, Linux, Horizon, VDI, Application","wordcount":  1512 ,
         "url": "https:\/\/rguske.github.io\/post\/a-linux-development-desktop-with-vmware-horizon-part-ii-applications\/","datePublished": "2020-02-27T16:33:48+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -118,8 +118,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">A Linux Development Desktop with VMware Horizon - Part II: Applications </h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/vdi/"><i class="far fa-folder fa-fw"></i>VDI</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-02-27">2020-02-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1476 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;7 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-02-27">2020-02-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1512 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -631,32 +631,30 @@ sudo chmod +x /usr/local/bin/dropbox
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">sudo apt-get install \
-    apt-transport-https \
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">sudo apt -y install \
     ca-certificates \
-    gnupg-agent \
-    software-properties-common
+    curl \
+    gnupg \
+    lsb-release
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-sudo apt-key fingerprint 0EBFCD88
+echo \
+  &#34;deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable&#34; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
 
-sudo add-apt-repository \
-   &#34;deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable&#34;
+sudo apt  update
 
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt -y install docker-ce docker-ce-cli containerd.io
 </code></pre></td></tr></table>
 </div>
-</div><p><strong><span style="color:#6003B6">CentOS:</span></strong></p>
+</div><p><strong>Manage Docker as a non-root user</strong></p>
+<p>The usergroup <code>docker</code> should be created after the installation. If not, run:</p>
+<p><code>sudo groupadd docker</code></p>
+<p>Add your <code>$USER</code> to the group by executing <code>sudo usermod -aG docker $USER</code>.</p>
+<p><strong><span style="color:#6003B6">CentOS:</span></strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -847,7 +845,7 @@ sudo yum install enpass
             </noscript></div></article></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.89.4">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -11,6 +11,10 @@ It was this exiting time of the year again where lots of great [VMware User Grou
 
 James and I prepared two demos for our session and both rest on the [Avi Kubernetes Operator - AKO](https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/README.md). Our goal was to demonstrate L4 and L7 enterprise-grade app services of VMware's software-defined [NSX Advanced Load Balancer](https://www.vmware.com/products/nsx-advanced-load-balancer.html) as well as the simplicity when it is used for Kubernetes based application deployments.
 
+## Recording (in German)
+
+{{< youtube 8fLXPXs23GI >}}
+
 ## May I introduce - The Avi Kubernetes Operator
 
 The Avi Kubernetes Operator is this necessary entity which has to be installed on a Kubernetes cluster to translate the [Kubernetes Objects](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/) to Avi objects and automates the implementation of L4 and L7 services on the Service Engines (SE) via the Avi Controller API. As the name suggests, the AKO is a Kubernetes Operator and runs as a stateless POD within the cluster. It's onward Kubernetes 1.16 supported [^1].
