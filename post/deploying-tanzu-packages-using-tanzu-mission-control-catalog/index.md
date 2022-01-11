@@ -13,7 +13,7 @@ By deeply incorporating open source projects like e.g. [Velero](https://velero.i
 
 <center> {{< tweet user="vmw_rguske" id="1466426330354962437" >}} </center>
 
-The Catalog is exactly providing this in my introduction mentioned simplicity to extend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with official support by VMware. Furthermore, it's also possible to add your own repositories of solutions or applications to the Catalog which gives you even more flexibility and extensibility.
+The Catalog is providing this in my introduction required simplicity. It provides a simple, easy and opinionated way to install packages with official support by VMware. The default included packages are Cert-Manager, Contour, External-DNS, Grafana, Fluent Bit, Harbor, Multus-CNI, and Prometheus. Furthermore, it provides the possibility to add your own repositories which gives you even more flexibility and extensibility.
 
 At this point, I'd like to highlight the following post by [Corey Dinkens](https://www.linkedin.com/in/coreydinkens), in which he introduced the installation of [External-DNS](https://github.com/kubernetes-sigs/external-dns/) using TMC Catalog.
 
