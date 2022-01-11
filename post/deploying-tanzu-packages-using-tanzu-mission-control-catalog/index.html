@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Deploying Tanzu Packages using Tanzu Mission Control Catalog - Robert Guske</title><meta name="description" content="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog."><meta property="og:title" content="Deploying Tanzu Packages using Tanzu Mission Control Catalog" />
+<meta property="og:description" content="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-08T18:00:27+01:00" />
+<meta property="article:modified_time" content="2022-01-11T19:44:31+01:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="Deploying Tanzu Packages using Tanzu Mission Control Catalog"/>
+<meta name="twitter:description" content="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><link rel="prev" href="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Deploying Tanzu Packages using Tanzu Mission Control Catalog",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/deploying-tanzu-packages-using-tanzu-mission-control-catalog\/"
+        },"genre": "posts","keywords": "January2022, Tanzu, TanzuPackages, TanzuStandard, TMC, Kubernetes","wordcount":  3132 ,
+        "url": "https:\/\/rguske.github.io\/post\/deploying-tanzu-packages-using-tanzu-mission-control-catalog\/","datePublished": "2022-01-08T18:00:27+01:00","dateModified": "2022-01-11T19:44:31+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog."
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">('true' === 'true' && window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Deploying Tanzu Packages using Tanzu Mission Control Catalog</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/management/"><i class="far fa-folder fa-fw"></i>Management</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-01-08">2022-01-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3132 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;15 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/tmc_catalog_202201_cover.png"
+        data-srcset="/img/tmc_catalog_202201_cover.png, /img/tmc_catalog_202201_cover.png 1.5x, /img/tmc_catalog_202201_cover.png 2x"
+        data-sizes="auto"
+        alt="/img/tmc_catalog_202201_cover.png"
+        title="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog." /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-challenge">The Challenge</a></li>
+    <li><a href="#a-catalog-of-extensions">A Catalog of Extensions</a>
+      <ul>
+        <li><a href="#extensions-solutions-span-stylecolor6003b6packagesspan">Extensions, Solutions, <span style="color:#6003B6">PACKAGES</span></a></li>
+      </ul>
+    </li>
+    <li><a href="#setting-the-scenes">Setting the Scenes</a>
+      <ul>
+        <li><a href="#attach-a-k8s-cluster-to-tmc---gui">Attach a K8s Cluster to TMC - GUI</a></li>
+        <li><a href="#attach-a-k8s-cluster-to-tmc---cli">Attach a K8s Cluster to TMC - CLI</a>
+          <ul>
+            <li><a href="#-recording">🎥 Recording</a></li>
+          </ul>
+        </li>
+        <li><a href="#install-catalog-package-cert-manager">Install Catalog Package Cert-Manager</a></li>
+      </ul>
+    </li>
+    <li><a href="#install-catalog-package-contour">Install Catalog Package Contour</a></li>
+    <li><a href="#install-catalog-package-harbor">Install Catalog Package Harbor</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#-recording-kb85725">🎥 Recording KB85725</a></li>
+          </ul>
+        </li>
+        <li><a href="#optional-detach-kubernetes-cluster">Optional: Detach Kubernetes Cluster</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#resources">Resources:</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="the-challenge">The Challenge</h2>
+<p>Just providing a Kubernetes cluster to an application team is in most cases half of the battle. It&rsquo;s often necessary to also provide certain capabilities (extensions) like e.g. for logging or for ingress to those clusters, to ultimately support the production workload. Easily extending customer Kubernetes environments with official supported open source solutions to support the aforementioned capabilities and even more, should provide a decent level of simplicity in terms of deployment and lifecycle management.</p>
+<h2 id="a-catalog-of-extensions">A Catalog of Extensions</h2>
+<p>Tanzu Mission Control, a VMware Cloud Service (SaaS), is VMware&rsquo;s multi-cloud Kubernetes management platform which provides a centralized management for consistently operating and securing Kubernetes infrastructures and modern applications through a centralized policy management across all deployed and attached Kubernetes clusters.</p>
+<p>By deeply incorporating open source projects like e.g. <a href="https://velero.io/" target="_blank" rel="noopener noreferrer">Velero</a> for Backup &amp; Recovery or <a href="https://sonobuoy.io/" target="_blank" rel="noopener noreferrer">Sonobuoy</a> for cluster conformance checks, just to name a few, as well as the integration in other VMware solutions like <a href="https://tanzu.vmware.com/service-mesh" target="_blank" rel="noopener noreferrer">Tanzu Service Mesh</a> or <a href="https://tanzu.vmware.com/observability" target="_blank" rel="noopener noreferrer">Tanzu Observability</a>, Tanzu Mission Control already offers a rich set of features to multiple personas/teams. This set was recently extended by a another great new feature which is called <strong>Catalog</strong>.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">W00t w00t!<a href="https://twitter.com/VMwareTanzu?ref_src=twsrc%5Etfw">@VMwareTanzu</a> Mission Control Catalog feature is GA 🥳 <br>Deploying your software to different types of <a href="https://twitter.com/hashtag/Kubernetes?src=hash&amp;ref_src=twsrc%5Etfw">#Kubernetes</a> clusters made easy.<br>🔷 RN: <a href="https://t.co/IHIRBeLPem">https://t.co/IHIRBeLPem</a><br>🔷 Docs: <a href="https://t.co/zkgRGnTSvg">https://t.co/zkgRGnTSvg</a><a href="https://twitter.com/hashtag/VMware?src=hash&amp;ref_src=twsrc%5Etfw">#VMware</a> <a href="https://twitter.com/hashtag/RunAllTheThings?src=hash&amp;ref_src=twsrc%5Etfw">#RunAllTheThings</a> <a href="https://t.co/mrynjJeYpx">pic.twitter.com/mrynjJeYpx</a></p>&mdash; Robert Guske (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1466426330354962437?ref_src=twsrc%5Etfw">December 2, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>The Catalog is exactly providing this in my introduction mentioned simplicity to exetend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with have official support by VMware. Furthermore, it&rsquo;s also possible to add your own repositories of solutions to Catalog to give you even more flexibility and extensibility.</p>
+<p><em>Figure I</em> shows the currently available <span style="color:#6003B6">PACKAGES</span>.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" data-sub-html="<h2>Figure I: Available Packages through the Catalog</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" />
+    </a><figcaption class="image-caption">Figure I: Available Packages through the Catalog</figcaption>
+    </figure>
+<h3 id="extensions-solutions-span-stylecolor6003b6packagesspan">Extensions, Solutions, <span style="color:#6003B6">PACKAGES</span></h3>
+<p>If you&rsquo;ve read the article diligently up to here, you may noticed that I always used the terms <em>solutions</em> or <em>extensions</em> when talking about extending your Kubernetes environments. In Catalog, VMware is referring to <strong>Packages</strong> and the reason for this is, that Catalog is using <a href="https://carvel.dev" target="_blank" rel="noopener noreferrer">Carvel</a> behind the scenes. Project Carvel provides a comprehensive toolbox for building, templating, packaging, deploying and day2-ing modern applications. This is a 🔥 topic and I&rsquo;d recommend reading this great blog post 👉 <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreferrer">Tanzu Packages Explained</a> 👈 by my dear friend <a href="https://twitter.com/Alec1823" target="_blank" rel="noopener noreferrer">Alex</a> to get to know it.</p>
+<h2 id="setting-the-scenes">Setting the Scenes</h2>
+<p>To make use of Tanzu Mission Control and ultimately of the introduced features (across clouds!), you have to make your Kubernetes cluster available in TMC. This can be done in two ways. <strong>Creating</strong> or <strong>attaching</strong>.</p>
+<p><strong>Creating</strong> a cluster is only possible if you have registered a <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/index.html" target="_blank" rel="noopener noreferrer">Tanzu Kubernetes Grid (TKGm)</a> Management cluster or a <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/" target="_blank" rel="noopener noreferrer">vSphere with Tanzu (TKGs)</a> Management (Supervisor) cluster in TMC.</p>
+<p><strong>Attaching</strong> on the other hand, can be done to any conformant Kubernetes cluster.</p>
+<p>Keep the following table in mind before deploying Tanzu Packages using the Catalog to your Kubernetes cluster.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Supported</th>
+<th style="text-align:left">Not Supported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Tanzu Kubernetes Grid Service workload clusters</td>
+<td style="text-align:left">Tanzu Kubernetes Grid Service Supervisor Clusters</td>
+</tr>
+<tr>
+<td style="text-align:left">Tanzu Kubernetes Grid workload clusters (version 1.4 and later)</td>
+<td style="text-align:left">Tanzu Kubernetes Grid Management Clusters</td>
+</tr>
+<tr>
+<td style="text-align:left">GKE (GCP)</td>
+<td style="text-align:left">Tanzu Kubernetes Grid workload clusters (version 1.3 and earlier)</td>
+</tr>
+<tr>
+<td style="text-align:left">EKS (AWS)</td>
+<td style="text-align:left">Tanzu Standard packages are not supported on clusters where PSP is enabled</td>
+</tr>
+<tr>
+<td style="text-align:left">AKS (Azure)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">Kind</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Existing kapp-controller installation<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">If you have previously installed Carvel&rsquo;s kapp-controller on your cluster, you must remove the installation and all related resources before using the catalog feature.</div>
+        </div>
+    </div>
+<h3 id="attach-a-k8s-cluster-to-tmc---gui">Attach a K8s Cluster to TMC - GUI</h3>
+<p>Attaching a Kubernetes cluster is made simple by e.g. using the TMC UI. On the left pane under the section Clusters, select <strong>ATTACH CLUSTER</strong> and provide the requested data.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" data-sub-html="<h2>Figure II: Attaching K8s Cluster via GUI</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" />
+    </a><figcaption class="image-caption">Figure II: Attaching K8s Cluster via GUI</figcaption>
+    </figure>
+<p>Following the steps to the end, a <code>kubectl</code> command is provided which can be executed directly to your Kubernetes cluster in order to attach your cluster to TMC.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png" data-sub-html="<h2>Figure III: Command to attach your K8s cluster to TMC</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_3.png" />
+    </a><figcaption class="image-caption">Figure III: Command to attach your K8s cluster to TMC</figcaption>
+    </figure>
+<p>Wasn&rsquo;t that simple? 🙂 Now let&rsquo;s do it again but this time we are going to use the TMC CLI.</p>
+<h3 id="attach-a-k8s-cluster-to-tmc---cli">Attach a K8s Cluster to TMC - CLI</h3>
+<p>The TMC CLI can be downloaded directly from the TMC portal.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png" data-sub-html="<h2>Figure IV: Download Tanzu Mission Control CLI</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_0.png" />
+    </a><figcaption class="image-caption">Figure IV: Download Tanzu Mission Control CLI</figcaption>
+    </figure>
+<p>Go to <strong>Automation center</strong> and follow the provided instructions. In order to make use of the CLI you have to be a member of a VMware Cloud Services organization that has access to Tanzu Mission Control.</p>
+<p>Attaching a cluster requires that you are associated with the <code>clustergroup.edit</code> role on the cluster group in which you want to attach the cluster.</p>
+<p>The TMC CLI is currently in <code>v1alpha1</code> version available but it already provides a bunch of resources with which we can interact with.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">tmc --help
+____  _ ____
+ | |\/| |___
+
+Usage:
+  tmc [resource|action|helper] [flags]
+
+Resources:
+  account           Account management
+  audit             Run an audit request on an org
+  cluster           A Kubernetes Cluster.
+  clustergroup      A group of Kubernetes clusters.
+  dataprotection    Backup, restore, or migrate cluster data.
+  integration       Get available integrations and their information from registry.
+  managementcluster A management cluster maintains the connection between a Tanzu Kubernetes Grid instance and the platform.
+  organization      Organization level management.
+  workspace         A group of managed Kubernetes namespaces.
+
+Actions:
+  login             Login to Tanzu Mission Control.
+  update            Update the CLI to the latest version.
+
+Policies:
+  iam               Permission management for resources.
+  policy            Policy management for resources.
+
+Helpers:
+  completion        Generate completion scripts.
+  configure         Configure the current context environment
+  system            System level configuration and resources.
+  version           Print CLI version.
+</code></pre></td></tr></table>
+</div>
+</div><div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Auto Completion<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">If you like CLI completion like I do, you will be delighted that TMC CLI has it too. Just run <code>tmc completion</code> <code>bash</code> or <code>zsh</code> and add the script to your shell profile.</div>
+        </div>
+    </div>
+<p>Start with <code>tmc login</code> and follow the prompts. You will be asked for an API token which you have to generate via the VMware Cloud Services portal.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">tmc login
+If you don&#39;t have an API token, visit the VMware Cloud Services console, select your organization, and create an API token with the TMC service roles:
+  https://console.cloud.vmware.com/csp/gateway/portal/#/user/tokens
+API Token
+</code></pre></td></tr></table>
+</div>
+</div><div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Proxy<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>In case you&rsquo;re client is behind a proxy server, you have to add the following URL to your proxy allowlist.</p>
+<p><code>console.cloud.vmware.com</code></p>
+</div>
+        </div>
+    </div>
+<p>Select the appropriate organization, and select a scope of <code>All Roles</code>. <strong>GENERATE</strong> token.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png" data-sub-html="<h2>Figure V: Tanzu Cloud Service Portal - API Tokens</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_4.png" />
+    </a><figcaption class="image-caption">Figure V: Tanzu Cloud Service Portal - API Tokens</figcaption>
+    </figure>
+<p>Copy the token and paste it when you were prompted for.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png" data-sub-html="<h2>Figure VI: Tanzu Cloud Service Portal - Generated API Token</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_5.png" />
+    </a><figcaption class="image-caption">Figure VI: Tanzu Cloud Service Portal - Generated API Token</figcaption>
+    </figure>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">tmc login
+i If you don&#39;t have an API token, visit the VMware Cloud Services console, select your organization, and create an API token with the TMC service roles:
+  https://console.cloud.vmware.com/csp/gateway/portal/#/user/tokens
+? API Token ****************************************************************
+
+[...]
+</code></pre></td></tr></table>
+</div>
+</div><p>After providing the requested API token, you have to give your login a context name. Choose a name you can easily remember! Otherwise, a random context name will be auto generated.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[...]
+
+? Login context name rguske-jarvis-lab
+? Select default log level warning
+? Management Cluster Name rguske-mgmt-mark50
+? Provisioner Name mark50-ns-1
+√ Successfully created context rguske-jarvis-lab, to manage your contexts run `tmc system context -h`
+</code></pre></td></tr></table>
+</div>
+</div><p>Now, let&rsquo;s attach our first cluster to TMC/to our Cluster Group. For my purposes, I&rsquo;m using a Tanzu Kubernetes cluster (TKC) which I&rsquo;ve deployed in a declaritive way on vSphere (vSphere with Tanzu). If you are using a TKC as well, make sure you are logged in.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">k vsphere login --insecure-skip-tls-verify --vsphere-username administrator@mark50.lab --server=mark50.jarvis.tanzu --tanzu-kubernetes-cluster-name mark50-tkc-1 --tanzu-kubernetes-cluster-namespace mark50-ns-1
+
+KUBECTL_VSPHERE_PASSWORD environment variable is not set. Please enter the password below
+Password:
+Logged in successfully.
+
+You have access to the following contexts:
+   mark50-ns-1
+   mark50-tkc-1
+   mark50.jarvis.tanzu
+
+If the context you wish to use is not in this list, you may need to try
+logging in again later, or contact your cluster administrator.
+
+To change context, use `kubectl config use-context &lt;workload name&gt;`
+</code></pre></td></tr></table>
+</div>
+</div><p>Attaching the cluster of your choice can be done by executing the command like this: <code>tmc cluster attach -n mark50-tkc-1 -g rguske-jarvis-lab -l owner=rguske -l networking=vsphere -k ~/.kube/config</code></p>
+<p>Hint: There are many good reasons to use <code>labels</code> and therefore I added two of them (<code>-l owner=rguske -l networking=vsphere</code>) to my cluster.</p>
+<p>And just a couple of seconds later, the Kubernetes cluster is part of my Cluster Group, fully manageable and ready to get enhanced through Tanzu Mission Control.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png" data-sub-html="<h2>Figure VII: K8s Cluster is showing up in TMC</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_7.png" />
+    </a><figcaption class="image-caption">Figure VII: K8s Cluster is showing up in TMC</figcaption>
+    </figure>
+<h4 id="-recording">🎥 Recording</h4>
+<p>I&rsquo;ve recorded the whole process with <a href="https://asciinema.org/" target="_blank" rel="noopener noreferrer">asciinema</a>.</p>
+<script id="asciicast-l5hbVPcvqknAFpXLLhU7YeczT" src="https://asciinema.org/a/l5hbVPcvqknAFpXLLhU7YeczT.js" async></script>
+<h3 id="install-catalog-package-cert-manager">Install Catalog Package Cert-Manager</h3>
+<p>I know, I know&hellip;only now I&rsquo;m getting to the actual topic of this post 😄 but I thought it is useful to run a quick recap on the cluster attachment process first.</p>
+<p>You have made it this far, now continue 💪</p>
+<p>At the end of this post, I&rsquo;ll have three packages installed on my attached cluster. <a href="https://tanzu.vmware.com/developer/guides/cert-manager-gs/" target="_blank" rel="noopener noreferrer">Cert-Manager</a> to support numerous ways of generating certificates, <a href="https://projectcontour.io/" target="_blank" rel="noopener noreferrer">Contour</a> as the Kubernetes ingress controller and <a href="https://goharbor.io" target="_blank" rel="noopener noreferrer">Harbor</a> as our Enterprise Container Registry.</p>
+<p>Cert-Manager has always to be installed first, in order to e.g. have self-signed certificates generated for the installations as well as to be kind of an issuer of your own provided certs. If you are installing another package first, it will end up like shown in <em>Figure VIII</em>.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" data-sub-html="<h2>Figure VIII: Failed Package installation due to missing cert-manager</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" />
+    </a><figcaption class="image-caption">Figure VIII: Failed Package installation due to missing cert-manager</figcaption>
+    </figure>
+<p>Open the Catalog page and select the Cert-Manager package. The first page which will be shown, provides package related information about the maintainers, version as well as the support.</p>
+<p>On the top right corner, there&rsquo;s a shiny <strong>INSTALL PACKAGE</strong> button which brings us to the actual installation steps.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" data-sub-html="<h2>Figure IX: Cert-Manager Package Information</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" />
+    </a><figcaption class="image-caption">Figure IX: Cert-Manager Package Information</figcaption>
+    </figure>
+<p>When it comes to Kubernetes specific object installations and configurations, like e.g. <code>ServiceAccounts</code>, <code>Roles</code>, <code>Rolebindings</code>, etc. TMC creates those uniquely for the automated installation for us as it is shown at Step 2 (<em>Figure X</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" data-sub-html="<h2>Figure X: Cert-Manager Package Installation</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" />
+    </a><figcaption class="image-caption">Figure X: Cert-Manager Package Installation</figcaption>
+    </figure>
+<p>If you like to have the package installed in a custom namespace, create the namespace beforehand and select <strong>Custom</strong>.. Nothing more to add here for Cert-Manager (straight forward).</p>
+<p><strong>INSTALL PACKAGE</strong></p>
+<h2 id="install-catalog-package-contour">Install Catalog Package Contour</h2>
+<p>Exposing <code>HTTP</code> and <code>HTTPS</code> routes from outside your Kubernetes cluster to a service which is running inside your cluster is what an Ingress Controller does. Contour is a popular open source Ingress Controller which greatly supports your Layer-7 wishes and it&rsquo;s available as a package in Catalog.</p>
+<p>I&rsquo;m skipping the first two sections here and jump directly into section 3, which is all about <code>Configuration values</code>.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png" data-sub-html="<h2>Figure XI: Contour Package - Configuration Values</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_15.png" />
+    </a><figcaption class="image-caption">Figure XI: Contour Package - Configuration Values</figcaption>
+    </figure>
+<p>Configuration types/values can be added in the following format, depending on the <code>Key</code>.</p>
+<ul>
+<li>string (sequence of characters)
+<ul>
+<li>e.g. <code>--log-level warning</code></li>
+</ul>
+</li>
+<li>boolean (true/false)
+<ul>
+<li>e.g. <code>hostNetwork: false</code></li>
+</ul>
+</li>
+<li>object
+<ul>
+<li>e.g. pointing to a <code>secret</code> or <code>configmap</code></li>
+</ul>
+</li>
+<li>integer (integer value)
+<ul>
+<li>e.g. <code>replicas: 2</code></li>
+</ul>
+</li>
+</ul>
+<p>I oriented myself on the official <a href="https://projectcontour.io/docs/v1.17.1/configuration/#configuration-file" target="_blank" rel="noopener noreferrer">Contour Configuration File example</a> to create my config. These are my specified <code>values</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">spec:
+  containers:
+    - args:
+        - --log-level warning
+  replicas: 2
+envoy:
+ service:
+   type: LoadBalancer
+   nodePorts:
+     http: null
+     https: null
+   externalTrafficPolicy: Cluster
+   disableWait: false
+ hostPorts:
+   enable: true
+   http: 80
+   https: 443
+ hostNetwork: false
+</code></pre></td></tr></table>
+</div>
+</div><p>Right after hitting the <strong>INSTALL PACKAGE</strong> button again, two new Namespaces were created.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">k get ns
+NAME                           STATUS   AGE
+contour-ingress-14ece452       Active   60s
+default                        Active   45h
+kube-node-lease                Active   45h
+kube-public                    Active   45h
+kube-system                    Active   45h
+tanzu-package-repo-global      Active   21h
+tanzu-system                   Active   21h
+vmware-system-auth             Active   45h
+vmware-system-cloud-provider   Active   45h
+vmware-system-csi              Active   45h
+vmware-system-tmc              Active   3h23m
+</code></pre></td></tr></table>
+</div>
+</div><p>The first namespace is <code>contour-ingress-14ece452</code> and is it where the needed <strong>resources for the package installation</strong> itself are installed to.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"> k -n contour-ingress-14ece452 get cm,sa
+NAME                                          DATA   AGE
+configmap/contour-ingress-ctrl                1      13m
+configmap/contour-ingress-ctrl-change-rpwwf   1      6m15s
+configmap/kube-root-ca.crt                    1      13m
+
+NAME                             SECRETS   AGE
+serviceaccount/contour-ingress   1         13m
+serviceaccount/default           1         13m
+</code></pre></td></tr></table>
+</div>
+</div><p>The second namespace <code>tanzu-system-ingress</code> is the actual namespace for the package deployment (Pods, ReplicaSets, Deployments, etc.).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">k -n tanzu-system-ingress get cm,sa,po,deploy,svc
+NAME                         DATA   AGE
+configmap/contour            1      95s
+configmap/kube-root-ca.crt   1      97s
+configmap/leader-elect       0      84s
+
+NAME                     SECRETS   AGE
+serviceaccount/contour   1         95s
+serviceaccount/default   1         97s
+serviceaccount/envoy     1         95s
+
+NAME                           READY   STATUS    RESTARTS   AGE
+pod/contour-6676bfcfd8-668k5   1/1     Running   0          93s
+pod/contour-6676bfcfd8-zbc5h   1/1     Running   0          93s
+pod/envoy-82phh                2/2     Running   0          95s
+pod/envoy-nrpj8                2/2     Running   0          94s
+pod/envoy-xqgp7                2/2     Running   0          94s
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/contour   2/2     2            2           95s
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/contour   ClusterIP   195.49.186.113   &lt;none&gt;        8001/TCP                     95s
+service/envoy     NodePort    195.63.98.167    &lt;none&gt;        80:32242/TCP,443:32025/TCP   95s
+</code></pre></td></tr></table>
+</div>
+</div><p>Here we go! Two ✅ <span style="color:#018914">Succeeded</span> package installations.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png" data-sub-html="<h2>Figure XIII: Successful Installation of two Packages</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_21.png" />
+    </a><figcaption class="image-caption">Figure XIII: Successful Installation of two Packages</figcaption>
+    </figure>
+<h2 id="install-catalog-package-harbor">Install Catalog Package Harbor</h2>
+<p>Alrighty! Contour is ready for serving our <code>kind: Service</code> and <code>kind: Ingress</code> requests and this is what we need (L4) for our Harbor installation. As we already did for the Cert-Manager as well as for the Contour package, provide all necessary data in Step 1 and 2 and enter your specific values in Step 3.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png" data-sub-html="<h2>Figure XIV: Harbor Package - Configuration Values</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_23.png" />
+    </a><figcaption class="image-caption">Figure XIV: Harbor Package - Configuration Values</figcaption>
+    </figure>
+<p>Like I mentioned in the Contour section, I was using the official <code>data-values.yaml</code> files for my configuration. For Harbor, I used the example here: <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-harbor-registry.html" target="_blank" rel="noopener noreferrer">Deploy Harbor Registry as a Shared Service</a></p>
+<p>This is how I ended up with:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"># Edit values here
+hostname: harbor.jarvis.tanzu
+port:
+  https: 443
+logLevel: warning
+database:
+  password: VMware1!
+harborAdminPassword: VMware1!
+secretKey: M2blh8iIZIWL9Kvv
+core:
+  secret: jML4MAuLIEgOFmq8
+  xsrfKey: ZcEYnGlUSBJvP7jrf9zKuZh4OFoNfIUQ
+jobservice:
+  secret: 6TW3Ylpg8LpYjixp
+registry:
+  secret: Ee48fjRlkMm4n2l6
+trivy:
+  enabled: true
+persistence:
+  persistentVolumeClaim:
+    registry:
+      storageClass: &#34;ftt0-r0&#34;
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    jobservice:
+      storageClass: &#34;ftt0-r0&#34;
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    database:
+      storageClass: &#34;ftt0-r0&#34;
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    redis:
+      storageClass: &#34;ftt0-r0&#34;
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    trivy:
+      storageClass: &#34;ftt0-r0&#34;
+      accessMode: ReadWriteOnce
+      size: 5Gi
+</code></pre></td></tr></table>
+</div>
+</div><p>Unfortunately, the <code>notary-signer</code> pod instantiation failed with <code>CrashLoopBackOff</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">k -n tanzu-system-registry get pod
+NAME                                    READY   STATUS             RESTARTS   AGE
+harbor-core-f7ddbf886-bfmwk             1/1     Running            0          43m
+harbor-database-0                       1/1     Running            0          43m
+harbor-jobservice-7b5857687c-ctlxq      1/1     Running            0          43m
+harbor-notary-server-677b7b4f9f-rnwmb   1/1     Running            1          43m
+harbor-notary-signer-8665f66696-q84ks   0/1     CrashLoopBackOff   13         43m
+harbor-portal-65c68794b9-6r7ws          1/1     Running            0          43m
+harbor-redis-0                          1/1     Running            0          43m
+harbor-registry-74d4f6d4bc-p58pv        2/2     Running            0          43m
+harbor-trivy-0                          1/1     Running            0          43
+</code></pre></td></tr></table>
+</div>
+</div><p>Fortunately, searching for the provided error message from the logs&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">{&#34;level&#34;:&#34;info&#34;,&#34;msg&#34;:&#34;Version: 0.6.1, Git commit: d6e1431f&#34;,&#34;time&#34;:&#34;2022-02-10T05:50:44Z&#34;}{&#34;level&#34;:&#34;fatal&#34;,&#34;msg&#34;:&#34;Could not read config at :/etc/notary/server-config.postgres.json, viper error: open : no such file or directory&#34;,&#34;time&#34;:&#34;2022-02-10T05:50:44Z&#34;}
+</code></pre></td></tr></table>
+</div>
+</div><p>&hellip;led me directly to a known issue with a provided workaround on the VMware Knowledge Base - <a href="https://kb.vmware.com/s/article/85725" target="_blank" rel="noopener noreferrer">KB85725</a></p>
+<h4 id="-recording-kb85725">🎥 Recording KB85725</h4>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>Provide the right Namespace<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">Make sure that you provide the Namespace where the Harbor package resources were installed to, which is not the <code>tanzu-system-registry</code>! In my case it&rsquo;s named as <code>harbor-b77eba03</code>.</div>
+        </div>
+    </div>
+<script id="asciicast-qwqnFfKAdi1152lAPobELY26K" src="https://asciinema.org/a/qwqnFfKAdi1152lAPobELY26K.js" async></script>
+<p>After following the guidance, my Harbor instance was up and running 😃</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n tanzu-system-registry get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+harbor-core-f7ddbf886-bfmwk             1/1     Running   0          60m
+harbor-database-0                       1/1     Running   0          60m
+harbor-jobservice-7b5857687c-ctlxq      1/1     Running   0          60m
+harbor-notary-server-677b7b4f9f-rnwmb   1/1     Running   1          60m
+harbor-notary-signer-5cb4fd8894-8cmzc   1/1     Running   0          2m36s
+harbor-portal-65c68794b9-6r7ws          1/1     Running   0          60m
+harbor-redis-0                          1/1     Running   0          60m
+harbor-registry-74d4f6d4bc-p58pv        2/2     Running   0          60m
+harbor-trivy-0                          1/1     Running   0          60m
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="nx">tanzu</span> <span class="kn">package</span> <span class="nx">installed</span> <span class="nx">list</span> <span class="o">-</span><span class="nx">A</span>
+<span class="o">/</span> <span class="nx">Retrieving</span> <span class="nx">installed</span> <span class="nx">packages</span><span class="o">...</span>
+  <span class="nx">NAME</span>             <span class="nx">PACKAGE</span><span class="o">-</span><span class="nx">NAME</span>                   <span class="nx">PACKAGE</span><span class="o">-</span><span class="nx">VERSION</span>        <span class="nx">STATUS</span>               <span class="nx">NAMESPACE</span>
+  <span class="nx">cert</span><span class="o">-</span><span class="nx">manager</span>     <span class="nx">cert</span><span class="o">-</span><span class="nx">manager</span><span class="p">.</span><span class="nx">tanzu</span><span class="p">.</span><span class="nx">vmware</span><span class="p">.</span><span class="nx">com</span>  <span class="mf">1.1.0</span><span class="o">+</span><span class="nx">vmware</span><span class="mf">.1</span><span class="o">-</span><span class="nx">tkg</span><span class="mf">.2</span>   <span class="nx">Reconcile</span> <span class="nx">succeeded</span>  <span class="nx">cert</span><span class="o">-</span><span class="nx">manager</span><span class="o">-</span><span class="mi">4</span><span class="nx">ea5f8cb</span>
+  <span class="nx">contour</span><span class="o">-</span><span class="nx">ingress</span>  <span class="nx">contour</span><span class="p">.</span><span class="nx">tanzu</span><span class="p">.</span><span class="nx">vmware</span><span class="p">.</span><span class="nx">com</span>       <span class="mf">1.17.1</span><span class="o">+</span><span class="nx">vmware</span><span class="mf">.1</span><span class="o">-</span><span class="nx">tkg</span><span class="mf">.1</span>  <span class="nx">Reconcile</span> <span class="nx">succeeded</span>  <span class="nx">contour</span><span class="o">-</span><span class="nx">ingress</span><span class="o">-</span><span class="nx">e311d7d7</span>
+  <span class="nx">harbor</span>           <span class="nx">harbor</span><span class="p">.</span><span class="nx">tanzu</span><span class="p">.</span><span class="nx">vmware</span><span class="p">.</span><span class="nx">com</span>        <span class="mf">2.2.3</span><span class="o">+</span><span class="nx">vmware</span><span class="mf">.1</span><span class="o">-</span><span class="nx">tkg</span><span class="mf">.1</span>   <span class="nx">Reconcile</span> <span class="nx">succeeded</span>  <span class="nx">harbor</span><span class="o">-</span><span class="nx">b77eba03</span>
+</code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png" data-sub-html="<h2>Figure XV: Three successfully installed Packages</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_24.png" />
+    </a><figcaption class="image-caption">Figure XV: Three successfully installed Packages</figcaption>
+    </figure>
+<p>Since the Harbor UI is exposed via the Envoy service load balancer that is running in the <code>tanzu-system-ingress</code>, it&rsquo;s of high interest for us to get the assigned IP address.</p>
+<p>Execute <code>kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0]}'</code> to let it be displayed. Use this IP address to create a new DNS record on your DNS server.</p>
+<p><strong>Important!</strong> Use the same FQDN as provided in the <code>Configuration values</code> section. In my case: <code>harbor.jarvis.tanzu</code></p>
+<p>Check if the Harbor portal is reachable using your browser.</p>
+<figure><a class="lightgallery" href="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" title="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" data-thumbnail="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" data-sub-html="<h2>Figure XXVI: Download Tanzu Mission Control CLI</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png"
+            data-srcset="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png, /img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png 1.5x, /img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" />
+    </a><figcaption class="image-caption">Figure XXVI: Download Tanzu Mission Control CLI</figcaption>
+    </figure>
+<p>Awesome! Login with the specified <code>harborAdminPassword</code></p>
+<p>That&rsquo;s it! We&rsquo;ve easily extended our fresh to TMC attached Kubernetes cluster with capabilities to serve certificate related issues, to serve Ingress as well as with the ability to provide a Enterprise Container Registry with features for image scanning (Clair) and image signing (Notary).</p>
+<h3 id="optional-detach-kubernetes-cluster">Optional: Detach Kubernetes Cluster</h3>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>Detach a Cluster<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The detach process does not remove the catalog-related Kubernetes resources installed on your cluster, as that would impact any workloads you have deployed using the catalog.</div>
+        </div>
+    </div>
+<p>If you want to remove these resources, run the following kubectl commands:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl delete crd packageinstalls.packaging.carvel.dev
+kubectl delete crd packagerepositories.packaging.carvel.dev
+kubectl delete crd internalpackagemetadatas.internal.packaging.carvel.dev
+kubectl delete crd internalpackages.internal.packaging.carvel.dev
+kubectl delete crd apps.kappctrl.k14s.io
+kubectl delete APIService v1alpha1.data.packaging.carvel.dev
+kubectl delete ns tanzu-system
+kubectl delete ns tanzu-package-repo-global
+kubectl delete tanzupackage-install-admin-role kapp-controller-cluster-role
+kubectl delete clusterrolebinding kapp-controller-cluster-role-binding pkg-apiserver:system:auth-delegator
+kubectl delete psp tanzu-system-kapp-ctrl-restricted
+kubectl delete rolebinding pkgserver-auth-reader -n kube-system
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="conclusion">Conclusion</h2>
+<p>See <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/#a-catalog-of-extensions" target="_blank" rel="noopener noreferrer">&ldquo;A Catalog of Extensions&rdquo;</a> right under my tweet 😃</p>
+<h2 id="resources">Resources:</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Resource</th>
+<th style="text-align:center">Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Pathfinder - VMware Tanzu Standard Overview</td>
+<td style="text-align:center"><a href="https://pathfinder.vmware.com/path/tanzu_standard" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Tanzu - VMware Tanzu Mission Control Starter</td>
+<td style="text-align:center"><a href="https://tanzu.vmware.com/tmc-starter/" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Blog - Tanzu Packages Explained</td>
+<td style="text-align:center"><a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Blog - Automatically Manage DNS for Kubernetes with ExternalDNS and Tanzu Mission Control Catalog</td>
+<td style="text-align:center"><a href="https://tanzu.vmware.com/content/blog/manage-dns-kubernetes-externaldns-tanzu-mission-control-catalog" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - Tanzu Mission Control v1alpha1 API Resource</td>
+<td style="text-align:center"><a href="https://developer.vmware.com/apis/1079/tanzu-mission-control" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - Install the Tanzu CLI and Other Tools</td>
+<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-install-cli.html" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - TMC Install a Package</td>
+<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-4B45987F-D5A0-4283-8B4E-139F38DCBFD9.html" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - Add a Package Repository to Your Cluster</td>
+<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-E0168103-7A6F-4C07-8768-19D9B1EB4EFA.html#GUID-E0168103-7A6F-4C07-8768-19D9B1EB4EFA" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - Tanzu Packages Harbor Installation</td>
+<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-harbor-registry.html" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Docs - harbor-data-values File for vSphere 7</td>
+<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-harbor-registry.html#harbor-values-v7" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">Contour Docs - Contour Configuration Reference</td>
+<td style="text-align:center"><a href="https://projectcontour.io/docs/v1.17.1/configuration/#configuration-file" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+<tr>
+<td style="text-align:left">KB - The harbor-notary-signer pod fails to start in a Harbor installation under Tanzu Kubernetes Grid 1.4 (85725)</td>
+<td style="text-align:center"><a href="https://kb.vmware.com/s/article/85725" target="_blank" rel="noopener noreferrer">Click</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-01-11&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/739be0ec68c98dfeaead6c0f23c536886b51f300" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 739be0ec68c98dfeaead6c0f23c536886b51f300: finalized tmc catalog post &#43; corrections">
+                                    <i class="fas fa-hashtag fa-fw"></i>739be0e</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog" data-via="vmw_rguske" data-hashtags="January2022,Tanzu,TanzuPackages,TanzuStandard,TMC,Kubernetes"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog" data-description="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" data-title="Deploying Tanzu Packages using Tanzu Mission Control Catalog" data-description="This post introduces the Tanzu Mission Control Catalog feature and provides a closer look on the provided simplicity to extend your Kubernetes Clusters with the automated installation of Tanzu Packages through the catalog."><i class="fab fa-trello fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/january2022/">January2022</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/tanzupackages/">TanzuPackages</a>,&nbsp;<a href="/tags/tanzustandard/">TanzuStandard</a>,&nbsp;<a href="/tags/tmc/">TMC</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" class="prev" rel="prev" title="Hands-on the Avi Kubernetes Operator (AKO)"><i class="fas fa-angle-left fa-fw"></i>Hands-on the Avi Kubernetes Operator (AKO)</a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.89.4">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"   rguske.github.io","id-2":"   rguske.github.io"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
