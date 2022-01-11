@@ -3,7 +3,7 @@
 
 ## The Challenge
 
-Just providing a Kubernetes cluster to an application team is in most cases half of the battle. It's often necessary to also provide certain capabilities (extensions) like e.g. for logging or for ingress to those clusters, to ultimately support the production workload. Easily extending customer Kubernetes environments with official supported open source solutions to support the aforementioned capabilities and even more, should provide a decent level of simplicity in terms of deployment and lifecycle management.
+Just providing a Kubernetes cluster to an application team is in most cases half of the battle. It's often necessary to provide certain capabilities for e.g. logging or for ingress to those clusters, to ultimately support a production workload. Extending Kubernetes environments with open source solutions, to support the aforementioned capabilities, should provide a decent level of simplicity in terms of deployment and lifecycle management.
 
 ## A Catalog of Extensions
 
@@ -13,9 +13,9 @@ By deeply incorporating open source projects like e.g. [Velero](https://velero.i
 
 <center> {{< tweet user="vmw_rguske" id="1466426330354962437" >}} </center>
 
-The Catalog is exactly providing this in my introduction mentioned simplicity to exetend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with official support by VMware. Furthermore, it's also possible to add your own repositories of solutions or applications to the Catalog which gives you even more flexibility and extensibility.
+The Catalog is exactly providing this in my introduction mentioned simplicity to extend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with official support by VMware. Furthermore, it's also possible to add your own repositories of solutions or applications to the Catalog which gives you even more flexibility and extensibility.
 
-At this point, I'd like to highlight the following post by [Corey Dinkens](https://www.linkedin.com/in/coreydinkens), in which he's going to introduce the installation of [External-DNS](https://github.com/kubernetes-sigs/external-dns/) using TMC Catalog.
+At this point, I'd like to highlight the following post by [Corey Dinkens](https://www.linkedin.com/in/coreydinkens), in which he introduced the installation of [External-DNS](https://github.com/kubernetes-sigs/external-dns/) using TMC Catalog.
 
 :point_right: [Automatically Manage DNS for Kubernetes with ExternalDNS and Tanzu Mission Control Catalog](https://tanzu.vmware.com/content/blog/manage-dns-kubernetes-externaldns-tanzu-mission-control-catalog)
 
@@ -25,7 +25,7 @@ At this point, I'd like to highlight the following post by [Corey Dinkens](https
 
 ### Extensions, Solutions, <span style="color:#6003B6">PACKAGES</span>
 
-If you've read the article diligently up to here, you may noticed that I always used the terms *solutions* or *extensions* when talking about extending your Kubernetes environments. In Catalog, VMware is referring to **Packages** and the reason for this is, that Catalog is using [Carvel](https://carvel.dev) behind the scenes. Project Carvel provides a comprehensive toolbox for building, templating, packaging, deploying and day2-ing modern applications. This is a :fire: topic and I'd recommend reading this great blog post :point_right: [Tanzu Packages Explained](https://beyondelastic.com/2022/01/04/tanzu-packages-explained/) :point_left: by my dear friend [Alex](https://twitter.com/Alec1823) to get to know it.
+If you've read the article diligently up to here, you may noticed that I always used the terms *solutions* or *extensions* when talking about extending your Kubernetes environments. In Catalog, VMware is referring to **Packages**, and the reason for this is that Catalog is using [Carvel](https://carvel.dev) behind the scenes. Project Carvel provides a comprehensive toolbox for building, templating, packaging, deploying, and day2-ing modern applications. This is a :fire: topic and I'd recommend reading this great blog post :point_right: [Tanzu Packages Explained](https://beyondelastic.com/2022/01/04/tanzu-packages-explained/) :point_left: by my dear friend [Alex](https://twitter.com/Alec1823) to get to know it.
 
 ## Setting the Scenes
 
@@ -208,7 +208,7 @@ On the top right corner, there's a shiny **INSTALL PACKAGE** button which brings
 
 {{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" caption="Figure IX: Cert-Manager Package Information" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_18.png" >}}
 
-When it comes to Kubernetes specific object installations and configurations, like e.g. `ServiceAccounts`, `Roles`, `Rolebindings`, etc. TMC creates those uniquely for the automated installation for us as it is shown at Step 2 (*Figure X*).
+When it comes to Kubernetes specific object installations and configurations, like e.g. `ServiceAccounts`, `Roles`, `Rolebindings`, etc. TMC creates those uniquely for the automated installation for us as it is shown in Step 2 (*Figure X*).
 
 {{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" caption="Figure X: Cert-Manager Package Installation" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_19.png" >}}
 
@@ -447,7 +447,7 @@ Check if the Harbor portal is reachable using your browser.
 
 Awesome! Login with the specified `harborAdminPassword`
 
-That's it! We've easily extended our fresh to TMC attached Kubernetes cluster with capabilities to serve certificate related issues, to serve Ingress as well as with the ability to provide a Enterprise Container Registry with features for image scanning (Clair) and image signing (Notary).
+That's it! We've easily extended our fresh to TMC attached Kubernetes cluster with capabilities to serve certificate related issues, to serve Ingress as well as with the ability to provide an Enterprise Container Registry with features for image scanning (Clair) and image signing (Notary).
 
 ### Optional: Detach Kubernetes Cluster
 
