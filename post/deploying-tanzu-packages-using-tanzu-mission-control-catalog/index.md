@@ -13,9 +13,13 @@ By deeply incorporating open source projects like e.g. [Velero](https://velero.i
 
 <center> {{< tweet user="vmw_rguske" id="1466426330354962437" >}} </center>
 
-The Catalog is exactly providing this in my introduction mentioned simplicity to exetend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with have official support by VMware. Furthermore, it's also possible to add your own repositories of solutions to Catalog to give you even more flexibility and extensibility.
+The Catalog is exactly providing this in my introduction mentioned simplicity to exetend your Kubernetes environments by providing an easy and opinionated way to install solutions for e.g. monitoring, logging, ingress, external-dns and others, with official support by VMware. Furthermore, it's also possible to add your own repositories of solutions or applications to the Catalog which gives you even more flexibility and extensibility.
 
-*Figure I* shows the currently available <span style="color:#6003B6">PACKAGES</span>.
+At this point, I'd like to highlight the following post by [Corey Dinkens](https://www.linkedin.com/in/coreydinkens), in which he's going to introduce the installation of [External-DNS](https://github.com/kubernetes-sigs/external-dns/) using TMC Catalog.
+
+:point_right: [Automatically Manage DNS for Kubernetes with ExternalDNS and Tanzu Mission Control Catalog](https://tanzu.vmware.com/content/blog/manage-dns-kubernetes-externaldns-tanzu-mission-control-catalog)
+
+*Figure I* shows all currently available <span style="color:#6003B6">PACKAGES</span>.
 
 {{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" caption="Figure I: Available Packages through the Catalog" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_8.png" >}}
 
@@ -472,7 +476,7 @@ kubectl delete rolebinding pkgserver-auth-reader -n kube-system
 
 See ["A Catalog of Extensions"](https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/#a-catalog-of-extensions) right under my tweet :smiley:
 
-## Resources:
+## Resources
 
 | Resource | Link |
 |:--- |:---: |
