@@ -9,7 +9,7 @@ Just providing a Kubernetes cluster to an application team is in most cases half
 
 Tanzu Mission Control, a VMware Cloud Service (SaaS), is VMware's multi-cloud Kubernetes management platform which provides a centralized management for consistently operating and securing Kubernetes infrastructures and modern applications through a centralized policy management across all deployed and attached Kubernetes clusters.
 
-By deeply incorporating open source projects like e.g. [Velero](https://velero.io/) for Backup & Recovery or [Sonobuoy](https://sonobuoy.io/) for cluster conformance checks, just to name a few, as well as the integration in other VMware solutions like [Tanzu Service Mesh](https://tanzu.vmware.com/service-mesh) or [Tanzu Observability](https://tanzu.vmware.com/observability), Tanzu Mission Control already offers a rich set of features to multiple personas/teams. This set was recently extended by a another great new feature which is called **Catalog**.
+By deeply incorporating open source projects like e.g. [Velero](https://velero.io/) for backup & recovery or [Sonobuoy](https://sonobuoy.io/) for cluster conformance checks, just to name a few, as well as the integration in other VMware solutions like [Tanzu Service Mesh](https://tanzu.vmware.com/service-mesh) or [Tanzu Observability](https://tanzu.vmware.com/observability), Tanzu Mission Control already offers a rich set of features to multiple personas/teams. This set was recently extended by a another great new feature which is called **Catalog**.
 
 <center> {{< tweet user="vmw_rguske" id="1466426330354962437" >}} </center>
 
@@ -39,8 +39,8 @@ Keep the following table in mind before deploying Tanzu Packages using the Catal
 
 | Supported | Not Supported |
 | :-- | :-- |
-| Tanzu Kubernetes Grid Service workload clusters | Tanzu Kubernetes Grid Service Supervisor Clusters
-| Tanzu Kubernetes Grid workload clusters (version 1.4 and later) | Tanzu Kubernetes Grid Management Clusters
+| Tanzu Kubernetes Grid Service workload clusters | Tanzu Kubernetes Grid Service Supervisor clusters
+| Tanzu Kubernetes Grid workload clusters (version 1.4 and later) | Tanzu Kubernetes Grid Management clusters
 | GKE (GCP) | Tanzu Kubernetes Grid workload clusters (version 1.3 and earlier) |
 | EKS (AWS) | Tanzu Standard packages are not supported on clusters where PSP is enabled |
 | AKS (Azure) | |
@@ -52,7 +52,7 @@ If you have previously installed Carvel's kapp-controller on your cluster, you m
 
 ### Attach a K8s Cluster to TMC - GUI
 
-Attaching a Kubernetes cluster is made simple by e.g. using the TMC UI. On the left pane under the section Clusters, select **ATTACH CLUSTER** and provide the requested data.
+Attaching a Kubernetes cluster is made simple by e.g. using the TMC UI. On the left pane under the section clusters, select **ATTACH CLUSTER** and provide the requested data.
 
 {{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" caption="Figure II: Attaching K8s Cluster via GUI" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_2.png" >}}
 
@@ -156,7 +156,7 @@ After providing the requested API token, you have to give your login a context n
 √ Successfully created context rguske-jarvis-lab, to manage your contexts run `tmc system context -h`
 ```
 
-Now, let's attach our first cluster to TMC/to our Cluster Group. For my purposes, I'm using a Tanzu Kubernetes cluster (TKC) which I've deployed in a declaritive way on vSphere (vSphere with Tanzu). If you are using a TKC as well, make sure you are logged in.
+Now, let's attach our first cluster to TMC/to our cluster group. For my purposes, I'm using a Tanzu Kubernetes cluster (TKC) which I've deployed in a declaritive way on vSphere (vSphere with Tanzu). If you are using a TKC as well, make sure you are logged in.
 
 ```code
 k vsphere login --insecure-skip-tls-verify --vsphere-username administrator@mark50.lab --server=mark50.jarvis.tanzu --tanzu-kubernetes-cluster-name mark50-tkc-1 --tanzu-kubernetes-cluster-namespace mark50-ns-1
@@ -200,7 +200,7 @@ At the end of this post, I'll have three packages installed on my attached clust
 
 Cert-Manager has always to be installed first, in order to e.g. have self-signed certificates generated for the installations as well as to be kind of an issuer of your own provided certs. If you are installing another package first, it will end up like shown in *Figure VIII*.
 
-{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" caption="Figure VIII: Failed Package installation due to missing cert-manager" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" >}}
+{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" caption="Figure VIII: Failed Package installation due to missing Cert-Manager" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_17.png" >}}
 
 Open the Catalog page and select the Cert-Manager package. The first page which will be shown, provides package related information about the maintainers, version as well as the support.
 
@@ -231,7 +231,7 @@ Configuration types/values can be added in the following format, depending on th
 - boolean (true/false)
   - e.g. `hostNetwork: false`
 - object
-  - e.g. pointing to a `secret` or `configmap`
+  - e.g. pointing to a `secret`, `configmap` or `certificate`
 - integer (integer value)
   - e.g. `replicas: 2`
 
@@ -443,7 +443,7 @@ Execute `kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loa
 
 Check if the Harbor portal is reachable using your browser.
 
-{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" caption="Figure XXVI: Download Tanzu Mission Control CLI" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" >}}
+{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" caption="Figure XVI: Download Tanzu Mission Control CLI" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" >}}
 
 Awesome! Login with the specified `harborAdminPassword`
 
