@@ -122,7 +122,7 @@ API Token
 ```
 
 {{< admonition info "Proxy" true >}}
-In case you're client is behind a proxy server, you have to add the following URL to your proxy allowlist.
+In case your client is behind a proxy server, you have to add the following URL to your proxy allowlist.
 
 `console.cloud.vmware.com`
 {{< /admonition >}}
@@ -424,7 +424,7 @@ harbor-registry-74d4f6d4bc-p58pv        2/2     Running   0          60m
 harbor-trivy-0                          1/1     Running   0          60m
 ```
 
-```code
+```shell
 tanzu package installed list -A
 / Retrieving installed packages...
   NAME             PACKAGE-NAME                   PACKAGE-VERSION        STATUS               NAMESPACE
@@ -437,13 +437,13 @@ tanzu package installed list -A
 
 Since the Harbor UI is exposed via the Envoy service load balancer that is running in the `tanzu-system-ingress`, it's of high interest for us to get the assigned IP address.
 
-Execute `kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0]}'` to let it be displayed. Use this IP address to create a new DNS record on your DNS server. 
+Execute `kubectl get svc envoy -n tanzu-system-ingress -o jsonpath='{.status.loadBalancer.ingress[0]}'` to let it be displayed. Use this IP address to create a new DNS record on your DNS server.
 
 **Important!** Use the same FQDN as provided in the `Configuration values` section. In my case: `harbor.jarvis.tanzu`
 
 Check if the Harbor portal is reachable using your browser.
 
-{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" caption="Figure XVI: Download Tanzu Mission Control CLI" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" >}}
+{{< image src="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" caption="Figure XVI: Successfully logged in into the Harbor Portal" src-s="/img/posts/202201_tmc_catalog/tmc_catalog_202201_25.png" >}}
 
 Awesome! Login with the specified `harborAdminPassword`
 
