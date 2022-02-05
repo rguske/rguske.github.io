@@ -65,13 +65,17 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 {{< image src="/img/about/cka-certified-kubernetes-administrator.png" src-s="/img/about/cka-certified-kubernetes-administrator.png" height="220" width="220" >}}
 
-{{< image src="/img/about/VMware_Cert_P_DCV.png" src-s="/img/about/VMware_Cert_P_DCV.png" height="200" width="200" >}}
+---
 
-{{< image src="/img/about/VMware_Cert_P_Tanzu.png" src-s="/img/about/VMware_Cert_P_Tanzu.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_cert_p_AppModern_2022.png" src-s="/img/about/VMware_cert_p_AppModern_2022.png" height="200" width="200" >}}
+
+{{< image src="/img/about/VMware_cert_tanzu_specialist.png" src-s="/img/about/VMware_cert_tanzu_specialist.png" height="200" width="200" >}}
+
+{{< image src="/img/about/VMware_cert_dcv_2021.png" src-s="/img/about/VMware_cert_dcv_2021.png" height="200" width="200" >}}
 
 ### vExpert
 
-**Status**: Active 2019 - 2021
+**Status**: Active 2019 - 2022
 
 Acknowledgement by sharing passion and gained experience with the community.
 
