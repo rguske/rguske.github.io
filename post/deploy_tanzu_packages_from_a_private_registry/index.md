@@ -21,7 +21,7 @@ All of the Tanzu Packages shown in *Table I* below are provided by VMware. VMwar
 | Service discovery | external-dns | tanzu-standard |
 
 {{< admonition info "Repository URL" true >}}
-Table column *Repository*, is the name of the package repository (`tanzu-standard`) which is configured by default in namespace `tanzu-package-repo-global` and which is normally configured with URL `projects-stg.registry.vmware.com/tkg/packages/standard/repo`.
+Table column *Repository*, is the name of the package repository (`tanzu-standard`) which is configured by default in namespace `tanzu-package-repo-global` and which is normally configured with URL `projects.registry.vmware.com/tkg/packages/standard/repo`.
 {{< /admonition >}}
 
 By following the steps provided in this post, you will be able to deploy the kapp-controller as well as all Tanzu Packages from your own private registry onto your eagerly waiting Kubernetes clusters. We start with some prerequisites.
@@ -32,7 +32,7 @@ We have to equip our `shell` with some additional CLI's in order to proceed furt
 
 ### Tanzu Cli
 
-The `tanzu` CLI ships alongside a compatible version of the `kubectl` CLI. Download the CLI(s) from VMware's Customer Connect portal. 
+The `tanzu` CLI ships alongside a compatible version of the `kubectl` CLI. Download the CLI(s) from VMware's Customer Connect portal.
 
 - [Download - Tanzu CLI](https://customerconnect.vmware.com/en/downloads/details?downloadGroup=TKG-141&productId=988&rPId=82536)
 
@@ -108,9 +108,9 @@ tanzu plugin list
 
 ### kubectl
 
-The compatible `kubectl` version can be downloaded via the provided link as well. 
+The compatible `kubectl` version can be downloaded via the provided link as well.
 
-Just to have it mentioned - You will notice that my `code` examples in this post will often has just a `k` instead of `kubectl` when I used the CLI. This is because I'm always using aliases for certain CLI's in my shell. `alias k=kubectl` 
+Just to have it mentioned - You will notice that my `code` examples in this post will often has just a `k` instead of `kubectl` when I used the CLI. This is because I'm always using aliases for certain CLI's in my shell. `alias k=kubectl`
 
 ```shell
 # unpack the binary
@@ -144,11 +144,11 @@ chmod ugo+x imgpkg-linux-amd64-v0.10.0+vmware.1
 mv ./imgpkg-linux-amd64-v0.10.0+vmware.1 /usr/local/bin/imgpkg
 ```
 
-### Create a new Public Project in Harbor
+### Create a new Project in Harbor
 
-Create a new project/repository in your registry to which we can `push` (upload) the packages (images) to. I've created a new one called `tanzu-packages` in my Harbor registry and marked it as `Public Repository`. I will come to this later again why I configured it as a public repository.
+Create a new project/repository in your registry to which we can `push` (upload) the packages (images) to. I've created a new one called `tanzu-packages` in my Harbor registry.
 
-{{< image src="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" caption="Figure I: New public Harbor Project" src-s="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" >}}
+{{< image src="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" caption="Figure I: New Harbor Project" src-s="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" >}}
 
 I've written a couple of blog posts covering e.g. the deployment by using `helm` or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor Container Registry.
 
@@ -162,7 +162,7 @@ Check out:
 
 ### Download the Harbor Certificate
 
-You can skip this section if you are using a different registry. 
+You can skip this section if you are using a different registry.
 
 > Please have the certificate of your registry by hand because we need it a few times more.
 
@@ -352,8 +352,8 @@ And by checking the reconciliation status of the repository you will see:
 tanzu package repository list -A
 
 | Retrieving repositories...
-  NAME                 REPOSITORY                                         TAG     STATUS                   DETAILS                  NAMESPACE
-  company-repo-jarvis  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-packages
+  NAME                    REPOSITORY                                         TAG     STATUS                   DETAILS                  NAMESPACE
+  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-package-repo-global
 ```
 
 Certificates... :roll_eyes:
@@ -407,11 +407,11 @@ Save your adjustments `:wq`.
 **Step 3:** Restart/`delete` the kapp-controller pod to take effect changes:
 
 ```shell
-# delete the kapp-controller
+# delete the kapp-controller pod
 k -n tkg-system delete pod kapp-controller-5fd59df9dd-xmvmj
 ```
 
-**Step 4:** Add the URL of our private repository and use the namespace `tanzu-package-repo-global`:
+**Step 4:** Add the URL of our repository and use the namespace `tanzu-package-repo-global`:
 
 ```shell
 # add the offline package repository
@@ -424,18 +424,70 @@ If you choose a different namespace, the Packages will only be visible and deplo
 *Source:* beyondelastic.com - [Tanzu Packages Explained](https://beyondelastic.com/2022/01/04/tanzu-packages-explained/)
 {{< /admonition >}}
 
-**Step 5:** Validate that the kapp-controller can successfully `reconcile` the repository:
+:heavy_exclamation_mark: But only adding the certificate to the kapp-controller `configMap` is only half the way if your repository is not configured as **Public** (without authentication).
+
+## Create a Secret to Authenticate with your Registry
+
+To let the kapp-controller authenticate to your private registry, you have to create a Kubernetes `secret` which in turn has to be referenced in the `PackageRepository` Custom Resource (CR).
+
+**Step 1:** Create the Kubernetes `secret`:
+
+`kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='your-password' --docker-email='rguske@vmware.com'`
+
+```shell
+# validate the creation of the secret
+k get secrets -n tanzu-package-repo-global      
+NAME                                                    TYPE                                  DATA   AGE
+cert-manager-tanzu-package-repo-global-sa-token-6n57n   kubernetes.io/service-account-token   3      3h6m
+default-token-wzv5l                                     kubernetes.io/service-account-token   3      24h
+harbor-creds 
+```
+
+**Step 2:**
+
+Adjust the `PackageRepository` CR accordingly to use the new `secret` and to ultimately authenticate to your registry:
+
+```shell
+k -n tanzu-package-repo-global edit packagerepositories.packaging.carvel.dev tanzu-packages-offline 
+
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageRepository
+metadata:
+  creationTimestamp: "2022-02-09T10:11:02Z"
+  finalizers:
+  - finalizers.packagerepository.packaging.carvel.dev/delete
+  generation: 1
+  name: tanzu-packages-offline
+  namespace: tanzu-package-repo-global
+  resourceVersion: "1464972"
+  uid: d42032e9-5534-4503-a065-469c3434a94d
+spec:
+  fetch:
+    imgpkgBundle:
+      image: harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0
+      secretRef:
+        name: harbor-creds
+[...]
+```
+
+**Step 3:**
+
+Validate that the changes has taken effect and that the kapp-controller can successfully `reconcile` the repository. The status for the package repository should have changed from `Reconcile failed:` to `Reconcile succeeded`.
 
 ```shell
 # validate the configuration of the repository
 tanzu package repository list -n tanzu-package-repo-global
 
-- Retrieving repositories... 
-  NAME                    REPOSITORY                                         TAG     STATUS               DETAILS  
-  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded 
+- Retrieving repositories...
+  NAME                    REPOSITORY                                         TAG     STATUS               DETAILS
+  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded
 ```
 
-**Step 6:** Also, validate the available (offline) packages:
+**Step 4:** Also, validate the available (offline) packages:
 
 ```shell
 # check package availability
@@ -536,3 +588,4 @@ stringData:
 - Stay here :wink: - [Deploying Tanzu Packages using Tanzu Mission Control Catalog](https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/)
 - Carvel Docs - [Configuring the Controller](https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec)
 - Carvel Docs - [Authenticating to Private Registries](https://carvel.dev/kapp-controller/docs/v0.32.0/private-registry-auth/)
+- Kubernetes Docs - [Pull an Image from a Private Registry](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)

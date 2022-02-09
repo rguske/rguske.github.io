@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/deploy_tanzu_packages_from_a_private_registry\/"
-        },"genre": "posts","keywords": "February2022, Tanzu, TanzuPackages, Cloud Native, Kubernetes, Harbor","wordcount":  2465 ,
+        },"genre": "posts","keywords": "February2022, Tanzu, TanzuPackages, Cloud Native, Kubernetes, Harbor","wordcount":  2701 ,
         "url": "https:\/\/rguske.github.io\/post\/deploy_tanzu_packages_from_a_private_registry\/","datePublished": "2022-02-09T12:00:40+01:00","dateModified": "2022-02-09T12:00:40+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -118,8 +118,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Deploy VMware Tanzu Packages from a private Container Registry</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/tanzu/"><i class="far fa-folder fa-fw"></i>Tanzu</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-02-09">2022-02-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2465 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;12 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-02-09">2022-02-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2701 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;13 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -140,7 +140,7 @@
         <li><a href="#tanzu-cli">Tanzu Cli</a></li>
         <li><a href="#kubectl">kubectl</a></li>
         <li><a href="#imgpkg">imgpkg</a></li>
-        <li><a href="#create-a-new-public-project-in-harbor">Create a new Public Project in Harbor</a></li>
+        <li><a href="#create-a-new-project-in-harbor">Create a new Project in Harbor</a></li>
         <li><a href="#download-the-harbor-certificate">Download the Harbor Certificate</a></li>
       </ul>
     </li>
@@ -148,6 +148,7 @@
     <li><a href="#install-the-kapp-controller">Install the Kapp-Controller</a></li>
     <li><a href="#making-packages-offline-available">Making Packages offline available</a></li>
     <li><a href="#update-the-kapp-controller-configmap">Update the Kapp-Controller Configmap</a></li>
+    <li><a href="#create-a-secret-to-authenticate-with-your-registry">Create a Secret to Authenticate with your Registry</a></li>
     <li><a href="#deploy-package-cert-manager">Deploy Package Cert-Manager</a></li>
     <li><a href="#optional-kapp-controller-secret-vs-configmap">OPTIONAL: kapp-controller secret vs. configMap</a></li>
     <li><a href="#resources">Resources</a></li>
@@ -213,7 +214,7 @@
             <i class="icon fas fa-info-circle fa-fw"></i>Repository URL<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">Table column <em>Repository</em>, is the name of the package repository (<code>tanzu-standard</code>) which is configured by default in namespace <code>tanzu-package-repo-global</code> and which is normally configured with URL <code>projects-stg.registry.vmware.com/tkg/packages/standard/repo</code>.</div>
+            <div class="admonition-content">Table column <em>Repository</em>, is the name of the package repository (<code>tanzu-standard</code>) which is configured by default in namespace <code>tanzu-package-repo-global</code> and which is normally configured with URL <code>projects.registry.vmware.com/tkg/packages/standard/repo</code>.</div>
         </div>
     </div>
 <p>By following the steps provided in this post, you will be able to deploy the kapp-controller as well as all Tanzu Packages from your own private registry onto your eagerly waiting Kubernetes clusters. We start with some prerequisites.</p>
@@ -418,9 +419,9 @@ chmod ugo+x imgpkg-linux-amd64-v0.10.0+vmware.1
 mv ./imgpkg-linux-amd64-v0.10.0+vmware.1 /usr/local/bin/imgpkg
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="create-a-new-public-project-in-harbor">Create a new Public Project in Harbor</h3>
-<p>Create a new project/repository in your registry to which we can <code>push</code> (upload) the packages (images) to. I&rsquo;ve created a new one called <code>tanzu-packages</code> in my Harbor registry and marked it as <code>Public Repository</code>. I will come to this later again why I configured it as a public repository.</p>
-<figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-sub-html="<h2>Figure I: New public Harbor Project</h2>">
+</div><h3 id="create-a-new-project-in-harbor">Create a new Project in Harbor</h3>
+<p>Create a new project/repository in your registry to which we can <code>push</code> (upload) the packages (images) to. I&rsquo;ve created a new one called <code>tanzu-packages</code> in my Harbor registry.</p>
+<figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-sub-html="<h2>Figure I: New Harbor Project</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -428,7 +429,7 @@ mv ./imgpkg-linux-amd64-v0.10.0+vmware.1 /usr/local/bin/imgpkg
             data-srcset="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png, /img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png 1.5x, /img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png 2x"
             data-sizes="auto"
             alt="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" />
-    </a><figcaption class="image-caption">Figure I: New public Harbor Project</figcaption>
+    </a><figcaption class="image-caption">Figure I: New Harbor Project</figcaption>
     </figure>
 <p>I&rsquo;ve written a couple of blog posts covering e.g. the deployment by using <code>helm</code> or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor Container Registry.</p>
 <p>Check out:</p>
@@ -765,8 +766,8 @@ Error: <span class="nb">exit</span> status <span class="m">1</span>
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">tanzu package repository list -A
 
 <span class="p">|</span> Retrieving repositories...
-  NAME                 REPOSITORY                                         TAG     STATUS                   DETAILS                  NAMESPACE
-  company-repo-jarvis  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-packages
+  NAME                    REPOSITORY                                         TAG     STATUS                   DETAILS                  NAMESPACE
+  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-package-repo-global
 </code></pre></td></tr></table>
 </div>
 </div><p>Certificates&hellip; 🙄</p>
@@ -857,11 +858,11 @@ k -n tkg-system edit cm kapp-controller-config
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># delete the kapp-controller</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># delete the kapp-controller pod</span>
 k -n tkg-system delete pod kapp-controller-5fd59df9dd-xmvmj
 </code></pre></td></tr></table>
 </div>
-</div><p><strong>Step 4:</strong> Add the URL of our private repository and use the namespace <code>tanzu-package-repo-global</code>:</p>
+</div><p><strong>Step 4:</strong> Add the URL of our repository and use the namespace <code>tanzu-package-repo-global</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -882,7 +883,87 @@ tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/ta
 </div>
         </div>
     </div>
-<p><strong>Step 5:</strong> Validate that the kapp-controller can successfully <code>reconcile</code> the repository:</p>
+<p>❗ But only adding the certificate to the kapp-controller <code>configMap</code> is only half the way if your repository is not configured as <strong>Public</strong> (without authentication).</p>
+<h2 id="create-a-secret-to-authenticate-with-your-registry">Create a Secret to Authenticate with your Registry</h2>
+<p>To let the kapp-controller authenticate to your private registry, you have to create a Kubernetes <code>secret</code> which in turn has to be referenced in the <code>PackageRepository</code> Custom Resource (CR).</p>
+<p><strong>Step 1:</strong> Create the Kubernetes <code>secret</code>:</p>
+<p><code>kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='your-password' --docker-email='rguske@vmware.com'</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># validate the creation of the secret</span>
+k get secrets -n tanzu-package-repo-global      
+NAME                                                    TYPE                                  DATA   AGE
+cert-manager-tanzu-package-repo-global-sa-token-6n57n   kubernetes.io/service-account-token   <span class="m">3</span>      3h6m
+default-token-wzv5l                                     kubernetes.io/service-account-token   <span class="m">3</span>      24h
+harbor-creds 
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Step 2:</strong></p>
+<p>Adjust the <code>PackageRepository</code> CR accordingly to use the new <code>secret</code> and to ultimately authenticate to your registry:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">k -n tanzu-package-repo-global edit packagerepositories.packaging.carvel.dev tanzu-packages-offline 
+
+<span class="c1"># Please edit the object below. Lines beginning with a &#39;#&#39; will be ignored,</span>
+<span class="c1"># and an empty file will abort the edit. If an error occurs while saving this file will be</span>
+<span class="c1"># reopened with the relevant failures.</span>
+<span class="c1">#</span>
+apiVersion: packaging.carvel.dev/v1alpha1
+kind: PackageRepository
+metadata:
+  creationTimestamp: <span class="s2">&#34;2022-02-09T10:11:02Z&#34;</span>
+  finalizers:
+  - finalizers.packagerepository.packaging.carvel.dev/delete
+  generation: <span class="m">1</span>
+  name: tanzu-packages-offline
+  namespace: tanzu-package-repo-global
+  resourceVersion: <span class="s2">&#34;1464972&#34;</span>
+  uid: d42032e9-5534-4503-a065-469c3434a94d
+spec:
+  fetch:
+    imgpkgBundle:
+      image: harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0
+      secretRef:
+        name: harbor-creds
+<span class="o">[</span>...<span class="o">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Step 3:</strong></p>
+<p>Validate that the changes has taken effect and that the kapp-controller can successfully <code>reconcile</code> the repository. The status for the package repository should have changed from <code>Reconcile failed:</code> to <code>Reconcile succeeded</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -896,12 +977,12 @@ tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/ta
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># validate the configuration of the repository</span>
 tanzu package repository list -n tanzu-package-repo-global
 
-- Retrieving repositories... 
-  NAME                    REPOSITORY                                         TAG     STATUS               DETAILS  
-  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded 
+- Retrieving repositories...
+  NAME                    REPOSITORY                                         TAG     STATUS               DETAILS
+  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded
 </code></pre></td></tr></table>
 </div>
-</div><p><strong>Step 6:</strong> Also, validate the available (offline) packages:</p>
+</div><p><strong>Step 4:</strong> Also, validate the available (offline) packages:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1067,6 +1148,7 @@ tanzu package install cert-manager -p cert-manager.tanzu.vmware.com -v 1.1.0+vmw
 <li>Stay here 😉 - <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreferrer">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></li>
 <li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreferrer">Configuring the Controller</a></li>
 <li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/private-registry-auth/" target="_blank" rel="noopener noreferrer">Authenticating to Private Registries</a></li>
+<li>Kubernetes Docs - <a href="https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/" target="_blank" rel="noopener noreferrer">Pull an Image from a Private Registry</a></li>
 </ul>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
