@@ -67,6 +67,8 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 ---
 
+{{< image src="/img/about/VMware_cert_cna_master_2022.png" src-s="/img/about/VMware_cert_cna_master_2022.png" height="200" width="200" >}}
+
 {{< image src="/img/about/VMware_cert_p_AppModern_2022.png" src-s="/img/about/VMware_cert_p_AppModern_2022.png" height="200" width="200" >}}
 
 {{< image src="/img/about/VMware_cert_tanzu_specialist.png" src-s="/img/about/VMware_cert_tanzu_specialist.png" height="200" width="200" >}}
