@@ -3,9 +3,9 @@
 
 ## Offline Requirements
 
-During a recent Tanzu engagement, my customer wanted to make use of the VMware [Tanzu Packages](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html) to extend the core functionalities of their existing Kubernetes clusters. As a requirement, an offline deployment of the Packages was raised, which in other words means, deployments from their own private Container Registry. The intention behind it is simple.
+During a recent Tanzu engagement, my customer wanted to make use of the VMware [Tanzu Packages](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html) to extend the core functionalities of their existing Kubernetes clusters. As a requirement, an offline deployment of the Packages was raised, which in other words means, deployments from their own private container registry. The intention behind it is simple.
 
-All of the Tanzu Packages shown in *Table I* below are provided by VMware. VMware is ensuring that the images for the Packages are stable, secure and compliant. But in order to deploy a Package, we need unristricted internet acceess to `*.projects.registry.vmware.com`. To bypass this "online" requirement, deploying the Packages from a private Container Registry like [Harbor](https://goharbor.io) for example, is a typical use case for most clients.
+All of the Tanzu Packages shown in *Table I* below are provided by VMware. VMware is ensuring that the images for the Packages are stable, secure and compliant. But in order to deploy a Package, we need unristricted internet acceess to `*.projects.registry.vmware.com`. To bypass this "online" requirement, deploying the Packages from a private container registry like [Harbor](https://goharbor.io) for example, is a typical use case for most clients.
 
 *Table I: List of User-Managed Packages*
 
@@ -21,7 +21,7 @@ All of the Tanzu Packages shown in *Table I* below are provided by VMware. VMwar
 | Service discovery | external-dns | tanzu-standard |
 
 {{< admonition info "Repository URL" true >}}
-Table column *Repository*, is the name of the package repository (`tanzu-standard`) which is configured by default in namespace `tanzu-package-repo-global` and which is normally configured with URL `projects.registry.vmware.com/tkg/packages/standard/repo`.
+Table column *Repository*, is the name of the package repository (`tanzu-standard`) which is configured by default in namespace `tanzu-package-repo-global` and which normally is configured to use URL `projects.registry.vmware.com/tkg/packages/standard/repo`.
 {{< /admonition >}}
 
 By following the steps provided in this post, you will be able to deploy the kapp-controller as well as all Tanzu Packages from your own private registry onto your eagerly waiting Kubernetes clusters. We start with some prerequisites.
@@ -110,7 +110,7 @@ tanzu plugin list
 
 The compatible `kubectl` version can be downloaded via the provided link as well.
 
-Just to have it mentioned - You will notice that my `code` examples in this post will often has just a `k` instead of `kubectl` when I used the CLI. This is because I'm always using aliases for certain CLI's in my shell. `alias k=kubectl`
+Just to have it mentioned - I used the `alias k=kubectl` actually for all my `code` examples in this post.
 
 ```shell
 # unpack the binary
@@ -150,7 +150,7 @@ Create a new project/repository in your registry to which we can `push` (upload)
 
 {{< image src="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" caption="Figure I: New Harbor Project" src-s="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" >}}
 
-I've written a couple of blog posts covering e.g. the deployment by using `helm` or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor Container Registry.
+I've written a couple of blog posts covering e.g. the deployment using `helm` or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor container registry.
 
 Check out:
 
@@ -164,9 +164,9 @@ Check out:
 
 You can skip this section if you are using a different registry.
 
-> Please have the certificate of your registry by hand because we need it a few times more.
+> Please have the certificate of your registry by hand because we'll need it a few times.
 
-Download the Harbor certificate and add it (if not already done) to your Docker config as well.
+Download the Harbor certificate:
 
 ```shell
 # enter the FQDN of your Harbor instance (e.g. harbor.jarvis.tanzu)
@@ -176,7 +176,7 @@ read REGISTRY
 sudo wget -O ~/Downloads/ca.crt https://$REGISTRY/api/v2.0/systeminfo/getcert --no-check-certificate
 ```
 
-Preparations for a `docker login`:
+Add it to your Docker config:
 
 ```shell
 # create a folder named like your registry
@@ -237,12 +237,12 @@ docker push harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1
 
 In order to install the kapp-controller to our Kubernetes cluster, a deployment manifest file has to be created first. Create a new file called e.g. `kapp-controller.yaml` and add the provided specifications from the [docs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-prep-tkgs-kapp.html#kapp-controller).
 
-Open the file and jump to line number `1278`. By using `vim` for example, you can enable line numbers by executing `:set numbers` and jumping to the line by entering `:1278`. Otherwise, simply search `/` for `image: projects`.
+Open the file and jump to line number `1278`. By using `vim` for example, you can simply enable line numbers. Just enter `:set numbers` and jump to the line by executing `:1278`. Otherwise, simply search `/` for `image: projects`.
 
 Replace the original repository and image with yours.
 
 ```yaml
-# replacing the old repository and image with the private one
+# replace the old image url
 [...]
 
 1278         image: harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1
@@ -252,7 +252,7 @@ Replace the original repository and image with yours.
 [...]
 ```
 
-Install the kapp-controller by executing `k apply -f kapp-controller.yaml`.
+Install the kapp-controller:
 
 ```shell
 k apply -f kapp-controller.yaml
@@ -275,12 +275,14 @@ clusterrolebinding.rbac.authorization.k8s.io/pkg-apiserver:system:auth-delegator
 rolebinding.rbac.authorization.k8s.io/pkgserver-auth-reader created
 ```
 
-> Notice: The Kubernetes namespaces `tkg-system` as well as `tanzu-package-repo-global` was created as part of the deployment. Keep this in mind!
+> Notice: The Kubernetes namespaces `tkg-system` as well as `tanzu-package-repo-global` was created as part of the deployment. Keep them in mind!
 
 Installation successfully :white_check_mark:
 
 ```shell
+# show Deployment, Pod, Configmap and Replicaset
 k -n tkg-system get deploy,po,configmap,replicasets.apps
+
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/kapp-controller   1/1     1            1           22h
 
@@ -297,14 +299,14 @@ replicaset.apps/kapp-controller-5fd59df9dd   1         1         1       22h
 
 ## Making Packages offline available
 
-Since our goal is to deploy packages from our private registry, we have to make the package images offline available first. Downloading, bundling and uploading the images can easily be performed with the following two `imgpkg` commands:
+Since our goal is to deploy Tanzu Packages from our private registry, we have to make the packages (images) offline available first. Downloading, bundling and uploading the packages can easily be performed with the following two `imgpkg` commands:
 
 {{< admonition warning "Registry Certificate" true >}}
 The registry certificate is needed to upload the image bundle (`--registry-ca-cert-path=ca.crt`).
 {{< /admonition >}}
 
 ```shell
-# use the imgpkg copy command to download the packages and to pack them into a tar ball
+# use the imgpkg copy command to download the packages and to pack them into a tarball
 imgpkg copy -b projects.registry.vmware.com/tkg/packages/standard/repo:v1.4.0 --to-tar ~/Downloads/packages/packages.tar
 
 # use the imgpkg copy command to `push` the content into your private container registry
@@ -367,7 +369,7 @@ Let's get it done:
 k -n tkg-system edit cm kapp-controller-config
 ```
 
-**Step 2:** Add your certificate data under section `caCerts` like in my example shown below:
+**Step 2:** Add your certificate data under section `caCerts` like shown in my example below:
 
 ```yaml
 # Please edit the object below. Lines beginning with a '#' will be ignored,
@@ -404,14 +406,14 @@ metadata:
 
 Save your adjustments `:wq`.
 
-**Step 3:** Restart/`delete` the kapp-controller pod to take effect changes:
+**Step 3:** Restart/`delete` the kapp-controller pod in order to let the changes take effect:
 
 ```shell
 # delete the kapp-controller pod
 k -n tkg-system delete pod kapp-controller-5fd59df9dd-xmvmj
 ```
 
-**Step 4:** Add the URL of our repository and use the namespace `tanzu-package-repo-global`:
+**Step 4:** Add the URL, which is pointing to your private package repository and use the namespace `tanzu-package-repo-global`:
 
 ```shell
 # add the offline package repository
@@ -424,15 +426,18 @@ If you choose a different namespace, the Packages will only be visible and deplo
 *Source:* beyondelastic.com - [Tanzu Packages Explained](https://beyondelastic.com/2022/01/04/tanzu-packages-explained/)
 {{< /admonition >}}
 
-:heavy_exclamation_mark: But only adding the certificate to the kapp-controller `configMap` is only half the way if your repository is not configured as **Public** (without authentication).
+:heavy_exclamation_mark: Don't stop here :heavy_exclamation_mark: Adding the certificate to the kapp-controller `configMap` is only half the way if your repository is not configured as **Public** (without authentication).
 
 ## Create a Secret to Authenticate with your Registry
 
-To let the kapp-controller authenticate to your private registry, you have to create a Kubernetes `secret` which in turn has to be referenced in the `PackageRepository` Custom Resource (CR).
+To let the kapp-controller authenticate with your private registry, you have to create a Kubernetes `secret` which in turn has to be referenced in the `PackageRepository` custom resource (CR).
 
 **Step 1:** Create the Kubernetes `secret`:
 
-`kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='your-password' --docker-email='rguske@vmware.com'`
+```shell
+# create a k8s docker-registry secret to authenticate with your registry
+kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='your-password' --docker-email='rguske@vmware.com'
+```
 
 ```shell
 # validate the creation of the secret
@@ -445,7 +450,7 @@ harbor-creds
 
 **Step 2:**
 
-Adjust the `PackageRepository` CR accordingly to use the new `secret` and to ultimately authenticate to your registry:
+Adjust the `PackageRepository` CR accordingly to use the new `secret` and to ultimately authenticate with your registry:
 
 ```shell
 k -n tanzu-package-repo-global edit packagerepositories.packaging.carvel.dev tanzu-packages-offline 
@@ -505,9 +510,9 @@ tanzu package available list -n tanzu-package-repo-global
   prometheus.tanzu.vmware.com    prometheus    A time series database for your metrics                                                                     2.27.0+vmware.1-tkg.1
 ```
 
-## Deploy Package Cert-Manager
+## Deploy the Tanzu Package Cert-Manager
 
-Now that we have our private repository configured, let's try deploying a first Tanzu Package to our Kubernetes cluster.
+Now that we have our private repository configured, let's try deploying a first Tanzu Package to our Kubernetes cluster. The cert-manager supports you to e.g. have self-signed certificates generated for further Tanzu Packages installations as well as to be kind of an issuer of your own provided certificates.
 
 ```shell
 # list cert-manager package availability
@@ -520,7 +525,7 @@ tanzu package available get cert-manager.tanzu.vmware.com/1.1.0+vmware.1-tkg.2 -
 tanzu package install cert-manager -p cert-manager.tanzu.vmware.com -v 1.1.0+vmware.1-tkg.2 -n tanzu-package-repo-global
 ```
 
-The deployment process is going to notify you when the installation of the Tanzu Package `cert-manager.tanzu.vmware.com` has finished.
+The deployment process is going to notify you when the installation of the Tanzu Package has finished.
 
 ```shell
 [...]
@@ -532,7 +537,7 @@ The deployment process is going to notify you when the installation of the Tanzu
 
 :tada: :tada: :tada:
 
-The reconciliation status of a specific Package can be verified every time using:
+The reconciliation status of a specific Package can be verified every time using e.g.:
 
 ```shell
 tanzu package installed list -n tanzu-package-repo-global
@@ -544,7 +549,7 @@ tanzu package installed list -n tanzu-package-repo-global
 
 ## OPTIONAL: kapp-controller secret vs. configMap
 
-Instead of configuring the `configMap` of the kapp-controller, a creation of a Kubernetes `secret` can be used as an alternative. I validated both ways successfully. A more detailed description can be found on the official Carvel documentation here: [Configuring the Controller](https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec)
+Instead of making adjustments to the `configMap` of the kapp-controller, a creation of a Kubernetes `secret` can be used as an alternative. I validated both ways successfully. A more detailed description can be found on the official Carvel documentation here: [Configuring the Controller](https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec)
 
 Here's my example I've tested:
 
