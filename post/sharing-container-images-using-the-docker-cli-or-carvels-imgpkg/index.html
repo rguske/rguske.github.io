@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-04-07T16:20:24+02:00" />
-<meta property="article:modified_time" content="2022-04-07T16:20:24+02:00" />
+<meta property="article:modified_time" content="2022-04-07T16:26:37+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -27,8 +27,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/"
-        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1152 ,
-        "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-04-07T16:20:24+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1153 ,
+        "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-04-07T16:26:37+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/container/"><i class="far fa-folder fa-fw"></i>Container</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1152 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1153 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -120,18 +120,18 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#using-docker">Using <code>docker</code></a>
+    <li><a href="#using-docker">Using Docker</a>
       <ul>
         <li><a href="#docker-save"><code>docker save</code></a></li>
         <li><a href="#docker-load"><code>docker load</code></a></li>
         <li><a href="#flowchart-docker">Flowchart Docker</a></li>
       </ul>
     </li>
-    <li><a href="#using-imgpkg">Using <code>imgpkg</code></a>
+    <li><a href="#using-imgpkg">Using imgpkg</a>
       <ul>
         <li><a href="#imgpkg-copy---to-tar"><code>imgpkg copy --to-tar</code></a></li>
-        <li><a href="#imgpkg---to-repo"><code>imgpkg --to-repo</code></a></li>
-        <li><a href="#flowchart-imgpkg">Flowchart Imgpkg</a></li>
+        <li><a href="#imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></a></li>
+        <li><a href="#flowchart-imgpkg">Flowchart imgpkg</a></li>
       </ul>
     </li>
     <li><a href="#resources">Resources</a></li>
@@ -143,7 +143,7 @@
 <p>I also just learned (never had to use it before), that the <code>docker</code> cli supports a similar method to <code>save</code> one or more images into a tarball and to <code>load</code> the tarball as a docker image locally again. Even though, <code>imgpkg</code> supports a couple of more useful commands and options to handle image sharing and image relocationing.</p>
 <p>I&rsquo;d like to cover both ways briefly in this post and hope you&rsquo;ll find it useful. I think it&rsquo;s good to know these functionalities and have them in your re­per­toire.</p>
 <p>I&rsquo;ll start with the Docker CLI commands <code>save</code> and <code>load</code> first and will end this post with the <code>imgpkg</code> tool.</p>
-<h2 id="using-docker">Using <code>docker</code></h2>
+<h2 id="using-docker">Using Docker</h2>
 <p>I won&rsquo;t cover <code>docker export</code> and <code>docker import</code> in this post! But in case you come across this, the TL;DR is:</p>
 <p>A Docker image, which is built from a <code>Dockerfile</code>, is like a template which includes the specifications for layers to build and run your application. Docker <code>save</code> and <code>load</code> only works with Docker images, while <code>export</code> and <code>import</code> will only be used to e.g. export a snapshot of the container&rsquo;s filesystem.</p>
 <h3 id="docker-save"><code>docker save</code></h3>
@@ -302,7 +302,7 @@ docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 <p>Summarizing the above described steps:</p>
 <div class="mermaid" id="id-1"></div>
 <div class="mermaid" id="id-2"></div>
-<h2 id="using-imgpkg">Using <code>imgpkg</code></h2>
+<h2 id="using-imgpkg">Using imgpkg</h2>
 <p>Out of the great Carvel toolbox, which tools supports you in making your life easier in terms of application building, configurations and deployments to Kubernetes, <code>imgpkg</code> offers some pretty neat commands to handle packaging, distributing, and relocating OCI images.</p>
 <p>For now, we&rsquo;re just interested on the <code>imgpkg copy</code> command.</p>
 <div class="highlight"><div class="chroma">
@@ -402,7 +402,7 @@ copy <span class="p">|</span> <span class="k">done</span> uploading images
 Succeeded
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="imgpkg---to-repo"><code>imgpkg --to-repo</code></h3>
+</div><h3 id="imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></h3>
 <p>The example above was done by using the option <code>--to-tar</code> but you could also use option <code>--to-repo</code> which makes it even easier to relocate images from e.g. a public repo to a private repo.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -431,7 +431,7 @@ Succeeded
 </code></pre></td></tr></table>
 </div>
 </div><p>There you go!</p>
-<h3 id="flowchart-imgpkg">Flowchart Imgpkg</h3>
+<h3 id="flowchart-imgpkg">Flowchart imgpkg</h3>
 <p>Summarizing the steps using <code>imgpkg</code>.</p>
 <center>With saving the image locally first</center>
 <div class="mermaid" id="id-3"></div>
@@ -449,7 +449,8 @@ Succeeded
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-04-07</span>
+                <span>Updated on 2022-04-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/023e9d07b2cec82d7bfe394f731acf8bc5e7c638" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 023e9d07b2cec82d7bfe394f731acf8bc5e7c638: finished container image sharing post">
+                                    <i class="fas fa-hashtag fa-fw"></i>023e9d0</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -486,7 +487,7 @@ Succeeded
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.c74697cbf094b0b3067a5d8f0371e74671e1331b371ef3a3c7e291a17745ce93.css" integrity="sha256-x0aXy/CUsLMGel2PA3HnRnHhMxs3HvOjx&#43;KRoXdFzpM="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( You ) ---| 1. docker pull image | B( Locally )\n    A ---| 2. docker save image \u003e image.tar | B\n    A --\u003e| 3. Share the Image | C( Customer )","id-2":"graph LR;\n    A( Customer ) ---| 4. docker load -i image.tar | B( Locally )\n    A ---| 5. docker tag image | B\n    A --\u003e| 6. docker push image | C( Registry )","id-3":"graph LR;\n    A( You ) ---| 1. imgpkg copy -i image --to-tar | B( Locally )\n    A ---| 2. Share the Image | C( Customer )","id-4":"graph LR;\n    A( Customer ) ---| 3. imgpkg copy --tar image.tar --to-repo | B( Registry )","id-5":"graph LR;\n    A( Customer ) ---| 3. imgpkg copy -i image --to-repo | B( Registry )","id-6":"Robert Guske","id-7":"Robert Guske"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-6":["id-6"],"id-7":["id-7"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.c74697cbf094b0b3067a5d8f0371e74671e1331b371ef3a3c7e291a17745ce93.css" integrity="sha256-x0aXy/CUsLMGel2PA3HnRnHhMxs3HvOjx&#43;KRoXdFzpM="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( You ) ---| 1. docker pull image | B( Locally )\n    A ---| 2. docker save image -o image.tar | B\n    A --\u003e| 3. Share the image | C( Customer )","id-2":"graph LR;\n    A( Customer ) ---| 4. docker load -i image.tar | B( Locally )\n    A ---| 5. docker tag image | B\n    A --\u003e| 6. docker push image | C( Registry )","id-3":"graph LR;\n    A( You ) ---| 1. imgpkg copy -i image --to-tar | B( Locally )\n    A ---| 2. Share the image | C( Customer )","id-4":"graph LR;\n    A( Customer ) ---| 3. imgpkg copy --tar image.tar --to-repo | B( Registry )","id-5":"graph LR;\n    A( Customer ) ---| 1. imgpkg copy -i image-url --to-repo | B( Registry )","id-6":"Robert Guske","id-7":"Robert Guske"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-6":["id-6"],"id-7":["id-7"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

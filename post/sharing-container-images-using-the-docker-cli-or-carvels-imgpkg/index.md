@@ -15,7 +15,7 @@ I'd like to cover both ways briefly in this post and hope you'll find it useful.
 
 I'll start with the Docker CLI commands `save` and `load` first and will end this post with the `imgpkg` tool.
 
-## Using `docker`
+## Using Docker
 
 I won't cover `docker export` and `docker import` in this post! But in case you come across this, the TL;DR is:
 
@@ -116,8 +116,8 @@ Summarizing the above described steps:
 {{< mermaid >}}
 graph LR;
     A( You ) ---| 1. docker pull image | B( Locally )
-    A ---| 2. docker save image > image.tar | B
-    A -->| 3. Share the Image | C( Customer )
+    A ---| 2. docker save image -o image.tar | B
+    A -->| 3. Share the image | C( Customer )
 {{< /mermaid >}}
 
 {{< mermaid >}}
@@ -128,7 +128,7 @@ graph LR;
 {{< /mermaid >}}
 
 
-## Using `imgpkg`
+## Using imgpkg
 
 Out of the great Carvel toolbox, which tools supports you in making your life easier in terms of application building, configurations and deployments to Kubernetes, `imgpkg` offers some pretty neat commands to handle packaging, distributing, and relocating OCI images.
 
@@ -187,7 +187,7 @@ copy | done uploading images
 Succeeded
 ```
 
-### `imgpkg --to-repo`
+### `imgpkg copy --to-repo`
 
 The example above was done by using the option `--to-tar` but you could also use option `--to-repo` which makes it even easier to relocate images from e.g. a public repo to a private repo.
 
@@ -206,7 +206,7 @@ Succeeded
 
 There you go!
 
-### Flowchart Imgpkg
+### Flowchart imgpkg
 
 Summarizing the steps using `imgpkg`.
 
@@ -215,7 +215,7 @@ Summarizing the steps using `imgpkg`.
 {{< mermaid >}}
 graph LR;
     A( You ) ---| 1. imgpkg copy -i image --to-tar | B( Locally )
-    A ---| 2. Share the Image | C( Customer )
+    A ---| 2. Share the image | C( Customer )
 {{< /mermaid >}}
 
 {{< mermaid >}}
@@ -227,7 +227,7 @@ graph LR;
 
 {{< mermaid >}}
 graph LR;
-    A( Customer ) ---| 3. imgpkg copy -i image --to-repo | B( Registry )
+    A( Customer ) ---| 1. imgpkg copy -i image-url --to-repo | B( Registry )
 {{< /mermaid >}}
 
 That simple! :smile:
