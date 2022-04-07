@@ -9,9 +9,9 @@ In terms of Kubernetes (K8s) based deployments, where all the container image sp
 
 I've scratched this topic already in my recent post [*Deploy VMware Tanzu Packages from a private Container Registry*](https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/), where I used the [Carvel](https://carvel.dev) tool `imgpkg` to download image bundles from a public registry, pack those into a tarball and to ultimately upload it to a private registry.
 
-I also just learned (never had to use it before), that the `docker` cli supports a similar method to `save` one or more images into a tarball and to `load` the tarball as a docker image locally again. Even though, `imgpkg` supports a couple of more useful commands and options to handle image sharing and image relocationing.
+I also just learned (never had to use it before), that the `docker` cli supports a similar method to `save` one or more images into a tarball and to `load` the tarball as a docker image locally again. Even though, `imgpkg` supports a couple of more useful commands and options to handle image sharing and image relocating.
 
-I'd like to cover both ways briefly in this post and hope you'll find it useful. I think it's good to know these functionalities and have them in your re­per­toire.
+I'd like to cover both ways briefly in this post. I think it's good to know these functionalities and have them in your re­per­toire.
 
 I'll start with the Docker CLI commands `save` and `load` first and will end this post with the `imgpkg` tool.
 
@@ -19,7 +19,7 @@ I'll start with the Docker CLI commands `save` and `load` first and will end thi
 
 I won't cover `docker export` and `docker import` in this post! But in case you come across this, the TL;DR is:
 
-A Docker image, which is built from a `Dockerfile`, is like a template which includes the specifications for layers to build and run your application. Docker `save` and `load` only works with Docker images, while `export` and `import` will only be used to e.g. export a snapshot of the container's filesystem.
+A Docker image, which is built from a `Dockerfile`, is like a template which includes the specifications for layers to build and run your application. Docker `save` and `load` only works with Docker images, while `docker export` and `docker import` will only be used to e.g. export a snapshot of the container's filesystem.
 
 ### `docker save`
 
@@ -36,7 +36,7 @@ Options:
   -o, --output string   Write to a file, instead of STDOUT
 ```
 
-There's no real explanation necessary. You only have to specify the output file name and extension (`.tar`) using `-o`.
+There's no real explanation necessary. You only have to specify the output file name and extension (`.tar`) using the option `-o`.
 
 ```shell
 # Download image
@@ -48,7 +48,7 @@ docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v22
 
 ### `docker load`
 
-Now that the image is available in a shareable format, share it with your customer and continue with the next step, which is `docker load`.
+Now that the image is available in a shareable format, share it, so it can be loaded on the appropriate location using `docker load`.
 
 ```shell
 docker load --help
@@ -62,10 +62,10 @@ Options:
   -q, --quiet          Suppress the load output
 ```
 
-The following output is only to proof that no images were locally available on my :computer: when I was working on this example :wink::
+The following output is only to proof that no images were locally available on my :computer: when I was working on this example :wink:
 
 ```shell
-# No images available right now
+# No existing images locally
 $ docker images
 
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
@@ -85,13 +85,13 @@ k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   9 months ago
 ```
 
 {{< admonition info "Info" true >}}
-Also using the operators `<` and `>` would work the same way for `save -o` and `load -i`
+Also, using the operators `<` and `>` would work the same way for `docker save (>)` and `docker load (<)`
 {{< /admonition >}}
 
 Example:
 
 ```shell
-# Using the great-than operator '>' to send to a file
+# Using the greater-than operator '>' to send to a file
 docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 > csi-provisioner-v222.tar
 ```
 
@@ -101,13 +101,13 @@ Making it locally available is obvisouly just the step before finally pushing it
 # Tag the image accordingly
 docker tag e18077242e6d harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 
-# Push the image onto your private registry
+# Push the image to your private registry
 docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 ```
 
 And there we have it.
 
-{{< image src="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" caption="Figure I: Loaded and Pushed Image available in Harbor" src-s="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" >}}
+{{< image src="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" caption="Figure I: Loaded and pushed image available in your private registry" src-s="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" >}}
 
 ### Flowchart Docker
 
@@ -132,7 +132,7 @@ graph LR;
 
 Out of the great Carvel toolbox, which tools supports you in making your life easier in terms of application building, configurations and deployments to Kubernetes, `imgpkg` offers some pretty neat commands to handle packaging, distributing, and relocating OCI images.
 
-For now, we're just interested on the `imgpkg copy` command.
+For now, we're just taking a closer look on the `imgpkg copy` command.
 
 ```shell
 imgpkg copy --help
@@ -158,7 +158,9 @@ Examples:
 
 ### `imgpkg copy --to-tar`
 
-Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Imgpkg provides a really comfortable way of copying/relocating images. The following command directly downloads the desired image from a registry and packs it to a tarball.
+Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Even though, keep in mind that `imgpkg` in contrast to the `docker` CLI commands was build for such purposes and therefore it provides comprehensive capabilities and a really comfortable way of copying/relocating images.
+
+The command `imgpkg copy -i` downloads the desired container image from a registry and copies it to a local tarball.
 
 ```shell
 $ imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-tar csi-provisioner-v222.tar
@@ -174,7 +176,9 @@ copy | done: file 'sha256-e22751dfa03a88e8756eb5921a8dfcd93c2364dd04aeb6a394bea7
 Succeeded
 ```
 
-This file can now be uploaded to the registry. If your repository is configured as private, so that authentication is required, the `copy` command offers various options to support this case. Options like e.g. `--registry-ca-cert-path`, `--registry-username` and `--registry-password`.
+This file can now be uploaded to e.g. a private registry using the option `--to-repo`. If your repository is configured as private, so that authentication is required, the `copy` command offers various options to support this case too. 
+
+Options are e.g. `--registry-ca-cert-path`, `--registry-username` and `--registry-password`.
 
 ```shell
 imgpkg copy --tar csi-provisioner-v222.tar --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path=ca.crt
@@ -189,7 +193,7 @@ Succeeded
 
 ### `imgpkg copy --to-repo`
 
-The example above was done by using the option `--to-tar` but you could also use option `--to-repo` which makes it even easier to relocate images from e.g. a public repo to a private repo.
+The example above demonstrates how to copy an image, packed as a tarball, to a private repository using the option `--to-tar`. You could also use the option `--to-repo` which makes it even easier to relocate images from e.g. a public registry to a private one.
 
 ```shell
 imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path=ca.crt
@@ -204,7 +208,7 @@ copy | done uploading images
 Succeeded
 ```
 
-There you go!
+That's awesome!
 
 ### Flowchart imgpkg
 

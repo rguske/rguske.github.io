@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-04-07T16:20:24+02:00" />
-<meta property="article:modified_time" content="2022-04-07T16:26:37+02:00" />
+<meta property="article:modified_time" content="2022-04-07T16:42:58+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -27,8 +27,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/"
-        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1153 ,
-        "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-04-07T16:26:37+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1202 ,
+        "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-04-07T16:42:58+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/container/"><i class="far fa-folder fa-fw"></i>Container</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1153 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1202 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -140,12 +140,12 @@
             </div><div class="content" id="content"><p>One thing I really appreciate in my current role at VMware, is being involved in great and often challenging customer engagements. <strong>Challenging is good!</strong> Because it often includes the opportunity to learn something new, based on the challenge you are facing. During my recent engagements with customers, I had to deal a lot with fully air-gapped environments, where even the jumphost we used had no internet connection.</p>
 <p>In terms of Kubernetes (K8s) based deployments, where all the container image specifications are referencing to public repositories, you consequently have to make the necessary images offline, in a private registry, available before handing them over to K8s.</p>
 <p>I&rsquo;ve scratched this topic already in my recent post <a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" target="_blank" rel="noopener noreferrer"><em>Deploy VMware Tanzu Packages from a private Container Registry</em></a>, where I used the <a href="https://carvel.dev" target="_blank" rel="noopener noreferrer">Carvel</a> tool <code>imgpkg</code> to download image bundles from a public registry, pack those into a tarball and to ultimately upload it to a private registry.</p>
-<p>I also just learned (never had to use it before), that the <code>docker</code> cli supports a similar method to <code>save</code> one or more images into a tarball and to <code>load</code> the tarball as a docker image locally again. Even though, <code>imgpkg</code> supports a couple of more useful commands and options to handle image sharing and image relocationing.</p>
-<p>I&rsquo;d like to cover both ways briefly in this post and hope you&rsquo;ll find it useful. I think it&rsquo;s good to know these functionalities and have them in your re­per­toire.</p>
+<p>I also just learned (never had to use it before), that the <code>docker</code> cli supports a similar method to <code>save</code> one or more images into a tarball and to <code>load</code> the tarball as a docker image locally again. Even though, <code>imgpkg</code> supports a couple of more useful commands and options to handle image sharing and image relocating.</p>
+<p>I&rsquo;d like to cover both ways briefly in this post. I think it&rsquo;s good to know these functionalities and have them in your re­per­toire.</p>
 <p>I&rsquo;ll start with the Docker CLI commands <code>save</code> and <code>load</code> first and will end this post with the <code>imgpkg</code> tool.</p>
 <h2 id="using-docker">Using Docker</h2>
 <p>I won&rsquo;t cover <code>docker export</code> and <code>docker import</code> in this post! But in case you come across this, the TL;DR is:</p>
-<p>A Docker image, which is built from a <code>Dockerfile</code>, is like a template which includes the specifications for layers to build and run your application. Docker <code>save</code> and <code>load</code> only works with Docker images, while <code>export</code> and <code>import</code> will only be used to e.g. export a snapshot of the container&rsquo;s filesystem.</p>
+<p>A Docker image, which is built from a <code>Dockerfile</code>, is like a template which includes the specifications for layers to build and run your application. Docker <code>save</code> and <code>load</code> only works with Docker images, while <code>docker export</code> and <code>docker import</code> will only be used to e.g. export a snapshot of the container&rsquo;s filesystem.</p>
 <h3 id="docker-save"><code>docker save</code></h3>
 <p>The Docker CLI is giving you the following information when you &ldquo;ask&rdquo; for <code>--help</code>.</p>
 <div class="highlight"><div class="chroma">
@@ -170,7 +170,7 @@ Options:
   -o, --output string   Write to a file, instead of STDOUT
 </code></pre></td></tr></table>
 </div>
-</div><p>There&rsquo;s no real explanation necessary. You only have to specify the output file name and extension (<code>.tar</code>) using <code>-o</code>.</p>
+</div><p>There&rsquo;s no real explanation necessary. You only have to specify the output file name and extension (<code>.tar</code>) using the option <code>-o</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -188,7 +188,7 @@ docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v22
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="docker-load"><code>docker load</code></h3>
-<p>Now that the image is available in a shareable format, share it with your customer and continue with the next step, which is <code>docker load</code>.</p>
+<p>Now that the image is available in a shareable format, share it, so it can be loaded on the appropriate location using <code>docker load</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -213,7 +213,7 @@ Options:
   -q, --quiet          Suppress the load output
 </code></pre></td></tr></table>
 </div>
-</div><p>The following output is only to proof that no images were locally available on my 💻 when I was working on this example 😉:</p>
+</div><p>The following output is only to proof that no images were locally available on my 💻 when I was working on this example 😉</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -222,7 +222,7 @@ Options:
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># No images available right now</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># No existing images locally</span>
 $ docker images
 
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
@@ -256,7 +256,7 @@ k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class=
             <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">Also using the operators <code>&lt;</code> and <code>&gt;</code> would work the same way for <code>save -o</code> and <code>load -i</code></div>
+            <div class="admonition-content">Also, using the operators <code>&lt;</code> and <code>&gt;</code> would work the same way for <code>docker save (&gt;)</code> and <code>docker load (&lt;)</code></div>
         </div>
     </div>
 <p>Example:</p>
@@ -266,7 +266,7 @@ k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class=
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Using the great-than operator &#39;&gt;&#39; to send to a file</span>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Using the greater-than operator &#39;&gt;&#39; to send to a file</span>
 docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v222.tar
 </code></pre></td></tr></table>
 </div>
@@ -283,12 +283,12 @@ docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Tag the image accordingly</span>
 docker tag e18077242e6d harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 
-<span class="c1"># Push the image onto your private registry</span>
+<span class="c1"># Push the image to your private registry</span>
 docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 </code></pre></td></tr></table>
 </div>
 </div><p>And there we have it.</p>
-<figure><a class="lightgallery" href="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" title="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-thumbnail="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-sub-html="<h2>Figure I: Loaded and Pushed Image available in Harbor</h2>">
+<figure><a class="lightgallery" href="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" title="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-thumbnail="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-sub-html="<h2>Figure I: Loaded and pushed image available in your private registry</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -296,7 +296,7 @@ docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
             data-srcset="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png, /img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png 1.5x, /img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png 2x"
             data-sizes="auto"
             alt="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" />
-    </a><figcaption class="image-caption">Figure I: Loaded and Pushed Image available in Harbor</figcaption>
+    </a><figcaption class="image-caption">Figure I: Loaded and pushed image available in your private registry</figcaption>
     </figure>
 <h3 id="flowchart-docker">Flowchart Docker</h3>
 <p>Summarizing the above described steps:</p>
@@ -304,7 +304,7 @@ docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 <div class="mermaid" id="id-2"></div>
 <h2 id="using-imgpkg">Using imgpkg</h2>
 <p>Out of the great Carvel toolbox, which tools supports you in making your life easier in terms of application building, configurations and deployments to Kubernetes, <code>imgpkg</code> offers some pretty neat commands to handle packaging, distributing, and relocating OCI images.</p>
-<p>For now, we&rsquo;re just interested on the <code>imgpkg copy</code> command.</p>
+<p>For now, we&rsquo;re just taking a closer look on the <code>imgpkg copy</code> command.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -350,7 +350,8 @@ Examples:
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="imgpkg-copy---to-tar"><code>imgpkg copy --to-tar</code></h3>
-<p>Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Imgpkg provides a really comfortable way of copying/relocating images. The following command directly downloads the desired image from a registry and packs it to a tarball.</p>
+<p>Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Even though, keep in mind that <code>imgpkg</code> in contrast to the <code>docker</code> CLI commands was build for such purposes and therefore it provides comprehensive capabilities and a really comfortable way of copying/relocating images.</p>
+<p>The command <code>imgpkg copy -i</code> downloads the desired container image from a registry and copies it to a local tarball.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -379,7 +380,8 @@ copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1"
 Succeeded
 </code></pre></td></tr></table>
 </div>
-</div><p>This file can now be uploaded to the registry. If your repository is configured as private, so that authentication is required, the <code>copy</code> command offers various options to support this case. Options like e.g. <code>--registry-ca-cert-path</code>, <code>--registry-username</code> and <code>--registry-password</code>.</p>
+</div><p>This file can now be uploaded to e.g. a private registry using the option <code>--to-repo</code>. If your repository is configured as private, so that authentication is required, the <code>copy</code> command offers various options to support this case too.</p>
+<p>Options are e.g. <code>--registry-ca-cert-path</code>, <code>--registry-username</code> and <code>--registry-password</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -403,7 +405,7 @@ Succeeded
 </code></pre></td></tr></table>
 </div>
 </div><h3 id="imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></h3>
-<p>The example above was done by using the option <code>--to-tar</code> but you could also use option <code>--to-repo</code> which makes it even easier to relocate images from e.g. a public repo to a private repo.</p>
+<p>The example above demonstrates how to copy an image, packed as a tarball, to a private repository using the option <code>--to-tar</code>. You could also use the option <code>--to-repo</code> which makes it even easier to relocate images from e.g. a public registry to a private one.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -430,7 +432,7 @@ copy <span class="p">|</span> <span class="k">done</span> uploading images
 Succeeded
 </code></pre></td></tr></table>
 </div>
-</div><p>There you go!</p>
+</div><p>That&rsquo;s awesome!</p>
 <h3 id="flowchart-imgpkg">Flowchart imgpkg</h3>
 <p>Summarizing the steps using <code>imgpkg</code>.</p>
 <center>With saving the image locally first</center>
@@ -449,8 +451,8 @@ Succeeded
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-04-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/023e9d07b2cec82d7bfe394f731acf8bc5e7c638" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 023e9d07b2cec82d7bfe394f731acf8bc5e7c638: finished container image sharing post">
-                                    <i class="fas fa-hashtag fa-fw"></i>023e9d0</a></span>
+                <span>Updated on 2022-04-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/4db8dcb5177e75a0f94286820f86c0433a7cb85d" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 4db8dcb5177e75a0f94286820f86c0433a7cb85d: removed typos container image sharing post">
+                                    <i class="fas fa-hashtag fa-fw"></i>4db8dcb</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
