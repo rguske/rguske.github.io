@@ -11,6 +11,7 @@
 - <i class="fab fa-linkedin fa-fw"></i><a href="https://www.linkedin.com/in/robert-guske-830853111/" target="_blank"> Robert Guske</a>
 - <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/vmw_rguske" target="_blank"> @vmw_rguske</a>
 - <i class='fab fa-github fa-fw'></i><a href="https://github.com/rguske" target="_blank"> rguske</a>
+- vExpert: [#3288](https://vexpert.vmware.com/directory/3288)
 
 ```yaml
 apiVersion: v1
@@ -33,9 +34,10 @@ subject:
   - kind: Experise
     args:
       - Cloud Native Technologies
-      - Strategic & Technical Guidance
       - Application Platforms
-      - Virtualization
+      - Strategic & Technical Guidance
+      - Event Speaker
+      - Content Creator
 ```
 
 {{< mapbox lng=9.9938316 lat=53.5396594 marked=false zoom=11 light-style="mapbox://styles/mapbox/navigation-preview-day-v4" dark-style="mapbox://styles/mapbox/navigation-preview-night-v4" >}}
@@ -79,6 +81,8 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 **Status**: Active 2019 - 2022
 
+**vExpert Directory**: [#3288](https://vexpert.vmware.com/directory/3288)
+
 Acknowledgement by sharing passion and gained experience with the community.
 
 {{< admonition info "About the program" true >}}
@@ -89,13 +93,27 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 ### vExpert Subprograms
 
-The vExpert Application Modernization subprogram rewards those, who have stronger contributed on this specific topic (Application modernization).
+The vExpert Application Modernization subprogram rewards those, who have stronger contributed on this specific topic.
 
 {{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="200" width="300" >}}
 
 {{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="200" width="300" >}}
 
+{{< image src="/img/about/vexpert_modernapps_2022.jpg" src-s="/img/about/vexpert_modernapps_2022.jpg" height="200" width="300" >}}
+
+{{< image src="/img/about/vexpert_avi_2022.jpg" src-s="/img/about/vexpert_avi_2022.jpg" height="200" width="300" >}}
+
 ## Public Events - Speaking, Demoing, Staff and Initiatives
+
+## 2022
+
+### VMware UserCon 2022
+
+| **Activity @** | **Outcome** | **Evidence** |
+|:---: | :---: | :---:|
+| **DACH VMUG UserCon** | **SPEAKER** - Presented: *VMware Tanzu for Kubernetes Operations - A DevSecOps Roleplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
+
+<center> {{< tweet user="raimes" id="1522215713674436615" >}} </center>
 
 ## 2021
 
@@ -111,7 +129,7 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 | **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **UserCon Germany 2021, Virtual Event** | **CO-SPEAKER** - Presented (in German): *NSX Advanced Load Balancer (Avi) - Load Balancer für Next Gen und traditionelle Apps*. | https://youtu.be/8fLXPXs23GI |
+| **UserCon Germany 2021, Virtual Event** | **SPEAKER** - Presented (in German): *NSX Advanced Load Balancer (Avi) - Load Balancer für Next Gen und traditionelle Apps*. | https://youtu.be/8fLXPXs23GI |
 
 <center> {{< youtube 8fLXPXs23GI >}} </center>
 
