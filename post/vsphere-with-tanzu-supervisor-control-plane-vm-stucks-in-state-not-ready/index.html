@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready\/"
-        },"genre": "posts","keywords": "April2021, Kubernetes, Tanzu, TKGs, vSphere","wordcount":  1163 ,
+        },"genre": "posts","keywords": "April2021, Kubernetes, Tanzu, TKGs, vSphere","wordcount":  1102 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready\/","datePublished": "2021-04-25T16:00:39+02:00","dateModified": "2021-11-22T14:46:50+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-04-25">2021-04-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1163 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-04-25">2021-04-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1102 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -142,12 +142,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl vsphere login --server<span class="o">=</span>10.10.18.10 --vsphere-username administrator@jarvis.lab --insecure-skip-tls-verify
-
-Password:
-FATA<span class="o">[</span>0004<span class="o">]</span> Failed to get available workloads: bad gateway
-Please contact your vSphere server administrator <span class="k">for</span> assistance.
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl vsphere login --server<span class="o">=</span>10.10.18.10 --vsphere-username administrator@jarvis.lab --insecure-skip-tls-verify
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl">FATA<span class="o">[</span>0004<span class="o">]</span> Failed to get available workloads: bad gateway
+</span></span><span class="line"><span class="cl">Please contact your vSphere server administrator <span class="k">for</span> assistance.
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>My first instinct was to quickly have a look at the Workload Management subsection in the vSphere Client (<em>Menu &ndash;&gt; Workload Management or ctrl + alt + 7</em>) and here my suspicion that something is wrong was confirmed. The <em>Config Status</em> of my cluster <em>Malibu</em> was in <code>Configuring</code> state and the following two <em>Status Messages</em> as shown in <em>Figure I</em> were displayed.</p>
 <figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_092403.jpg" data-sub-html="<h2>Figure I: Supervisor Cluster stucks in configuring state</h2>">
@@ -186,16 +186,16 @@ Please contact your vSphere server administrator <span class="k">for</span> assi
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
-Name: wcp
-Starttype: AUTOMATIC
-RunState: STARTED
-RunAsUser: root
-CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">72360341</span>
-HealthState: UNHEALTHY
-FailStop: N/A
-MainProcessId: <span class="m">15679</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
+</span></span><span class="line"><span class="cl">Name: wcp
+</span></span><span class="line"><span class="cl">Starttype: AUTOMATIC
+</span></span><span class="line"><span class="cl">RunState: STARTED
+</span></span><span class="line"><span class="cl">RunAsUser: root
+</span></span><span class="line"><span class="cl">CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">72360341</span>
+</span></span><span class="line"><span class="cl">HealthState: UNHEALTHY
+</span></span><span class="line"><span class="cl">FailStop: N/A
+</span></span><span class="line"><span class="cl">MainProcessId: <span class="m">15679</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
 <p>HealthState: UNHEALTHY</p>
@@ -227,18 +227,18 @@ MainProcessId: <span class="m">15679</span>
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --restart wcp</span>
-Completed Restart service request.
-root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
-Name: wcp
-Starttype: AUTOMATIC
-RunState: STARTED
-RunAsUser: root
-CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">9709</span>
-HealthState: HEALTHY
-FailStop: N/A
-MainProcessId: <span class="m">46317</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --restart wcp</span>
+</span></span><span class="line"><span class="cl">Completed Restart service request.
+</span></span><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
+</span></span><span class="line"><span class="cl">Name: wcp
+</span></span><span class="line"><span class="cl">Starttype: AUTOMATIC
+</span></span><span class="line"><span class="cl">RunState: STARTED
+</span></span><span class="line"><span class="cl">RunAsUser: root
+</span></span><span class="line"><span class="cl">CurrentRunStateDuration<span class="o">(</span>ms<span class="o">)</span>: <span class="m">9709</span>
+</span></span><span class="line"><span class="cl">HealthState: HEALTHY
+</span></span><span class="line"><span class="cl">FailStop: N/A
+</span></span><span class="line"><span class="cl">MainProcessId: <span class="m">46317</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
 <p>HealthState: HEALTHY</p>
@@ -255,12 +255,12 @@ MainProcessId: <span class="m">46317</span>
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl get nodes
-NAME                               STATUS     ROLES    AGE     VERSION
-42100ed03ae877fd39716f909d57822e   NotReady   master   7d19h   v1.19.1+wcp.2
-4210a2e2fa945c1a13308fac6d00ed96   Ready      master   7d19h   v1.19.1+wcp.2
-4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready      master   7d19h   v1.19.1+wcp.2
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes
+</span></span><span class="line"><span class="cl">NAME                               STATUS     ROLES    AGE     VERSION
+</span></span><span class="line"><span class="cl">42100ed03ae877fd39716f909d57822e   NotReady   master   7d19h   v1.19.1+wcp.2
+</span></span><span class="line"><span class="cl">4210a2e2fa945c1a13308fac6d00ed96   Ready      master   7d19h   v1.19.1+wcp.2
+</span></span><span class="line"><span class="cl">4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready      master   7d19h   v1.19.1+wcp.2
+</span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
 <p>Control Plane Node 1: STATUS NotReady</p>
@@ -358,27 +358,27 @@ NAME                               STATUS     ROLES    AGE     VERSION
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl get nodes
-NAME                               STATUS   ROLES    AGE     VERSION
-42103deb5d43d5f75f4623a336165684   Ready    master   3m37s   v1.19.1+wcp.2
-4210a2e2fa945c1a13308fac6d00ed96   Ready    master   7d20h   v1.19.1+wcp.2
-4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready    master   7d20h   v1.19.1+wcp.2
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes
+</span></span><span class="line"><span class="cl">NAME                               STATUS   ROLES    AGE     VERSION
+</span></span><span class="line"><span class="cl">42103deb5d43d5f75f4623a336165684   Ready    master   3m37s   v1.19.1+wcp.2
+</span></span><span class="line"><span class="cl">4210a2e2fa945c1a13308fac6d00ed96   Ready    master   7d20h   v1.19.1+wcp.2
+</span></span><span class="line"><span class="cl">4210c09deaaa5a2e2ddc86d3e0c0b0f3   Ready    master   7d20h   v1.19.1+wcp.2
+</span></span></code></pre></td></tr></table>
 </div>
-</div><section class="footnotes" role="doc-endnotes">
+</div><div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-DC22EA6A-E086-4CFE-A7DA-2654891F5A12.html" target="_blank" rel="noopener noreferrer">What Is a Tanzu Kubernetes Cluster?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://www.knative.dev" target="_blank" rel="noopener noreferrer">Knative Homepage</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreferrer">Configuring and Managing a Supervisor Cluster</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section></div><div class="post-footer" id="post-footer">
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -411,7 +411,7 @@ NAME                               STATUS   ROLES    AGE     VERSION
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

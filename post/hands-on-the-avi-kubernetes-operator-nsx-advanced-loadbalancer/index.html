@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer\/"
-        },"genre": "posts","keywords": "July2021, Helm, Kubernetes, Tanzu, NSX, Avi","wordcount":  3014 ,
+        },"genre": "posts","keywords": "July2021, Helm, Kubernetes, Tanzu, NSX, Avi","wordcount":  3068 ,
         "url": "https:\/\/rguske.github.io\/post\/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer\/","datePublished": "2021-07-30T11:00:59+02:00","dateModified": "2022-01-07T21:17:22+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Hands-on the Avi Kubernetes Operator (AKO)</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw"></i>Open Source</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-30">2021-07-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3014 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-30">2021-07-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;3068 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;15 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -191,8 +191,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">helm repo add ako https://projects.registry.vmware.com/chartrepo/ako
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">helm repo add ako https://projects.registry.vmware.com/chartrepo/ako
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>As of writing this post, version 1.4.2 is the latest available version.</p>
 <div class="highlight"><div class="chroma">
@@ -211,19 +211,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">helm search repo ako/ako --versions
-
-NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-ako/ako                 1.4.2           1.4.2           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.4.1           1.4.1           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.3.4           1.3.4           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.3.3           1.3.3           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.3.1           1.3.1           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.2.3           1.2.3           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.2.2           1.2.2           A helm chart for Avi Kubernetes Operator
-ako/ako                 1.2.1           1.2.1           A helm chart for Avi Kubernetes Operator
-ako/ako-operator        1.3.1           1.3.1           A Helm chart for Kubernetes AKO Operator
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">helm search repo ako/ako --versions
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+</span></span><span class="line"><span class="cl">ako/ako                 1.4.2           1.4.2           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.4.1           1.4.1           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.3.4           1.3.4           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.3.3           1.3.3           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.3.1           1.3.1           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.2.3           1.2.3           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.2.2           1.2.2           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako                 1.2.1           1.2.1           A helm chart for Avi Kubernetes Operator
+</span></span><span class="line"><span class="cl">ako/ako-operator        1.3.1           1.3.1           A Helm chart for Kubernetes AKO Operator
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="2-deploy-ako-on-kubernetes">2. Deploy AKO on Kubernetes</h3>
 <p>To get the AKO into the desired operating state, it is necessary to hand over the appropriate configuration parameters as a Kubernetes Configmap as well as Secret, to our Kubernetes Cluster. This can be done in two ways.</p>
@@ -271,23 +271,23 @@ ako/ako-operator        1.3.1           1.3.1           A Helm chart for Kuberne
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">helm install ako/ako  \
---generate-name \
---version 1.4.2 \
---set ControllerSettings.controllerHost=&#39;avi-ctrl.jarvis.lab&#39; \
---set ControllerSettings.controllerVersion=&#39;20.1.5&#39; \
---set AKOSettings.logLevel=&#39;WARNING&#39; \
---set avicredentials.username=&#39;admin&#39; \
---set avicredentials.password=&#39;VMware1!&#39; \
---set NetworkSettings.subnetIP=&#39;10.10.18.0&#39; \
---set NetworkSettings.subnetPrefix=&#39;26&#39; \
---set NetworkSettings.networkName=&#39;dpg-sedatapath-18&#39; \
---set ControllerSettings.cloudName=&#39;Default-Cloud&#39; \
---set ControllerSettings.serviceEngineGroupName=&#39;vmug-se-group&#39; \
---set AKOSettings.clusterName=&#39;veba-of&#39; \
---set L7Settings.serviceType=&#39;NodePort&#39; \
---namespace=avi-system
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">helm install ako/ako  \
+</span></span><span class="line"><span class="cl">--generate-name \
+</span></span><span class="line"><span class="cl">--version 1.4.2 \
+</span></span><span class="line"><span class="cl">--set ControllerSettings.controllerHost=&#39;avi-ctrl.jarvis.lab&#39; \
+</span></span><span class="line"><span class="cl">--set ControllerSettings.controllerVersion=&#39;20.1.5&#39; \
+</span></span><span class="line"><span class="cl">--set AKOSettings.logLevel=&#39;WARNING&#39; \
+</span></span><span class="line"><span class="cl">--set avicredentials.username=&#39;admin&#39; \
+</span></span><span class="line"><span class="cl">--set avicredentials.password=&#39;VMware1!&#39; \
+</span></span><span class="line"><span class="cl">--set NetworkSettings.subnetIP=&#39;10.10.18.0&#39; \
+</span></span><span class="line"><span class="cl">--set NetworkSettings.subnetPrefix=&#39;26&#39; \
+</span></span><span class="line"><span class="cl">--set NetworkSettings.networkName=&#39;dpg-sedatapath-18&#39; \
+</span></span><span class="line"><span class="cl">--set ControllerSettings.cloudName=&#39;Default-Cloud&#39; \
+</span></span><span class="line"><span class="cl">--set ControllerSettings.serviceEngineGroupName=&#39;vmug-se-group&#39; \
+</span></span><span class="line"><span class="cl">--set AKOSettings.clusterName=&#39;veba-of&#39; \
+</span></span><span class="line"><span class="cl">--set L7Settings.serviceType=&#39;NodePort&#39; \
+</span></span><span class="line"><span class="cl">--namespace=avi-system
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="3-validate-the-deployment">3. Validate the deployment</h3>
 <p>Directly after firing up the <code>helm install</code> command, you should see:</p>
@@ -300,12 +300,12 @@ ako/ako-operator        1.3.1           1.3.1           A Helm chart for Kuberne
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">NAME: ako-1627467371
-LAST DEPLOYED: Wed Jul 28 12:16:11 2021
-NAMESPACE: avi-system
-STATUS: deployed
-REVISION: 1
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">NAME: ako-1627467371
+</span></span><span class="line"><span class="cl">LAST DEPLOYED: Wed Jul 28 12:16:11 2021
+</span></span><span class="line"><span class="cl">NAMESPACE: avi-system
+</span></span><span class="line"><span class="cl">STATUS: deployed
+</span></span><span class="line"><span class="cl">REVISION: 1
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Furthermore, you can check your helm deployments (all or specific ones) by using <code>helm list</code> and with appending the respective namespace.</p>
 <div class="highlight"><div class="chroma">
@@ -316,11 +316,11 @@ REVISION: 1
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">helm list -n avi-system
-
-NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART           APP VERSION
-ako-1627467371  avi-system      1               2021-07-28 12:16:11.301093764 +0200 CEST        deployed        ako-1.3.1       1.3.1
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">helm list -n avi-system
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART           APP VERSION
+</span></span><span class="line"><span class="cl">ako-1627467371  avi-system      1               2021-07-28 12:16:11.301093764 +0200 CEST        deployed        ako-1.3.1       1.3.1
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>And numero tres - The validation with <code>kubectl</code>:</p>
 <div class="highlight"><div class="chroma">
@@ -341,21 +341,21 @@ ako-1627467371  avi-system      1               2021-07-28 12:16:11.301093764 +0
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n avi-system get po,secret,configmap
-
-NAME        READY   STATUS    RESTARTS   AGE
-pod/ako-0   1/1     Running   0          10m
-
-NAME                                          TYPE                                  DATA   AGE
-secret/ako-sa-token-cvjx5                     kubernetes.io/service-account-token   3      10m
-secret/avi-secret                             Opaque                                2      10m
-secret/default-token-5kx5g                    kubernetes.io/service-account-token   3      27d
-secret/sh.helm.release.v1.ako-1627481569.v1   helm.sh/release.v1                    1      10m
-
-NAME                         DATA   AGE
-configmap/avi-k8s-config     32     10m
-configmap/kube-root-ca.crt   1      27d
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl -n avi-system get po,secret,configmap
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME        READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/ako-0   1/1     Running   0          10m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                          TYPE                                  DATA   AGE
+</span></span><span class="line"><span class="cl">secret/ako-sa-token-cvjx5                     kubernetes.io/service-account-token   3      10m
+</span></span><span class="line"><span class="cl">secret/avi-secret                             Opaque                                2      10m
+</span></span><span class="line"><span class="cl">secret/default-token-5kx5g                    kubernetes.io/service-account-token   3      27d
+</span></span><span class="line"><span class="cl">secret/sh.helm.release.v1.ako-1627481569.v1   helm.sh/release.v1                    1      10m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                         DATA   AGE
+</span></span><span class="line"><span class="cl">configmap/avi-k8s-config     32     10m
+</span></span><span class="line"><span class="cl">configmap/kube-root-ca.crt   1      27d
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Of course, it&rsquo;s always helpful and enlightend to check the logs of the fresh deployed pod, to get first impressions if everything is working as expected.</p>
 <p><strong>Pro Tip</strong>: Make use of <code>cli</code> tools which makes your life easier on the shell. I&rsquo;m using <a href="https://github.com/derailed/k9s" target="_blank" rel="noopener noreferrer">k9s</a> a lot to check my Kubernetes poppy&rsquo;s as well as <a href="https://github.com/wercker/stern" target="_blank" rel="noopener noreferrer">stern</a> for a greater log view.</p>
@@ -462,27 +462,27 @@ configmap/kube-root-ca.crt   1      27d
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">dig avi-dns.avi.jarvis.lab
-
-; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.15-Ubuntu &lt;&lt;&gt;&gt; avi-dns.avi.jarvis.lab
-;; global options: +cmd
-;; Got answer:
-;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 54355
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
-
-;; OPT PSEUDOSECTION:
-; EDNS: version: 0, flags:; udp: 65494
-;; QUESTION SECTION:
-;avi-dns.avi.jarvis.lab.                IN      A
-
-;; ANSWER SECTION:
-avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
-
-;; Query time: 1 msec
-;; SERVER: 127.0.0.53#53(127.0.0.53)
-;; WHEN: Wed Jul 28 15:16:32 CEST 2021
-;; MSG SIZE  rcvd: 67
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">dig avi-dns.avi.jarvis.lab
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">; &lt;&lt;&gt;&gt; DiG 9.11.3-1ubuntu1.15-Ubuntu &lt;&lt;&gt;&gt; avi-dns.avi.jarvis.lab
+</span></span><span class="line"><span class="cl">;; global options: +cmd
+</span></span><span class="line"><span class="cl">;; Got answer:
+</span></span><span class="line"><span class="cl">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 54355
+</span></span><span class="line"><span class="cl">;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">;; OPT PSEUDOSECTION:
+</span></span><span class="line"><span class="cl">; EDNS: version: 0, flags:; udp: 65494
+</span></span><span class="line"><span class="cl">;; QUESTION SECTION:
+</span></span><span class="line"><span class="cl">;avi-dns.avi.jarvis.lab.                IN      A
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">;; ANSWER SECTION:
+</span></span><span class="line"><span class="cl">avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">;; Query time: 1 msec
+</span></span><span class="line"><span class="cl">;; SERVER: 127.0.0.53#53(127.0.0.53)
+</span></span><span class="line"><span class="cl">;; WHEN: Wed Jul 28 15:16:32 CEST 2021
+</span></span><span class="line"><span class="cl">;; MSG SIZE  rcvd: 67
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="the-windows-server-part---new-delegation">The Windows Server part - New Delegation</h3>
 <p>On the Windows Server (if you are using a Windows Server for your Domain Services) you have to add a <em>New Delegation</em> to your DNS configuration. It&rsquo;s straight forward.</p>
@@ -533,14 +533,14 @@ avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">...]</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c">### This section outlines all the knobs used to control Layer 4 loadbalancing settings in AKO.</span><span class="w">
-</span><span class="w"></span><span class="nt">L4Settings</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">autoFQDN: default   # ENUM</span><span class="p">:</span><span class="w"> </span><span class="l">default(&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;), flat (&lt;svc&gt;-&lt;ns&gt;.&lt;subdomain&gt;), &#34;disabled&#34; If the value is disabled then the FQDN generation is disabled.</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">### This section outlines all the knobs used to control Layer 4 loadbalancing settings in AKO.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">L4Settings</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">autoFQDN: default   # ENUM</span><span class="p">:</span><span class="w"> </span><span class="l">default(&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;), flat (&lt;svc&gt;-&lt;ns&gt;.&lt;subdomain&gt;), &#34;disabled&#34; If the value is disabled then the FQDN generation is disabled.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>As you can read from the description, the generated FQDN will have the following structure by default: <code>&lt;svc&gt;.&lt;ns&gt;.&lt;subdomain&gt;</code>. Let&rsquo;s validate the generation of the FQDN by deploying the demo web application <code>hackazon</code>, which simulates an e-commerce shop. This application was deployed into a seperate namespace named <code>vmug</code> (<code>kubectl create ns vmug</code>).</p>
 <h3 id="demo-1-web-app-deployment-with-l4-service">Demo #1: Web App deployment with L4 Service</h3>
@@ -591,47 +591,47 @@ avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
 </span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">kubectl -n vmug create -f - &lt;&lt;EOF</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
-</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
-</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
-</span><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n vmug create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li><code>kubectl</code> validation of the deployment:</li>
@@ -651,18 +651,18 @@ avi-dns.avi.jarvis.lab. 29      IN      A       10.10.18.50
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n vmug get deploy,po,svc
-
-NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/avitest-deployment   2/2     2            2           23m
-
-NAME                                      READY   STATUS    RESTARTS   AGE
-pod/avitest-deployment-66645bdb9b-nw9f2   1/1     Running   0          23m
-pod/avitest-deployment-66645bdb9b-r5c84   1/1     Running   0          23m
-
-NAME                TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
-service/avisvc-lb   LoadBalancer   10.98.85.14   10.10.18.15   80:31851/TCP   23m
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl -n vmug get deploy,po,svc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">deployment.apps/avitest-deployment   2/2     2            2           23m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                      READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/avitest-deployment-66645bdb9b-nw9f2   1/1     Running   0          23m
+</span></span><span class="line"><span class="cl">pod/avitest-deployment-66645bdb9b-r5c84   1/1     Running   0          23m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+</span></span><span class="line"><span class="cl">service/avisvc-lb   LoadBalancer   10.98.85.14   10.10.18.15   80:31851/TCP   23m
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The Controller Management GUI (Avi Vantage) is showing that the Virtual Service is up and provided by the Service Engine Group <code>vmug-se-group</code> which I&rsquo;ve defined at the deployment of the AKO (<code>--set ControllerSettings.serviceEngineGroupName='vmug-se-group'</code>).</p>
 <figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210728_112508.jpg" data-sub-html="<h2>Figure VIII: Overview and health state SE&rsquo;s, vSphere DPG, VIP</h2>">
@@ -703,19 +703,19 @@ service/avisvc-lb   LoadBalancer   10.98.85.14   10.10.18.15   80:31851/TCP   23
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">curl -I http://avisvc-lb.vmug.avi.jarvis.lab
-
-HTTP/1.1 200 OK
-Date: Wed, 28 Jul 2021 21:40:46 GMT
-Server: Apache/2.4.7 (Ubuntu)
-X-Powered-By: PHP/5.5.9-1ubuntu4.11
-Set-Cookie: PHPSESSID=j174pd3706i2cm6ecemdv0g0k1; path=/
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-Pragma: no-cache
-Content-Length: 64734
-Content-Type: text/html; charset=utf-8
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -I http://avisvc-lb.vmug.avi.jarvis.lab
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HTTP/1.1 200 OK
+</span></span><span class="line"><span class="cl">Date: Wed, 28 Jul 2021 21:40:46 GMT
+</span></span><span class="line"><span class="cl">Server: Apache/2.4.7 (Ubuntu)
+</span></span><span class="line"><span class="cl">X-Powered-By: PHP/5.5.9-1ubuntu4.11
+</span></span><span class="line"><span class="cl">Set-Cookie: PHPSESSID=j174pd3706i2cm6ecemdv0g0k1; path=/
+</span></span><span class="line"><span class="cl">Expires: Thu, 19 Nov 1981 08:52:00 GMT
+</span></span><span class="line"><span class="cl">Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+</span></span><span class="line"><span class="cl">Pragma: no-cache
+</span></span><span class="line"><span class="cl">Content-Length: 64734
+</span></span><span class="line"><span class="cl">Content-Type: text/html; charset=utf-8
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>HTTP/1.1 200 OK</code> The app is reachable via it&rsquo;s App Domain Name.</p>
 <p><strong>Onto Demo #2!</strong></p>
@@ -756,14 +756,14 @@ Content-Type: text/html; charset=utf-8
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">...]</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="c">### This section outlines all the knobs  used to control Layer 7 loadbalancing settings in AKO.</span><span class="w">
-</span><span class="w"></span><span class="nt">L7Settings</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">defaultIngController</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">### This section outlines all the knobs  used to control Layer 7 loadbalancing settings in AKO.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">L7Settings</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">defaultIngController</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;true&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>Deploying the AKO will add the missing Kubernetes resource <code>ingressclasses.networking.k8s.io</code> to your cluster.</p>
 <div class="highlight"><div class="chroma">
@@ -774,11 +774,11 @@ Content-Type: text/html; charset=utf-8
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get ingressclasses.networking.k8s.io
-
-NAME     CONTROLLER              PARAMETERS                                     AGE
-avi-lb   ako.vmware.com/avi-lb   IngressParameters.ako.vmware.com/external-lb   32m
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get ingressclasses.networking.k8s.io
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME     CONTROLLER              PARAMETERS                                     AGE
+</span></span><span class="line"><span class="cl">avi-lb   ako.vmware.com/avi-lb   IngressParameters.ako.vmware.com/external-lb   32m
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>In more detail:</p>
 <div class="highlight"><div class="chroma">
@@ -798,20 +798,20 @@ avi-lb   ako.vmware.com/avi-lb   IngressParameters.ako.vmware.com/external-lb   
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl describe ingressclasses.networking.k8s.io avi-lb -n avi-system
-
-Name:         avi-lb
-Labels:       app.kubernetes.io/managed-by=Helm
-Annotations:  ingressclass.kubernetes.io/is-default-class: true
-              meta.helm.sh/release-name: ako-1627507213
-              meta.helm.sh/release-namespace: avi-system
-Controller:   ako.vmware.com/avi-lb
-Parameters:
-  APIGroup:  ako.vmware.com
-  Kind:      IngressParameters
-  Name:      external-lb
-Events:      &lt;none&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl describe ingressclasses.networking.k8s.io avi-lb -n avi-system
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Name:         avi-lb
+</span></span><span class="line"><span class="cl">Labels:       app.kubernetes.io/managed-by=Helm
+</span></span><span class="line"><span class="cl">Annotations:  ingressclass.kubernetes.io/is-default-class: true
+</span></span><span class="line"><span class="cl">              meta.helm.sh/release-name: ako-1627507213
+</span></span><span class="line"><span class="cl">              meta.helm.sh/release-namespace: avi-system
+</span></span><span class="line"><span class="cl">Controller:   ako.vmware.com/avi-lb
+</span></span><span class="line"><span class="cl">Parameters:
+</span></span><span class="line"><span class="cl">  APIGroup:  ako.vmware.com
+</span></span><span class="line"><span class="cl">  Kind:      IngressParameters
+</span></span><span class="line"><span class="cl">  Name:      external-lb
+</span></span><span class="line"><span class="cl">Events:      &lt;none&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="demo-2-web-app-deployment-with-l7-service">Demo #2: Web App deployment with L7 Service</h3>
 <p>Now that we&rsquo;ve set the scene right, let&rsquo;s add the Ingress specification to our existing web app and apply the new configuration.</p>
@@ -883,68 +883,68 @@ Events:      &lt;none&gt;
 </span><span class="lnt">61
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">kubectl -n vmug apply -f - &lt;&lt;EOF</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
-</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
-</span><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
-</span><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
-</span><span class="w">   </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l">avi</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon.avi.jarvis.lab</span><span class="w">
-</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l">Prefix</span><span class="w">
-</span><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
-</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">service</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
-</span><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w">
-</span><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n vmug apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest-deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ianwijaya/hackazon</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avitest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">avisvcingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l">avi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon.avi.jarvis.lab</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l">Prefix</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">service</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">avisvc-lb</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>We should now see the new Ingress service available for our web app.</p>
 <div class="highlight"><div class="chroma">
@@ -962,18 +962,18 @@ Events:      &lt;none&gt;
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl -n vmug get po,svc,ingress
-
-NAME                                      READY   STATUS    RESTARTS   AGE
-pod/avitest-deployment-66645bdb9b-c52gv   1/1     Running   0          59s
-pod/avitest-deployment-66645bdb9b-st9z7   1/1     Running   0          59s
-
-NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-service/avisvc-lb   LoadBalancer   10.101.249.194   10.10.18.15   80:32678/TCP   59s
-
-NAME                                      CLASS    HOSTS                     ADDRESS       PORTS   AGE
-ingress.networking.k8s.io/avisvcingress   &lt;none&gt;   hackazon.avi.jarvis.lab   10.10.18.19   80      12h
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl -n vmug get po,svc,ingress
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                      READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/avitest-deployment-66645bdb9b-c52gv   1/1     Running   0          59s
+</span></span><span class="line"><span class="cl">pod/avitest-deployment-66645bdb9b-st9z7   1/1     Running   0          59s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+</span></span><span class="line"><span class="cl">service/avisvc-lb   LoadBalancer   10.101.249.194   10.10.18.15   80:32678/TCP   59s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                      CLASS    HOSTS                     ADDRESS       PORTS   AGE
+</span></span><span class="line"><span class="cl">ingress.networking.k8s.io/avisvcingress   &lt;none&gt;   hackazon.avi.jarvis.lab   10.10.18.19   80      12h
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>When we now have a look at the Avi Controller, we are noticing a complete new VIP was assigned for our Ingress configuration and <strong>another striking aspect is</strong>, that the NSX-ALB automatically creates a <code>https</code> service port for our app. To be clear, we&rsquo;ve deployed an <code>Insecure Ingress</code> configuration and the NSX-ALB takes care of it for us (SSL Termination).</p>
 <figure><a class="lightgallery" href="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" title="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" data-thumbnail="/img/posts/202107_handsonako/CapturFiles-20210729_125633.jpg" data-sub-html="<h2>Figure XI: New Virtual Service for Ingress | SSL Termination</h2>">
@@ -1043,17 +1043,17 @@ ingress.networking.k8s.io/avisvcingress   &lt;none&gt;   hackazon.avi.jarvis.lab
 <li><a href="https://github.com/avinetworks/avi-helm-charts/tree/4b38fd30d28298f871f5ca56b781af73f3b4f174/docs/AKO" target="_blank" rel="noopener noreferrer">Docs Avi Kubernetes OPerator</a></li>
 <li><a href="https://labs.hol.vmware.com/HOL/catalogs/catalog/1892" target="_blank" rel="noopener noreferrer">VMware Hands-on Labs NSX Advanced Load Balancer</a></li>
 </ul>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://avinetworks.com/docs/ako/0.9/ako-compatibility-guide/" target="_blank" rel="noopener noreferrer">Compatibility Guide for AKO</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://github.com/avinetworks/avi-helm-charts/blob/master/docs/AKO/README.md#pre-requisites" target="_blank" rel="noopener noreferrer">AKO: Avi Kubernetes Operator - Pre-requisites</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section></div><div class="post-footer" id="post-footer">
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -1086,7 +1086,7 @@ ingress.networking.k8s.io/avisvcingress   &lt;none&gt;   hackazon.avi.jarvis.lab
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/"
-        },"genre": "posts","keywords": "March2020, VEBA, Harbor, FaaS","wordcount":  1287 ,
+        },"genre": "posts","keywords": "March2020, VEBA, Harbor, FaaS","wordcount":  1237 ,
         "url": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/","datePublished": "2020-03-23T22:00:36+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,8 +104,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Using Harbor with the VMware Event Broker Appliance</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw"></i>FaaS</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-03-23">2020-03-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1287 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;7 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-03-23">2020-03-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1237 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -245,14 +245,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="nb">cd</span> ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
-
-docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
-
-docker images
-REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
-harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326        <span class="m">15</span> seconds ago      368MB
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl"><span class="nb">cd</span> ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker images
+</span></span><span class="line"><span class="cl">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
+</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326        <span class="m">15</span> seconds ago      368MB
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Login into Harbor with an assigned user or a user of an assigned group:</p>
 <div class="highlight"><div class="chroma">
@@ -260,8 +260,8 @@ harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326 
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker login -u rguske harbor.jarvis.lab/veba
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker login -u rguske harbor.jarvis.lab/veba
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>After a successful login, push the image to your project:</p>
 <div class="highlight"><div class="chroma">
@@ -269,8 +269,8 @@ harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326 
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="the-openfaas-way---faas-cli">The OpenFaaS way - faas-cli</h3>
 <p>The use of the <a href="https://docs.openfaas.com/cli/install/" target="_blank">faas-cli</a> makes the above described steps a little bit more comfortable and by the end, the <code>faas-cli</code> is using the native <code>docker</code> commands as well. To build as well as to tag the image, we just need to execute <code>faas-cli build -f stack.yml</code>. This command will pick the image specification from the <code>stack.yml</code> and will hand it over automatically.</p>
@@ -281,9 +281,9 @@ harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326 
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
-harbor.jarvis.lab/veba/veba-powercli-tagging   latest              3520bc9c8b85        <span class="m">32</span> seconds ago      368MB
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
+</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              3520bc9c8b85        <span class="m">32</span> seconds ago      368MB
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>You still need to login to Harbor if you want to execute the <code>push</code> command, otherwise you will receive the following error:</p>
 <div class="highlight"><div class="chroma">
@@ -294,11 +294,11 @@ harbor.jarvis.lab/veba/veba-powercli-tagging   latest              3520bc9c8b85 
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">denied: requested access to the resource is denied
-unauthorized: authentication required
-
-2020/03/23 17:48:45 ERROR - Could not execute command: <span class="o">[</span>docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest<span class="o">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">denied: requested access to the resource is denied
+</span></span><span class="line"><span class="cl">unauthorized: authentication required
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">2020/03/23 17:48:45 ERROR - Could not execute command: <span class="o">[</span>docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Login and execute <code>faas-cli push -f stack.yml</code>. The image will be pushed into your project.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" title="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" data-thumbnail="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" data-sub-html="<h2>Figure VIII: Pushed image to the new project</h2>">
@@ -323,12 +323,12 @@ unauthorized: authentication required
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                            READY   STATUS             RESTARTS   AGE
-powercli-tag-5ff88775fb-6g92k   0/1     ImagePullBackOff   <span class="m">0</span>          28s
-
-NAME                            READY   STATUS         RESTARTS   AGE
-powercli-tag-5ff88775fb-6g92k   0/1     ErrImagePull   <span class="m">0</span>          64s
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                            READY   STATUS             RESTARTS   AGE
+</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-6g92k   0/1     ImagePullBackOff   <span class="m">0</span>          28s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                            READY   STATUS         RESTARTS   AGE
+</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-6g92k   0/1     ErrImagePull   <span class="m">0</span>          64s
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>I validated this behavior by executing <code>docker images</code> and observed that no image has been downloaded from Harbor. Troubleshooting often means, if an automatic process fails, go the manual way step by step. Consequently, the next step is to download the image manually.</p>
 <div class="highlight"><div class="chroma">
@@ -337,9 +337,9 @@ powercli-tag-5ff88775fb-6g92k   0/1     ErrImagePull   <span class="m">0</span> 
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker pull harbor.jarvis.lab/veba/veba-powercli-tagging:latest
-Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate signed by unknown authority
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull harbor.jarvis.lab/veba/veba-powercli-tagging:latest
+</span></span><span class="line"><span class="cl">Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate signed by unknown authority
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Interesting!</strong></p>
 <div class="details admonition failure open">
@@ -359,8 +359,8 @@ Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Make it executable with <code>chmod +x docker_harbor_cert.sh</code> and run it. The other option without using <code>scp</code> is, to establish a <code>ssh</code> connection and to copy and execute the neccessary lines directly.</p>
 <h2 id="the-script">The script</h2>
@@ -385,24 +385,24 @@ Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#! /bin/bash
-</span><span class="cp"></span>
-<span class="nb">set</span> -euo pipefail
-
-<span class="c1"># Ask for the Harbor FQDN</span>
-<span class="nb">echo</span> <span class="s2">&#34;Enter the FQDN (e.g. harbor.domain.com) of your Harbor registry:&#34;</span>
-
-<span class="nb">read</span> REGISTRY
-
-<span class="c1"># Create folder for custom certificate as described in Docker docs https://docs.docker.com/engine/security/certificates/</span>
-mkdir -p /etc/docker/certs.d/<span class="nv">$REGISTRY</span>
-
-<span class="c1"># Download Registry Root Certificate</span>
-wget -O /etc/docker/certs.d/<span class="nv">$REGISTRY</span>/ca.crt https://<span class="nv">$REGISTRY</span>/api/v2.0/systeminfo/getcert --no-check-certificate
-
-<span class="c1"># Restart Docker service</span>
-systemctl restart docker
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#! /bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -euo pipefail
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Ask for the Harbor FQDN</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Enter the FQDN (e.g. harbor.domain.com) of your Harbor registry:&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">read</span> REGISTRY
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create folder for custom certificate as described in Docker docs https://docs.docker.com/engine/security/certificates/</span>
+</span></span><span class="line"><span class="cl">mkdir -p /etc/docker/certs.d/<span class="nv">$REGISTRY</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Download Registry Root Certificate</span>
+</span></span><span class="line"><span class="cl">wget -O /etc/docker/certs.d/<span class="nv">$REGISTRY</span>/ca.crt https://<span class="nv">$REGISTRY</span>/api/v2.0/systeminfo/getcert --no-check-certificate
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Restart Docker service</span>
+</span></span><span class="line"><span class="cl">systemctl restart docker
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>VEBA is now able to <code>pull</code> and run the image from Harbor.</p>
 <div class="highlight"><div class="chroma">
@@ -413,11 +413,11 @@ systemctl restart docker
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl -n openfaas-fn get pods
-
-NAME                            READY   STATUS    RESTARTS   AGE
-powercli-tag-5ff88775fb-wqqqf   1/1     Running   <span class="m">0</span>          84s
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n openfaas-fn get pods
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                            READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-wqqqf   1/1     Running   <span class="m">0</span>          84s
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong><center>Thanks for reading.</center></strong></p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
@@ -452,7 +452,7 @@ powercli-tag-5ff88775fb-wqqqf   1/1     Running   <span class="m">0</span>      
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

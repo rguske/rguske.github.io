@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/"
-        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1202 ,
+        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel","wordcount":  1191 ,
         "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-04-07T23:47:56+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/container/"><i class="far fa-folder fa-fw"></i>Container</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1202 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1191 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -160,15 +160,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker save --help
-
-Usage:  docker save <span class="o">[</span>OPTIONS<span class="o">]</span> IMAGE <span class="o">[</span>IMAGE...<span class="o">]</span>
-
-Save one or more images to a tar archive <span class="o">(</span>streamed to STDOUT by default<span class="o">)</span>
-
-Options:
-  -o, --output string   Write to a file, instead of STDOUT
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker save --help
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Usage:  docker save <span class="o">[</span>OPTIONS<span class="o">]</span> IMAGE <span class="o">[</span>IMAGE...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Save one or more images to a tar archive <span class="o">(</span>streamed to STDOUT by default<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Options:
+</span></span><span class="line"><span class="cl">  -o, --output string   Write to a file, instead of STDOUT
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>There&rsquo;s no real explanation necessary. You only have to specify the output file name and extension (<code>.tar</code>) using the option <code>-o</code>.</p>
 <div class="highlight"><div class="chroma">
@@ -180,12 +180,12 @@ Options:
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Download image</span>
-docker pull k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2
-
-<span class="c1"># Save the image</span>
-docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v222.tar
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Download image</span>
+</span></span><span class="line"><span class="cl">docker pull k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Save the image</span>
+</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v222.tar
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="docker-load"><code>docker load</code></h3>
 <p>Now that the image is available in a shareable format, share it, so it can be loaded on the appropriate location using <code>docker load</code>.</p>
@@ -202,16 +202,16 @@ docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v22
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker load --help
-
-Usage:  docker load <span class="o">[</span>OPTIONS<span class="o">]</span>
-
-Load an image from a tar archive or STDIN
-
-Options:
-  -i, --input string   Read from tar archive file, instead of STDIN
-  -q, --quiet          Suppress the load output
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker load --help
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Usage:  docker load <span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Load an image from a tar archive or STDIN
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Options:
+</span></span><span class="line"><span class="cl">  -i, --input string   Read from tar archive file, instead of STDIN
+</span></span><span class="line"><span class="cl">  -q, --quiet          Suppress the load output
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The following output is only to proof that no images were locally available on my 💻 when I was working on this example 😉</p>
 <div class="highlight"><div class="chroma">
@@ -222,11 +222,11 @@ Options:
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># No existing images locally</span>
-$ docker images
-
-REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># No existing images locally</span>
+</span></span><span class="line"><span class="cl">$ docker images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Having that proofed, let&rsquo;s load the packed image using the option <code>-i</code>:</p>
 <div class="highlight"><div class="chroma">
@@ -241,15 +241,15 @@ REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Load the image</span>
-docker load -i csi-provisioner-v222.tar
-
-<span class="c1"># Check the availability of the image</span>
-docker images
-
-REPOSITORY                                 TAG       IMAGE ID       CREATED        SIZE
-k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class="m">9</span> months ago   56.4MB
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Load the image</span>
+</span></span><span class="line"><span class="cl">docker load -i csi-provisioner-v222.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check the availability of the image</span>
+</span></span><span class="line"><span class="cl">docker images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">REPOSITORY                                 TAG       IMAGE ID       CREATED        SIZE
+</span></span><span class="line"><span class="cl">k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class="m">9</span> months ago   56.4MB
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="details admonition info open">
         <div class="details-summary admonition-title">
@@ -266,9 +266,9 @@ k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class=
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Using the greater-than operator &#39;&gt;&#39; to send to a file</span>
-docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v222.tar
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Using the greater-than operator &#39;&gt;&#39; to send to a file</span>
+</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v222.tar
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Making it locally available is obvisouly just the step before finally pushing it to a private registry, to ultimately have it accessible for others as well.</p>
 <div class="highlight"><div class="chroma">
@@ -280,12 +280,12 @@ docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Tag the image accordingly</span>
-docker tag e18077242e6d harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
-
-<span class="c1"># Push the image to your private registry</span>
-docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Tag the image accordingly</span>
+</span></span><span class="line"><span class="cl">docker tag e18077242e6d harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Push the image to your private registry</span>
+</span></span><span class="line"><span class="cl">docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>And there we have it.</p>
 <figure><a class="lightgallery" href="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" title="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-thumbnail="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-sub-html="<h2>Figure I: Loaded and pushed image available in your private registry</h2>">
@@ -328,26 +328,26 @@ docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">imgpkg copy --help
-
-Copy a bundle from one location to another
-
-Usage:
-  imgpkg copy <span class="o">[</span>flags<span class="o">]</span>
-
-Examples:
-
-    <span class="c1"># Copy bundle dkalinin/app1-bundle to local tarball at /Volumes/app1-bundle.tar</span>
-    imgpkg copy -b dkalinin/app1-bundle --to-tar /Volumes/app1-bundle.tar
-
-    <span class="c1"># Copy bundle dkalinin/app1-bundle to another registry (or repository)</span>
-    imgpkg copy -b dkalinin/app1-bundle --to-repo internal-registry/app1-bundle
-
-    <span class="c1"># Copy image dkalinin/app1-image to another registry (or repository)</span>
-    imgpkg copy -i dkalinin/app1-image --to-repo internal-registry/app1-image
-
-<span class="o">[</span>...<span class="o">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --help
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Copy a bundle from one location to another
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Usage:
+</span></span><span class="line"><span class="cl">  imgpkg copy <span class="o">[</span>flags<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Examples:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Copy bundle dkalinin/app1-bundle to local tarball at /Volumes/app1-bundle.tar</span>
+</span></span><span class="line"><span class="cl">    imgpkg copy -b dkalinin/app1-bundle --to-tar /Volumes/app1-bundle.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Copy bundle dkalinin/app1-bundle to another registry (or repository)</span>
+</span></span><span class="line"><span class="cl">    imgpkg copy -b dkalinin/app1-bundle --to-repo internal-registry/app1-bundle
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Copy image dkalinin/app1-image to another registry (or repository)</span>
+</span></span><span class="line"><span class="cl">    imgpkg copy -i dkalinin/app1-image --to-repo internal-registry/app1-image
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="imgpkg-copy---to-tar"><code>imgpkg copy --to-tar</code></h3>
 <p>Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Even though, keep in mind that <code>imgpkg</code> in contrast to the <code>docker</code> CLI commands was build for such purposes and therefore it provides comprehensive capabilities and a really comfortable way of copying/relocating images.</p>
@@ -367,18 +367,18 @@ Examples:
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-tar csi-provisioner-v222.tar
-
-copy <span class="p">|</span> exporting <span class="m">1</span> images...
-copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
-copy <span class="p">|</span> exported <span class="m">1</span> images
-copy <span class="p">|</span> writing layers...
-copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;manifest.json&#39;</span> <span class="o">(</span>6.086µs<span class="o">)</span>
-copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-5dea5ec2316d4a067b946b15c3c4f140b4f2ad607e73e9bc41b673ee5ebb99a3.tar.gz&#39;</span> <span class="o">(</span>147.490976ms<span class="o">)</span>
-copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-e22751dfa03a88e8756eb5921a8dfcd93c2364dd04aeb6a394bea7bc2011d327.tar.gz&#39;</span> <span class="o">(</span>395.995432ms<span class="o">)</span>
-
-Succeeded
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-tar csi-provisioner-v222.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> exporting <span class="m">1</span> images...
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> exported <span class="m">1</span> images
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> writing layers...
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;manifest.json&#39;</span> <span class="o">(</span>6.086µs<span class="o">)</span>
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-5dea5ec2316d4a067b946b15c3c4f140b4f2ad607e73e9bc41b673ee5ebb99a3.tar.gz&#39;</span> <span class="o">(</span>147.490976ms<span class="o">)</span>
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-e22751dfa03a88e8756eb5921a8dfcd93c2364dd04aeb6a394bea7bc2011d327.tar.gz&#39;</span> <span class="o">(</span>395.995432ms<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Succeeded
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>This file can now be uploaded to e.g. a private registry using the option <code>--to-repo</code>. If your repository is configured as private, so that authentication is required, the <code>copy</code> command offers various options to support this case too.</p>
 <p>Options are e.g. <code>--registry-ca-cert-path</code>, <code>--registry-username</code> and <code>--registry-password</code>.</p>
@@ -394,15 +394,15 @@ Succeeded
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">imgpkg copy --tar csi-provisioner-v222.tar --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
-
-copy <span class="p">|</span> importing <span class="m">1</span> images...
-
- 21.56 MiB / 21.57 MiB <span class="o">[=====================================================================================================================================]</span>  99.98% 10.73 MiB/s 2s
-
-copy <span class="p">|</span> <span class="k">done</span> uploading images
-Succeeded
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --tar csi-provisioner-v222.tar --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> importing <span class="m">1</span> images...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 21.56 MiB / 21.57 MiB <span class="o">[=====================================================================================================================================]</span>  99.98% 10.73 MiB/s 2s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span> uploading images
+</span></span><span class="line"><span class="cl">Succeeded
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></h3>
 <p>The example above demonstrates how to copy an image, packed as a tarball, to a private repository using the option <code>--to-tar</code>. You could also use the option <code>--to-repo</code> which makes it even easier to relocate images from e.g. a public registry to a private one.</p>
@@ -420,17 +420,17 @@ Succeeded
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
-copy <span class="p">|</span> exporting <span class="m">1</span> images...
-copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
-copy <span class="p">|</span> exported <span class="m">1</span> images
-copy <span class="p">|</span> importing <span class="m">1</span> images...
-
- 21.57 MiB / 21.57 MiB <span class="o">[======================================================================================================================================]</span>  99.99% 8.99 MiB/s 2s
-
-copy <span class="p">|</span> <span class="k">done</span> uploading images
-Succeeded
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> exporting <span class="m">1</span> images...
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> exported <span class="m">1</span> images
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> importing <span class="m">1</span> images...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 21.57 MiB / 21.57 MiB <span class="o">[======================================================================================================================================]</span>  99.99% 8.99 MiB/s 2s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span> uploading images
+</span></span><span class="line"><span class="cl">Succeeded
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>That&rsquo;s awesome!</p>
 <h3 id="flowchart-imgpkg">Flowchart imgpkg</h3>
@@ -480,7 +480,7 @@ Succeeded
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

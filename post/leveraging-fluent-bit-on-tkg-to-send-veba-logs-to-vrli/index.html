@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/"
-        },"genre": "posts","keywords": "FluentBit, vRLI, Kubernetes, VEBA, Tanzu, TKG, OSS","wordcount":  2128 ,
+        },"genre": "posts","keywords": "FluentBit, vRLI, Kubernetes, VEBA, Tanzu, TKG, OSS","wordcount":  2092 ,
         "url": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/","datePublished": "2021-01-13T11:50:23+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/logging/"><i class="far fa-folder fa-fw"></i>Logging</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw"></i>Open Source</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2128 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2092 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -300,12 +300,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[FILTER]
-    Name                record_modifier
-    Match               *
-    Record tkg_instance tkg-veba
-    Record tkg_cluster  tkg-veba
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[FILTER]
+</span></span><span class="line"><span class="cl">    Name                record_modifier
+</span></span><span class="line"><span class="cl">    Match               *
+</span></span><span class="line"><span class="cl">    Record tkg_instance tkg-veba
+</span></span><span class="line"><span class="cl">    Record tkg_cluster  tkg-veba
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Enter your Log Insight server hostname in the <code>output-syslog.conf</code> section:</p>
 <p><code>output-syslog.conf: |</code></p>
@@ -329,23 +329,23 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">[OUTPUT]
-    Name                 syslog
-    Match                *
-    Host                 vrli.jarvis.lab
-    Port                 514
-    Mode                 tcp
-    Syslog_Format        rfc5424
-    Syslog_Hostname_key  tkg_cluster
-    Syslog_Appname_key   pod_name
-    Syslog_Procid_key    container_name
-    Syslog_Message_key   message
-    syslog_msgid_key     msgid
-    Syslog_SD_key        k8s
-    Syslog_SD_key        labels
-    Syslog_SD_key        annotations
-    Syslog_SD_key        tkg
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[OUTPUT]
+</span></span><span class="line"><span class="cl">    Name                 syslog
+</span></span><span class="line"><span class="cl">    Match                *
+</span></span><span class="line"><span class="cl">    Host                 vrli.jarvis.lab
+</span></span><span class="line"><span class="cl">    Port                 514
+</span></span><span class="line"><span class="cl">    Mode                 tcp
+</span></span><span class="line"><span class="cl">    Syslog_Format        rfc5424
+</span></span><span class="line"><span class="cl">    Syslog_Hostname_key  tkg_cluster
+</span></span><span class="line"><span class="cl">    Syslog_Appname_key   pod_name
+</span></span><span class="line"><span class="cl">    Syslog_Procid_key    container_name
+</span></span><span class="line"><span class="cl">    Syslog_Message_key   message
+</span></span><span class="line"><span class="cl">    syslog_msgid_key     msgid
+</span></span><span class="line"><span class="cl">    Syslog_SD_key        k8s
+</span></span><span class="line"><span class="cl">    Syslog_SD_key        labels
+</span></span><span class="line"><span class="cl">    Syslog_SD_key        annotations
+</span></span><span class="line"><span class="cl">    Syslog_SD_key        tkg
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="fluent-bit-daemonset">Fluent Bit DaemonSet</h4>
 <p>Basically, it&rsquo;s not necessary to change the image for Fluent Bit but you could replace it with the one of your choice. I used the official Fluent Bit image which is at the time of writing this post version 1.6.9 -  <code>fluent/fluent-bit:1.6.9</code>. You could also use e.g. the VMware Fluent Bit Image in version 1.5.3: <code>registry.tkg.vmware.run/fluent-bit:v1.5.3_vmware.1</code>. I&rsquo;ve validated the functionality of both images during my tests.</p>
@@ -371,15 +371,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="p">[</span><span class="l">...]</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">fluent-bit</span><span class="w">
-</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">fluent/fluent-bit:1.6.9</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">fluent-bit</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">fluent/fluent-bit:1.6.9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="deploy-fluent-bit-on-kubernetes">Deploy Fluent Bit on Kubernetes</h2>
 <ol start="3">
@@ -395,13 +395,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f 1-tkg-fluent-bit-preps.yaml
-
-namespace/fluent-bit created
-serviceaccount/fluent-bit created
-clusterrole.rbac.authorization.k8s.io/fluent-bit-read created
-clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f 1-tkg-fluent-bit-preps.yaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">namespace/fluent-bit created
+</span></span><span class="line"><span class="cl">serviceaccount/fluent-bit created
+</span></span><span class="line"><span class="cl">clusterrole.rbac.authorization.k8s.io/fluent-bit-read created
+</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ol start="4">
 <li>Next is to apply the configmap - <code>2-tkg-fluent-bit-configmap-cri.yaml</code> - for Fluent Bit:</li>
@@ -412,9 +412,9 @@ clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f 2-tkg-fluent-bit-configmap-cri.yaml
-configmap/fluent-bit-config created
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 2-tkg-fluent-bit-configmap-cri.yaml
+</span></span><span class="line"><span class="cl">configmap/fluent-bit-config created
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ol>
 <li>As mentioned in the Prerequisites section before, Fluent Bit will be deployed as a DaemonSet by using the <code>3-tkg-fluent-bit-ds.yaml</code> file:</li>
@@ -436,20 +436,20 @@ configmap/fluent-bit-config created
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl create -f 3-tkg-fluent-bit-ds.yaml <span class="o">&amp;&amp;</span> kubectl <span class="nb">wait</span> pod --timeout<span class="o">=</span>-1s --for<span class="o">=</span><span class="nv">condition</span><span class="o">=</span>Ready -l <span class="s1">&#39;!job-name&#39;</span> -n fluent-bit
-daemonset.apps/fluent-bit created
-pod/fluent-bit-dd4ql condition met
-
-kubectl get daemonsets.apps -n fluent-bit
-
-NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-fluent-bit   <span class="m">2</span>         <span class="m">2</span>         <span class="m">2</span>       <span class="m">2</span>            <span class="m">2</span>           &lt;none&gt;          95s
-
-kubectl get pods -n fluent-bit
-NAME               READY   STATUS    RESTARTS   AGE
-fluent-bit-9m7qq   1/1     Running   <span class="m">0</span>          108s
-fluent-bit-dd4ql   1/1     Running   <span class="m">0</span>          108s
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 3-tkg-fluent-bit-ds.yaml <span class="o">&amp;&amp;</span> kubectl <span class="nb">wait</span> pod --timeout<span class="o">=</span>-1s --for<span class="o">=</span><span class="nv">condition</span><span class="o">=</span>Ready -l <span class="s1">&#39;!job-name&#39;</span> -n fluent-bit
+</span></span><span class="line"><span class="cl">daemonset.apps/fluent-bit created
+</span></span><span class="line"><span class="cl">pod/fluent-bit-dd4ql condition met
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get daemonsets.apps -n fluent-bit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+</span></span><span class="line"><span class="cl">fluent-bit   <span class="m">2</span>         <span class="m">2</span>         <span class="m">2</span>       <span class="m">2</span>            <span class="m">2</span>           &lt;none&gt;          95s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get pods -n fluent-bit
+</span></span><span class="line"><span class="cl">NAME               READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">fluent-bit-9m7qq   1/1     Running   <span class="m">0</span>          108s
+</span></span><span class="line"><span class="cl">fluent-bit-dd4ql   1/1     Running   <span class="m">0</span>          108s
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>More information about the successful deployment and as a first indication that everything is working fine can be grabbed from the logs of one of the pods.</p>
 <div class="highlight"><div class="chroma">
@@ -476,27 +476,27 @@ fluent-bit-dd4ql   1/1     Running   <span class="m">0</span>          108s
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl logs -n fluent-bit fluent-bit-dd4ql
-
-Fluent Bit v1.6.9
-* Copyright (C) 2019-2020 The Fluent Bit Authors
-* Copyright (C) 2015-2018 Treasure Data
-* Fluent Bit is a CNCF sub-project under the umbrella of Fluentd
-* https://fluentbit.io
-
-[2021/01/12 14:05:10] [ info] [engine] started (pid=1)
-[2021/01/12 14:05:10] [ info] [storage] version=1.0.6, initializing...
-[2021/01/12 14:05:10] [ info] [storage] in-memory
-[2021/01/12 14:05:10] [ info] [storage] normal synchronization mode, checksum disabled, max_chunks_up=128
-[2021/01/12 14:05:11] [ info] [input:systemd:systemd.1] seek_cursor=s=f34691953f354fc19dbd06139503c160;i=156... OK
-[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] https=1 host=kubernetes.default.svc port=443
-[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] local POD info OK
-[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] testing connectivity with API server...
-[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] API server connectivity OK
-[2021/01/12 14:05:11] [ info] [output:syslog:syslog.0] setup done for vrli.jarvis.lab:514
-[2021/01/12 14:05:11] [ info] [http_server] listen iface=0.0.0.0 tcp_port=2020
-[2021/01/12 14:05:11] [ info] [sp] stream processor started
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl logs -n fluent-bit fluent-bit-dd4ql
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Fluent Bit v1.6.9
+</span></span><span class="line"><span class="cl">* Copyright (C) 2019-2020 The Fluent Bit Authors
+</span></span><span class="line"><span class="cl">* Copyright (C) 2015-2018 Treasure Data
+</span></span><span class="line"><span class="cl">* Fluent Bit is a CNCF sub-project under the umbrella of Fluentd
+</span></span><span class="line"><span class="cl">* https://fluentbit.io
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:10] [ info] [engine] started (pid=1)
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:10] [ info] [storage] version=1.0.6, initializing...
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:10] [ info] [storage] in-memory
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:10] [ info] [storage] normal synchronization mode, checksum disabled, max_chunks_up=128
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [input:systemd:systemd.1] seek_cursor=s=f34691953f354fc19dbd06139503c160;i=156... OK
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] https=1 host=kubernetes.default.svc port=443
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] local POD info OK
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] testing connectivity with API server...
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] API server connectivity OK
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [output:syslog:syslog.0] setup done for vrli.jarvis.lab:514
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [http_server] listen iface=0.0.0.0 tcp_port=2020
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [sp] stream processor started
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="what-vrealize-log-insight-shows">What vRealize Log Insight shows</h2>
 <p>The log output from the Fluent Bit pods itself looks promising. Now let&rsquo;s check what vRLI has to offer. Login and check the <code>Hosts</code> section under <code>Administration</code>:</p>
@@ -582,38 +582,38 @@ Fluent Bit v1.6.9
 <li><a href="https://docs.vmware.com/en/vRealize-Log-Insight/8.2/log-insight-administration-guide.pdf" target="_blank" rel="noopener noreferrer">Supported RFC&rsquo;s LogInsight</a></li>
 <li><a href="https://rubular.com/r/tjUt3Awgg4" target="_blank" rel="noopener noreferrer">CRI Website</a></li>
 </ul>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><a href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" target="_blank" rel="noopener noreferrer">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p><a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreferrer">cAdvisor</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
+<li id="fn:3">
 <p><a href="https://en.wikipedia.org/wiki/Symbol" target="_blank" rel="noopener noreferrer">Symbols</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
+<li id="fn:4">
 <p><a href="https://en.wikipedia.org/wiki/Homing_pigeon" target="_blank" rel="noopener noreferrer">Carrier Pigeon</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p><a href="https://en.wikipedia.org/wiki/Hummingbird" target="_blank" rel="noopener noreferrer">Hummingbird</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:6" role="doc-endnote">
+<li id="fn:6">
 <p><a href="https://www.fluentd.org/plugins/all" target="_blank" rel="noopener noreferrer">Fluentd - List of All Plugins</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:7" role="doc-endnote">
+<li id="fn:7">
 <p><a href="https://12factor.net/" target="_blank" rel="noopener noreferrer">Twelve-Factor App</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:8" role="doc-endnote">
+<li id="fn:8">
 <p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/" target="_blank" rel="noopener noreferrer">Kubernetes DaemonSet</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:9" role="doc-endnote">
+<li id="fn:9">
 <p><a href="https://containerd.io/" target="_blank" rel="noopener noreferrer">Containerd Homepage</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section></div><div class="post-footer" id="post-footer">
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -646,7 +646,7 @@ Fluent Bit v1.6.9
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

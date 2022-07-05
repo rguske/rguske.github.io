@@ -137,11 +137,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls images
-
-REPOSITORY                TAG               IMAGE ID              CREATED                SIZE
-vmwarecna/nginx           latest            2492b68e515c          <span class="m">3</span> years ago            93.5MB
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker -H 192.168.100.222:2376 --tls images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">REPOSITORY                TAG               IMAGE ID              CREATED                SIZE
+</span></span><span class="line"><span class="cl">vmwarecna/nginx           latest            2492b68e515c          <span class="m">3</span> years ago            93.5MB
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Alright! This was successful and by runnig the following command, the VIC Engine will deploy a Nginx Container-VM with 512MB vRAM (<code>-m</code>) which will listen to port (<code>-p</code>) 8080.</p>
 <div class="highlight"><div class="chroma">
@@ -149,8 +149,8 @@ vmwarecna/nginx           latest            2492b68e515c          <span class="m
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls run --name nginx1 -m 512M -d -p 8080:80 vmwarecna/nginx
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker -H 192.168.100.222:2376 --tls run --name nginx1 -m 512M -d -p 8080:80 vmwarecna/nginx
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Let´s check if our container is up and running. First in vCenter:</p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180831_125134.jpg">
@@ -168,8 +168,8 @@ vmwarecna/nginx           latest            2492b68e515c          <span class="m
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls ps -a
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker -H 192.168.100.222:2376 --tls ps -a
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -179,11 +179,11 @@ vmwarecna/nginx           latest            2492b68e515c          <span class="m
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker -H 192.168.100.222:2376 --tls ps -a
-
-CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          PORTS        NAMES
-1ce3a5a70099    nginx    <span class="s2">&#34;nginx -g daemon off;&#34;</span>    Up 1m     192.168.100.2:8080-&gt;80/tcp   nginx1
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker -H 192.168.100.222:2376 --tls ps -a
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          PORTS        NAMES
+</span></span><span class="line"><span class="cl">1ce3a5a70099    nginx    <span class="s2">&#34;nginx -g daemon off;&#34;</span>    Up 1m     192.168.100.2:8080-&gt;80/tcp   nginx1
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Just like any other Container Host, virtual or physical, you´ll reach your container via the Container Host IP-Address and port. I intended to show the same in my example before we configure a dedicated Container Network afterwards. We can reach the Nginx Web Server site via the VCH IP-Address and port 8080.</p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180617_112351.jpg">
@@ -201,8 +201,8 @@ CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          POR
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.222:2376
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span>192.168.100.222:2376
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>After we´ve exported the host, we can go the classical way and use commands like: <code>docker pull</code>, <code>docker images</code>, <code>docker ps -a</code> etc. To get a complete list of all available and supported docker commands you´ve to go here:</p>
 <p><a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_app_dev/container_operations.html" target="_blank">VIC - Supported Docker Commands</a></p>
@@ -218,12 +218,12 @@ CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          POR
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin inspect <span class="se">\
-</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
-</span><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
-</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
-</span><span class="se"></span>--name vch02
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin inspect <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name vch02
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The output will show us the internal ID which is in my case <em>vm-212</em>:</p>
 <div class="highlight"><div class="chroma">
@@ -255,32 +255,32 @@ CONTAINER ID    IMAGE    COMMAND                   CREATED   STATUS          POR
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">INFO[0008] ### Inspecting VCH ####
-INFO[0008] Validating target
-INFO[0009]
-INFO[0009] VCH ID: VirtualMachine:vm-212
-INFO[0009]
-INFO[0009] Installer version: v1.4.0-18893-6c385b0
-INFO[0009] VCH version: v1.4.0-18893-6c385b0
-INFO[0009]
-INFO[0009] VCH upgrade status:
-INFO[0009] Installer has same version as VCH
-INFO[0009] No upgrade available with this installer version
-WARN[0009] Unable to identify address acceptable to host certificate, using assigned client IP as host address.
-INFO[0009]
-INFO[0009] VCH Admin Portal:
-INFO[0009] https://192.168.100.222:2378
-INFO[0009]
-INFO[0009] Published ports can be reached at:
-INFO[0009] 192.168.100.222
-INFO[0009]
-INFO[0009] Docker environment variables:
-INFO[0009] DOCKER_HOST=192.168.100.222:2376
-INFO[0009]
-INFO[0009] Connect to docker:
-INFO[0009] docker -H 192.168.100.222:2376 --tls info
-INFO[0009] Completed successfully
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">INFO[0008] ### Inspecting VCH ####
+</span></span><span class="line"><span class="cl">INFO[0008] Validating target
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] VCH ID: VirtualMachine:vm-212
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] Installer version: v1.4.0-18893-6c385b0
+</span></span><span class="line"><span class="cl">INFO[0009] VCH version: v1.4.0-18893-6c385b0
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] VCH upgrade status:
+</span></span><span class="line"><span class="cl">INFO[0009] Installer has same version as VCH
+</span></span><span class="line"><span class="cl">INFO[0009] No upgrade available with this installer version
+</span></span><span class="line"><span class="cl">WARN[0009] Unable to identify address acceptable to host certificate, using assigned client IP as host address.
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] VCH Admin Portal:
+</span></span><span class="line"><span class="cl">INFO[0009] https://192.168.100.222:2378
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] Published ports can be reached at:
+</span></span><span class="line"><span class="cl">INFO[0009] 192.168.100.222
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] Docker environment variables:
+</span></span><span class="line"><span class="cl">INFO[0009] DOCKER_HOST=192.168.100.222:2376
+</span></span><span class="line"><span class="cl">INFO[0009]
+</span></span><span class="line"><span class="cl">INFO[0009] Connect to docker:
+</span></span><span class="line"><span class="cl">INFO[0009] docker -H 192.168.100.222:2376 --tls info
+</span></span><span class="line"><span class="cl">INFO[0009] Completed successfully
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Okay, now that we have the ID we can continue with adding the new container network by using <code>vic-machine configure</code>:</p>
 <div class="highlight"><div class="chroma">
@@ -297,17 +297,17 @@ INFO[0009] Completed successfully
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">./vic-machine-darwin configure <span class="se">\
-</span><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
-</span><span class="se"></span>--user adm.jarvis@lab.jarvis.local <span class="se">\
-</span><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
-</span><span class="se"></span>--id vm-212 <span class="se">\
-</span><span class="se"></span>--container-network vic-container:vic-container-network <span class="se">\
-</span><span class="se"></span>--container-network-gateway vic-container:192.168.100.1/24 <span class="se">\
-</span><span class="se"></span>--container-network-ip-range vic-container:192.168.100.0/24 <span class="se">\
-</span><span class="se"></span>--container-network-dns vic-container:192.168.100.80 <span class="se">\
-</span><span class="se"></span>--timeout 5m
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin configure <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--user adm.jarvis@lab.jarvis.local <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--id vm-212 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--container-network vic-container:vic-container-network <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--container-network-gateway vic-container:192.168.100.1/24 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--container-network-ip-range vic-container:192.168.100.0/24 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--container-network-dns vic-container:192.168.100.80 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--timeout 5m
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>I´ve used the option <code>--timeout 5m</code> because I ran in a timeout without it. I´m pretty sure this was performance related to my nested environment. But anyway! The configuration was successful and we can validate it with <code>vic-machine inspect</code>:</p>
 <div class="highlight"><div class="chroma">
@@ -315,8 +315,8 @@ INFO[0009] Completed successfully
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker --tls inspect vic-container-network
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker --tls inspect vic-container-network
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -347,32 +347,32 @@ INFO[0009] Completed successfully
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">[</span>
-    <span class="p">{</span>
-        <span class="nt">&#34;Name&#34;</span><span class="p">:</span> <span class="s2">&#34;vic-container-network&#34;</span><span class="p">,</span>
-        <span class="nt">&#34;Id&#34;</span><span class="p">:</span> <span class="s2">&#34;a6d0296afcace305048480244cca65564708a6dec474eb7d7a865593afdb593b&#34;</span><span class="p">,</span>
-        <span class="nt">&#34;Created&#34;</span><span class="p">:</span> <span class="s2">&#34;2018-07-12T22:11:39.685754355Z&#34;</span><span class="p">,</span>
-        <span class="nt">&#34;Scope&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
-        <span class="nt">&#34;Driver&#34;</span><span class="p">:</span> <span class="s2">&#34;external&#34;</span><span class="p">,</span>
-        <span class="nt">&#34;EnableIPv6&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="nt">&#34;IPAM&#34;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&#34;Driver&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
-            <span class="nt">&#34;Options&#34;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="nt">&#34;Config&#34;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="nt">&#34;Subnet&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.0/24&#34;</span><span class="p">,</span>
-                    <span class="nt">&#34;Gateway&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.1&#34;</span>
-                <span class="p">}</span>
-            <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="nt">&#34;Internal&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="nt">&#34;Attachable&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="nt">&#34;Containers&#34;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="nt">&#34;Options&#34;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="nt">&#34;Labels&#34;</span><span class="p">:</span> <span class="p">{}</span>
-    <span class="p">}</span>
-<span class="p">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Name&#34;</span><span class="p">:</span> <span class="s2">&#34;vic-container-network&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Id&#34;</span><span class="p">:</span> <span class="s2">&#34;a6d0296afcace305048480244cca65564708a6dec474eb7d7a865593afdb593b&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Created&#34;</span><span class="p">:</span> <span class="s2">&#34;2018-07-12T22:11:39.685754355Z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Scope&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Driver&#34;</span><span class="p">:</span> <span class="s2">&#34;external&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;EnableIPv6&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;IPAM&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;Driver&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;Options&#34;</span><span class="p">:</span> <span class="p">{},</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;Config&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;Subnet&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.0/24&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&#34;Gateway&#34;</span><span class="p">:</span> <span class="s2">&#34;192.168.100.1&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Internal&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Attachable&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Containers&#34;</span><span class="p">:</span> <span class="p">{},</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Options&#34;</span><span class="p">:</span> <span class="p">{},</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;Labels&#34;</span><span class="p">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>At the end we need to validate the functionality as well and we´ll deploy a new Nginx but this time with the dedicated Container Network <em>vic-container-network</em> and without declaring the port.</p>
 <div class="highlight"><div class="chroma">
@@ -380,8 +380,8 @@ INFO[0009] Completed successfully
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker --tls run --name nginx3 --net vic-container-network vmwarecna/nginx
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker --tls run --name nginx3 --net vic-container-network vmwarecna/nginx
+</span></span></code></pre></td></tr></table>
 </div>
 </div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180713_122610.jpg">
         <img
@@ -401,9 +401,9 @@ INFO[0009] Completed successfully
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">docker --tls pull cedricbl/world-cup-2018-cli-dashboard <span class="o">&amp;&amp;</span> <span class="se">\
-</span><span class="se"></span>docker --tls run --name Worldcup2018 -ti -e <span class="nv">TZ</span><span class="o">=</span>Europe/Berlin cedricbl/world-cup-2018-cli-dashboard
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker --tls pull cedricbl/world-cup-2018-cli-dashboard <span class="o">&amp;&amp;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>docker --tls run --name Worldcup2018 -ti -e <span class="nv">TZ</span><span class="o">=</span>Europe/Berlin cedricbl/world-cup-2018-cli-dashboard
+</span></span></code></pre></td></tr></table>
 </div>
 </div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180713_113206.jpg">
         <img
@@ -453,7 +453,7 @@ INFO[0009] Completed successfully
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

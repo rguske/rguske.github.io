@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/"
-        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2657 ,
+        },"genre": "posts","keywords": "July2020, Harbor, Helm, Kubernetes, Tanzu, TKG, vSphere","wordcount":  2749 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg\/","datePublished": "2020-07-21T15:30:38+02:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2657 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-21">2020-07-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2749 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;13 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -214,18 +214,18 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Logged in successfully.
-
-You have access to the following contexts:
-   172.25.16.1
-   harbor-on-tkg
-   veba
-
-If the context you wish to use is not in this list, you may need to try
-logging in again later, or contact your cluster administrator.
-
-To change context, use <span class="sb">`</span>kubectl config use-context &lt;workload name&gt;<span class="sb">`</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Logged in successfully.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You have access to the following contexts:
+</span></span><span class="line"><span class="cl">   172.25.16.1
+</span></span><span class="line"><span class="cl">   harbor-on-tkg
+</span></span><span class="line"><span class="cl">   veba
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If the context you wish to use is not in this list, you may need to try
+</span></span><span class="line"><span class="cl">logging in again later, or contact your cluster administrator.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To change context, use <span class="sb">`</span>kubectl config use-context &lt;workload name&gt;<span class="sb">`</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The context <code>harbor-on-tkg</code>, which was automatically created during the vSphere Namespace creation, is showing up and will be used for our next step. Change the context by executing:</p>
 <p><code>kubectl config use-context harbor-on-tkg</code></p>
@@ -251,24 +251,24 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">run.tanzu.vmware.com/v1alpha1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">TanzuKubernetesCluster</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">distribution</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l">v1.17.7</span><span class="w">
-</span><span class="w">  </span><span class="nt">topology</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">controlPlane</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-small</span><span class="w">
-</span><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
-</span><span class="w">    </span><span class="nt">workers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-medium</span><span class="w">
-</span><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">run.tanzu.vmware.com/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">TanzuKubernetesCluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-on-tkg</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">distribution</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l">v1.17.7</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">topology</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">controlPlane</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-small</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">workers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-medium</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt1-r1</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>A few words to the parameters <code>version</code>, <code>class</code> and <code>storageClass</code>. The available Kubernetes versions depend on which versions are provided by VMware through the Subscribed Content Library. You can verify which versions are available by executing <code>kubectl get virtualmachineimages</code> which in turn will show you e.g.:</p>
 <div class="highlight"><div class="chroma">
@@ -280,12 +280,12 @@ To change context, use <span class="sb">`</span>kubectl config use-context &lt;w
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                                                         AGE
-ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd    83d
-ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c    8d
-ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7   13h
-ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466    13h
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                                                         AGE
+</span></span><span class="line"><span class="cl">ob-15957779-photon-3-k8s-v1.16.8---vmware.1-tkg.3.60d2ffd    83d
+</span></span><span class="line"><span class="cl">ob-16466772-photon-3-k8s-v1.17.7---vmware.1-tkg.1.154236c    8d
+</span></span><span class="line"><span class="cl">ob-16545581-photon-3-k8s-v1.16.12---vmware.1-tkg.1.da7afe7   13h
+</span></span><span class="line"><span class="cl">ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466    13h
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>v1.17.7</code> is the version I&rsquo;ve picked for my deployment. The next one is <code>class</code>. You can choose between two types of Virtual Machine Classes to define the virtual hardware settings as well as the requests and limits on those. Just type <code>kubectl get virtualmachineclasses</code> to let you show the available classes.</p>
 <div class="highlight"><div class="chroma">
@@ -303,18 +303,18 @@ ob-16551547-photon-3-k8s-v1.17.8---vmware.1-tkg.1.5417466    13h
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                 AGE
-best-effort-large    90d
-best-effort-medium   90d
-best-effort-small    90d
-best-effort-xlarge   90d
-best-effort-xsmall   90d
-guaranteed-large     90d
-guaranteed-medium    90d
-guaranteed-small     90d
-guaranteed-xlarge    90d
-guaranteed-xsmall    90d
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                 AGE
+</span></span><span class="line"><span class="cl">best-effort-large    90d
+</span></span><span class="line"><span class="cl">best-effort-medium   90d
+</span></span><span class="line"><span class="cl">best-effort-small    90d
+</span></span><span class="line"><span class="cl">best-effort-xlarge   90d
+</span></span><span class="line"><span class="cl">best-effort-xsmall   90d
+</span></span><span class="line"><span class="cl">guaranteed-large     90d
+</span></span><span class="line"><span class="cl">guaranteed-medium    90d
+</span></span><span class="line"><span class="cl">guaranteed-small     90d
+</span></span><span class="line"><span class="cl">guaranteed-xlarge    90d
+</span></span><span class="line"><span class="cl">guaranteed-xsmall    90d
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>kubectl describe virtualmachineclasses best-effort-medium</code> for example gives you a detailed output of the specifications of a specific Virtual Machine Class.</p>
 <p>Also very important is to specify the <code>storageClass</code>. You defined it during the vSphere Namespace creation. If you cannot exactly remember which class you have defined&hellip;you are also not logged in into the vSphere Client&hellip;you feel lazy&hellip;just type <code>kubectl describe ns harbor-on-tkg</code> and get the desired information back.</p>
@@ -338,23 +338,23 @@ guaranteed-xsmall    90d
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">Name:         harbor-on-tkg
-Labels:       <span class="nv">vSphereClusterID</span><span class="o">=</span>domain-c7
-Annotations:  ncp/extpoolid: domain-c7:a4b59b96-9e94-4158-95ff-e1dfeb58c6bf-ippool-172-25-64-1-172-25-127-254
-              ncp/snat_ip: 172.25.88.14
-              ncp/subnet-0: 10.244.0.240/28
-              vmware-system-resource-pool: resgroup-11035
-              vmware-system-vm-folder: group-v11036
-Status:       Active
-
-Resource Quotas
- Name:                                                 harbor-on-tkg-storagequota
- Resource                                              Used  Hard
- --------                                              ---   ---
- ftt1-r1.storageclass.storage.k8s.io/requests.storage  <span class="m">0</span>     <span class="m">9223372036854775807</span>
-
-No resource limits.
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Name:         harbor-on-tkg
+</span></span><span class="line"><span class="cl">Labels:       <span class="nv">vSphereClusterID</span><span class="o">=</span>domain-c7
+</span></span><span class="line"><span class="cl">Annotations:  ncp/extpoolid: domain-c7:a4b59b96-9e94-4158-95ff-e1dfeb58c6bf-ippool-172-25-64-1-172-25-127-254
+</span></span><span class="line"><span class="cl">              ncp/snat_ip: 172.25.88.14
+</span></span><span class="line"><span class="cl">              ncp/subnet-0: 10.244.0.240/28
+</span></span><span class="line"><span class="cl">              vmware-system-resource-pool: resgroup-11035
+</span></span><span class="line"><span class="cl">              vmware-system-vm-folder: group-v11036
+</span></span><span class="line"><span class="cl">Status:       Active
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Resource Quotas
+</span></span><span class="line"><span class="cl"> Name:                                                 harbor-on-tkg-storagequota
+</span></span><span class="line"><span class="cl"> Resource                                              Used  Hard
+</span></span><span class="line"><span class="cl"> --------                                              ---   ---
+</span></span><span class="line"><span class="cl"> ftt1-r1.storageclass.storage.k8s.io/requests.storage  <span class="m">0</span>     <span class="m">9223372036854775807</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">No resource limits.
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Enough summarized</strong> 😉 ! <code>kubectl apply -f tkg-cluster.yml</code> and let vSphere do it&rsquo;s magic. An increased count of <strong>1</strong> will show up on the Tanzu Kubernetes tile at the vSphere Namespace page (<em>Figure IV</em>).</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" title="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" data-thumbnail="/img/posts/202007_harborontkg/CapturFiles-20200717_085315.jpg" data-sub-html="<h2>Figure IV: Deployed Tanzu Kubernetes Grid cluster</h2>">
@@ -374,9 +374,9 @@ No resource limits.
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME            CONTROL PLANE   WORKER   DISTRIBUTION                     AGE   PHASE
-harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span>        v1.17.7+vmware.1-tkg.1.154236c   26m   running
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME            CONTROL PLANE   WORKER   DISTRIBUTION                     AGE   PHASE
+</span></span><span class="line"><span class="cl">harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span>        v1.17.7+vmware.1-tkg.1.154236c   26m   running
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="installing-harbor-via-helm">Installing Harbor via <code>Helm</code></h2>
 <h3 id="login-into-the-tkg-cluster">Login into the TKG Cluster</h3>
@@ -401,23 +401,23 @@ harbor-on-tkg   <span class="m">1</span>               <span class="m">1</span> 
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                      STATUS   AGE
-default                   Active   90d
-ghost-app                 Active   4d8h
-harbor-on-tkg             Active   4d4h
-kube-node-lease           Active   90d
-kube-public               Active   90d
-kube-system               Active   90d
-veba                      Active   35d
-vmware-system-capw        Active   90d
-vmware-system-csi         Active   90d
-vmware-system-kubeimage   Active   90d
-vmware-system-nsx         Active   90d
-vmware-system-registry    Active   90d
-vmware-system-tkg         Active   90d
-vmware-system-ucs         Active   90d
-vmware-system-vmop        Active   90d
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                      STATUS   AGE
+</span></span><span class="line"><span class="cl">default                   Active   90d
+</span></span><span class="line"><span class="cl">ghost-app                 Active   4d8h
+</span></span><span class="line"><span class="cl">harbor-on-tkg             Active   4d4h
+</span></span><span class="line"><span class="cl">kube-node-lease           Active   90d
+</span></span><span class="line"><span class="cl">kube-public               Active   90d
+</span></span><span class="line"><span class="cl">kube-system               Active   90d
+</span></span><span class="line"><span class="cl">veba                      Active   35d
+</span></span><span class="line"><span class="cl">vmware-system-capw        Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-csi         Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-kubeimage   Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-nsx         Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-registry    Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-tkg         Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-ucs         Active   90d
+</span></span><span class="line"><span class="cl">vmware-system-vmop        Active   90d
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Logout from the Supervisor Cluster with <code>kubectl vsphere logout</code> and login into the TKG cluster: <code>kubectl vsphere login --insecure-skip-tls-verify --vsphere-username jarvis@jarvis.lab --server=172.25.16.1 --tanzu-kubernetes-cluster-name harbor-on-tkg --tanzu-kubernetes-cluster-namespace harbor-on-tkg</code></p>
 <p>Enter <code>kubectl get ns</code> again to verify the established connection:</p>
@@ -433,15 +433,15 @@ vmware-system-vmop        Active   90d
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">NAME                           STATUS   AGE
-default                        Active   2d1h
-kube-node-lease                Active   2d1h
-kube-public                    Active   2d1h
-kube-system                    Active   2d1h
-vmware-system-auth             Active   2d1h
-vmware-system-cloud-provider   Active   2d1h
-vmware-system-csi              Active   2d1h
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                           STATUS   AGE
+</span></span><span class="line"><span class="cl">default                        Active   2d1h
+</span></span><span class="line"><span class="cl">kube-node-lease                Active   2d1h
+</span></span><span class="line"><span class="cl">kube-public                    Active   2d1h
+</span></span><span class="line"><span class="cl">kube-system                    Active   2d1h
+</span></span><span class="line"><span class="cl">vmware-system-auth             Active   2d1h
+</span></span><span class="line"><span class="cl">vmware-system-cloud-provider   Active   2d1h
+</span></span><span class="line"><span class="cl">vmware-system-csi              Active   2d1h
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>Let&rsquo;s turn our attention to Helm - The modern package manager</strong></p>
 <p>Helm helps us to define, deploy and upgrade applications easily. I&rsquo;m going to use Helm to deploy Harbor on the Tanzu Kubernetes Grid cluster.</p>
@@ -472,14 +472,14 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">helm install harbor bitnami/harbor \
---set harborAdminPassword=&#39;VMware1!&#39; \
---set global.storageClass=ftt1-r1 \
---set service.type=LoadBalancer \
---set externalURL=harbor-dev.jarvis.lab \
---set service.tls.commonName=harbor-dev.jarvis.lab \
--n harbor
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">helm install harbor bitnami/harbor \
+</span></span><span class="line"><span class="cl">--set harborAdminPassword=&#39;VMware1!&#39; \
+</span></span><span class="line"><span class="cl">--set global.storageClass=ftt1-r1 \
+</span></span><span class="line"><span class="cl">--set service.type=LoadBalancer \
+</span></span><span class="line"><span class="cl">--set externalURL=harbor-dev.jarvis.lab \
+</span></span><span class="line"><span class="cl">--set service.tls.commonName=harbor-dev.jarvis.lab \
+</span></span><span class="line"><span class="cl">-n harbor
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>I monitored the deployment progress by watching (<code>watch</code>) the command <code>kubectl get deployment -n harbor</code> and I became sceptical because nothing happened for a long time. Checking the events of my deployment <code>kubectl get events -n harbor</code> was the next logical step and the following <code>Message</code> immediately catched my attention:</p>
 <div class="details admonition failure open">
@@ -520,30 +520,30 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
-</span><span class="w"></span><span class="nt">rules</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="nt">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;podsecuritypolicies&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="nt">verbs</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s1">&#39;use&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span><span class="nt">resourceNames</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">vmware-system-privileged</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">all:psp:privileged</span><span class="w">
-</span><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
-</span><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
-</span><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Group</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">system:serviceaccounts</span><span class="w">
-</span><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;podsecuritypolicies&#39;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">verbs</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="s1">&#39;use&#39;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resourceNames</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">vmware-system-privileged</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">all:psp:privileged</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">psp:privileged</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Group</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">system:serviceaccounts</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="installing-harbor---2nd-attempt">Installing Harbor - 2nd attempt</h3>
 <p>Let&rsquo;s redo the Harbor deployment via <code>helm</code> again! By running <code>kubectl get pods -n harbor</code> you should see how every single Pod will &ldquo;pop up&rdquo; one by one and will end up in the status RUNNING.</p>
@@ -638,55 +638,55 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">48
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
-</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-dev.jarvis.lab/ghost/ghost:3.25.0</span><span class="w">
-</span><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Always</span><span class="w">
-</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
-</span><span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">url</span><span class="w">
-</span><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l">http://my-blog.corp.local</span><span class="w">
-</span><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/ghost/content</span><span class="w">
-</span><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
-</span><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
-</span><span class="w">        </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-dev.jarvis.lab/ghost/ghost:3.25.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">2368</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">url</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l">http://my-blog.corp.local</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/ghost/content</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">content</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="persistent-volume-claim---ghost-pvcyml">Persistent Volume Claim - <code>ghost-pvc.yml</code></h4>
 <div class="highlight"><div class="chroma">
@@ -705,19 +705,19 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="l">ReadWriteOnce</span><span class="w">
-</span><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">ftt0-r0</span><span class="w">
-</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">5Gi</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">blog-content</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">ReadWriteOnce</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">ftt0-r0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">5Gi</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><ol start="2">
 <li>Create a new vSphere Namespace called <code>ghost-demo-app</code> and configure it similar to the one for your TKG cluster.</li>
@@ -805,25 +805,25 @@ vmware-system-csi              Active   2d1h
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl get deployment -n ghost-demo-app
-NAME   READY   UP-TO-DATE   AVAILABLE   AGE
-blog   1/1     <span class="m">1</span>            <span class="m">1</span>           3h26m
-
-
-kubectl get svc -n ghost-demo-app
-NAME   TYPE           CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>        AGE
-blog   LoadBalancer   10.96.0.10   172.25.16.2   80:32604/TCP   3h26m
-
-
-kubectl get pvc -n ghost-demo-app
-NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-blog-content   Bound    pvc-ee93cb30-309e-4627-b7df-7c27213ea14b   5Gi        RWO            ftt0-r0        3h48m
-
-
-kubectl get pods -n ghost-demo-app
-NAME                   READY   STATUS    RESTARTS   AGE
-blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get deployment -n ghost-demo-app
+</span></span><span class="line"><span class="cl">NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">blog   1/1     <span class="m">1</span>            <span class="m">1</span>           3h26m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get svc -n ghost-demo-app
+</span></span><span class="line"><span class="cl">NAME   TYPE           CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>        AGE
+</span></span><span class="line"><span class="cl">blog   LoadBalancer   10.96.0.10   172.25.16.2   80:32604/TCP   3h26m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get pvc -n ghost-demo-app
+</span></span><span class="line"><span class="cl">NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+</span></span><span class="line"><span class="cl">blog-content   Bound    pvc-ee93cb30-309e-4627-b7df-7c27213ea14b   5Gi        RWO            ftt0-r0        3h48m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get pods -n ghost-demo-app
+</span></span><span class="line"><span class="cl">NAME                   READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Our demo application Ghost will be reachable via it’s external IP address which is automatically provided by the NSX Load Balancer Virtual Server (<em>Figure VIII</em>).</p>
 <div class="details admonition quote open">
@@ -902,7 +902,7 @@ blog-b68cddc4c-tckvp   1/1     Running   <span class="m">0</span>          3h26m
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

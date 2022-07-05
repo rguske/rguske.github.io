@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/"
-        },"genre": "posts","keywords": "November2020, vSphere, Kubernetes, Tanzu, TKG, HAProxy, Troubleshooting","wordcount":  1602 ,
+        },"genre": "posts","keywords": "November2020, vSphere, Kubernetes, Tanzu, TKG, HAProxy, Troubleshooting","wordcount":  1541 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">vSphere with Tanzu - Troubleshooting HAProxy deployment</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/troubleshooting/"><i class="far fa-folder fa-fw"></i>Troubleshooting</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw"></i>Open Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-23">2020-11-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1602 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-23">2020-11-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1541 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;8 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -353,15 +353,15 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">root@haproxy [ / ]# systemctl list-units --state=failed
-
-  UNIT                 LOAD   ACTIVE SUB    DESCRIPTION
-● anyip-routes.service loaded failed failed anyip-routes.service
-
-● haproxy.service      loaded failed failed HAProxy Load Balancer
-
-● route-tables.service loaded failed failed route-tables.service
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ / ]# systemctl list-units --state=failed
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  UNIT                 LOAD   ACTIVE SUB    DESCRIPTION
+</span></span><span class="line"><span class="cl">● anyip-routes.service loaded failed failed anyip-routes.service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">● haproxy.service      loaded failed failed HAProxy Load Balancer
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">● route-tables.service loaded failed failed route-tables.service
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Three services have failed to start. I&rsquo;m starting from the top with verifying the <code>anyip-routes.service</code>.</p>
 <div class="highlight"><div class="chroma">
@@ -383,22 +383,22 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">root@haproxy [ / ]# systemctl status anyip-routes.service
-
-● anyip-routes.service
-   Loaded: loaded (/etc/systemd/system/anyip-routes.service; enabled; vendor preset: enabled)
-   Active: failed (Result: exit-code) since Fri 2020-11-20 15:30:07 UTC; 3min 5s ago
-  Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)
-  Process: 777 ExecStartPre=/var/lib/vmware/anyiproutectl.sh up (code=exited, status=2)
-  Process: 776 ExecStartPre=/bin/mkdir -p /var/log/vmware (code=exited, status=0/SUCCESS)
-
-Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Starting anyip-routes.service...
-Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: adding route for 10.10.18.18/28
-Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: RTNETLINK answers: Invalid argument
-Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Control process exited, code=exited status=2
-Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Failed with result &#39;exit-code&#39;.
-Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.service.
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ / ]# systemctl status anyip-routes.service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">● anyip-routes.service
+</span></span><span class="line"><span class="cl">   Loaded: loaded (/etc/systemd/system/anyip-routes.service; enabled; vendor preset: enabled)
+</span></span><span class="line"><span class="cl">   Active: failed (Result: exit-code) since Fri 2020-11-20 15:30:07 UTC; 3min 5s ago
+</span></span><span class="line"><span class="cl">  Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)
+</span></span><span class="line"><span class="cl">  Process: 777 ExecStartPre=/var/lib/vmware/anyiproutectl.sh up (code=exited, status=2)
+</span></span><span class="line"><span class="cl">  Process: 776 ExecStartPre=/bin/mkdir -p /var/log/vmware (code=exited, status=0/SUCCESS)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Starting anyip-routes.service...
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: adding route for 10.10.18.18/28
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: RTNETLINK answers: Invalid argument
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Control process exited, code=exited status=2
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Failed with result &#39;exit-code&#39;.
+</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.service.
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>The mentioned script in this line <code>Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)</code> seems to do something and by reviewing it, I found the following hint to the configuration file location for the broken service.</p>
 <div class="highlight"><div class="chroma">
@@ -411,13 +411,13 @@ Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.serv
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>...<span class="o">]</span>
-
-<span class="c1"># The path to the config file used by this program.</span>
-<span class="nv">CONFIG_FILE</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CONFIG_FILE</span><span class="k">:-</span><span class="p">/etc/vmware/anyip-routes.cfg</span><span class="si">}</span><span class="s2">&#34;</span>
-
-<span class="o">[</span>...<span class="o">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The path to the config file used by this program.</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CONFIG_FILE</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CONFIG_FILE</span><span class="k">:-</span><span class="p">/etc/vmware/anyip-routes.cfg</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -434,18 +434,18 @@ Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.serv
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">root@haproxy [ /etc/vmware ]# cat anyip-routes.cfg
-
-#
-# Configuration file that contains a line-delimited list of CIDR values
-# that define the network ranges used to bind the load balancer&#39;s frontends
-# to virtual IP addresses.
-#
-# * Lines beginning with a comment character, #, are ignored
-# * This file is used by the anyip-routes service
-#
-10.10.18.18/28
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ /etc/vmware ]# cat anyip-routes.cfg
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl"># Configuration file that contains a line-delimited list of CIDR values
+</span></span><span class="line"><span class="cl"># that define the network ranges used to bind the load balancer&#39;s frontends
+</span></span><span class="line"><span class="cl"># to virtual IP addresses.
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl"># * Lines beginning with a comment character, #, are ignored
+</span></span><span class="line"><span class="cl"># * This file is used by the anyip-routes service
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">10.10.18.18/28
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Verifying the file and thus my made configuration finally brought me enlightenment. I changed it consequently from <code>10.10.18.18/28</code> to a valid Subnetwork range, which is the already mentioned <code>10.10.18.16/28</code> and rebooted the HAProxy appliance (<code>reboot</code>). Just restarting the service with <code>systemctl restart anyip-routes.service</code> does not apply all necessary changes.</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" data-sub-html="<h2>Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP</h2>">
@@ -476,20 +476,20 @@ Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.serv
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@jarvis.lab --server=10.10.18.19
-
-Password:
-Logged in successfully.
-
-You have access to the following contexts:
-   10.10.18.19
-   tkg-app
-
-If the context you wish to use is not in this list, you may need to try
-logging in again later, or contact your cluster administrator.
-
-To change context, use `kubectl config use-context &lt;workload name&gt;
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@jarvis.lab --server=10.10.18.19
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl">Logged in successfully.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">You have access to the following contexts:
+</span></span><span class="line"><span class="cl">   10.10.18.19
+</span></span><span class="line"><span class="cl">   tkg-app
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If the context you wish to use is not in this list, you may need to try
+</span></span><span class="line"><span class="cl">logging in again later, or contact your cluster administrator.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To change context, use `kubectl config use-context &lt;workload name&gt;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-sub-html="<h2>Figure IX: Validating Supervisor VIP reachability</h2>">
         <img
@@ -534,7 +534,7 @@ To change context, use `kubectl config use-context &lt;workload name&gt;
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.92.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
