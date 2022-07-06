@@ -189,7 +189,7 @@ Compliant :thumbs_up:
 
 A Knative `SinkBinding` decouples the event producer ("`subject`", i.e. kn-go-harbor-webhook) from the receiver ("`sink`", i.e. VEBA broker). With the following `SinkBinding`, Knative injects the address of the VEBA broker to the function.
 
-Create the `SinkBindung`:
+Create the `SinkBinding`:
 
 ```yaml
 kubectl -n vmware-functions create -f - <<EOF
@@ -374,7 +374,6 @@ spec:
   filter:
     attributes:
       type: com.vmware.harbor.push_artifact.v0
-      subject: admin
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
