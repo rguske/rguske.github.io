@@ -62,9 +62,11 @@ I hope this will change ...
 
 > Session from the tweet: **"Thinking Cloud Native, CloudEvents Future - Scott Nichols, Chainguard"** at KubeCon 2022 Europe :point_down: [Resources](#resources).
 
-For my specific use case with Harbor, I checked the open issue's on Github to see if someone had already raised the idea of adopting CloudEvents. Luckily, <i class='fab fa-github fa-fw'></i> issue [#10146](https://github.com/goharbor/harbor/issues/10146) brings the idea up. Give it a :thumbs_up: :wink:
+For my specific use case with Harbor, I checked the open issue's on Github to see if someone had already raised the idea of adopting CloudEvents.
 
-However, in a brainstorming session with [Michael](https://twitter.com/embano1), I got him hooked and he wrote a complete new function which transforms the incoming Harbor events into CloudEvents :boom:.
+Luckily, <i class='fab fa-github fa-fw'></i> issue [#10146](https://github.com/goharbor/harbor/issues/10146) brings the idea up. Give it a :thumbs_up: :wink:
+
+However, in a brainstorming session with [Michael](https://twitter.com/embano1), I got him hooked and he wrote a complete new webhook function which transforms the incoming Harbor events into CloudEvents :boom:.
 
 <center> {{< tweet user="embano1" id="1541387083515846658" >}} </center>
 
