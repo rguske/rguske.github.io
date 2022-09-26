@@ -138,7 +138,17 @@ This is not based on the fact that I have not done a `docker login` before, as t
 
 Following the official Docker documentation, this behavior is expected: <a href="https://docs.docker.com/engine/security/certificates/" target="_blank">Verify repository client with certificates</a>
 
-To solve this issue, I´ve created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.
+In order to retrieve the needed certificate information you can simply run the following `openssl` command:
+
+```shell
+export REGISTRY=harbor.jarvis.tanzu
+```
+
+```shell
+echo | openssl s_client -connect $REGISTRY:443 -showcerts
+```
+
+I´ve also created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.
 
 You can download the script [HERE](https://github.com/rguske/download-harbor-cert-script) and copy it via `scp` into your VEBA appliance.
 

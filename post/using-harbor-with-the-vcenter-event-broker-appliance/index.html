@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/"
-        },"genre": "posts","keywords": "March2020, VEBA, Harbor, FaaS","wordcount":  1237 ,
+        },"genre": "posts","keywords": "March2020, VEBA, Harbor, FaaS","wordcount":  1261 ,
         "url": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/","datePublished": "2020-03-23T22:00:36+01:00","dateModified": "2021-04-26T23:26:38+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Using Harbor with the VMware Event Broker Appliance</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw"></i>FaaS</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-03-23">2020-03-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1237 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-03-23">2020-03-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1261 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -352,7 +352,24 @@
     </div>
 <p>This is not based on the fact that I have not done a <code>docker login</code> before, as this is not necessary since we have made our project publicly available.</p>
 <p>Following the official Docker documentation, this behavior is expected: <a href="https://docs.docker.com/engine/security/certificates/" target="_blank">Verify repository client with certificates</a></p>
-<p>To solve this issue, I´ve created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.</p>
+<p>In order to retrieve the needed certificate information you can simply run the following <code>openssl</code> command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">REGISTRY</span><span class="o">=</span>harbor.jarvis.tanzu
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="p">|</span> openssl s_client -connect <span class="nv">$REGISTRY</span>:443 -showcerts
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I´ve also created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.</p>
 <p>You can download the script <a href="https://github.com/rguske/download-harbor-cert-script" target="_blank" rel="noopener noreferrer">HERE</a> and copy it via <code>scp</code> into your VEBA appliance.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
