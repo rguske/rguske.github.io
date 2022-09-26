@@ -5,18 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>Using Windows SMB Shares in Kubernetes - Robert Guske</title><meta name="description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Using Windows SMB Shares in Kubernetes" />
-<meta property="og:description" content="" />
+        <title>Using Windows SMB Shares in Kubernetes - Robert Guske</title><meta name="description" content="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><meta property="og:title" content="Using Windows SMB Shares in Kubernetes" />
+<meta property="og:description" content="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-25T11:21:00+02:00" />
-<meta property="article:modified_time" content="2022-07-03T19:58:34+02:00" />
+<meta property="article:modified_time" content="2022-09-25T21:10:40+02:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
 
 <meta name="twitter:title" content="Using Windows SMB Shares in Kubernetes"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:description" content="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -27,13 +27,13 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/using-windows-smb-shares-in-kubernetes\/"
-        },"genre": "posts","keywords": "Kubernetes, Storage, CSI, Windows","wordcount":  2828 ,
-        "url": "https:\/\/rguske.github.io\/post\/using-windows-smb-shares-in-kubernetes\/","datePublished": "2022-09-25T11:21:00+02:00","dateModified": "2022-07-03T19:58:34+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "Kubernetes, Storage, CSI, Windows","wordcount":  2830 ,
+        "url": "https:\/\/rguske.github.io\/post\/using-windows-smb-shares-in-kubernetes\/","datePublished": "2022-09-25T11:21:00+02:00","dateModified": "2022-09-25T21:10:40+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
-            },"description": ""
+            },"description": "Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."
     }
     </script></head>
     <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">('true' === 'true' && window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -104,7 +104,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Using Windows SMB Shares in Kubernetes</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/storage/"><i class="far fa-folder fa-fw"></i>Storage</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-09-25">2022-09-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2828 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-09-25">2022-09-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2830 words&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;14 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -113,7 +113,7 @@
         data-srcset="/img/csi-smb-cover.png, /img/csi-smb-cover.png 1.5x, /img/csi-smb-cover.png 2x"
         data-sizes="auto"
         alt="/img/csi-smb-cover.png"
-        title="/img/csi-smb-cover.png" /></div><div class="details toc" id="toc-static"  kept="">
+        title="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes." /></div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
                     <span><i class="details-icon fas fa-angle-right"></i></span>
@@ -139,6 +139,7 @@
         <li><a href="#3-validating-write-access">3. Validating Write-Access</a></li>
       </ul>
     </li>
+    <li><a href="#-recording-of-all-steps">🎥 Recording of all Steps</a></li>
     <li><a href="#resources">Resources</a></li>
   </ul>
 </nav></div>
@@ -446,8 +447,21 @@
 <li><a href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" target="_blank" rel="noopener noreferrer">Sharing Container Images using the Docker CLI or Carvel&rsquo;s imgpkg</a>.</li>
 </ul>
 <p>Once the images are available offline, you have to create an <code>imagePullSecret</code> in Kubernetes which has to be referenced accordingly in the manifest files.</p>
-<p><code>kubectl -n $NAMESPACE create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='$PASSWORD'</code></p>
-<p>To be referenced in <code>csi-smb-controller.yaml</code> and <code>csi-smb-node.yaml</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$NAMESPACE</span> create secret docker-registry harbor-creds <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-server<span class="o">=</span><span class="s1">&#39;harbor.jarvis.tanzu&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-username<span class="o">=</span><span class="s1">&#39;admin&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-password<span class="o">=</span><span class="s1">&#39;$PASSWORD&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>To be referenced in <code>csi-smb-controller.yaml</code> and <code>csi-smb-node.yaml</code>.</p>
 <p><strong>Snipped:</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1031,13 +1045,9 @@
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns <span class="nv">$TESTNS</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">namespace/smb-test created
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="1-create-smb-access-secret">1. Create SMB Access Secret</h3>
@@ -1067,13 +1077,26 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">USERNAME</span><span class="o">=</span><span class="s1">&#39;testuser&#39;</span> <span class="se">\
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">USER</span><span class="o">=</span><span class="s1">&#39;testuser&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">PASSWORD</span><span class="o">=</span><span class="s1">&#39;VMware1!&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">DOMAIN</span><span class="o">=</span><span class="s1">&#39;jarvis.tanzu&#39;</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><code>kubectl -n $TESTNS create secret generic smb-creds --from-literal username=$USERNAME --from-literal domain=$DOMAIN --from-literal password=$PASSWORD</code></p>
-<blockquote>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> create secret generic smb-creds <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">username</span><span class="o">=</span><span class="nv">$USER</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">domain</span><span class="o">=</span><span class="nv">$DOMAIN</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">password</span><span class="o">=</span><span class="nv">$PASSWORD</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p><strong>IMPORTANT!</strong> Securing your Kubernetes Secrets is recommended when using sensible data like your Active Directory credentials in production. Solutions like e.g. <a href="https://bitnami.com/stack/sealed-secrets" target="_blank" rel="noopener noreferrer">Sealed Secrets by Bitnami</a> or <a href="https://www.vaultproject.io/" target="_blank" rel="noopener noreferrer">Vault by HashiCorp</a> should be considered being used.</p>
 </blockquote>
 <h3 id="2-create-persistentvolume">2. Create PersistentVolume</h3>
@@ -1130,7 +1153,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolume</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pv-smb</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">smb-test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">$TESTNS</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
@@ -1196,7 +1219,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pvc-smb</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">smb-test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">$TESTNS</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
@@ -1230,9 +1253,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="3-validating-write-access">3. Validating Write-Access</h3>
-<p>In order to validate that we have access to the provided share on a Windows Fileserver, we&rsquo;ll create a simple <code>deployment</code> using the following nginx image <code>mcr.microsoft.com/oss/nginx/nginx:1.19.5</code> and write a file named <code>outfile</code></p>
-<p>(<code>set -euo pipefail; while true; do echo $(date) &gt;&gt; /mnt/smb/outfile; sleep 1; done</code>)</p>
-<p>to the mounted share.</p>
+<p>In order to validate that we have access to the provided share on a Windows Fileserver, we&rsquo;ll create a simple <code>deployment</code> using the following nginx image <code>mcr.microsoft.com/oss/nginx/nginx:1.19.5</code> and write a file named <code>outfile</code> to the mounted share.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1364,6 +1385,8 @@
             alt="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" />
     </a><figcaption class="image-caption">Figure I: Windows Fileserver File Creation</figcaption>
     </figure>
+<h2 id="-recording-of-all-steps">🎥 Recording of all Steps</h2>
+<script id="asciicast-AqZgIq3rZPDc0xPerTghb5TbX" src="https://asciinema.org/a/AqZgIq3rZPDc0xPerTghb5TbX.js" async></script>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/storage/volumes/#flexvolume" target="_blank" rel="noopener noreferrer">Kubernetes FlexVolumes (deprecated)</a></li>
@@ -1383,8 +1406,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-07-03&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/d82c972f90834f1fb573f15afab0ce858b08afce" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) d82c972f90834f1fb573f15afab0ce858b08afce: csi-smv-post adjustments">
-                                    <i class="fas fa-hashtag fa-fw"></i>d82c972</a></span>
+                <span>Updated on 2022-09-25&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/fd64385aaeeb29933828ee9519e15bb813858513" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) fd64385aaeeb29933828ee9519e15bb813858513: finished post smb in kubernetes">
+                                    <i class="fas fa-hashtag fa-fw"></i>fd64385</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -1393,7 +1416,7 @@
                             <a class="link-to-markdown" href="/post/using-windows-smb-shares-in-kubernetes/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-via="vmw_rguske" data-hashtags="Kubernetes,Storage,CSI,Windows"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description=""><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description=""><i class="fab fa-trello fa-fw"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-via="vmw_rguske" data-hashtags="Kubernetes,Storage,CSI,Windows"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-trello fa-fw"></i></a></span>
             </div>
         </div>
     </div>

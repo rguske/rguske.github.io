@@ -218,7 +218,12 @@ I've written a dedicated blog post about the topic how to make container-images 
 
 Once the images are available offline, you have to create an `imagePullSecret` in Kubernetes which has to be referenced accordingly in the manifest files.
 
-`kubectl -n $NAMESPACE create secret docker-registry harbor-creds --docker-server='harbor.jarvis.tanzu' --docker-username='admin' --docker-password='$PASSWORD'`
+```shell
+kubectl -n $NAMESPACE create secret docker-registry harbor-creds \
+--docker-server='harbor.jarvis.tanzu' \
+--docker-username='admin' \
+--docker-password='$PASSWORD'
+```
 
 To be referenced in `csi-smb-controller.yaml` and `csi-smb-node.yaml`.
 
@@ -535,8 +540,6 @@ export TESTNS=smb-test
 
 ```shell
 kubectl create ns $TESTNS
-
-namespace/smb-test created
 ```
 
 ### 1. Create SMB Access Secret
@@ -556,12 +559,17 @@ A [user-level authentication](https://learn.microsoft.com/en-us/windows/win32/fi
 Create the `secret`:
 
 ```shell
-export USERNAME='testuser' \
+export USER='testuser' \
 export PASSWORD='VMware1!' \
 export DOMAIN='jarvis.tanzu'
 ```
 
-`kubectl -n $TESTNS create secret generic smb-creds --from-literal username=$USERNAME --from-literal domain=$DOMAIN --from-literal password=$PASSWORD`
+```shell
+kubectl -n $TESTNS create secret generic smb-creds \
+--from-literal username=$USER \
+--from-literal domain=$DOMAIN \
+--from-literal password=$PASSWORD
+```
 
 > **IMPORTANT!** Securing your Kubernetes Secrets is recommended when using sensible data like your Active Directory credentials in production. Solutions like e.g. [Sealed Secrets by Bitnami](https://bitnami.com/stack/sealed-secrets) or [Vault by HashiCorp](https://www.vaultproject.io/) should be considered being used.
 
@@ -585,7 +593,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: pv-smb
-  namespace: smb-test
+  namespace: $TESTNS
 spec:
   storageClassName: ""
   capacity:
@@ -627,7 +635,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: pvc-smb
-  namespace: smb-test
+  namespace: $TESTNS
 spec:
   accessModes:
     - ReadWriteMany
@@ -653,11 +661,7 @@ persistentvolumeclaim/pvc-smb   Bound    pv-smb   50Gi       RWX                
 
 ### 3. Validating Write-Access
 
-In order to validate that we have access to the provided share on a Windows Fileserver, we'll create a simple `deployment` using the following nginx image `mcr.microsoft.com/oss/nginx/nginx:1.19.5` and write a file named `outfile`
-
-(`set -euo pipefail; while true; do echo $(date) >> /mnt/smb/outfile; sleep 1; done`) 
-
-to the mounted share.
+In order to validate that we have access to the provided share on a Windows Fileserver, we'll create a simple `deployment` using the following nginx image `mcr.microsoft.com/oss/nginx/nginx:1.19.5` and write a file named `outfile` to the mounted share.
 
 ```yaml
 kubectl -n $TESTNS create -f - <<EOF
@@ -728,6 +732,10 @@ drwxr-xr-x 1 root root  4096 Sep 25 17:51 ..
 Here we go!
 
 {{< image src="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" caption="Figure I: Windows Fileserver File Creation" src-s="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" class="center" >}}
+
+## :movie_camera: Recording of all Steps
+
+<script id="asciicast-AqZgIq3rZPDc0xPerTghb5TbX" src="https://asciinema.org/a/AqZgIq3rZPDc0xPerTghb5TbX.js" async></script>
 
 ## Resources
 
