@@ -4,13 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight - Robert Guske</title><meta name="description" content="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><meta property="og:title" content="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" />
+        <title>Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight - Robert Guske</title><meta name="Description" content="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><meta property="og:title" content="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" />
 <meta property="og:description" content="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-01-13T11:50:23+01:00" />
-<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" />
+<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -18,7 +17,9 @@
 <meta name="twitter:title" content="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"/>
 <meta name="twitter:description" content="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="next" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="next" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -36,7 +37,7 @@
             },"description": "A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">('true' === 'true' && window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -44,21 +45,20 @@
             <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw"></i>
-                </a>
-            </div>
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
         </div>
     </div>
 </header><header class="mobile" id="header-mobile">
@@ -75,37 +75,35 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw"></i>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
-</header>
-<div class="search-dropdown desktop">
-    <div id="search-dropdown-desktop"></div>
-</div>
-<div class="search-dropdown mobile">
-    <div id="search-dropdown-mobile"></div>
-</div>
-<main class="main">
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw"></i>VEBA</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw"></i>Kubernetes</a>&nbsp;<a href="/categories/logging/"><i class="far fa-folder fa-fw"></i>Logging</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw"></i>Open Source</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2092 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;10 minutes&nbsp;</div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/veba/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>VEBA</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>VMware</a>&nbsp;<a href="/categories/kubernetes/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Kubernetes</a>&nbsp;<a href="/categories/logging/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Logging</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open Source</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Cloud Native</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2092 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -113,10 +111,10 @@
         data-srcset="/img/veba_fluentbit_vrli_cover.jpg, /img/veba_fluentbit_vrli_cover.jpg 1.5x, /img/veba_fluentbit_vrli_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/veba_fluentbit_vrli_cover.jpg"
-        title="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight." /></div><div class="details toc" id="toc-static"  kept="">
+        title="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight." /></div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
@@ -143,11 +141,11 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
-<p>With the recent v0.5 release of the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreferrer">VMware Event Broker Appliance (VEBA)</a> project, the ability of deploying the core component, the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreferrer">VMware Event Router</a>, via a Helm chart to an existing Kubernetes cluster was introduced. <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreferrer">William Lam</a> introduced this and all the other great new features and enhancements in his corresponding <a href="https://www.virtuallyghetto.com/2020/12/vcenter-event-broker-appliance-veba-v0-5-0.html" target="_blank" rel="noopener noreferrer">blog post</a>. This earned very positive feedback from the community and opens even more doors in terms of flexibility as well as extensibility.</p>
+<p>With the recent v0.5 release of the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance (VEBA)</a> project, the ability of deploying the core component, the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreffer ">VMware Event Router</a>, via a Helm chart to an existing Kubernetes cluster was introduced. <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreffer ">William Lam</a> introduced this and all the other great new features and enhancements in his corresponding <a href="https://www.virtuallyghetto.com/2020/12/vcenter-event-broker-appliance-veba-v0-5-0.html" target="_blank" rel="noopener noreffer ">blog post</a>. This earned very positive feedback from the community and opens even more doors in terms of flexibility as well as extensibility.</p>
 <p>Speaking of which, extensibility&hellip;</p>
-<p>During the v0.5 pre-release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware <a href="https://www.vmware.com/products/vrealize-log-insight.html" target="_blank" rel="noopener noreferrer">vRealize Log Insight</a> or <a href="https://cloud.vmware.com/log-insight-cloud" target="_blank" rel="noopener noreferrer">vRealize Log Insight Cloud</a>. He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post <em>&ldquo;Monitoring the VMware Event Broker Appliance with vRealize Operations Manager&rdquo;</em><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, in which I&rsquo;m describing how I used cAdvisor<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to get resource usage and performance data from the various VEBA components and ultimately to monitor them.</p>
-<p>At this point, I have to be clear that I didn&rsquo;t used the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreferrer">VEBA appliance</a> this time. Instead, I used Helm charts to deploy every component like e.g. the mentioned Event Router or the Event Processor to my <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreferrer">Tanzu Kubernetes Grid - TKGs</a> cluster (also referred to as <em>Guestcluster</em>) running on VMware vSphere. However, I&rsquo;m considering to write a small follow-up article which will cover the Appliance variant.</p>
-<p>The Open Source projects <a href="https://www.fluentd.org/" target="_blank" rel="noopener noreferrer">Fluentd</a> and <a href="https://fluentbit.io/" target="_blank" rel="noopener noreferrer">Fluent Bit</a> can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with few or no dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.</p>
+<p>During the v0.5 pre-release team meeting, William came up with the idea to let VEBA sending logs to our log analysis solutions VMware <a href="https://www.vmware.com/products/vrealize-log-insight.html" target="_blank" rel="noopener noreffer ">vRealize Log Insight</a> or <a href="https://cloud.vmware.com/log-insight-cloud" target="_blank" rel="noopener noreffer ">vRealize Log Insight Cloud</a>. He asked me if I would do it and of course I found it a great idea. This post is a good addition to my previous post <em>&ldquo;Monitoring the VMware Event Broker Appliance with vRealize Operations Manager&rdquo;</em><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, in which I&rsquo;m describing how I used cAdvisor<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> to get resource usage and performance data from the various VEBA components and ultimately to monitor them.</p>
+<p>At this point, I have to be clear that I didn&rsquo;t used the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer ">VEBA appliance</a> this time. Instead, I used Helm charts to deploy every component like e.g. the mentioned Event Router or the Event Processor to my <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer ">Tanzu Kubernetes Grid - TKGs</a> cluster (also referred to as <em>Guestcluster</em>) running on VMware vSphere. However, I&rsquo;m considering to write a small follow-up article which will cover the Appliance variant.</p>
+<p>The Open Source projects <a href="https://www.fluentd.org/" target="_blank" rel="noopener noreffer ">Fluentd</a> and <a href="https://fluentbit.io/" target="_blank" rel="noopener noreffer ">Fluent Bit</a> can be leveraged for multi-platform log processing and log forwarding. For my use case with VEBA, my requirements on the solution were basically simple. It should be lightweight, fast and if possible, with few or no dependencies. Comparing both mentioned projects with each other, it brought me multiple times back to Fluent Bit, even besides the fact, that good content on how to integrate Fluentd with TKG already exist.</p>
 <h2 id="the-hummingbird-note-no-technical-relevance">The Hummingbird (Note: no technical relevance)</h2>
 <p>The power of symbols thrills me. It&rsquo;s that power that makes you think or remember a specific brand, a company or an event. Just think about the Kubernetes steering wheel for example. If you feel home in the cloud native space and you see a steering wheel in real life nowadays, you will probably think of Kubernetes. This is the tremendous power of symbols<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. That is why there are fields of study for Symbology and movies with famous actors who are playing characters like Robert Langdon 😉.</p>
 <figure><a class="lightgallery" href="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" title="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" data-thumbnail="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_055615.jpg" data-sub-html="<h2>Figure I: Project Logos Fluentd and Fluent Bit</h2>">
@@ -163,17 +161,17 @@
 <p>Now, if we look at the logos of both projects (<em>Figure I</em>), the maintainers did a great job in choosing a Carrier Pigeon<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> for Fluentd and a Hummingbird<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> for Fluent Bit. Fluentd supports an extensive library of over 1000 <sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> plugins to provide extended support and functionality for anything related to log and data management. A Carrier Pigeon is known for it&rsquo;s impressive performance e.g. in terms of distance covered&hellip;and it carries out data 😃💡.</p>
 <div class="details admonition note open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-pencil-alt fa-fw"></i>BTW<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>BTW<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">Fluentd  <i class='fab fa-github fa-fw'></i>-issue <a href="https://github.com/fluent/fluentd/issues/924" target="_blank" rel="noopener noreferrer">#924</a> from 2016 was about &ldquo;A Fluentd new logo proposal&rdquo; and is an intersting short read, why a change was requested and why it was important.</div>
+            <div class="admonition-content">Fluentd  <i class='fab fa-github fa-fw'></i>-issue <a href="https://github.com/fluent/fluentd/issues/924" target="_blank" rel="noopener noreffer ">#924</a> from 2016 was about &ldquo;A Fluentd new logo proposal&rdquo; and is an intersting short read, why a change was requested and why it was important.</div>
         </div>
     </div>
 <p>Hummingbirds in comparison to, are lightweight and PRETTY fast. They have wing-flapping rates between 12 and 80 beats per second (depending on their actual size). Fluent Bit is designed to perform fast and efficient with least amount of resource usage.</p>
 <p><em>From the official Fluent Bit homepage:</em></p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-quote-right fa-fw" aria-hidden="true"></i>Quote<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">Fluent Bit is designed with performance in mind: high throughput with low CPU and Memory usage.</div>
@@ -227,12 +225,12 @@
 </tr>
 </tbody>
 </table>
-<p><em>Source: <a href="https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit" target="_blank" rel="noopener noreferrer">Fluentd &amp; Fluent Bit</a></em></p>
+<p><em>Source: <a href="https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit" target="_blank" rel="noopener noreffer ">Fluentd &amp; Fluent Bit</a></em></p>
 <h2 id="logging-primitives">Logging Primitives</h2>
 <p>Before we start deploying and leveraging Fluent Bit to read and forward logs to VMware&rsquo;s vRealize Log Insight, I wanted to briefly explain or refer you to some of the logging primitives of Cloud Native Applications or Services itself as well as how Fluent Bit is and can be configured. In general the following applies:</p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-quote-right fa-fw" aria-hidden="true"></i>Quote<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p><em>By default, container engines such as Docker capture the standard output or error and leverage the JSON-file driver on each host to write messages to files. Docker maintains a separate log file for each container and stores it in the /var/log/containers directory of the Docker host. Annotation for each log entry consists of the following:</em></p>
@@ -241,14 +239,14 @@
 <li>Message origin - stdout or stderr</li>
 <li>Timestamp</li>
 </ul>
-<p><em>Source: <a href="https://tanzu.vmware.com/content/blog/the-big-easy-visualizing-logging-data-by-integrating-fluentd-and-vrealize-log-insight-with-vmware-pks" target="_blank" rel="noopener noreferrer">The Big Easy: Visualizing Logging Data by Integrating Fluentd and vRealize Log Insight with VMware PKS</a></em></p>
+<p><em>Source: <a href="https://tanzu.vmware.com/content/blog/the-big-easy-visualizing-logging-data-by-integrating-fluentd-and-vrealize-log-insight-with-vmware-pks" target="_blank" rel="noopener noreffer ">The Big Easy: Visualizing Logging Data by Integrating Fluentd and vRealize Log Insight with VMware PKS</a></em></p>
 </div>
         </div>
     </div>
-<p>Also, I found this good article during my research - <em><a href="https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/" target="_blank" rel="noopener noreferrer">Logging from Docker Containers to Elasticsearch with Fluent Bit</a></em> -  in which the author quoted the following statement from the Twelve-Factor App<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> website regarding <code>Logs</code>.</p>
+<p>Also, I found this good article during my research - <em><a href="https://kevcodez.de/posts/2019-08-10-fluent-bit-docker-logging-driver-elasticsearch/" target="_blank" rel="noopener noreffer ">Logging from Docker Containers to Elasticsearch with Fluent Bit</a></em> -  in which the author quoted the following statement from the Twelve-Factor App<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> website regarding <code>Logs</code>.</p>
 <div class="details admonition quote open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-quote-right fa-fw"></i>https://12factor.net/logs<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-quote-right fa-fw" aria-hidden="true"></i>https://12factor.net/logs<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><em>A twelve-factor app never concerns itself with routing or storage of its output stream. It should not attempt to write to or manage logfiles. Instead, each running process writes its event stream, unbuffered, to stdout. During local development, the developer will view this stream in the foreground of their terminal to observe the app’s behavior.</em></div>
@@ -259,7 +257,7 @@
 <div class="mermaid" id="id-1"></div>
 <p>To structure the collected data, Fluent Bit provides <code>Parsers</code> which can be used to convert the collected data into a structured format. Also, <code>Filters</code> are configurable to e.g. append additional information or to filter out unwanted log statements. Links to even more details can also be found in the resource section.</p>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>To get Fluent Bit in working state on your Kubernetes cluster, we do need a <code>ServiceAccount</code> with an assigned <code>ClusterRole</code> as well as with it&rsquo;s appropriate <code>ClusterRoleBinding</code>. We will deploy Fluent Bit as a Kubernetes DaemonSet<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> in a <code>Namespace</code> called <code>fluent-bit</code>. I&rsquo;ve created the following repository on <i class='fab fa-github fa-fw'></i> - <a href="https://github.com/rguske/fluent-bit-vmware-loginsight" target="_blank" rel="noopener noreferrer">rguske/fluent-bit-vmware-loginsight</a> - which you can <code>clone</code>, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).</p>
+<p>To get Fluent Bit in working state on your Kubernetes cluster, we do need a <code>ServiceAccount</code> with an assigned <code>ClusterRole</code> as well as with it&rsquo;s appropriate <code>ClusterRoleBinding</code>. We will deploy Fluent Bit as a Kubernetes DaemonSet<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup> in a <code>Namespace</code> called <code>fluent-bit</code>. I&rsquo;ve created the following repository on <i class='fab fa-github fa-fw'></i> - <a href="https://github.com/rguske/fluent-bit-vmware-loginsight" target="_blank" rel="noopener noreffer ">rguske/fluent-bit-vmware-loginsight</a> - which you can <code>clone</code>, make the appropriate adjustments to the files and apply everything easily onto your cluster. It contains the following four files which sequence of deplyoment can be identified based on the number at the beginning of the filename (except #4).</p>
 <ul>
 <li><code>1-tkg-fluent-bit-preps.yaml</code></li>
 <li><code>2-tkg-fluent-bit-configmap-cri.yaml</code></li>
@@ -351,8 +349,8 @@
 <p>Basically, it&rsquo;s not necessary to change the image for Fluent Bit but you could replace it with the one of your choice. I used the official Fluent Bit image which is at the time of writing this post version 1.6.9 -  <code>fluent/fluent-bit:1.6.9</code>. You could also use e.g. the VMware Fluent Bit Image in version 1.5.3: <code>registry.tkg.vmware.run/fluent-bit:v1.5.3_vmware.1</code>. I&rsquo;ve validated the functionality of both images during my tests.</p>
 <p>More images:</p>
 <ul>
-<li>Official: <a href="https://hub.docker.com/r/fluent/fluent-bit" target="_blank" rel="noopener noreferrer">https://hub.docker.com/r/fluent/fluent-bit</a></li>
-<li>Bitnami: <a href="https://hub.docker.com/r/bitnami/fluent-bit" target="_blank" rel="noopener noreferrer">https://hub.docker.com/r/bitnami/fluent-bit</a></li>
+<li>Official: <a href="https://hub.docker.com/r/fluent/fluent-bit" target="_blank" rel="noopener noreffer ">https://hub.docker.com/r/fluent/fluent-bit</a></li>
+<li>Bitnami: <a href="https://hub.docker.com/r/bitnami/fluent-bit" target="_blank" rel="noopener noreffer ">https://hub.docker.com/r/bitnami/fluent-bit</a></li>
 <li>VMware Registry: registry.tkg.vmware.run/fluent-bit:v1.5.3_vmware.1</li>
 </ul>
 <p>File <code>3-tkg-fluent-bit-ds.yaml</code>:</p>
@@ -514,7 +512,7 @@
 <hr>
 <div class="details admonition warning open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-exclamation-triangle fa-fw"></i>Warning<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>Warning<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">During my tests, I deleted the <code>filter-record</code> value <code>tkg_cluster</code> at some point in the Configmap which resulted in the following misbehavior - <em>Figure III</em>.</div>
@@ -544,7 +542,7 @@
     </a><figcaption class="image-caption">Figure IV : vRLI Interactive Analytics</figcaption>
     </figure>
 <h2 id="monitoring-function-invocation-count">Monitoring Function Invocation Count</h2>
-<p>Coming to the end of this post, I&rsquo;ve created a simple Dashboard which is showing the invocation count of two functions. Both functions were invoked on a <code>DrsVmPoweredOn</code> and <code>DrsVmPoweredOff</code> event. This is how the log output looks like for e.g. the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/powercli/tagging" target="_blank" rel="noopener noreferrer">PowerCLI tagging function</a> and the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/python/invoke-rest-api" target="_blank" rel="noopener noreferrer">Python restpost-fn</a>.</p>
+<p>Coming to the end of this post, I&rsquo;ve created a simple Dashboard which is showing the invocation count of two functions. Both functions were invoked on a <code>DrsVmPoweredOn</code> and <code>DrsVmPoweredOff</code> event. This is how the log output looks like for e.g. the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/powercli/tagging" target="_blank" rel="noopener noreffer ">PowerCLI tagging function</a> and the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/python/invoke-rest-api" target="_blank" rel="noopener noreffer ">Python restpost-fn</a>.</p>
 <figure><a class="lightgallery" href="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210112_095239.jpg" title="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210112_095239.jpg" data-thumbnail="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210112_095239.jpg" data-sub-html="<h2>Figure V: vRLI Dashboard Filters</h2>">
         <img
             class="lazyload"
@@ -569,94 +567,92 @@
 <p>Stay healthy and stay safe!</p>
 <h2 id="resources">Resources</h2>
 <ul>
-<li><a href="https://github.com/vmware/fluent-plugin-vmware-loginsight" target="_blank" rel="noopener noreferrer">Fluentd Log Insight Plugin</a></li>
-<li><a href="https://www.virtuallyghetto.com/2020/04/configure-log-forwarding-from-tanzu-kubernetes-grid-tkg-to-vrealize-log-insight-cloud.html" target="_blank" rel="noopener noreferrer">Configure log forwarding from Tanzu Kubernetes Grid (TKG) to vRealize Log Insight Cloud</a></li>
-<li><a href="https://vcommunique.blogspot.com/2020/11/introducing-vrealize-loginsight-cloud.html" target="_blank" rel="noopener noreferrer">Introducing vRealize LogInsight Cloud Helm Chart for Kubernetes Logs</a></li>
-<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-extensions-logging-fluentbit.html#http" target="_blank" rel="noopener noreferrer">Implementing Log Forwarding with Fluent Bit</a></li>
-<li><a href="https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file" target="_blank" rel="noopener noreferrer">Fluent Bit - Configuration File/ Configmap</a></li>
-<li><a href="https://docs.fluentbit.io/manual/pipeline/inputs" target="_blank" rel="noopener noreferrer">Fluent Bit - Input Plugins</a></li>
-<li><a href="https://github.com/fluent/fluent-bit/#input-plugins" target="_blank" rel="noopener noreferrer">Fluent Bit - Input Plugins Github</a></li>
-<li><a href="https://docs.fluentbit.io/manual/pipeline/outputs/" target="_blank" rel="noopener noreferrer">Fluent Bit - Output Plugins</a></li>
-<li><a href="https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file" target="_blank" rel="noopener noreferrer">Fluent Bit Log Level</a></li>
-<li><a href="https://docs.vmware.com/en/vRealize-Log-Insight/8.2/com.vmware.log-insight.administration.doc/GUID-14DBC90A-379A-4316-9D76-4850E08437A8.html" target="_blank" rel="noopener noreferrer">vRealize Log Insight - Ports</a></li>
-<li><a href="https://docs.vmware.com/en/vRealize-Log-Insight/8.2/log-insight-administration-guide.pdf" target="_blank" rel="noopener noreferrer">Supported RFC&rsquo;s LogInsight</a></li>
-<li><a href="https://rubular.com/r/tjUt3Awgg4" target="_blank" rel="noopener noreferrer">CRI Website</a></li>
+<li><a href="https://github.com/vmware/fluent-plugin-vmware-loginsight" target="_blank" rel="noopener noreffer ">Fluentd Log Insight Plugin</a></li>
+<li><a href="https://www.virtuallyghetto.com/2020/04/configure-log-forwarding-from-tanzu-kubernetes-grid-tkg-to-vrealize-log-insight-cloud.html" target="_blank" rel="noopener noreffer ">Configure log forwarding from Tanzu Kubernetes Grid (TKG) to vRealize Log Insight Cloud</a></li>
+<li><a href="https://vcommunique.blogspot.com/2020/11/introducing-vrealize-loginsight-cloud.html" target="_blank" rel="noopener noreffer ">Introducing vRealize LogInsight Cloud Helm Chart for Kubernetes Logs</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.2/vmware-tanzu-kubernetes-grid-12/GUID-extensions-logging-fluentbit.html#http" target="_blank" rel="noopener noreffer ">Implementing Log Forwarding with Fluent Bit</a></li>
+<li><a href="https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file" target="_blank" rel="noopener noreffer ">Fluent Bit - Configuration File/ Configmap</a></li>
+<li><a href="https://docs.fluentbit.io/manual/pipeline/inputs" target="_blank" rel="noopener noreffer ">Fluent Bit - Input Plugins</a></li>
+<li><a href="https://github.com/fluent/fluent-bit/#input-plugins" target="_blank" rel="noopener noreffer ">Fluent Bit - Input Plugins Github</a></li>
+<li><a href="https://docs.fluentbit.io/manual/pipeline/outputs/" target="_blank" rel="noopener noreffer ">Fluent Bit - Output Plugins</a></li>
+<li><a href="https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/configuration-file" target="_blank" rel="noopener noreffer ">Fluent Bit Log Level</a></li>
+<li><a href="https://docs.vmware.com/en/vRealize-Log-Insight/8.2/com.vmware.log-insight.administration.doc/GUID-14DBC90A-379A-4316-9D76-4850E08437A8.html" target="_blank" rel="noopener noreffer ">vRealize Log Insight - Ports</a></li>
+<li><a href="https://docs.vmware.com/en/vRealize-Log-Insight/8.2/log-insight-administration-guide.pdf" target="_blank" rel="noopener noreffer ">Supported RFC&rsquo;s LogInsight</a></li>
+<li><a href="https://rubular.com/r/tjUt3Awgg4" target="_blank" rel="noopener noreffer ">CRI Website</a></li>
 </ul>
 <div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn:1">
-<p><a href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" target="_blank" rel="noopener noreferrer">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" target="_blank" rel="noopener noreffer ">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2">
-<p><a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreferrer">cAdvisor</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreffer ">cAdvisor</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3">
-<p><a href="https://en.wikipedia.org/wiki/Symbol" target="_blank" rel="noopener noreferrer">Symbols</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Symbol" target="_blank" rel="noopener noreffer ">Symbols</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4">
-<p><a href="https://en.wikipedia.org/wiki/Homing_pigeon" target="_blank" rel="noopener noreferrer">Carrier Pigeon</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Homing_pigeon" target="_blank" rel="noopener noreffer ">Carrier Pigeon</a>&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5">
-<p><a href="https://en.wikipedia.org/wiki/Hummingbird" target="_blank" rel="noopener noreferrer">Hummingbird</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Hummingbird" target="_blank" rel="noopener noreffer ">Hummingbird</a>&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6">
-<p><a href="https://www.fluentd.org/plugins/all" target="_blank" rel="noopener noreferrer">Fluentd - List of All Plugins</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.fluentd.org/plugins/all" target="_blank" rel="noopener noreffer ">Fluentd - List of All Plugins</a>&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:7">
-<p><a href="https://12factor.net/" target="_blank" rel="noopener noreferrer">Twelve-Factor App</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://12factor.net/" target="_blank" rel="noopener noreffer ">Twelve-Factor App</a>&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:8">
-<p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/" target="_blank" rel="noopener noreferrer">Kubernetes DaemonSet</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/" target="_blank" rel="noopener noreffer ">Kubernetes DaemonSet</a>&#160;<a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:9">
-<p><a href="https://containerd.io/" target="_blank" rel="noopener noreferrer">Containerd Homepage</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://containerd.io/" target="_blank" rel="noopener noreffer ">Containerd Homepage</a>&#160;<a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-04-26&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/0319acd558942a83319f4b63c836dd5ad1f214c3" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 0319acd558942a83319f4b63c836dd5ad1f214c3: added a post description to every single post as well as website image for twitter">
-                                    <i class="fas fa-hashtag fa-fw"></i>0319acd</a></span>
-            </div>
-            <div class="post-info-license"></div>
-        </div>
+                <span>Updated on 2021-04-26&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/0319acd558942a83319f4b63c836dd5ad1f214c3" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 0319acd558942a83319f4b63c836dd5ad1f214c3: added a post description to every single post as well as website image for twitter">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>0319acd</a></span>
+            </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-via="vmw_rguske" data-hashtags="FluentBit,vRLI,Kubernetes,VEBA,Tanzu,TKG,OSS"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-trello fa-fw"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-via="vmw_rguske" data-hashtags="FluentBit,vRLI,Kubernetes,VEBA,Tanzu,TKG,OSS"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/fluentbit/">FluentBit</a>,&nbsp;<a href="/tags/vrli/">vRLI</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/tkg/">TKG</a>,&nbsp;<a href="/tags/oss/">OSS</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/fluentbit/">FluentBit</a>,&nbsp;<a href="/tags/vrli/">vRLI</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/tkg/">TKG</a>,&nbsp;<a href="/tags/oss/">OSS</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vsphere-with-tanzu-troubleshooting-haproxy/" class="prev" rel="prev" title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fas fa-angle-left fa-fw"></i>vSphere with Tanzu - Troubleshooting HAProxy deployment</a>
-            <a href="/post/vmware-vctl-kind-writing-configuration-failed/" class="next" rel="next" title="VMware vctl KinD - Writing configuration failed">VMware vctl KinD - Writing configuration failed<i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-troubleshooting-haproxy/" class="prev" rel="prev" title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu - Troubleshooting HAProxy deployment</a>
+            <a href="/post/vmware-vctl-kind-writing-configuration-failed/" class="next" rel="next" title="VMware vctl KinD - Writing configuration failed">VMware vctl KinD - Writing configuration failed<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw"></i>
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw"></i>
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.c74697cbf094b0b3067a5d8f0371e74671e1331b371ef3a3c7e291a17745ce93.css" integrity="sha256-x0aXy/CUsLMGel2PA3HnRnHhMxs3HvOjx&#43;KRoXdFzpM="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    L[ Source]\n    subgraph Inputs\n    A[ Standard Input ]\n    B[ Systemd ]\n    C[ Tail ]\n    D[ ... ]\n    end\n    E[ Fluent Bit ]\n    subgraph Outputs\n    F[ Standard Output ]\n    G[ Syslog ]\n    H[ Kafka ]\n    J[ ... ]\n    end\n    A \u0026 B \u0026 C --- E\n    E --- F \u0026 G \u0026 H\n    K[ Destination]\n    F \u0026 G \u0026 H --\u003e K\n    L --- A \u0026 B \u0026 C","id-2":"Robert Guske","id-3":"Robert Guske"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    L[ Source]\n    subgraph Inputs\n    A[ Standard Input ]\n    B[ Systemd ]\n    C[ Tail ]\n    D[ ... ]\n    end\n    E[ Fluent Bit ]\n    subgraph Outputs\n    F[ Standard Output ]\n    G[ Syslog ]\n    H[ Kafka ]\n    J[ ... ]\n    end\n    A \u0026 B \u0026 C --- E\n    E --- F \u0026 G \u0026 H\n    K[ Destination]\n    F \u0026 G \u0026 H --\u003e K\n    L --- A \u0026 B \u0026 C","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.480e58b2c2a8605d406f34667e92ff8f1ae50cfee5b653bead570f004839a983.js" integrity="sha256-SA5YssKoYF1AbzRmfpL/jxrlDP7ltlO+rVcPAEg5qYM="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

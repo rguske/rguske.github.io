@@ -4,13 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>Event-Driven Automation with Project Harbor and Knative - Robert Guske</title><meta name="description" content="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><meta property="og:title" content="Event-Driven Automation with Project Harbor and Knative" />
+        <title>Event-Driven Automation with Project Harbor and Knative - Robert Guske</title><meta name="Description" content="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><meta property="og:title" content="Event-Driven Automation with Project Harbor and Knative" />
 <meta property="og:description" content="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-07-04T12:00:54+02:00" />
-<meta property="article:modified_time" content="2022-07-06T09:20:25+02:00" />
+<meta property="article:modified_time" content="2022-07-06T09:20:25+02:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -18,7 +17,9 @@
 <meta name="twitter:title" content="Event-Driven Automation with Project Harbor and Knative"/>
 <meta name="twitter:description" content="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><link rel="prev" href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" /><link rel="next" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><link rel="prev" href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" /><link rel="next" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -36,7 +37,7 @@
             },"description": "The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I'm going to describe how ChatOps can be enabled using event-driven automation."
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">('true' === 'true' && window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -44,21 +45,20 @@
             <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw"></i>
-                </a>
-            </div>
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
         </div>
     </div>
 </header><header class="mobile" id="header-mobile">
@@ -75,37 +75,35 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw"></i>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
-</header>
-<div class="search-dropdown desktop">
-    <div id="search-dropdown-desktop"></div>
-</div>
-<div class="search-dropdown mobile">
-    <div id="search-dropdown-mobile"></div>
-</div>
-<main class="main">
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">Event-Driven Automation with Project Harbor and Knative</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw"></i>Cloud Native</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw"></i>FaaS</a>&nbsp;<a href="/categories/serverless/"><i class="far fa-folder fa-fw"></i>Serverless</a>&nbsp;<a href="/categories/event-driven/"><i class="far fa-folder fa-fw"></i>Event-Driven</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-07-04">2022-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2181 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;11 minutes&nbsp;</div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Event-Driven Automation with Project Harbor and Knative</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/vmware/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>VMware</a>&nbsp;<a href="/categories/cloud-native/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Cloud Native</a>&nbsp;<a href="/categories/faas/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>FaaS</a>&nbsp;<a href="/categories/serverless/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Serverless</a>&nbsp;<a href="/categories/event-driven/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Event-Driven</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-07-04">2022-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2181 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;11 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -113,10 +111,10 @@
         data-srcset="/img/harbor-webhook-function-cover.png, /img/harbor-webhook-function-cover.png 1.5x, /img/harbor-webhook-function-cover.png 2x"
         data-sizes="auto"
         alt="/img/harbor-webhook-function-cover.png"
-        title="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation." /></div><div class="details toc" id="toc-static"  kept="">
+        title="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation." /></div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
@@ -143,7 +141,7 @@
 </nav></div>
             </div><div class="content" id="content"><h2 id="webhooks-everywhere">Webhooks everywhere</h2>
 <p>Webhooks are very popular today. In a nutshell, webhooks are nothing but HTTP servers accepting <code>HTTP</code> requests. These requests are typically events. An event is an immutable fact of something that has happened. Therefore, events are normally written in past tense. Most webhooks accept JSON-encoded events.</p>
-<p><a href="https://goharbor.io/" target="_blank" rel="noopener noreferrer">Harbor</a> is a prominent open-source container registry. If you never heard of this project, check out my other posts (<a href="https://rguske.github.io/tags/harbor/" target="_blank" rel="noopener noreferrer">#harbor</a>). Luckily, Harbor also supports the webhook standard.</p>
+<p><a href="https://goharbor.io/" target="_blank" rel="noopener noreffer ">Harbor</a> is a prominent open-source container registry. If you never heard of this project, check out my other posts (<a href="https://rguske.github.io/tags/harbor/" target="_blank" rel="noopener noreffer ">#harbor</a>). Luckily, Harbor also supports the webhook standard.</p>
 <p>Let&rsquo;s take the example of someone deleting an image from the registry. Harbor generates the following <code>DELETE_ARTIFACT</code> event:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -195,22 +193,22 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><em>Source: <a href="https://goharbor.io/docs/latest/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreferrer">Harbor Documentation</a></em></p>
-<p>Events like the above are related to a specific <a href="https://goharbor.io/docs/latest/working-with-projects/create-projects/" target="_blank" rel="noopener noreferrer">Harbor project</a>.</p>
+</div><p><em>Source: <a href="https://goharbor.io/docs/latest/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreffer ">Harbor Documentation</a></em></p>
+<p>Events like the above are related to a specific <a href="https://goharbor.io/docs/latest/working-with-projects/create-projects/" target="_blank" rel="noopener noreffer ">Harbor project</a>.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Harbor project<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Harbor project<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>A project in Harbor contains all repositories of an application. Images cannot be pushed to Harbor before a project is created. Role-Based Access Control (RBAC) is applied to projects, so that only users with the appropriate roles can perform certain operations.</p>
-<p><em>Source: <a href="https://goharbor.io/docs/latest/working-with-projects/create-projects/" target="_blank" rel="noopener noreferrer">Harbor Documentation</a></em></p>
+<p><em>Source: <a href="https://goharbor.io/docs/latest/working-with-projects/create-projects/" target="_blank" rel="noopener noreffer ">Harbor Documentation</a></em></p>
 </div>
         </div>
     </div>
-<p>Let&rsquo;s stick with the example provided. The events sent are very detailed and thus useful. They can be used for ChatOps for example. This is where I came up with the idea to forward the Harbor event to a notification function running on the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreferrer">VMware Event Broker Appliance - VEBA</a>.</p>
+<p>Let&rsquo;s stick with the example provided. The events sent are very detailed and thus useful. They can be used for ChatOps for example. This is where I came up with the idea to forward the Harbor event to a notification function running on the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance - VEBA</a>.</p>
 <h2 id="veba-generic-webhook-endpoint-and-webhook-functions">VEBA Generic Webhook Endpoint and Webhook Functions</h2>
-<p>VEBA supports a generic webhook endpoint since version <a href="https://vmweventbroker.io/evolution" target="_blank" rel="noopener noreferrer">v0.7.0</a>. The webhook endpoint can be enabled during the OVA deployment and is available on <code>https://&lt;veba-fqdn&gt;/webhook</code> afterwards. It accepts incoming CloudEvents as payload.</p>
-<p>The challenge is, and William tackled it in <a href="https://williamlam.com/2021/09/custom-webhook-function-to-publish-events-into-vmware-event-broker-appliance-veba.html" target="_blank" rel="noopener noreferrer">THIS POST</a>, that not every solution supports the <a href="https://cloudevents.io/" target="_blank" rel="noopener noreferrer">CloudEvents</a> specification.</p>
+<p>VEBA supports a generic webhook endpoint since version <a href="https://vmweventbroker.io/evolution" target="_blank" rel="noopener noreffer ">v0.7.0</a>. The webhook endpoint can be enabled during the OVA deployment and is available on <code>https://&lt;veba-fqdn&gt;/webhook</code> afterwards. It accepts incoming CloudEvents as payload.</p>
+<p>The challenge is, and William tackled it in <a href="https://williamlam.com/2021/09/custom-webhook-function-to-publish-events-into-vmware-event-broker-appliance-veba.html" target="_blank" rel="noopener noreffer ">THIS POST</a>, that not every solution supports the <a href="https://cloudevents.io/" target="_blank" rel="noopener noreffer ">CloudEvents</a> specification.</p>
 <p>Although the idea behind CloudEvents is simple and powerful. If there&rsquo;s no default description/definition for event data, event handling logics have to be developed again and again!</p>
 <p>I hope this will change &hellip;</p>
 <center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">💯 callout and request from <a href="https://twitter.com/n3wscott?ref_src=twsrc%5Etfw">@n3wscott</a> to stop reinventing event integrations, eg alerts from your_thingy to Slack, S3, etc. <br><br>Instead reuse transport-independent standards like <a href="https://twitter.com/CloudEventsIO?ref_src=twsrc%5Etfw">@CloudEventsIO</a> so routing becomes config, not code. <a href="https://t.co/moZ96Q7bEq">pic.twitter.com/moZ96Q7bEq</a></p>&mdash; Michael Gasch 🇩🇪🇺🇦 (@embano1) <a href="https://twitter.com/embano1/status/1527298365528190976?ref_src=twsrc%5Etfw">May 19, 2022</a></blockquote>
@@ -220,24 +218,24 @@
 <p>Session from the tweet: <strong>&ldquo;Thinking Cloud Native, CloudEvents Future - Scott Nichols, Chainguard&rdquo;</strong> at KubeCon 2022 Europe 👇 <a href="#resources" rel="">Resources</a>.</p>
 </blockquote>
 <p>For my specific use case with Harbor, I checked the open issue&rsquo;s on Github to see if someone had already raised the idea of adopting CloudEvents.</p>
-<p>Luckily, <i class='fab fa-github fa-fw'></i> issue <a href="https://github.com/goharbor/harbor/issues/10146" target="_blank" rel="noopener noreferrer">#10146</a> brings the idea up. Give it a 👍 😉</p>
-<p>However, in a brainstorming session with <a href="https://twitter.com/embano1" target="_blank" rel="noopener noreferrer">Michael</a>, I got him hooked and he wrote a complete new webhook function which transforms the incoming Harbor events into CloudEvents 💥.</p>
+<p>Luckily, <i class='fab fa-github fa-fw'></i> issue <a href="https://github.com/goharbor/harbor/issues/10146" target="_blank" rel="noopener noreffer ">#10146</a> brings the idea up. Give it a 👍 😉</p>
+<p>However, in a brainstorming session with <a href="https://twitter.com/embano1" target="_blank" rel="noopener noreffer ">Michael</a>, I got him hooked and he wrote a complete new webhook function which transforms the incoming Harbor events into CloudEvents 💥.</p>
 <center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">We created a <a href="https://twitter.com/KnativeProject?ref_src=twsrc%5Etfw">@KnativeProject</a> web service as a target for <a href="https://twitter.com/project_harbor?ref_src=twsrc%5Etfw">@project_harbor</a> webhooks. Harbor event notifications are automatically transformed to CloudEvents.<br><br>So many great use cases! Thx to <a href="https://twitter.com/vmw_rguske?ref_src=twsrc%5Etfw">@vmw_rguske</a> for the idea and collab!<br><br>Source: <a href="https://t.co/ix2pyfgaAJ">https://t.co/ix2pyfgaAJ</a></p>&mdash; Michael Gasch 🇩🇪🇺🇦 (@embano1) <a href="https://twitter.com/embano1/status/1541387083515846658?ref_src=twsrc%5Etfw">June 27, 2022</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
  </center>
 <h2 id="the-use-case-with-harbor">The Use Case with Harbor</h2>
-<p>The overall idea is to send the non-CloudEvent payload to the new <code>kn-go-harbor-webhook</code> function, get it transformed into a CloudEvent and have the new <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreferrer">kn-ps-harbor-slack</a> function triggered.</p>
+<p>The overall idea is to send the non-CloudEvent payload to the new <code>kn-go-harbor-webhook</code> function, get it transformed into a CloudEvent and have the new <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreffer ">kn-ps-harbor-slack</a> function triggered.</p>
 <p>For the used example <a href="#webhooks-everywhere" rel="">above</a>, the new event <code>type</code> will be <code>com.vmware.harbor.delete_artifact.v0</code>.</p>
 <p>The following diagram depicts the end-to-end flow of the deployment.</p>
 <div class="mermaid" id="id-1"></div>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Low hanging Fruits<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Low hanging Fruits<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content"><p>🍒 = Existing <a href="https://vmweventbroker.io/examples" target="_blank" rel="noopener noreferrer">VEBA Function Examples</a></p>
-<p>In order to not only have a &ldquo;transformation&rdquo; function available but also a function which will be triggered on a new Harbor specific event, I simply took the existing <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/knative/powershell/kn-ps-slack" target="_blank" rel="noopener noreferrer">Slack-Function example</a>, adjusted the necessary <code>fields</code> whithin the <code>handler.ps1</code> accordingly in order to ultimately pick the wanted data from the incoming event.</p>
-<p>Voilà, <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreferrer">kn-ps-harbor-slack</a> is ready to serve.</p>
+            <div class="admonition-content"><p>🍒 = Existing <a href="https://vmweventbroker.io/examples" target="_blank" rel="noopener noreffer ">VEBA Function Examples</a></p>
+<p>In order to not only have a &ldquo;transformation&rdquo; function available but also a function which will be triggered on a new Harbor specific event, I simply took the existing <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/master/examples/knative/powershell/kn-ps-slack" target="_blank" rel="noopener noreffer ">Slack-Function example</a>, adjusted the necessary <code>fields</code> whithin the <code>handler.ps1</code> accordingly in order to ultimately pick the wanted data from the incoming event.</p>
+<p>Voilà, <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreffer ">kn-ps-harbor-slack</a> is ready to serve.</p>
 </div>
         </div>
     </div>
@@ -245,11 +243,11 @@
 <p>Let me guide you through the necessary steps in order to:</p>
 <ol>
 <li>have a properly prepared and configured environment (DNS, VEBA, Harbor) available</li>
-<li>have the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/go/kn-go-harbor-webhook" target="_blank" rel="noopener noreferrer">kn-go-harbor-webhook</a> function deployed</li>
-<li>have the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreferrer">kn-ps-harbor-slack</a> function deployed</li>
+<li>have the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/go/kn-go-harbor-webhook" target="_blank" rel="noopener noreffer ">kn-go-harbor-webhook</a> function deployed</li>
+<li>have the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreffer ">kn-ps-harbor-slack</a> function deployed</li>
 </ol>
 <h3 id="dns-wildcard-configuration-for-veba">DNS Wildcard Configuration for VEBA</h3>
-<p>The first required step is to configure your DNS server with a wildcard entry for VEBA. This is necessary because when you&rsquo;re going to deploy functions to VEBA, they&rsquo;ll ultimately run as Pods on Kubernetes, or in Knative terminology as <a href="https://knative.dev/docs/serving/services/" target="_blank" rel="noopener noreferrer">Knative Services</a> (<code>serving.knative.dev/service</code>).</p>
+<p>The first required step is to configure your DNS server with a wildcard entry for VEBA. This is necessary because when you&rsquo;re going to deploy functions to VEBA, they&rsquo;ll ultimately run as Pods on Kubernetes, or in Knative terminology as <a href="https://knative.dev/docs/serving/services/" target="_blank" rel="noopener noreffer ">Knative Services</a> (<code>serving.knative.dev/service</code>).</p>
 <p>Those Services are providing endpoints for which we have to make sure that they are reachable over the wire.</p>
 <p>It is presented as follows: <code>https://[function-name].[function-namespace].[veba-fqdn]</code>.</p>
 <p>Since we are talking about Kubernetes Custom Resources, we can interact with such using <code>kubectl</code>. In order to e.g. check your functions, run <code>kubectl -n vmware-functions get ksvc</code>.</p>
@@ -285,7 +283,7 @@
             alt="/img/posts/202207_harbor_webhhok_post/rguske-post-harbor-webhook-function-1.png" />
     </a><figcaption class="image-caption">Figure I: Windows Server Wildcard DNS Configuration</figcaption>
     </figure>
-<p>William is explaining the necessary configurations on his blog when using Unbound on Ubuntu - <a href="https://williamlam.com/2021/09/custom-webhook-function-to-publish-events-into-vmware-event-broker-appliance-veba.html" target="_blank" rel="noopener noreferrer">LINK</a>.</p>
+<p>William is explaining the necessary configurations on his blog when using Unbound on Ubuntu - <a href="https://williamlam.com/2021/09/custom-webhook-function-to-publish-events-into-vmware-event-broker-appliance-veba.html" target="_blank" rel="noopener noreffer ">LINK</a>.</p>
 <h3 id="deploy-the-kn-go-harbor-webhook-function">Deploy the kn-go-harbor-webhook Function</h3>
 <p>Deploying functions on VEBA is simple. Well documented guidance for each specific example function is available on <i class='fab fa-github fa-fw'></i>.</p>
 <p>If necessary, the first step is in most cases the creation of a Kubernetes secret in order to store sensible data (user credentials, etc.). Having said, we are going to create a new secret called <code>webhook-auth</code> for our function in order to enforce basic authentication on the HTTP endpoint.</p>
@@ -515,7 +513,7 @@
 <h3 id="configure-the-webhook-feature-in-harbor">Configure the Webhook Feature in Harbor</h3>
 <p>In Harbor, open your project and go to <strong>Webhooks</strong>. Click on <strong>+ NEW WEBHOOK</strong> and configure it to meet your requirements (e.g. in terms of event types). Important is the <strong>Endpoint URL</strong> as well as the <strong>Auth Header</strong>.</p>
 <p>For <strong>Endpoint URL</strong>, enter the complete URL ending with <code>/webhook</code> of the recently created kn-go-harbor-webhook function/Knative Service. For me it&rsquo;s: <code>https://kn-go-harbor-webhook.vmware-functions.veba-dev.jarvis.tanzu/webhook</code></p>
-<p>For <strong>Auth Header</strong>, enter <code>Basic</code> followed by a whitespace and the base64-encoded value of the <code>&lt;username&gt;:&lt;password&gt;</code> string combination defined in the <code>webhook-auth</code> secret step. Use a Basic Auth Header Generator like e.g. <a href="https://www.debugbear.com/basic-auth-header-generator" target="_blank" rel="noopener noreferrer">DebugBear</a>.</p>
+<p>For <strong>Auth Header</strong>, enter <code>Basic</code> followed by a whitespace and the base64-encoded value of the <code>&lt;username&gt;:&lt;password&gt;</code> string combination defined in the <code>webhook-auth</code> secret step. Use a Basic Auth Header Generator like e.g. <a href="https://www.debugbear.com/basic-auth-header-generator" target="_blank" rel="noopener noreffer ">DebugBear</a>.</p>
 <figure><a class="lightgallery" href="/img/posts/202207_harbor_webhhok_post/rguske-post-harbor-webhook-function-2.png" title="/img/posts/202207_harbor_webhhok_post/rguske-post-harbor-webhook-function-2.png" data-thumbnail="/img/posts/202207_harbor_webhhok_post/rguske-post-harbor-webhook-function-2.png" data-sub-html="<h2>Figure II: Webhook Configuration in Harbor</h2>">
         <img
             class="lazyload"
@@ -570,10 +568,10 @@
 <p>🎥 <strong>kn-go-harbor-webhook function deployment</strong> 🎥</p>
 <script id="asciicast-qECs6T0ulUiXNIchr3UFcLEr3" src="https://asciinema.org/a/qECs6T0ulUiXNIchr3UFcLEr3.js" async></script>
 <h3 id="deploy-the-kn-ps-harbor-slack-function">Deploy the kn-ps-harbor-slack Function</h3>
-<p>With the available CloudEvent payload, we can now configure and deploy other functions. As aforementioned (low hanging fruits), I wanted to get notified by actions happened related to my Harbor project (#ChatOps). The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreferrer">kn-ps-harbor-slack</a> function will send a message to your Slack channel webhook.</p>
+<p>With the available CloudEvent payload, we can now configure and deploy other functions. As aforementioned (low hanging fruits), I wanted to get notified by actions happened related to my Harbor project (#ChatOps). The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-harbor-slack" target="_blank" rel="noopener noreffer ">kn-ps-harbor-slack</a> function will send a message to your Slack channel webhook.</p>
 <p>There we go again&hellip; webhooks everywhere 😄</p>
 <ol>
-<li>Add your Slack channel webhook URL to the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/blob/development/examples/knative/powershell/kn-ps-harbor-slack/slack_secret.json" target="_blank" rel="noopener noreferrer">slack_secret.json</a> file</li>
+<li>Add your Slack channel webhook URL to the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/blob/development/examples/knative/powershell/kn-ps-harbor-slack/slack_secret.json" target="_blank" rel="noopener noreffer ">slack_secret.json</a> file</li>
 <li>Create the Kubernetes secret</li>
 </ol>
 <div class="highlight"><div class="chroma">
@@ -603,7 +601,7 @@
 </div><ol start="3">
 <li>Deploy the <code>function.yaml</code></li>
 </ol>
-<p>By default, the function deployment will filter on the <code>com.vmware.harbor.push_artifact.v0</code> Harbor Event. If you wish to change this, update the <code>type</code> field within <code>function.yaml</code> to the desired event type. A list of supported notification events is available on the official Harbor documentation under <a href="https://goharbor.io/docs/latest/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreferrer">Configure Webhook Notifications</a>. As mentioned, use the VEBA event viewer endpoint (<code>https://&lt;veba-fqdn&gt;/events</code>) to display all incoming events.</p>
+<p>By default, the function deployment will filter on the <code>com.vmware.harbor.push_artifact.v0</code> Harbor Event. If you wish to change this, update the <code>type</code> field within <code>function.yaml</code> to the desired event type. A list of supported notification events is available on the official Harbor documentation under <a href="https://goharbor.io/docs/latest/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreffer ">Configure Webhook Notifications</a>. As mentioned, use the VEBA event viewer endpoint (<code>https://&lt;veba-fqdn&gt;/events</code>) to display all incoming events.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -703,7 +701,7 @@
     </figure>
 <p>🎥 <strong>kn-ps-harbor-slack function deployment</strong> 🎥</p>
 <script id="asciicast-WMgGk65yfymhqAQFkEQfRhQ3S" src="https://asciinema.org/a/WMgGk65yfymhqAQFkEQfRhQ3S.js" async></script>
-<p><strong>As a side note:</strong> Harbor supports Slack as a configurable <a href="https://goharbor.io/docs/2.5.0/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreferrer">Notify Type</a> OOB. But it sends the message in a raw JSON format. However, we also have a <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-ngw-teams" target="_blank" rel="noopener noreferrer">Microsoft Teams Function example</a> available in PowerShell as well &hellip; 😉</p>
+<p><strong>As a side note:</strong> Harbor supports Slack as a configurable <a href="https://goharbor.io/docs/2.5.0/working-with-projects/project-configuration/configure-webhooks/" target="_blank" rel="noopener noreffer ">Notify Type</a> OOB. But it sends the message in a raw JSON format. However, we also have a <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/knative/powershell/kn-ps-ngw-teams" target="_blank" rel="noopener noreffer ">Microsoft Teams Function example</a> available in PowerShell as well &hellip; 😉</p>
 <hr>
 <p>Big THANKS to Michael for the great work on the kn-go-harbor-webhook function as well as for his review of this post.</p>
 <hr>
@@ -715,46 +713,44 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-07-06&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/3f62914c8c830fd4c6555e91226cafccfad297a7" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 3f62914c8c830fd4c6555e91226cafccfad297a7: nits eleminated harbor function post">
-                                    <i class="fas fa-hashtag fa-fw"></i>3f62914</a></span>
-            </div>
-            <div class="post-info-license"></div>
-        </div>
+                <span>Updated on 2022-07-06&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/3f62914c8c830fd4c6555e91226cafccfad297a7" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 3f62914c8c830fd4c6555e91226cafccfad297a7: nits eleminated harbor function post">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>3f62914</a></span>
+            </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/event-driven-automation-with-project-harbor-and-knative/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/event-driven-automation-with-project-harbor-and-knative/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-via="vmw_rguske" data-hashtags="VEBA,Knative,Serverless,Kubernetes,Cloud Native,Harbor,CloudEvents,Functions"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-description="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-description="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><i class="fab fa-trello fa-fw"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-via="vmw_rguske" data-hashtags="VEBA,Knative,Serverless,Kubernetes,Cloud Native,Harbor,CloudEvents,Functions"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-description="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" data-title="Event-Driven Automation with Project Harbor and Knative" data-description="The open-source container registry Harbor supports the configuration of webhook endpoints. Harbor notifies the webhook endpoint of certain events that occur in a project. However, the event sent is not delivered as a CloudEvent. By leveraging the power of VEBA/Knative the non-CloudEvent can be send to a webhook function to get transformed in a CloudEvent. By transforming the event, other functions can be subscribed to the new event to ultimately get triggered. As a use case for it, I&#39;m going to describe how ChatOps can be enabled using event-driven automation."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/knative/">Knative</a>,&nbsp;<a href="/tags/serverless/">Serverless</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/cloud-native/">Cloud Native</a>,&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/cloudevents/">CloudEvents</a>,&nbsp;<a href="/tags/functions/">Functions</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/knative/">Knative</a>,&nbsp;<a href="/tags/serverless/">Serverless</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/cloud-native/">Cloud Native</a>,&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/cloudevents/">CloudEvents</a>,&nbsp;<a href="/tags/functions/">Functions</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" class="prev" rel="prev" title="Demoing Knative Serving and Eventing using Demo-Magic-Scripts"><i class="fas fa-angle-left fa-fw"></i>Demoing Knative Serving and Eventing using Demo-Magic-Scripts</a>
-            <a href="/post/using-windows-smb-shares-in-kubernetes/" class="next" rel="next" title="Using Windows SMB Shares in Kubernetes">Using Windows SMB Shares in Kubernetes<i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" class="prev" rel="prev" title="Demoing Knative Serving and Eventing using Demo-Magic-Scripts"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Demoing Knative Serving and Eventing using Demo-Magic-Scripts</a>
+            <a href="/post/using-windows-smb-shares-in-kubernetes/" class="next" rel="next" title="Using Windows SMB Shares in Kubernetes">Using Windows SMB Shares in Kubernetes<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw"></i>
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw"></i>
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="/lib/mermaid/mermaid.min.c74697cbf094b0b3067a5d8f0371e74671e1331b371ef3a3c7e291a17745ce93.css" integrity="sha256-x0aXy/CUsLMGel2PA3HnRnHhMxs3HvOjx&#43;KRoXdFzpM="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@8.5.1/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph TD;\n    subgraph Harbor Registry\n    A\n    end\n    subgraph VEBA\n    B\n    C\n    D\n    end\n    subgraph Slack\n    E\n    end\n    A[Webhook Notification] --\u003e|Harbor Event Payload| B[kn-go-harbor-webhook Function]\n    B --\u003e|CloudEvent Transformation - New Payload| C[Knative Magic]\n    D[kn-ps-harbor-slack Function] --\u003e C\n    D --\u003e E[Slack Channel Webhook]","id-2":"Robert Guske","id-3":"Robert Guske"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph TD;\n    subgraph Harbor Registry\n    A\n    end\n    subgraph VEBA\n    B\n    C\n    D\n    end\n    subgraph Slack\n    E\n    end\n    A[Webhook Notification] --\u003e|Harbor Event Payload| B[kn-go-harbor-webhook Function]\n    B --\u003e|CloudEvent Transformation - New Payload| C[Knative Magic]\n    D[kn-ps-harbor-slack Function] --\u003e C\n    D --\u003e E[Slack Channel Webhook]","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.480e58b2c2a8605d406f34667e92ff8f1ae50cfee5b653bead570f004839a983.js" integrity="sha256-SA5YssKoYF1AbzRmfpL/jxrlDP7ltlO+rVcPAEg5qYM="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>

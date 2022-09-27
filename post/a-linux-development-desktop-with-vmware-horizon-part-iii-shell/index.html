@@ -4,13 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>A Linux Development Desktop with VMware Horizon - Part III: Shell - Robert Guske</title><meta name="description" content="Part III - A guide on the &#34;Highway&#34; to Shell."><meta property="og:title" content="A Linux Development Desktop with VMware Horizon - Part III: Shell" />
+        <title>A Linux Development Desktop with VMware Horizon - Part III: Shell - Robert Guske</title><meta name="Description" content="Part III - A guide on the &#34;Highway&#34; to Shell."><meta property="og:title" content="A Linux Development Desktop with VMware Horizon - Part III: Shell" />
 <meta property="og:description" content="Part III - A guide on the &#34;Highway&#34; to Shell." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-02-27T16:32:48+01:00" />
-<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" />
+<meta property="article:modified_time" content="2021-04-26T23:26:38+02:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -18,7 +17,9 @@
 <meta name="twitter:title" content="A Linux Development Desktop with VMware Horizon - Part III: Shell"/>
 <meta name="twitter:description" content="Part III - A guide on the &#34;Highway&#34; to Shell."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" /><link rel="prev" href="https://rguske.github.io/post/pks-management-console-day-1/" /><link rel="next" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.02bac43982e635c68a0cfa06a6ab194c18d816ee34d021735341d160ba92ee54.css" integrity="sha256-ArrEOYLmNcaKDPoGpqsZTBjYFu400CFzU0HRYLqS7lQ="><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" /><link rel="prev" href="https://rguske.github.io/post/pks-management-console-day-1/" /><link rel="next" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -36,7 +37,7 @@
             },"description": "Part III - A guide on the \"Highway\" to Shell."
     }
     </script></head>
-    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">('true' === 'true' && window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -44,21 +45,20 @@
             <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw"></i>
-                </a>
-            </div>
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
         </div>
     </div>
 </header><header class="mobile" id="header-mobile">
@@ -75,37 +75,35 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw"></i>
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw"></i>
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw"></i>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
-</header>
-<div class="search-dropdown desktop">
-    <div id="search-dropdown-desktop"></div>
-</div>
-<div class="search-dropdown mobile">
-    <div id="search-dropdown-mobile"></div>
-</div>
-<main class="main">
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">A Linux Development Desktop with VMware Horizon - Part III: Shell</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/linux/"><i class="far fa-folder fa-fw"></i>Linux</a>&nbsp;<a href="/categories/vdi/"><i class="far fa-folder fa-fw"></i>VDI</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw"></i>Desktop</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw"></i>VMware</a>&nbsp;<a href="/categories/terminal/"><i class="far fa-folder fa-fw"></i>Terminal</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-02-27">2020-02-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1101 words&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">A Linux Development Desktop with VMware Horizon - Part III: Shell</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/linux/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Linux</a>&nbsp;<a href="/categories/vdi/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>VDI</a>&nbsp;<a href="/categories/desktop/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Desktop</a>&nbsp;<a href="/categories/vmware/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>VMware</a>&nbsp;<a href="/categories/terminal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Terminal</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-02-27">2020-02-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1101 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -113,10 +111,10 @@
         data-srcset="/img/devdesk_part_iii_cover.jpg, /img/devdesk_part_iii_cover.jpg 1.5x, /img/devdesk_part_iii_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/devdesk_part_iii_cover.jpg"
-        title="Part III - A guide on the &#34;Highway&#34; to Shell." /></div><div class="details toc" id="toc-static"  kept="">
+        title="Part III - A guide on the &#34;Highway&#34; to Shell." /></div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
@@ -166,7 +164,7 @@
     </a><figcaption class="image-caption">Figure I: Default Terminal appearance before tuning</figcaption>
     </figure>
 <h2 id="1-zsh-aka-z-shell">1. ZSH aka Z shell</h2>
-<p><a href="http://www.zsh.org/" target="_blank" rel="noopener noreferrer">http://www.zsh.org/</a></p>
+<p><a href="http://www.zsh.org/" target="_blank" rel="noopener noreffer ">http://www.zsh.org/</a></p>
 <p>ZSH is a extended shell with lots of features, support for plugins and themes.</p>
 <p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <div class="highlight"><div class="chroma">
@@ -188,7 +186,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="2-oh-my-zsh">2. Oh My ZSH</h2>
-<p><a href="https://ohmyz.sh/" target="_blank" rel="noopener noreferrer">https://ohmyz.sh/</a></p>
+<p><a href="https://ohmyz.sh/" target="_blank" rel="noopener noreffer ">https://ohmyz.sh/</a></p>
 <p>A community-driven framework for managing your Z shell configuration.</p>
 <p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <div class="highlight"><div class="chroma">
@@ -220,7 +218,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="21-zsh-syntax-highlighting">2.1 ZSH Syntax Highlighting</h3>
-<p><a href="https://github.com/zsh-users/zsh-syntax-highlighting" target="_blank" rel="noopener noreferrer">https://github.com/zsh-users/zsh-syntax-highlighting</a></p>
+<p><a href="https://github.com/zsh-users/zsh-syntax-highlighting" target="_blank" rel="noopener noreffer ">https://github.com/zsh-users/zsh-syntax-highlighting</a></p>
 <p>This plugin enables highlighting of commands whilst they are typed and it´ll help you to avoid syntax erros before you run a command.</p>
 <p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <p>Let´s clone the repository into our <em>oh-my-zsh</em> plugins directory:</p>
@@ -243,7 +241,7 @@
 </div>
 </div><p>Restart your terminal.</p>
 <h3 id="22-install-powerline-fonts">2.2 Install Powerline Fonts</h3>
-<p><a href="https://github.com/powerline/fonts" target="_blank" rel="noopener noreferrer">https://github.com/powerline/fonts</a></p>
+<p><a href="https://github.com/powerline/fonts" target="_blank" rel="noopener noreffer ">https://github.com/powerline/fonts</a></p>
 <p>Needed fonts for the Powerlevel9k theme (step 4.).</p>
 <p><strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <div class="highlight"><div class="chroma">
@@ -272,7 +270,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="23-powerlevel9k">2.3 Powerlevel9k</h3>
-<p><a href="https://github.com/Powerlevel9k/powerlevel9k" target="_blank" rel="noopener noreferrer">https://github.com/Powerlevel9k/powerlevel9k</a></p>
+<p><a href="https://github.com/Powerlevel9k/powerlevel9k" target="_blank" rel="noopener noreffer ">https://github.com/Powerlevel9k/powerlevel9k</a></p>
 <p>This theme will give your shell a new shine.</p>
 <p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <div class="highlight"><div class="chroma">
@@ -343,7 +341,7 @@
 <hr>
 <p><strong>More! More! More!</strong></p>
 <h2 id="3-homebrew-on-linux-">3 Homebrew on Linux 🍺</h2>
-<p><a href="https://docs.brew.sh/Homebrew-on-Linux" target="_blank" rel="noopener noreferrer">https://docs.brew.sh/Homebrew-on-Linux</a></p>
+<p><a href="https://docs.brew.sh/Homebrew-on-Linux" target="_blank" rel="noopener noreffer ">https://docs.brew.sh/Homebrew-on-Linux</a></p>
 <p>Homebrew is a package manager (like Snappy) which simplifies the installation of software on your OS and should not be missing if you ask me.</p>
 <p><strong><span style="color:#6003B6">CentOS</span></strong> &amp; <strong><span style="color:#018914">Ubuntu:</span></strong></p>
 <div class="highlight"><div class="chroma">
@@ -370,10 +368,10 @@ Add the path to your .zshrc dot-file.</p>
 </div>
 </div><h2 id="4-clis-and-tools">4 CLI´s and tools</h2>
 <p>&hellip;I´m using and I´d like to recommend</p>
-<p><strong>kubectl</strong> - <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux" target="_blank" rel="noopener noreferrer">https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux</a></p>
+<p><strong>kubectl</strong> - <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux" target="_blank" rel="noopener noreffer ">https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">A command line tool for controlling Kubernetes clusters.</div>
@@ -388,7 +386,7 @@ Add the path to your .zshrc dot-file.</p>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="41-zsh-autocompletion-for-kubectl">4.1 ZSH Autocompletion for <code>kubectl</code></h3>
-<p><a href="https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete" target="_blank" rel="noopener noreferrer">https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete</a></p>
+<p><a href="https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete" target="_blank" rel="noopener noreffer ">https://v1-16.docs.kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -400,10 +398,10 @@ Add the path to your .zshrc dot-file.</p>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="42-powershell">4.2 Powershell</h3>
-<p><a href="https://snapcraft.io/powershell" target="_blank" rel="noopener noreferrer">https://snapcraft.io/powershell</a></p>
+<p><a href="https://snapcraft.io/powershell" target="_blank" rel="noopener noreffer ">https://snapcraft.io/powershell</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">PowerShell is an cross-platform (Windows, Linux, and macOS) command-line shell for automation and configuration management.</div>
@@ -419,10 +417,10 @@ Add the path to your .zshrc dot-file.</p>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="43-kind---kubernetes-in-docker">4.3 KinD - Kubernetes in Docker</h3>
-<p><a href="https://github.com/kubernetes-sigs/kind" target="_blank" rel="noopener noreferrer">https://github.com/kubernetes-sigs/kind</a></p>
+<p><a href="https://github.com/kubernetes-sigs/kind" target="_blank" rel="noopener noreffer ">https://github.com/kubernetes-sigs/kind</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">kind is a tool for running local Kubernetes clusters using Docker container &ldquo;nodes&rdquo;.</div>
@@ -435,14 +433,14 @@ Add the path to your .zshrc dot-file.</p>
             data-src="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg"
             data-srcset="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg, /img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg 1.5x, /img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg 2x"
             data-sizes="auto"
-            alt="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" height="800" width="800" />
+            alt="/img/posts/201912_development_desktop/CapturFiles-20200227_015150.jpg" width="800" height="800" />
     </a><figcaption class="image-caption">Figure III: kind create cluster</figcaption>
     </figure>
 <h3 id="44-octant">4.4 Octant</h3>
-<p><a href="https://github.com/vmware-tanzu/octant" target="_blank" rel="noopener noreferrer">https://github.com/vmware-tanzu/octant</a></p>
+<p><a href="https://github.com/vmware-tanzu/octant" target="_blank" rel="noopener noreffer ">https://github.com/vmware-tanzu/octant</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content">Octant is a tool for developers to understand how applications run on a Kubernetes cluster.</div>
@@ -456,12 +454,12 @@ Add the path to your .zshrc dot-file.</p>
         data-sizes="auto"
         alt="/img/posts/201912_development_desktop/octant-demo.gif"
         title="Octant demo" /></p>
-<p><em><center>Source: <a href="https://github.com/vmware-tanzu/octant" target="_blank" rel="noopener noreferrer">https://github.com/vmware-tanzu/octant</a></center></em></p>
+<p><em><center>Source: <a href="https://github.com/vmware-tanzu/octant" target="_blank" rel="noopener noreffer ">https://github.com/vmware-tanzu/octant</a></center></em></p>
 <h3 id="45-tmux">4.5 tmux</h3>
-<p><a href="https://github.com/tmux/tmux" target="_blank" rel="noopener noreferrer">https://github.com/tmux/tmux</a></p>
+<p><a href="https://github.com/tmux/tmux" target="_blank" rel="noopener noreffer ">https://github.com/tmux/tmux</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>tmux</code> is a terminal multiplexer.</div>
@@ -469,50 +467,50 @@ Add the path to your .zshrc dot-file.</p>
     </div>
 <p><strong>Enable Mouse-scrolling</strong>: Scrolling the terminal pages by using the mouse-wheel is natural for me and because it´s not enabled by default when using <code>tmux</code> I need to enable it. Settings like this for example can be applied while running <code>tmux</code>. Press <em>ctrl + b</em> and then type <code>:set -g mouse on</code>.</p>
 <h3 id="46-bat">4.6 bat</h3>
-<p><a href="https://github.com/sharkdp/bat" target="_blank" rel="noopener noreferrer">https://github.com/sharkdp/bat</a></p>
+<p><a href="https://github.com/sharkdp/bat" target="_blank" rel="noopener noreffer ">https://github.com/sharkdp/bat</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>bat</code> is a cat clone with syntax highlighting and Git integration.</div>
         </div>
     </div>
 <h3 id="47-glances">4.7 glances</h3>
-<p><a href="https://github.com/nicolargo/glances" target="_blank" rel="noopener noreferrer">https://github.com/nicolargo/glances</a></p>
+<p><a href="https://github.com/nicolargo/glances" target="_blank" rel="noopener noreffer ">https://github.com/nicolargo/glances</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>glances</code> is a cross-platform monitoring tool.</div>
         </div>
     </div>
 <h3 id="48-htop">4.8 htop</h3>
-<p><a href="https://github.com/hishamhm/htop" target="_blank" rel="noopener noreferrer">https://github.com/hishamhm/htop</a></p>
+<p><a href="https://github.com/hishamhm/htop" target="_blank" rel="noopener noreffer ">https://github.com/hishamhm/htop</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>htop</code> is an interactive process viewer.</div>
         </div>
     </div>
 <h3 id="49-ctop">4.9 ctop</h3>
-<p><a href="https://github.com/bcicen/ctop" target="_blank" rel="noopener noreferrer">https://github.com/bcicen/ctop</a></p>
+<p><a href="https://github.com/bcicen/ctop" target="_blank" rel="noopener noreffer ">https://github.com/bcicen/ctop</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>ctop</code> provides a concise and condensed overview of real-time metrics for multiple containers:</div>
         </div>
     </div>
 <h3 id="410-prettyping">4.10 prettyping</h3>
-<p><a href="https://github.com/denilsonsa/prettyping" target="_blank" rel="noopener noreferrer">https://github.com/denilsonsa/prettyping</a></p>
+<p><a href="https://github.com/denilsonsa/prettyping" target="_blank" rel="noopener noreffer ">https://github.com/denilsonsa/prettyping</a></p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>Info<i class="details-icon fas fa-angle-right fa-fw"></i>
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><code>prettyping</code> is a wrapper around the standard ping tool with the objective of making the output prettier, more colorful, more compact, and easier to read.</div>
@@ -529,7 +527,7 @@ Add the path to your .zshrc dot-file.</p>
 </div>
 </div><p>Addtionally to <code>htop</code>, <code>ytop</code> (former gotop) is a pretty neat process and system monitor.</p>
 <h3 id="411-ytop">4.11 <code>ytop</code></h3>
-<p><a href="https://github.com/cjbassi/ytop" target="_blank" rel="noopener noreferrer">https://github.com/cjbassi/ytop</a></p>
+<p><a href="https://github.com/cjbassi/ytop" target="_blank" rel="noopener noreffer ">https://github.com/cjbassi/ytop</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -549,9 +547,9 @@ Add the path to your .zshrc dot-file.</p>
     </a><figcaption class="image-caption">Figure IV: tmux, htop, ctop, prettyping &amp; ytop</figcaption>
     </figure>
 <h3 id="412-figlet">4.12 figlet</h3>
-<p><a href="http://www.figlet.org/" target="_blank" rel="noopener noreferrer">http://www.figlet.org/</a></p>
+<p><a href="http://www.figlet.org/" target="_blank" rel="noopener noreffer ">http://www.figlet.org/</a></p>
 <h3 id="413-lolcat">4.13 lolcat</h3>
-<p><a href="https://github.com/busyloop/lolcat" target="_blank" rel="noopener noreferrer">https://github.com/busyloop/lolcat</a></p>
+<p><a href="https://github.com/busyloop/lolcat" target="_blank" rel="noopener noreffer ">https://github.com/busyloop/lolcat</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -620,7 +618,7 @@ Add the path to your .zshrc dot-file.</p>
 </div>
 </div><p><em><strong>Last but not least!</strong></em></p>
 <h3 id="415-asciinema">4.15 Asciinema</h3>
-<p><a href="https://asciinema.org/" target="_blank" rel="noopener noreferrer">https://asciinema.org/</a></p>
+<p><a href="https://asciinema.org/" target="_blank" rel="noopener noreffer ">https://asciinema.org/</a></p>
 <p>A perfect way how you can easily record your terminal sessions.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -669,46 +667,44 @@ Add the path to your .zshrc dot-file.</p>
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2021-04-26&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/0319acd558942a83319f4b63c836dd5ad1f214c3" target="_blank" rel="noopener noreferrer" title="commit by Robert Guske(rguske@vmware.com) 0319acd558942a83319f4b63c836dd5ad1f214c3: added a post description to every single post as well as website image for twitter">
-                                    <i class="fas fa-hashtag fa-fw"></i>0319acd</a></span>
-            </div>
-            <div class="post-info-license"></div>
-        </div>
+                <span>Updated on 2021-04-26&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/0319acd558942a83319f4b63c836dd5ad1f214c3" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 0319acd558942a83319f4b63c836dd5ad1f214c3: added a post description to every single post as well as website image for twitter">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>0319acd</a></span>
+            </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
-                            <a class="link-to-markdown" href="/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/index.md" target="_blank" rel="noopener noreferrer">Read Markdown</a>
+                            <a class="link-to-markdown" href="/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-via="vmw_rguske" data-hashtags="February2020,Linux,Horizon,VDI,Tools,Terminal"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-web><i class="fab fa-whatsapp fa-fw"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-reddit fa-fw"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-xing fa-fw"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description="Part III - A guide on the &#34;Highway&#34; to Shell."><i class="fab fa-blogger fa-fw"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-evernote fa-fw"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-skype fa-fw"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description="Part III - A guide on the &#34;Highway&#34; to Shell."><i class="fab fa-trello fa-fw"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-via="vmw_rguske" data-hashtags="February2020,Linux,Horizon,VDI,Tools,Terminal"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description="Part III - A guide on the &#34;Highway&#34; to Shell."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" data-title="A Linux Development Desktop with VMware Horizon - Part III: Shell" data-description="Part III - A guide on the &#34;Highway&#34; to Shell."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/february2020/">February2020</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/horizon/">Horizon</a>,&nbsp;<a href="/tags/vdi/">VDI</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/terminal/">Terminal</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/february2020/">February2020</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/horizon/">Horizon</a>,&nbsp;<a href="/tags/vdi/">VDI</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/terminal/">Terminal</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/pks-management-console-day-1/" class="prev" rel="prev" title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fas fa-angle-left fa-fw"></i>VMware Enterprise PKS Management Console (EPMC) - Day 1</a>
-            <a href="/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" class="next" rel="next" title="A Linux Development Desktop with VMware Horizon - Part II: Applications ">A Linux Development Desktop with VMware Horizon - Part II: Applications <i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/post/pks-management-console-day-1/" class="prev" rel="prev" title="VMware Enterprise PKS Management Console (EPMC) - Day 1"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>VMware Enterprise PKS Management Console (EPMC) - Day 1</a>
+            <a href="/post/a-linux-development-desktop-with-vmware-horizon-part-ii-applications/" class="next" rel="next" title="A Linux Development Desktop with VMware Horizon - Part II: Applications ">A Linux Development Desktop with VMware Horizon - Part II: Applications <i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/sunt-programator/CodeIT" target="_blank" rel="noopener noreferrer" title="CodeIT 0.2.10"><i class="fas fa-laptop-code fa-fw"></i> CodeIT</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank" rel="noopener noreferrer">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw"></i>
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw"></i>
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.2.0/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.2.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.2.0/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.47a1ff73dc443ed4a9f13e3134f6058e8c6d21248b35d03e7d64f56345190c3e.js" integrity="sha256-R6H/c9xEPtSp8T4xNPYFjoxtISSLNdA&#43;fWT1Y0UZDD4="></script><script type="text/javascript">
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.480e58b2c2a8605d406f34667e92ff8f1ae50cfee5b653bead570f004839a983.js" integrity="sha256-SA5YssKoYF1AbzRmfpL/jxrlDP7ltlO+rVcPAEg5qYM="></script><script type="text/javascript">
             window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
             gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
         </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
