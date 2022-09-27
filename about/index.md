@@ -52,7 +52,7 @@ Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmwa
 
 He's very keen on cloud native technologies and an active team-member and contributor of the open source project VMware Event Broker Appliance (https://vmweventbroker.io). This project has the intention to reveal the hidden potential of events in VMware's SDDC by providing event-driven interactions with VMware solutions like e.g. vSphere.
 
-<center> {{< image src="/img/about/veba_otto_the_orca_640x640_v2.png" src-s="/img/about/veba_otto_the_orca_640x640_v2.png" caption="Unofficial VEBA Mascot - Otto the Orca" width="300" >}} </center>
+<center> {{< image src="/img/about/veba_logo_stacked.png" src-s="/img/about/veba_logo_stacked.png" caption="Official VEBA Logo" >}} </center>
 
 - **VMware Event Broker Appliance Homepage:** https://vmweventbroker.io
 - **Official VEBA <i class='fab fa-github fa-fw'></i> Repository:** https://github.com/vmware-samples/vcenter-event-broker-appliance/
