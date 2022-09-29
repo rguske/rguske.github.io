@@ -3,7 +3,7 @@
 
 ## Welcome to Robert Guske's blog
 
-{{< image src="/img/about/about_rguske.png" src-s="/img/about/about_rguske.png" width="500" >}}
+{{< image src="/img/about/rguske_2.png" src-s="/img/about/rguske_2.png" width="500" >}}
 
 ## Contact
 
