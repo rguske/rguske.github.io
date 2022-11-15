@@ -27,9 +27,12 @@ replicas: 2
 ---
 
 apiVersion: v1
-kind: Duty
+kind: Role
 metadata:
-  name: ["Lead Tanzu Emerging Solutions Engineer", "Office of the CTO, Ambassador"]
+  name: Lead Tanzu Emerging Solutions Engineer
+  programs:
+    vmware/internally: Office of the CTO, Ambassador
+    vmware/externally: vExpert
 subject:
   - kind: Experise
     args:
@@ -44,7 +47,7 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current Duty as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
@@ -96,15 +99,13 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 ### vExpert Subprograms
 
-The vExpert Application Modernization subprogram rewards those, who have stronger contributed on this specific topic.
-
-{{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="200" width="300" >}}
-
-{{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="200" width="300" >}}
-
 {{< image src="/img/about/vexpert_modernapps_2022.jpg" src-s="/img/about/vexpert_modernapps_2022.jpg" height="200" width="300" >}}
 
 {{< image src="/img/about/vexpert_avi_2022.png" src-s="/img/about/vexpert_avi_2022.png" height="200" width="300" >}}
+
+{{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="200" width="300" >}}
+
+{{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="200" width="300" >}}
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
 
@@ -123,7 +124,7 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **Breakout** | *VMware Tanzu for Kubernetes Operations - A DevSecOps Dutyplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
+| **Breakout** | *VMware Tanzu for Kubernetes Operations - A DevSecOps roleplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
 
 <center> {{< tweet user="raimes" id="1522215713674436615" >}} </center>
 
@@ -195,7 +196,7 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 {{< image src="/img/about/vmworld2017_staff.jpg" src-s="/img/about/vmworld2017_staff.jpg" caption="VMworld 2017 - Hands-on Labs Staff" width="550" >}}
 
-Providing conference attendees a unique Hands-on Labs experience was part of his Duty and he took it seriously :blush: .
+Providing conference attendees a unique Hands-on Labs experience was part of his role and he took it seriously :blush: .
 
 {{< image src="/img/about/hol_certificate.jpg" src-s="/img/about/hol_certificate.jpg" caption="Certificate of Achievement - VMworld 2017 HOL" width="550" >}}
 
