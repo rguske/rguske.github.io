@@ -27,7 +27,7 @@ replicas: 2
 ---
 
 apiVersion: v1
-kind: Role
+kind: Duty
 metadata:
   name: ["Lead Tanzu Emerging Solutions Engineer", "Office of the CTO, Ambassador"]
 subject:
@@ -44,7 +44,7 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current Duty as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
@@ -54,10 +54,11 @@ He's very keen on cloud native technologies and an active team-member and contri
 
 <center> {{< image src="/img/about/veba_logo_stacked.png" src-s="/img/about/veba_logo_stacked.png" caption="Official VEBA Logo" >}} </center>
 
-- **VMware Event Broker Appliance Homepage:** https://vmweventbroker.io
-- **Official VEBA <i class='fab fa-github fa-fw'></i> Repository:** https://github.com/vmware-samples/vcenter-event-broker-appliance/
+- **Homepage:** https://vmweventbroker.io
+- **<i class='fab fa-github fa-fw'></i> Repository:** https://github.com/vmware-samples/vcenter-event-broker-appliance/
 - **VEBA @ vBrownBag:** https://www.youtube.com/watch?v=tOjp5_qn-Fg&feature=youtu.be
 - **VEBA related articles written by Robert:** https://rguske.github.io/tags/veba/
+- **VEBA related articles written by William Lam:**  https://williamlam.com/?s=veba
 
 ## Achievements
 
@@ -77,7 +78,9 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 {{< image src="/img/about/VMware_cert_dcv_2021.png" src-s="/img/about/VMware_cert_dcv_2021.png" height="200" width="200" >}}
 
-### vExpert
+### VMware vExpert Program
+
+{{< image src="/img/about/vmware-vexpert.png" src-s="/img/about/vmware-vexpert.png" >}}
 
 **Status**: Active 2019 - 2022
 
@@ -89,7 +92,7 @@ Acknowledgement by sharing passion and gained experience with the community.
 The annual VMware vExpert title is given to individuals who have significantly contributed to the community of VMware users over the past year. The title is awarded to individuals (not employers) for their commitment to sharing their knowledge and passion for VMware technology above and beyond their job requirements.
 {{< /admonition >}}
 
-{{< image src="/img/about/vexpert.png" src-s="/img/about/vexpert.png" height="200" width="300" >}}
+<img src="https://vexpert.vmware.com/directory/3288/vexpert-badge-stars.png" width="256" alt="vExpert Badge" title="vExpert Badge" />
 
 ### vExpert Subprograms
 
@@ -101,17 +104,26 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 {{< image src="/img/about/vexpert_modernapps_2022.jpg" src-s="/img/about/vexpert_modernapps_2022.jpg" height="200" width="300" >}}
 
-{{< image src="/img/about/vexpert_avi_2022.jpg" src-s="/img/about/vexpert_avi_2022.jpg" height="200" width="300" >}}
+{{< image src="/img/about/vexpert_avi_2022.png" src-s="/img/about/vexpert_avi_2022.png" height="200" width="300" >}}
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
 
 ## 2022
 
+### VMware Explore Europe 2022
+
+| **Breakout** | **Title** | **Link** |
+|:---: | :---: | :---:|
+| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [#OSB2534EUR](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
+| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [#KUBT2977EUR](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112)
+
+<center> {{< tweet user="vmw_rguske" id="1592138082618609664" >}} </center>
+
 ### VMware UserCon 2022
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **DACH VMUG UserCon** | **SPEAKER** - Presented: *VMware Tanzu for Kubernetes Operations - A DevSecOps Roleplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
+| **Breakout** | *VMware Tanzu for Kubernetes Operations - A DevSecOps Dutyplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
 
 <center> {{< tweet user="raimes" id="1522215713674436615" >}} </center>
 
@@ -119,37 +131,37 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 ### VMworld 2021
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **VMworld {Code} Connect 2021, Virtual Event** | **SPEAKER** - Presented: *DIY Deployment of Event-Driven Automation in vSphere Environments #CODE2762* | https://youtu.be/ieUqfir5Oag |
+| **CODE2762** | *DIY Deployment of Event-Driven Automation in vSphere Environments* | [#CODE2762](https://youtu.be/ieUqfir5Oag) |
 
 <center> {{< youtube ieUqfir5Oag >}} </center>
 
 ### VMware UserCon 2021
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **UserCon Germany 2021, Virtual Event** | **SPEAKER** - Presented (in German): *NSX Advanced Load Balancer (Avi) - Load Balancer für Next Gen und traditionelle Apps*. | https://youtu.be/8fLXPXs23GI |
+| **Breakout** | *NSX Advanced Load Balancer (Avi) - Load Balancer für Next Gen und traditionelle Apps* | [LINK](https://youtu.be/8fLXPXs23GI) |
 
 <center> {{< youtube 8fLXPXs23GI >}} </center>
 
 ## 2020
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **UserCon Germany 2020, Virtual Event** | **CO-SPEAKER** - Presented: *Event-Diven Automation with the VMware Event Broker Appliance - Reloaded*. | https://www.vmug.com/events/all-events/ |
+| **Breakout** | *Event-Diven Automation with the VMware Event Broker Appliance - Reloaded* | Link to the [Agenda](https://www.vmug.com/events/all-events/) |
 
 <center> {{< tweet user="virtMark" id="1338794413103976448" >}} </center>
 
 ## 2019
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **UserCon Germany 2019, Frankfurt** | **SPEAKER** - Presented: *Event-Driven interactions with vSphere using Functions as a Service*. | https://www.vmug.com/events/all-events/ |
+| **Breakout** | *Event-Driven interactions with vSphere using Functions as a Service* | Link to the [Agenda](https://www.vmug.com/events/all-events/) |
 
 <center> {{< tweet user="bbrundert" id="1131196019243442178" >}} </center>
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
 | **Container Days Hamburg 2019** | **STAFF** - at the VMware booth to present the *Modern Apps* strategy and vision. | Tweet below |
 
@@ -157,19 +169,19 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 ## 2018
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
 | **VMworld 2018, Barcelona** | **STAFF** - at the VMware Cloud Foundation booth - VMworld Expo Area. | Tweet below |
 
 <center> {{< tweet user="vmw_rguske" id="1060522730263580672" >}} </center>
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
 | **VMworld 2018, Barcelona** | **STAFF** - Representing the VMware TAM program at the VMworld TAM Customer Central area. | Tweet below |
 
 <center> {{< tweet user="vmw_rguske" id="1059546779744657409" >}} </center>
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
 | **VMware TAM Customer Roundtable 2018, Hamburg** | **HOST & SPEAKER** - An exclusive event for VMware TAM customers. Robert organized and hosted the event as well as presented on it. | Tweet below |
 
@@ -177,13 +189,13 @@ The vExpert Application Modernization subprogram rewards those, who have stronge
 
 ## 2017
 
-| **Activity @** | **Outcome** | **Evidence** |
+| **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
 | **VMworld 2017, Barcelona** | **STAFF** - VMworld Hands-on Labs team-member. | Tweet below |
 
 {{< image src="/img/about/vmworld2017_staff.jpg" src-s="/img/about/vmworld2017_staff.jpg" caption="VMworld 2017 - Hands-on Labs Staff" width="550" >}}
 
-Providing conference attendees a unique Hands-on Labs experience was part of his role and he took it seriously :blush: .
+Providing conference attendees a unique Hands-on Labs experience was part of his Duty and he took it seriously :blush: .
 
 {{< image src="/img/about/hol_certificate.jpg" src-s="/img/about/hol_certificate.jpg" caption="Certificate of Achievement - VMworld 2017 HOL" width="550" >}}
 
