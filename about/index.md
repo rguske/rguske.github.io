@@ -71,6 +71,8 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 {{< image src="/img/about/cka-certified-kubernetes-administrator.png" src-s="/img/about/cka-certified-kubernetes-administrator.png" height="220" width="220" >}}
 
+{{< image src="/img/about/ckad-certified-kubernetes-application-developer.png" src-s="/img/about/ckad-certified-kubernetes-application-developer.png" height="220" width="220" >}}
+
 ---
 
 {{< image src="/img/about/VMware_cert_cna_master_2022.png" src-s="/img/about/VMware_cert_cna_master_2022.png" height="200" width="200" >}}
