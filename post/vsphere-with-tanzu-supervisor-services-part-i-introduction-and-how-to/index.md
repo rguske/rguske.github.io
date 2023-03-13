@@ -5,7 +5,7 @@ To begin with, if you are familiar with vSphere Pods in general, you can skip th
 
 ## Recap - Embed Containers and Kubernetes into vSphere
 
-When VMware [released vSphere 7 back in 2020](https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html), it was announced that under the hood a lot of architectural efforst flowed into VMware's core platform. These **efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens**.
+When VMware [released vSphere 7 back in 2020](https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html), it was announced that under the hood a lot of architectural efforts flowed into VMware's core platform. These **efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens**.
 
 If you aren't new to the "Tanzu-Game", you know that VMware's Kubernetes Runtime [VMware Tanzu Kubernetes Grid (TKG)](https://tanzu.vmware.com/kubernetes-grid) allows you to deploy and lifecycle Kubernetes clusters on vSphere. These functionalities aren't implemented in the vSphere management plane (the vCenter Server).
 
@@ -43,7 +43,7 @@ Furthermore, the following by [Alex Vino](https://vinothecloudone.medium.com/) i
 
 There's one small thing that is currently (vSphere 7.0 Ux and 8.0) still a requirement for having vSphere Pods running on vSphere. vSphere Pods can only be used in combination with VMware NSX.
 
-> Didn't he just said *"[...] one small thing [...]"* ?
+> Didn't he just say *"[...] one small thing [...]"* ?
 
 Okay, the dependency on NSX isn't really a small thing but please keep in mind that having NSX in place is a huge valuable addition that provides additional networking and security capabilities to vSphere environments such as e.g. Micro-Segmentation, Service-Insertion or Multi-Cloud connectivity.
 
@@ -57,9 +57,9 @@ In the vSphere Client the following is stated:
 
 > *Supervisor Services is a platform for managing core infrastructure components, such as virtual machines. Application teams are able to deploy instances of Supervisor Services within their own Namespaces using industry standard tools and practices.*
 
-The description is baysically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declaritive way via the exposed Kubernetes API (e.g. `kubectl create -f resource.yaml`).
+The description is baysically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declarative way via the exposed Kubernetes API (e.g. `kubectl apply -f resource.yaml`).
 
-Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corrosponding Supervisor Services for these resources are e.g. the **VM Service** and the **Tanzu Kubernetes Grid Service**.
+Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corresponding Supervisor Services for these resources are e.g. the **VM Service** and the **Tanzu Kubernetes Grid Service**.
 
 *Figure III* below shows the VM Service tile in the Workload Management section from where you can **MANAGE** your Virtual Machine Classes.
 
@@ -100,7 +100,7 @@ All the listed solutions are **deployed as vSphere Pods**. Using vSphere Pods pr
 
 ### Ingress Controller Service - Contour
 
-For the sake of this blog post, I'm going to describe first how to deploy the *Ingress Controller Service Contour*. There are several reasons for this. One is, that this Supervisor Service is required for the *Cloud Native Registry Services - Harbor*, which is definitely worth to check out and which deployment I'm going to describe next.
+For the sake of this blog post, I'm going to describe first how to deploy the *Ingress Controller Service Contour*. There are several reasons for this. One is, that this Supervisor Service is required for the *Cloud Native Registry Services - Harbor*, which is definitely worth checking out and a deployment I'm going to describe next.
 
 Another reason is, that I wanted to have Contour serving as an Ingress Controller my applications which are deployed and running as vSphere Pods natively on my vSphere cluster. Part II of this blog series is covering this use case.
 
@@ -124,7 +124,7 @@ A successful upload and a verification of the file and Package will be shown as 
 
 {{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_3.png" caption="Figure VII: *Register Contour Service*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_3.png" >}}
 
-Click on **FINISH** to start the registration of the new Supervisor Service. A green banner will let you know that the registration on the vCenter Server was successfully.
+Click on **FINISH** to start the registration of the new Supervisor Service. A green banner will let you know that the registration on the vCenter Server was successfull.
 
 {{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_4.png" caption="Figure VIII: Successful Registration on the vCenter Server" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_4.png" >}}
 

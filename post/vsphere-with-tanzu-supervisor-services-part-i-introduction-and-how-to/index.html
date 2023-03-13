@@ -6,18 +6,18 @@
         <meta name="robots" content="noodp" />
         <title>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" />
 <meta property="og:description" content="To begin with, if you are familiar with vSphere Pods in general, you can skip the first chapter of this post and directly go to the chapter Supervisor Services.
-Recap - Embed Containers and Kubernetes into vSphere When VMware released vSphere 7 back in 2020, it was announced that under the hood a lot of architectural efforst flowed into VMware&rsquo;s core platform. These efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens." />
+Recap - Embed Containers and Kubernetes into vSphere When VMware released vSphere 7 back in 2020, it was announced that under the hood a lot of architectural efforts flowed into VMware&rsquo;s core platform. These efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-03-13T16:30:46+01:00" />
-<meta property="article:modified_time" content="2023-03-13T16:30:46+01:00" /><meta property="og:site_name" content="My cool site" />
+<meta property="article:modified_time" content="2023-03-13T16:45:29+01:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
 
 <meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"/>
 <meta name="twitter:description" content="To begin with, if you are familiar with vSphere Pods in general, you can skip the first chapter of this post and directly go to the chapter Supervisor Services.
-Recap - Embed Containers and Kubernetes into vSphere When VMware released vSphere 7 back in 2020, it was announced that under the hood a lot of architectural efforst flowed into VMware&rsquo;s core platform. These efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens."/>
+Recap - Embed Containers and Kubernetes into vSphere When VMware released vSphere 7 back in 2020, it was announced that under the hood a lot of architectural efforts flowed into VMware&rsquo;s core platform. These efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="prev" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -30,8 +30,8 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/"
-        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2023 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/","datePublished": "2023-03-13T16:30:46+01:00","dateModified": "2023-03-13T16:30:46+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2022 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/","datePublished": "2023-03-13T16:30:46+01:00","dateModified": "2023-03-13T16:45:29+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -104,7 +104,7 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/security/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Security</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-13">2023-03-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2023 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-13">2023-03-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2022 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -148,7 +148,7 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
 </nav></div>
             </div><div class="content" id="content"><p>To begin with, if you are familiar with vSphere Pods in general, you can skip the first chapter of this post and directly go to the chapter <a href="#supervisor-services" rel="">Supervisor Services</a>.</p>
 <h2 id="recap---embed-containers-and-kubernetes-into-vsphere">Recap - Embed Containers and Kubernetes into vSphere</h2>
-<p>When VMware <a href="https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html" target="_blank" rel="noopener noreffer ">released vSphere 7 back in 2020</a>, it was announced that under the hood a lot of architectural efforst flowed into VMware&rsquo;s core platform. These <strong>efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens</strong>.</p>
+<p>When VMware <a href="https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html" target="_blank" rel="noopener noreffer ">released vSphere 7 back in 2020</a>, it was announced that under the hood a lot of architectural efforts flowed into VMware&rsquo;s core platform. These <strong>efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens</strong>.</p>
 <p>If you aren&rsquo;t new to the &ldquo;Tanzu-Game&rdquo;, you know that VMware&rsquo;s Kubernetes Runtime <a href="https://tanzu.vmware.com/kubernetes-grid" target="_blank" rel="noopener noreffer ">VMware Tanzu Kubernetes Grid (TKG)</a> allows you to deploy and lifecycle Kubernetes clusters on vSphere. These functionalities aren&rsquo;t implemented in the vSphere management plane (the vCenter Server).</p>
 <p>Instead of, VMware is leveraging the concept of a Kubernetes control plane cluster which in <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer ">vSphere with Tanzu</a> aka TKGS is called a Supervisor Cluster (<em>Figure I &amp; II</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" data-sub-html="<h2>Figure I: Supervisor Control Plane Cluster VMs</h2>">
@@ -200,7 +200,7 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
 <h3 id="a-requirement-to-run-vsphere-pods">A Requirement to run vSphere Pods</h3>
 <p>There&rsquo;s one small thing that is currently (vSphere 7.0 Ux and 8.0) still a requirement for having vSphere Pods running on vSphere. vSphere Pods can only be used in combination with VMware NSX.</p>
 <blockquote>
-<p>Didn&rsquo;t he just said <em>&quot;[&hellip;] one small thing [&hellip;]&quot;</em> ?</p>
+<p>Didn&rsquo;t he just say <em>&quot;[&hellip;] one small thing [&hellip;]&quot;</em> ?</p>
 </blockquote>
 <p>Okay, the dependency on NSX isn&rsquo;t really a small thing but please keep in mind that having NSX in place is a huge valuable addition that provides additional networking and security capabilities to vSphere environments such as e.g. Micro-Segmentation, Service-Insertion or Multi-Cloud connectivity.</p>
 <p>However, a requirement can be a <strong>subject to change</strong>, can&rsquo;t it? 😉 &hellip;</p>
@@ -210,8 +210,8 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
 <blockquote>
 <p><em>Supervisor Services is a platform for managing core infrastructure components, such as virtual machines. Application teams are able to deploy instances of Supervisor Services within their own Namespaces using industry standard tools and practices.</em></p>
 </blockquote>
-<p>The description is baysically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declaritive way via the exposed Kubernetes API (e.g. <code>kubectl create -f resource.yaml</code>).</p>
-<p>Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corrosponding Supervisor Services for these resources are e.g. the <strong>VM Service</strong> and the <strong>Tanzu Kubernetes Grid Service</strong>.</p>
+<p>The description is baysically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declarative way via the exposed Kubernetes API (e.g. <code>kubectl apply -f resource.yaml</code>).</p>
+<p>Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corresponding Supervisor Services for these resources are e.g. the <strong>VM Service</strong> and the <strong>Tanzu Kubernetes Grid Service</strong>.</p>
 <p><em>Figure III</em> below shows the VM Service tile in the Workload Management section from where you can <strong>MANAGE</strong> your Virtual Machine Classes.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0b.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0b.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0b.png" data-sub-html="<h2>Figure III: Supervisor Service - VM Service</h2>">
         <img
@@ -276,7 +276,7 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
 </ul>
 <p>All the listed solutions are <strong>deployed as vSphere Pods</strong>. Using vSphere Pods provides greater security by isolating related workloads within a defined boundary. Therefore, it reduces the risk of cross-contamination of workloads. Furthermore, the ability to deploy and manage applications as a single entity (Pod) enhances efficiency, while the use of Distributed Resource Scheduling ensures that workloads are optimally placed across the cluster.</p>
 <h3 id="ingress-controller-service---contour">Ingress Controller Service - Contour</h3>
-<p>For the sake of this blog post, I&rsquo;m going to describe first how to deploy the <em>Ingress Controller Service Contour</em>. There are several reasons for this. One is, that this Supervisor Service is required for the <em>Cloud Native Registry Services - Harbor</em>, which is definitely worth to check out and which deployment I&rsquo;m going to describe next.</p>
+<p>For the sake of this blog post, I&rsquo;m going to describe first how to deploy the <em>Ingress Controller Service Contour</em>. There are several reasons for this. One is, that this Supervisor Service is required for the <em>Cloud Native Registry Services - Harbor</em>, which is definitely worth checking out and a deployment I&rsquo;m going to describe next.</p>
 <p>Another reason is, that I wanted to have Contour serving as an Ingress Controller my applications which are deployed and running as vSphere Pods natively on my vSphere cluster. Part II of this blog series is covering this use case.</p>
 <p>📝 <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></p>
 <h4 id="add-new-service---contour">Add New Service - Contour</h4>
@@ -315,7 +315,7 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_3.png" />
     </a><figcaption class="image-caption">Figure VII: <em>Register Contour Service</em></figcaption>
     </figure>
-<p>Click on <strong>FINISH</strong> to start the registration of the new Supervisor Service. A green banner will let you know that the registration on the vCenter Server was successfully.</p>
+<p>Click on <strong>FINISH</strong> to start the registration of the new Supervisor Service. A green banner will let you know that the registration on the vCenter Server was successfull.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_4.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_4.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_4.png" data-sub-html="<h2>Figure VIII: Successful Registration on the vCenter Server</h2>">
         <img
             class="lazyload"
@@ -564,7 +564,8 @@ Recap - Embed Containers and Kubernetes into vSphere When VMware released vSpher
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-03-13</span>
+                <span>Updated on 2023-03-13&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/7c43727e2682f933e56916d6629c23ab15f3f71f" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 7c43727e2682f933e56916d6629c23ab15f3f71f: add new post tkgs supervisor services part 1">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>7c43727</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
