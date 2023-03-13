@@ -243,7 +243,7 @@ Ultimately, you'd like to establish trust with the new Harbor instance in order 
 
 ## Conclusion Supervisor Services
 
-In conclusion, the Supervisor Services in vSphere with Tanzu (TKGS) provide a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. These teams can consume these services using common tools and approaches, and deploy instances of these services in their own vSphere Namespaces.
+In conclusion, the Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. These teams can consume these services using common tools and approaches, and deploy instances of these services in their own vSphere Namespaces.
 
 ## Resources
 
