@@ -257,7 +257,3 @@ In conclusion, the Supervisor Services in vSphere with Tanzu (TKGS) offering a m
 - [Supervisor Services Catalog](https://github.com/vsphere-tmm/Supervisor-Services)
 - [Establishing Trust with the Harbor Supervisor Service](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7)
 - [vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/)
-
-## Credits
-
-Image by <a href="https://pixabay.com/users/geralt-9301/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3143432">Gerd Altmann</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3143432">Pixabay</a>
