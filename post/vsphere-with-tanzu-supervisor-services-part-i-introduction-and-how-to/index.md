@@ -57,7 +57,7 @@ In the vSphere Client the following is stated:
 
 > *Supervisor Services is a platform for managing core infrastructure components, such as virtual machines. Application teams are able to deploy instances of Supervisor Services within their own Namespaces using industry standard tools and practices.*
 
-The description is baysically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declarative way via the exposed Kubernetes API (e.g. `kubectl apply -f resource.yaml`).
+The description is basically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declarative way via the exposed Kubernetes API (e.g. `kubectl apply -f resource.yaml`).
 
 Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corresponding Supervisor Services for these resources are e.g. the **VM Service** and the **Tanzu Kubernetes Grid Service**.
 
@@ -100,7 +100,9 @@ All the listed solutions are **deployed as vSphere Pods**. Using vSphere Pods pr
 
 ### Ingress Controller Service - Contour
 
-For the sake of this blog post, I'm going to describe first how to deploy the *Ingress Controller Service Contour*. There are several reasons for this. One is, that this Supervisor Service is required for the *Cloud Native Registry Services - Harbor*, which is definitely worth checking out and a deployment I'm going to describe next.
+For the sake of this blog post, I'm going to describe first how to deploy the *Ingress Controller Service Contour*. There are several reasons for this. One is, that this Supervisor Service is required for the *Cloud Native Registry Services - Harbor*, which is definitely worth checking out and a deployment I'm going to describe following the Contour installation.
+
+**Hint:** Both mentioned Supervisor Services are supported on vSphere 8.0 and later.
 
 Another reason is, that I wanted to have Contour serving as an Ingress Controller my applications which are deployed and running as vSphere Pods natively on my vSphere cluster. Part II of this blog series is covering this use case.
 
@@ -257,3 +259,7 @@ In conclusion, the Supervisor Services in vSphere with Tanzu (TKGS) offering a m
 - [Supervisor Services Catalog](https://github.com/vsphere-tmm/Supervisor-Services)
 - [Establishing Trust with the Harbor Supervisor Service](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7)
 - [vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/)
+
+## Credits
+
+Big **THANKS** to [Andreas Marqvardsen](https://blog.andreasm.io/) for reviewing this article :pray:
