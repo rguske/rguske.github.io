@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-03-13T16:30:46+01:00" />
-<meta property="article:modified_time" content="2023-03-14T09:17:12+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-03-15T09:23:29+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/"
-        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2041 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/","datePublished": "2023-03-13T16:30:46+01:00","dateModified": "2023-03-14T09:17:12+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2253 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/","datePublished": "2023-03-13T16:30:46+01:00","dateModified": "2023-03-15T09:23:29+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -102,8 +102,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/security/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Security</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-13">2023-03-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2041 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-13">2023-03-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2253 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;11 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -202,6 +202,16 @@
 </blockquote>
 <p>Okay, the dependency on NSX isn&rsquo;t really a small thing but please keep in mind that having NSX in place is a huge valuable addition that provides additional networking and security capabilities to vSphere environments such as e.g. Micro-Segmentation, Service-Insertion or Multi-Cloud connectivity.</p>
 <p>However, a requirement can be a <strong>subject to change</strong>, can&rsquo;t it? 😉 &hellip;</p>
+<div class="details admonition success open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-check-circle fa-fw" aria-hidden="true"></i>Update March 2023, 15th<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>The changes on the NSX requirement were announced shortly after I published this article. Now, with vSphere 8 Update 1 the Supervisor Services can be used with the vSphere Distributed Switch.</p>
+<p><em>Source: <a href="https://core.vmware.com/resource/whats-new-vsphere-8-update-1#sec25426-sub4" target="_blank" rel="noopener noreffer ">What&rsquo;s New in vSphere 8 Update 1?</a></em></p>
+</div>
+        </div>
+    </div>
 <h2 id="supervisor-services">Supervisor Services</h2>
 <p>So, what are Supervisor Services in vSphere with Tanzu and how fits vSphere Pods into the picture?</p>
 <p>In the vSphere Client the following is stated:</p>
@@ -401,7 +411,7 @@
     </a><figcaption class="image-caption">Figure X: Install Contour on Supervisor</figcaption>
     </figure>
 <p>After pressing <strong>OK</strong>, you&rsquo;ll notice the deployment of vSphere Pods in a dedicated vSphere Namespace named <code>svc-contour-domain-c8</code> (<em>Figure XI</em>).</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" data-sub-html="<h2>Figure XI: Contour Deployment as vSphere Pods</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" data-sub-html="<h2>Figure XII: Contour Deployment as vSphere Pods</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -409,9 +419,66 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" />
-    </a><figcaption class="image-caption">Figure XI: <em>Contour Deployment as vSphere Pods</em></figcaption>
+    </a><figcaption class="image-caption">Figure XII: <em>Contour Deployment as vSphere Pods</em></figcaption>
     </figure>
-<p>Besides watching the installation of the vSphere Pods in the vSphere Client, it&rsquo;s of course also possible checking the installation the Kubernetes-way via the exposed Kubernetes API of the Supervisor.</p>
+<p>By browsing to the vSphere Namespace, a lot of valuable service/application deployment specific information can be picked up from here without having to interact with Kubernetes on the terminal (<code>kubectl get [...]</code>).</p>
+<p>Information such as the requested and by the NSX Load Balancer assigned L4 Load Balancer IP address for the Envoy Service (<em>Figure XII</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png" data-sub-html="<h2>Figure XII: Assigned External IP for Envoy</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png" />
+    </a><figcaption class="image-caption">Figure XII: Assigned External IP for Envoy</figcaption>
+    </figure>
+<p>This IP address will be used for creating your application DNS A-Records like e.g. shown in <em>Table I</em>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Name</th>
+<th style="text-align:center">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">app1.mydomain.com</td>
+<td style="text-align:center">10.15.8.9</td>
+</tr>
+<tr>
+<td style="text-align:center">app2.mydomain.com</td>
+<td style="text-align:center">10.15.8.9</td>
+</tr>
+<tr>
+<td style="text-align:center">app3.mydomain.com</td>
+<td style="text-align:center">10.15.8.9</td>
+</tr>
+</tbody>
+</table>
+<center><i> Table I: Application DNS A-Records </i></center>
+<p>Further deployment specific information can be gathered at the vSphere Namespace as well. For example, if you need to know if any <strong>Persistent Volume Claims</strong> exists, go to the <strong>Storage</strong> section. If you need to know if <strong>Network Policies</strong> are created or which <strong>Endpoints</strong> exists, go to <strong>Network</strong>. If you are interested about <strong>vSphere Pods</strong>, <strong>Deployments</strong>, <strong>Daemon Sets</strong>, <strong>Stateful Sets</strong>, etc. go to <strong>Compute</strong> and select the specific category (<em>Figure XIII</em> &amp; <em>Figure XIV</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" data-sub-html="<h2>Figure XIII: Application Deployment specific Information</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" />
+    </a><figcaption class="image-caption">Figure XIII: Application Deployment specific Information</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png" data-sub-html="<h2>Figure XIV: Display Pod YAML File in vSphere</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png" />
+    </a><figcaption class="image-caption">Figure XIV: Display Pod YAML File in vSphere</figcaption>
+    </figure>
+<p>Of course, you can also check the installation the Kubernetes-way via the exposed Kubernetes API of the Supervisor.</p>
 <p>Login with the SSO Domain Administrator credentials using the <code>kubectl vsphere login</code> command.</p>
 <p><code>kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@cpod-nsxv8.az-stc.cloud-garage.net --server=sv1-az1.cpod-nsxv8.az-stc.cloud-garage.net</code></p>
 <p>Verify the deployment:</p>
@@ -459,8 +526,8 @@
 </span></span><span class="line"><span class="cl">service/envoy     LoadBalancer   10.96.2.14    10.15.8.9     80:30077/TCP,443:32173/TCP   53d
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on <strong>Actions</strong> (<em>Figure XII</em>).</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-sub-html="<h2>Figure XII: Lifecycle-Management of a Supervisor Service</h2>">
+</div><p>The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on <strong>Actions</strong> (<em>Figure XV</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-sub-html="<h2>Figure XV: Lifecycle-Management of a Supervisor Service</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -468,12 +535,12 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" />
-    </a><figcaption class="image-caption">Figure XII: <em>Lifecycle-Management of a Supervisor Service</em></figcaption>
+    </a><figcaption class="image-caption">Figure XV: <em>Lifecycle-Management of a Supervisor Service</em></figcaption>
     </figure>
 <h3 id="cloud-native-registry-service---harbor">Cloud Native Registry Service - Harbor</h3>
 <p>The availability of this Supervisor Service exited me the most. Now, with having Harbor provided via the Supervisor Service Catalog (provided and maintained by VMware!), there&rsquo;s really NO easier way of getting Harbor installed and lifecycled.</p>
-<p>Yes, one can say that installing Harbor via the <code>Embedded Harbor registry</code> feature (<em>Figure XIII</em>) is still the easiest way, but due to the lack of features in this particular Harbor version as well as the differences in terms of Day-2 operations, it&rsquo;s not comparable at all. I&rsquo;d almost say, it&rsquo;s obsolete!</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" data-sub-html="<h2>Figure XIII: vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature</h2>">
+<p>Yes, one can say that installing Harbor via the <code>Embedded Harbor registry</code> feature (<em>Figure XVI</em>) is still the easiest way, but due to the lack of features in this particular Harbor version as well as the differences in terms of Day-2 operations, it&rsquo;s not comparable at all. I&rsquo;d almost say, it&rsquo;s obsolete!</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" data-sub-html="<h2>Figure XVI: vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -481,13 +548,13 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" />
-    </a><figcaption class="image-caption">Figure XIII: <em>vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature</em></figcaption>
+    </a><figcaption class="image-caption">Figure XVI: <em>vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature</em></figcaption>
     </figure>
 <h4 id="add-new-service---harbor">Add New Service - Harbor</h4>
 <p>Installing the Harbor Supervisor Service is done by exactly the same way as it is for Contour.</p>
 <p><strong>Reminder:</strong> The Supervisor Service Contour is required for the Harbor Service.</p>
 <p>Download the Package manifest file <code>harbor.yml</code> and the <code>harbor-data-values.yml</code> also via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#cloud-native-registry" target="_blank" rel="noopener noreffer ">Supervisor Catalog repository</a>. Upload the <code>harbor.yml</code> to start with the Service registration.</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-sub-html="<h2>Figure XIV: Upload Package Manifest File for Harbor</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-sub-html="<h2>Figure XVII: Upload Package Manifest File for Harbor</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -495,10 +562,10 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" />
-    </a><figcaption class="image-caption">Figure XIV: <em>Upload Package Manifest File for Harbor</em></figcaption>
+    </a><figcaption class="image-caption">Figure XVII: <em>Upload Package Manifest File for Harbor</em></figcaption>
     </figure>
 <p>Open the <code>harbor-data-values.yml</code> in your preferred editor and adjust the values properly with your data. Copy the data and provide it in the next window after clicking on <strong>Install on Supervisors</strong>.</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" data-sub-html="<h2>Figure XV: Register Harbor Service</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" data-sub-html="<h2>Figure XVIII: Register Harbor Service</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -506,9 +573,9 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" />
-    </a><figcaption class="image-caption">Figure XV: <em>Register Harbor Service</em></figcaption>
+    </a><figcaption class="image-caption">Figure XVIII: <em>Register Harbor Service</em></figcaption>
     </figure>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" data-sub-html="<h2>Figure XVI: Install Harbor on Supervisor</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" data-sub-html="<h2>Figure XIX: Install Harbor on Supervisor</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -516,11 +583,11 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" />
-    </a><figcaption class="image-caption">Figure XVI: <em>Install Harbor on Supervisor</em></figcaption>
+    </a><figcaption class="image-caption">Figure XIX: <em>Install Harbor on Supervisor</em></figcaption>
     </figure>
 <p>If you know both platforms well, vSphere and Kubernetes, following the deployment process and to imagine what happens under the hood is quite exiting, IMO.</p>
 <p><em>Kubernetes Pods - Virtual Machines, Persistent Volumes - VMDKs, Pod Networking - NSX, exposed Services - NSX&hellip;</em> 🤓</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-sub-html="<h2>Figure XVII: Supervisor Service Harbor Deployment</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-sub-html="<h2>Figure XX: Supervisor Service Harbor Deployment</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -528,10 +595,10 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" />
-    </a><figcaption class="image-caption">Figure XVII: <em>Supervisor Service Harbor Deployment</em></figcaption>
+    </a><figcaption class="image-caption">Figure XX: <em>Supervisor Service Harbor Deployment</em></figcaption>
     </figure>
 <p>After a short period, Harbor is deployed and ready to serve your DevOps and AppDev teams with a centralized Container Image Registry (Supervisor) Service.</p>
-<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" data-sub-html="<h2>Figure XVIII: Accessing the Harbor Portal</h2>">
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" data-sub-html="<h2>Figure XXI: Accessing the Harbor Portal</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -539,7 +606,7 @@
             data-srcset="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png 1.5x, /img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png 2x"
             data-sizes="auto"
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" />
-    </a><figcaption class="image-caption">Figure XVIII: <em>Accessing the Harbor Portal</em></figcaption>
+    </a><figcaption class="image-caption">Figure XXI: <em>Accessing the Harbor Portal</em></figcaption>
     </figure>
 <p>Ultimately, you&rsquo;d like to establish trust with the new Harbor instance in order to enable Kubernetes clusters pulling container images from Harbor. See: <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7" target="_blank" rel="noopener noreffer ">Establishing Trust with the Harbor Supervisor Service</a></p>
 <h2 id="conclusion-supervisor-services">Conclusion Supervisor Services</h2>
@@ -563,8 +630,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-03-14&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/c119145c52705a825064d5236fc11bce76d6e039" target="_blank" title="commit by Robert Guske(rguske@vmware.com) c119145c52705a825064d5236fc11bce76d6e039: removed credit section in supervisor post 1">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>c119145</a></span>
+                <span>Updated on 2023-03-15&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/ad1a92fdbcecd3dbc4bd05556c64ee32c4366837" target="_blank" title="commit by Robert Guske(rguske@vmware.com) ad1a92fdbcecd3dbc4bd05556c64ee32c4366837: added vsphere support statement to supervisor post 1">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ad1a92f</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

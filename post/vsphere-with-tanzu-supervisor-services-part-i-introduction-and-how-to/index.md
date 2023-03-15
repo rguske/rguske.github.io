@@ -49,6 +49,12 @@ Okay, the dependency on NSX isn't really a small thing but please keep in mind t
 
 However, a requirement can be a **subject to change**, can't it? :wink: ...
 
+{{< admonition success "Update March 2023, 15th" true >}}
+The changes on the NSX requirement were announced shortly after I published this article. Now, with vSphere 8 Update 1 the Supervisor Services can be used with the vSphere Distributed Switch.
+
+*Source: [What's New in vSphere 8 Update 1?](https://core.vmware.com/resource/whats-new-vsphere-8-update-1#sec25426-sub4)*
+{{< /admonition >}}
+
 ## Supervisor Services
 
 So, what are Supervisor Services in vSphere with Tanzu and how fits vSphere Pods into the picture?
@@ -171,9 +177,31 @@ Nothing fancy, only the basic configuration for Contour. In the **Install Contou
 
 After pressing **OK**, you'll notice the deployment of vSphere Pods in a dedicated vSphere Namespace named `svc-contour-domain-c8` (*Figure XI*).
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" caption="Figure XI: *Contour Deployment as vSphere Pods*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" caption="Figure XII: *Contour Deployment as vSphere Pods*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_8.png" >}}
 
-Besides watching the installation of the vSphere Pods in the vSphere Client, it's of course also possible checking the installation the Kubernetes-way via the exposed Kubernetes API of the Supervisor.
+By browsing to the vSphere Namespace, a lot of valuable service/application deployment specific information can be picked up from here without having to interact with Kubernetes on the terminal (`kubectl get [...]`).
+
+Information such as the requested and by the NSX Load Balancer assigned L4 Load Balancer IP address for the Envoy Service (*Figure XII*).
+
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a.png" caption="Figure XII: Assigned External IP for Envoy" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9a" >}}
+
+This IP address will be used for creating your application DNS A-Records like e.g. shown in *Table I*.
+
+| Name | Data |
+| :--: | :--: |
+| app1.mydomain.com | 10.15.8.9 |
+| app2.mydomain.com | 10.15.8.9 |
+| app3.mydomain.com | 10.15.8.9 |
+
+<center><i> Table I: Application DNS A-Records </i></center>
+
+Further deployment specific information can be gathered at the vSphere Namespace as well. For example, if you need to know if any **Persistent Volume Claims** exists, go to the **Storage** section. If you need to know if **Network Policies** are created or which **Endpoints** exists, go to **Network**. If you are interested about **vSphere Pods**, **Deployments**, **Daemon Sets**, **Stateful Sets**, etc. go to **Compute** and select the specific category (*Figure XIII* & *Figure XIV*).
+
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" caption="Figure XIII: Application Deployment specific Information" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b" >}}
+
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c.png" caption="Figure XIV: Display Pod YAML File in vSphere" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9c" >}}
+
+Of course, you can also check the installation the Kubernetes-way via the exposed Kubernetes API of the Supervisor.
 
 Login with the SSO Domain Administrator credentials using the `kubectl vsphere login` command.
 
@@ -203,17 +231,17 @@ service/contour   ClusterIP      10.96.0.164   <none>        8001/TCP           
 service/envoy     LoadBalancer   10.96.2.14    10.15.8.9     80:30077/TCP,443:32173/TCP   53d
 ```
 
-The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on **Actions** (*Figure XII*).
+The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on **Actions** (*Figure XV*).
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" caption="Figure XII: *Lifecycle-Management of a Supervisor Service*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" caption="Figure XV: *Lifecycle-Management of a Supervisor Service*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" >}}
 
 ### Cloud Native Registry Service - Harbor
 
 The availability of this Supervisor Service exited me the most. Now, with having Harbor provided via the Supervisor Service Catalog (provided and maintained by VMware!), there's really NO easier way of getting Harbor installed and lifecycled.
 
-Yes, one can say that installing Harbor via the `Embedded Harbor registry` feature (*Figure XIII*) is still the easiest way, but due to the lack of features in this particular Harbor version as well as the differences in terms of Day-2 operations, it's not comparable at all. I'd almost say, it's obsolete!
+Yes, one can say that installing Harbor via the `Embedded Harbor registry` feature (*Figure XVI*) is still the easiest way, but due to the lack of features in this particular Harbor version as well as the differences in terms of Day-2 operations, it's not comparable at all. I'd almost say, it's obsolete!
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" caption="Figure XIII: *vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" caption="Figure XVI: *vSphere with Tanzu (TKGS) - Embedded Harbor Registry Feature*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9a.png" >}}
 
 #### Add New Service - Harbor
 
@@ -223,23 +251,23 @@ Installing the Harbor Supervisor Service is done by exactly the same way as it i
 
 Download the Package manifest file `harbor.yml` and the `harbor-data-values.yml` also via the [Supervisor Catalog repository](https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#cloud-native-registry). Upload the `harbor.yml` to start with the Service registration.
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" caption="Figure XIV: *Upload Package Manifest File for Harbor*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" caption="Figure XVII: *Upload Package Manifest File for Harbor*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" >}}
 
 Open the `harbor-data-values.yml` in your preferred editor and adjust the values properly with your data. Copy the data and provide it in the next window after clicking on **Install on Supervisors**.
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" caption="Figure XV: *Register Harbor Service*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" caption="Figure XVIII: *Register Harbor Service*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_14.png" >}}
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" caption="Figure XVI: *Install Harbor on Supervisor*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" caption="Figure XIX: *Install Harbor on Supervisor*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_15.png" >}}
 
 If you know both platforms well, vSphere and Kubernetes, following the deployment process and to imagine what happens under the hood is quite exiting, IMO.
 
 *Kubernetes Pods - Virtual Machines, Persistent Volumes - VMDKs, Pod Networking - NSX, exposed Services - NSX...* :nerd:
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" caption="Figure XVII: *Supervisor Service Harbor Deployment*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" caption="Figure XX: *Supervisor Service Harbor Deployment*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" >}}
 
 After a short period, Harbor is deployed and ready to serve your DevOps and AppDev teams with a centralized Container Image Registry (Supervisor) Service.
 
-{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" caption="Figure XVIII: *Accessing the Harbor Portal*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" caption="Figure XXI: *Accessing the Harbor Portal*" src-s="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" >}}
 
 Ultimately, you'd like to establish trust with the new Harbor instance in order to enable Kubernetes clusters pulling container images from Harbor. See: [Establishing Trust with the Harbor Supervisor Service](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7)
 
