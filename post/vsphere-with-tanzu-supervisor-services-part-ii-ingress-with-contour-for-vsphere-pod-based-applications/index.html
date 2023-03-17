@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications - Robert Guske</title><meta name="Description" content="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."><meta property="og:title" content="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications" />
+<meta property="og:description" content="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-17T11:30:30+01:00" />
+<meta property="article:modified_time" content="2023-03-15T13:01:48+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"/>
+<meta name="twitter:description" content="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications\/"
+        },"genre": "posts","keywords": "NSX, Contour, VMware, Extensibility, CloudNative, Kubernetes","wordcount":  2402 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications\/","datePublished": "2023-03-17T11:30:30+01:00","dateModified": "2023-03-15T13:01:48+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "In this second part, I'm going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I'm going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/security/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Security</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-17">2023-03-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2402 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;12 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/supervisor-services-2-cover.png"
+        data-srcset="/img/supervisor-services-2-cover.png, /img/supervisor-services-2-cover.png 1.5x, /img/supervisor-services-2-cover.png 2x"
+        data-sizes="auto"
+        alt="/img/supervisor-services-2-cover.png"
+        title="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#recap-and-intro">Recap and Intro</a></li>
+    <li><a href="#kubernetes-ingress-controller-service">Kubernetes Ingress Controller Service</a></li>
+    <li><a href="#example-web-shop-application">Example Web-Shop Application</a>
+      <ul>
+        <li><a href="#create-a-vsphere-namespace">Create a vSphere Namespace</a></li>
+        <li><a href="#deploy-the-application">Deploy the Application</a>
+          <ul>
+            <li><a href="#application-deployment">Application Deployment</a></li>
+            <li><a href="#application-service">Application Service</a></li>
+            <li><a href="#application-ingress">Application Ingress</a></li>
+          </ul>
+        </li>
+        <li><a href="#upstream-connect-error-or-disconnectreset-before-headers">Upstream Connect Error or Disconnect/Reset before Headers</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a>
+          <ul>
+            <li><a href="#internal-to-external-communication">Internal to External Communication</a></li>
+            <li><a href="#pod-to-pod-communication">Pod to Pod Communication</a></li>
+          </ul>
+        </li>
+        <li><a href="#application-network-policy">Application Network Policy</a></li>
+      </ul>
+    </li>
+    <li><a href="#credits">Credits</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="recap-and-intro">Recap and Intro</h2>
+<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> of my blog series on the <em>Supervisor Services in vSphere with Tanzu (TKGS)</em>, I introdcued the overall concept, the idea, the requirements as well as how to register and install a new Supervisor Service in vSphere.</p>
+<p>Read <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#supervisor-services" target="_blank" rel="noopener noreffer ">HERE</a></p>
+<p>Furthermore, I covered the feature vSphere Pods and how they come to beneficial use for the Supervisor Services.</p>
+<p>Read <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#vsphere-pods" target="_blank" rel="noopener noreffer ">HERE</a></p>
+<p>In this second part, I&rsquo;m going to demonstrate how the <em>Kubernetes Ingress Controller Service (Contour)</em> will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&rsquo;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS.</p>
+<h2 id="kubernetes-ingress-controller-service">Kubernetes Ingress Controller Service</h2>
+<p>The <em>Kubernetes Ingress Controller Service</em> is already installed in my TKGS with NSX environment. If you haven&rsquo;t installed a Supervisor Service from the associated Catalog before, and you also skipped reading Part I of this series, I&rsquo;d recommend making yourself familiar with the installation first (easy 👍).</p>
+<p>Start reading <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---contour" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>Important to know/remember is, that when I installed the Contour Service on my Supervisor Cluster, the Envoy Proxy got an IP address assigned by the NSX Load Balancer. This IP address, which is shown below, will be used to create the DNS record for my example application.</p>
+<ol>
+<li>In the vSphere Client - vSphere Namespace <code>svc-contour-domain-c8</code>:</li>
+</ol>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png" data-sub-html="<h2>Figure I: Envoy Service | External IP Address</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0a.png" />
+    </a><figcaption class="image-caption">Figure I: Envoy Service | External IP Address</figcaption>
+    </figure>
+<ol start="2">
+<li>On the terminal - using <code>kubectl</code>:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n svc-contour-domain-c8 get svc envoy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME    TYPE           CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
+</span></span><span class="line"><span class="cl">envoy   LoadBalancer   10.96.2.14   10.15.8.9     80:30077/TCP,443:32173/TCP   58d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="example-web-shop-application">Example Web-Shop Application</h2>
+<p>To begin with, we have to pick an application of our choice which works with an Ingress configuration. These applications mostly provide an user interface via a web browser and using Ingress to route traffic to their backend services.</p>
+<p>A couple of popular and demo-proven example applications like e.g. Yelb or the ACME Fitness app can be found on <a href="https://williamlam.com/" target="_blank" rel="noopener noreffer ">William Lam&rsquo;s</a> blog post: <a href="https://williamlam.com/2020/06/interesting-kubernetes-application-demos.html" target="_blank" rel="noopener noreffer ">Interesting Kubernetes application demos</a>.</p>
+<p>I&rsquo;m going to deploy a web-shop application named <strong>Hackazon</strong>. I like using this example application a lot, because when browsing the shop website, the names of the serving Pods are showing up on the shop-item for which they are responsible for (<em>Figure II</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png" data-sub-html="<h2>Figure II: Pod Name on each Shop Item</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0.png" />
+    </a><figcaption class="image-caption">Figure II: Pod Name on each Shop Item</figcaption>
+    </figure>
+<h3 id="create-a-vsphere-namespace">Create a vSphere Namespace</h3>
+<p>In order to have the application of our choice deployed and running as vSphere Pods, we have to create a vSphere Namespace first. I covered this step in a post <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/#tanzu-kubernetes-grid-cluster-recap" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>I created a new vSphere Namespace, named it <code>ns-hackazon-app</code> and configured it properly. Right after clicking on <strong>CREATE</strong> this new vSphere object will also be created as a &ldquo;real&rdquo; Kubernetes Namespace on the Supervisor Cluster.</p>
+<p>Validate it using <code>kubectl</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get ns
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                        STATUS   AGE
+</span></span><span class="line"><span class="cl">default                                     Active   107d
+</span></span><span class="line"><span class="cl">kube-node-lease                             Active   107d
+</span></span><span class="line"><span class="cl">kube-public                                 Active   107d
+</span></span><span class="line"><span class="cl">kube-system                                 Active   107d
+</span></span><span class="line"><span class="cl">ns-eventing                                 Active   14d
+</span></span><span class="line"><span class="cl">ns-hackazon-app                             Active   10d
+</span></span><span class="line"><span class="cl">svc-contour-domain-c8                       Active   59d
+</span></span><span class="line"><span class="cl">svc-harbor-domain-c8                        Active   58d
+</span></span><span class="line"><span class="cl">svc-tmc-c8                                  Active   107d
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="deploy-the-application">Deploy the Application</h3>
+<p>Creating the vSphere Namespace was a requirement for deploying our application to the Supervisor Cluster. Otherwise you&rsquo;d receive the following error message:</p>
+<p><code>Error from server (Forbidden): error when creating &quot;STDIN&quot;: deployments.apps is forbidden: User &quot;sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net&quot; cannot create resource &quot;deployments&quot; in API group &quot;apps&quot; in the namespace &quot;default&quot;</code></p>
+<p>Yes, I&rsquo;m using the <code>administrator@cpod-nsxv8.az-stc.cloud-garage.net (vsphere.local)</code> user. Normally, you would assign a user or a user-goup to the vSphere Namespace which have the proper privileges in vSphere configured. But, you know&hellip;for the sake&hellip;</p>
+<p>In Terms of the <strong>Supervisor Cluster</strong> (once again). Keep the following in mind:</p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Supervisor Cluster<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The Supervisor Cluster is a security hardened, very resticted and with vSphere certified Kubernetes operators equiped Kubernetes Control Plane (Management) Cluster which supercharges the vSphere platform with Kubernetes primitives.</div>
+        </div>
+    </div>
+<p>Therefore, it&rsquo;s actually not intended to run applications on the Supervisor Cluster. For this, you would normally make use of the Tanzu Kubernetes Grid Service which allows you to deploy Tanzu Kubernetes Clusters in vSphere. But! There are use cases to run particular type of applications very isolated on the Supervisor Cluster as vSphere Pods.</p>
+<p>I wouldn&rsquo;t consider my example application as this type of application but for the sake of this post and it&rsquo;s intention, it&rsquo;s applicable 😃</p>
+<h4 id="application-deployment">Application Deployment</h4>
+<p>Moving on with <code>apply</code>ing the Hackazon <code>Deployment</code> manifest to the newly created Namespace.</p>
+<p>I&rsquo;m still connected to the Supervisor Cluster:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl config current-context
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sv1-az1.cpod-nsxv8.az-stc.cloud-garage.net
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Copy/paste and execute:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n ns-hackazon-app apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/hackazon:1.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The Pods are being created and instantiated in vSphere. <em>Figure III</em> below is showing what&rsquo;s happening on the Kubernetes layer (left pane) and also what&rsquo;s happening on the vSphere layer (right pane).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png" data-sub-html="<h2>Figure III: Event Monitoring in the vSphere Client</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0b.png" />
+    </a><figcaption class="image-caption">Figure III: Event Monitoring in the vSphere Client</figcaption>
+    </figure>
+<p>Pay attention to the NSX related messages 😃 These messages are first indications of the deep integration in VMware&rsquo;s comprehensive Networking and Security solution NSX by using the Container Networking Interface (CNI) NCP. The deep integration as well as the benefits will be an essential part of this post.</p>
+<p>Just a glimpse what we are seeing already in NSX at the <em>Networking Topology</em> section right after the deployment of the application:</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png" data-sub-html="<h2>Figure IV: VMware NSX Networking Topology Overview</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0d.png" />
+    </a><figcaption class="image-caption">Figure IV: VMware NSX Networking Topology Overview</figcaption>
+    </figure>
+<h4 id="application-service">Application Service</h4>
+<p>The next resource which is needed for the application is the Kubernetes Service <code>type: ClusterIP</code>. By applying the following, the Kubernetes Service type <code>ClusterIP</code> is being created.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n ns-hackazon-app apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-l4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">svc</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-l4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>By taking another look on the Kubernetes Events section in the vSphere Namespace, you&rsquo;ll notice the creation of a new <code>Service</code> as well as the associated <code>Endpoints</code>.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png" data-sub-html="<h2>Figure V: Service creation Event</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0c.png" />
+    </a><figcaption class="image-caption">Figure V: Service creation Event</figcaption>
+    </figure>
+<p>This new <code>Service</code> will be used by the Ingress resource which will be created next.</p>
+<blockquote>
+<p><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> &ldquo;&hellip;use Ingress to route traffic to their backend services.&rdquo;</p>
+</blockquote>
+<h4 id="application-ingress">Application Ingress</h4>
+<p>The Ingress configuration which I&rsquo;m going to apply is using a <code>host</code> and <code>pathType: Prefix</code> rule. I&rsquo;m using a precise match for my <code>host</code> value which means that I&rsquo;m providing a hostname (FQDN) for my app instead of using a wildcard. Therefore, the HTTP <code>host</code> header has to match the value in the specification (<code>- host: hackazon.cpod-nsxv8.az-stc.cloud-garage.net</code>).</p>
+<p>This requires a proper DNS configuration first before trying to browse the website. Use the assigned IP address of the Envoy proxy for your config.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n svc-contour-domain-c8 get svc envoy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME    TYPE           CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
+</span></span><span class="line"><span class="cl">envoy   LoadBalancer   10.96.2.14   10.15.8.9     80:30077/TCP,443:32173/TCP   59d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Copy/paste and execute:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n ns-hackazon-app apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l">contour</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon.cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l">Prefix</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">service</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-l4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Guess what, this new created resource is showing up in the vSphere Client as well. What got me excited is, that it is also showing the configured Ingress rules which I&rsquo;ve defined in the specification of the Ingress (<em>Figure VI</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png" data-sub-html="<h2>Figure VI: Application Ingress Rule</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_0e.png" />
+    </a><figcaption class="image-caption">Figure VI: Application Ingress Rule</figcaption>
+    </figure>
+<h3 id="upstream-connect-error-or-disconnectreset-before-headers">Upstream Connect Error or Disconnect/Reset before Headers</h3>
+<p>Now that the application got deployed successfully and everything looks healthy on the first view&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n ns-hackazon-app get deploy,po,svc,ingress
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">deployment.apps/hackazon-shop   2/2     <span class="m">2</span>            <span class="m">2</span>           6h56m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                 READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/hackazon-shop-6bb78d9f74-gwn6r   1/1     Running   <span class="m">0</span>          6h56m
+</span></span><span class="line"><span class="cl">pod/hackazon-shop-6bb78d9f74-qgcz4   1/1     Running   <span class="m">0</span>          6h56m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                  TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>   AGE
+</span></span><span class="line"><span class="cl">service/hackazon-l4   ClusterIP   10.96.3.41   &lt;none&gt;        80/TCP    6h53m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                         CLASS    HOSTS                                         ADDRESS     PORTS   AGE
+</span></span><span class="line"><span class="cl">ingress.networking.k8s.io/hackazon-ingress   &lt;none&gt;   hackazon.cpod-nsxv8.az-stc.cloud-garage.net   10.15.8.9   <span class="m">80</span>      4h40m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>&hellip;let&rsquo;s try browsing the web-frontend.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png" data-sub-html="<h2>Figure VII: Error while browsing the Web-Frontend</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_13.png" />
+    </a><figcaption class="image-caption">Figure VII: Error while browsing the Web-Frontend</figcaption>
+    </figure>
+<div class="details admonition error open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Upstream Connect Error<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">upstream connect error or disconnect/reset before headers. reset reason: connection failure 🤔</div>
+        </div>
+    </div>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<p>Since we know that everything networking and security related is done by NSX, it&rsquo;s only a natural consequence that we have to leverage NSX to find the root cause for this issue.</p>
+<p>Login into the NSX Manager and select <strong>Plan &amp; Troubleshoot</strong>. Select <strong>Traffic Analysis</strong> on the left pane and then <strong>Traceflow</strong>.</p>
+<h4 id="internal-to-external-communication">Internal to External Communication</h4>
+<p>First, we&rsquo;d like to validate if a communication from one Hackazon Pod to my jumphost is possible. <em>Figure VIII</em> below shows the configuration.</p>
+<ul>
+<li><strong>Source Type</strong> is the Port/Interface of the Hackazon Pod.</li>
+<li><strong>Destination Type</strong> is Layer-3, the IP address of my jumphost</li>
+</ul>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" data-sub-html="<h2>Figure VIII: Traceflow Pod Hackazon to Jumphost</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" />
+    </a><figcaption class="image-caption">Figure VIII: Traceflow Pod Hackazon to Jumphost</figcaption>
+    </figure>
+<p><strong>TRACE</strong></p>
+<p><em>Firgure VIX</em> shows the state <strong>Delivered</strong> of the sent packet.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" data-sub-html="<h2>Figure VIX: Packet delivered Pod Hackazon to Jumphost</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" />
+    </a><figcaption class="image-caption">Figure VIX: Packet delivered Pod Hackazon to Jumphost</figcaption>
+    </figure>
+<p>So far so good. Communication from internal workloads to the &ldquo;outside-world&rdquo; (North-South) is possible.</p>
+<h4 id="pod-to-pod-communication">Pod to Pod Communication</h4>
+<p>Next, is validating the Pod-to-Pod communication over two different vSphere Namespaces (boundaries). East-West communication in TKGS with NSX is technically seen very cool and interesting. Because, each vSphere Namespace gets its own T1 Router automatically created in NSX.</p>
+<p>Therefore, not only a multitude of networking, routing and load balancing capabilities are available per vSphere Namespace but also a Zero-Trust approach which is applied to every workload running inside a vSphere Namespace.</p>
+<p>This is IMO an absolut great and tereffic benefit and demonstrates the deep integration of three awesome solutions.</p>
+<p>I&rsquo;m beginning with the communication from the Envoy Pod running in namespace <code>svc-contour-domain-c8</code> to the Hackazon Pod running in namespace <code>ns-hackazon-app</code>.</p>
+<ul>
+<li><strong>Source Type</strong> is the Port/Interface of the Envoy Pod.</li>
+<li><strong>Destination Type</strong> is the Port/Interface of the Hackazon Pod</li>
+</ul>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" data-sub-html="<h2>Figure X: Traceflow Pod Envoy to Pod Hackazon</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" />
+    </a><figcaption class="image-caption">Figure X: Traceflow Pod Envoy to Pod Hackazon</figcaption>
+    </figure>
+<p><strong>TRACE</strong></p>
+<p>Ok, this packet delivery was dropped by Firewall <strong>Rule ID 1005</strong>.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" data-sub-html="<h2>Figure XI: Packet delivered Pod Envoy to Pod Hackazon</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" />
+    </a><figcaption class="image-caption">Figure XI: Packet delivered Pod Envoy to Pod Hackazon</figcaption>
+    </figure>
+<p>Before checking the configuration of the identified rule, we&rsquo;ll check the Trace vice versa. Click on the <strong>Edit</strong> button and click on the 🔄 button in order to switch directions.</p>
+<ul>
+<li><strong>Source Type</strong> is the Port/Interface of the Hackazon Pod.</li>
+<li><strong>Destination Type</strong> is the Port/Interface of the Envoy Pod</li>
+</ul>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" data-sub-html="<h2>Figure XII: Traceflow Pod Hackazon to Pod Envoy</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" />
+    </a><figcaption class="image-caption">Figure XII: Traceflow Pod Hackazon to Pod Envoy</figcaption>
+    </figure>
+<p><strong>TRACE</strong></p>
+<p><strong>Dropped by Firewall Rule ID: 1005</strong> as well.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" data-sub-html="<h2>Figure XIII: Dropped Packet due to Rule 1005</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" />
+    </a><figcaption class="image-caption">Figure XIII: Dropped Packet due to Rule 1005</figcaption>
+    </figure>
+<p>So, these tests proofed that it&rsquo;s not allowed to communicate (ingress) from one vSphere Namespace to another vSphere Namespace. Run a search on the Firewall ID 1005 in NSX in order to check the configuration.</p>
+<p>Finding the rule which is responsible for the dropped packet and reading the name of the rule clarified everything.</p>
+<p>ID 1005: <strong>deny-all-ingress</strong></p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" data-sub-html="<h2>Figure XIV: Firewall Rule ID 1005</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" />
+    </a><figcaption class="image-caption">Figure XIV: Firewall Rule ID 1005</figcaption>
+    </figure>
+<p>Let&rsquo;s check the details of the rule. Go to <strong>APPLICATION</strong> and filter for <code>Rule ID: 1005</code>.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" data-sub-html="<h2>Figure XV: Firewall Rule ID 1005 Configuration:</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" />
+    </a><figcaption class="image-caption">Figure XV: Firewall Rule ID 1005 Configuration:</figcaption>
+    </figure>
+<p>Knowing now that this Rule is configured to <code>Drop</code> every ingress communication from vSphere Namespace to vSphere Namespace, explains why I can&rsquo;t reach the website of my application at all.</p>
+<p>By clicking on the <code>Applied To</code> object, you can see all by this rule affected members (<em>Figure XVI</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" data-sub-html="<h2>Figure XVI: Rule ID 1005 &lsquo;Applied to&rsquo; Group:</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" />
+    </a><figcaption class="image-caption">Figure XVI: Rule ID 1005 &lsquo;Applied to&rsquo; Group:</figcaption>
+    </figure>
+<p>In order to understand specific (mostly networking related) issues better, I often have to create illustrations of the communication. <em>Figure XVII</em> below shows the packetflow as it is with the DFW rule in place.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" data-sub-html="<h2>Figure XVII: Packet-Flow</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" />
+    </a><figcaption class="image-caption">Figure XVII: Packet-Flow</figcaption>
+    </figure>
+<p>Just for the fun, let&rsquo;s &ldquo;overrule&rdquo; Rule 1005 to see if the packet will be finally delivered. The Distributed Firewall in NSX has a hierarchy for DFW Policies. We will create a new Policy in level <strong>INFRASTRUCTURE</strong> and name it e.g. <em>OverwriteEverything</em>. This level is two levels obove the <strong>APPLICATION</strong> level in which Rule 1005 is configured.</p>
+<p>Next is, creating a new Rule which could be named <em>AnyAnyAny</em>. The configuration will be the following:</p>
+<ul>
+<li><strong>Sources:</strong> CIDR 10.244.0.0/19</li>
+<li><strong>Destinations:</strong> CIDR 10.244.0.0/19</li>
+<li><strong>Services:</strong> Any</li>
+<li><strong>Action:</strong> Allow</li>
+</ul>
+<p>The provided CIDR is the one for the Namespaces Network (<em>Figure XVIII</em> framed green) which was configured during the initial setup of TKGS. Unless you haven&rsquo;t changed it.</p>
+<blockquote>
+<p>Namespace Network IP CIDR is used to allocate IP addresses to Workloads attached to Supervisor Namespace segments.</p>
+</blockquote>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png" data-sub-html="<h2>Figure XVIII: TKGS Network Topology</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_12.png" />
+    </a><figcaption class="image-caption">Figure XVIII: TKGS Network Topology</figcaption>
+    </figure>
+<p><strong>PUBLISH</strong> the new Rule&hellip;</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png" data-sub-html="<h2>Figure XIX: OverrideEverything DFW Rule</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10.png" />
+    </a><figcaption class="image-caption">Figure XIX: OverrideEverything DFW Rule</figcaption>
+    </figure>
+<p>&hellip;and run the <strong>TRACEFLOW</strong> once again.</p>
+<ul>
+<li><strong>Source Type</strong> is the Port/Interface of the Hackazon Pod.</li>
+<li><strong>Destination Type</strong> is the Port/Interface of the Envoy Pod</li>
+</ul>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png" data-sub-html="<h2>Figure XX: Traceflow Pod Hackazon to Pod Contour</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_10a.png" />
+    </a><figcaption class="image-caption">Figure XX: Traceflow Pod Hackazon to Pod Contour</figcaption>
+    </figure>
+<p>Expected result 😃</p>
+<p>Time to check the frontend of the webshop.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png" data-sub-html="<h2>Figure XXI: Successfully browsed Webshop Frintend</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_11.png" />
+    </a><figcaption class="image-caption">Figure XXI: Successfully browsed Webshop Frintend</figcaption>
+    </figure>
+<p>Okay, it feels like we&rsquo;ve solved the issue but we just identified the root cause. We only bypassed an important part of the NSX Zero-Trust approach.</p>
+<h3 id="application-network-policy">Application Network Policy</h3>
+<p>The ultimate solution is the creation of a new Network Policy for our application which is allowing <code>Ingress</code> communication from the Envoy Pod to the <code>ns-hackazon-app</code> Namespace.</p>
+<p>I&rsquo;m specifying the <code>policyType: Ingress</code>, also <code>from</code> where the expected communication is coming from <code>namespaceSelector: matchLabels svc-contour-domain-c8</code>, who&rsquo;s establishing the communication <code>podSelector: matchLabels contour</code> and to which port the traffic is going to <code>port: 80</code>.</p>
+<p>By applying the following configuration, a new DFW Policy will be created named <code>ns-hackazon-app-hackazon-app-network-policy-allowlist</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n ns-hackazon-app apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-app-network-policy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hackazon-shop</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">from</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">kubernetes.io/metadata.name</span><span class="p">:</span><span class="w"> </span><span class="l">svc-contour-domain-c8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">contour</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The DFW Rule named <code>TCP.80-ingress-allow</code> was created accordingly and contains the specifications of the Network Policy.</p>
+<figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" title="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" data-thumbnail="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" data-sub-html="<h2>Figure XXII: NSX DFW Policy created by Network Policy</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png"
+            data-srcset="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png 1.5x, /img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" />
+    </a><figcaption class="image-caption">Figure XXII: NSX DFW Policy created by Network Policy</figcaption>
+    </figure>
+<h2 id="credits">Credits</h2>
+<p>I&rsquo;d like to <strong>THANK</strong> my very respected fellow <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> who helped me getting a better understanding how networking with VMware NSX is used properly in vSphere with Tanzu (TKGS).</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</a></li>
+<li><a href="https://williamlam.com/2020/06/interesting-kubernetes-application-demos.html" target="_blank" rel="noopener noreffer ">Interesting Kubernetes application demos</a></li>
+<li><a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/#tanzu-kubernetes-grid-cluster-recap" target="_blank" rel="noopener noreffer ">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</a></li>
+</ul>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="#example-web-shop-application" rel="">Ingress description</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-03-15&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/d23d9778f79a861ad3d59cc83e1c9dbc1e4a394a" target="_blank" title="commit by Robert Guske(rguske@vmware.com) d23d9778f79a861ad3d59cc83e1c9dbc1e4a394a: supervisor part 2 wip">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d23d977</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications" data-via="vmw_rguske" data-hashtags="NSX,Contour,VMware,Extensibility,CloudNative,Kubernetes"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications" data-description="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" data-title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications" data-description="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/nsx/">NSX</a>,&nbsp;<a href="/tags/contour/">Contour</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.480e58b2c2a8605d406f34667e92ff8f1ae50cfee5b653bead570f004839a983.js" integrity="sha256-SA5YssKoYF1AbzRmfpL/jxrlDP7ltlO+rVcPAEg5qYM="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
