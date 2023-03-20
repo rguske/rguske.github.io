@@ -276,9 +276,9 @@ We'd like to validate if a communication from one Hackazon Pod to my jumphost is
 
 **TRACE**
 
-*Firgure VIX* shows the state **Delivered** of the sent packet.
+*Firgure X* shows the state **Delivered** of the sent packet.
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" caption="Figure VIX: Packet delivered Pod Hackazon to Jumphost" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" caption="Figure X: Packet delivered Pod Hackazon to Jumphost" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_2.png" >}}
 
 So far so good. Communication from internal workloads to the "outside-world" (North-South) is possible.
 
@@ -295,26 +295,26 @@ I'm beginning with the communication from the Envoy Pod running in namespace `sv
 - **Source Type** is the Port/Interface of the Envoy Pod.
 - **Destination Type** is the Port/Interface of the Hackazon Pod
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" caption="Figure X: Traceflow Pod Envoy to Pod Hackazon" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" caption="Figure XI: Traceflow Pod Envoy to Pod Hackazon" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_3.png" >}}
 
 **TRACE**
 
 Ok, this packet delivery was dropped by Firewall **Rule ID 1005**.
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" caption="Figure XI: Packet delivered Pod Envoy to Pod Hackazon" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" caption="Figure XII: Packet delivered Pod Envoy to Pod Hackazon" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_4.png" >}}
 
 Before checking the configuration of the identified rule, we'll check the Trace vice versa. Click on the **Edit** button and click on the :arrows_counterclockwise: button in order to switch directions.
 
 - **Source Type** is the Port/Interface of the Hackazon Pod.
 - **Destination Type** is the Port/Interface of the Envoy Pod
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" caption="Figure XII: Traceflow Pod Hackazon to Pod Envoy" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" caption="Figure XIII: Traceflow Pod Hackazon to Pod Envoy" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_5.png" >}}
 
 **TRACE**
 
 **Dropped by Firewall Rule ID: 1005** as well.
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" caption="Figure XIII: Dropped Packet due to Rule 1005" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" caption="Figure XIV: Dropped Packet due to Rule 1005" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_6.png" >}}
 
 So, these tests proofed that it's not allowed to communicate (ingress) from one vSphere Namespace to another vSphere Namespace. Run a search on the Firewall ID 1005 in NSX in order to check the configuration.
 
@@ -322,17 +322,17 @@ Finding the rule which is responsible for the dropped packet and reading the nam
 
 ID 1005: **deny-all-ingress**
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" caption="Figure XIV: Firewall Rule ID 1005" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" caption="Figure XV: Firewall Rule ID 1005" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_7.png" >}}
 
 Let's check the details of the rule. Go to **APPLICATION** and filter for `Rule ID: 1005`.
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" caption="Figure XV: Firewall Rule ID 1005 Configuration: " src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" caption="Figure XVI: Firewall Rule ID 1005 Configuration: " src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8.png" >}}
 
 Knowing now that this Rule is configured to `Drop` every ingress communication from vSphere Namespace to vSphere Namespace, explains why I can't reach the website of my application at all.
 
-By clicking on the `Applied To` object, you can see all by this rule affected members (*Figure XVI*).
+By clicking on the `Applied To` object, you can see all by this rule affected members (*Figure XVII*).
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" caption="Figure XVI: Rule ID 1005 'Applied to' Group: " src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" caption="Figure XVII: Rule ID 1005 'Applied to' Group: " src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" >}}
 
 Just for the fun, let's "overrule" Rule 1005 to see if the packet will be finally delivered. The Distributed Firewall in NSX has a hierarchy for DFW Policies. We will create a new Policy in level **INFRASTRUCTURE** and name it e.g. *OverwriteEverything*. This level is two levels obove the **APPLICATION** level in which Rule 1005 is configured.
 
