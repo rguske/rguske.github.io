@@ -288,7 +288,7 @@ Next, is validating the Pod-to-Pod communication over two different vSphere Name
 
 Therefore, not only a multitude of networking, routing and load balancing capabilities are available per vSphere Namespace but also a Zero-Trust approach which is applied to every workload running inside a vSphere Namespace.
 
-This is IMO an absolut tereffic benefit and demonstrates the deep integration of three awesome solutions.
+This is IMO an absolut teriffic benefit and demonstrates the deep integration of three awesome solutions.
 
 I'm beginning with the communication from the Envoy Pod running in namespace `svc-contour-domain-c8` to the Hackazon Pod running in namespace `ns-hackazon-app`.
 
