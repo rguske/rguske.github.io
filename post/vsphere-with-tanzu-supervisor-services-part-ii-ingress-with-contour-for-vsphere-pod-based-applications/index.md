@@ -11,7 +11,7 @@ Furthermore, I covered the feature vSphere Pods and how they come to beneficial 
 
 Read [HERE](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#vsphere-pods)
 
-In this second part, I'm going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I'm going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS.
+In this second part, I'm going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I'm going over the NSX-side of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS.
 
 ## Kubernetes Ingress Controller Service
 
@@ -36,7 +36,7 @@ envoy   LoadBalancer   10.96.2.14   10.15.8.9     80:30077/TCP,443:32173/TCP   5
 
 ## Example Web-Shop Application
 
-To begin with, we have to pick an application of our choice which works with an Ingress configuration. These applications mostly provide an user interface via a web browser and using Ingress to route traffic to their backend services.
+To begin with, we have to pick an application of our choice which works with an Ingress configuration. These applications mostly provide an user interface via a web browser which is exposed via Ingress.
 
 A couple of popular and demo-proven example applications like e.g. Yelb or the ACME Fitness app can be found on [William Lam's](https://williamlam.com/) blog post: [Interesting Kubernetes application demos](https://williamlam.com/2020/06/interesting-kubernetes-application-demos.html).
 
@@ -46,7 +46,7 @@ I'm going to deploy a web-shop application named **Hackazon**. I like using this
 
 ### Create a vSphere Namespace
 
-In order to have the application of our choice deployed and running as vSphere Pods, we have to create a vSphere Namespace first. I covered this step in a post [HERE](https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/#tanzu-kubernetes-grid-cluster-recap).
+In order to have the application of our choice deployed and running as vSphere Pods, we have to create a vSphere Namespace first. I've covered this step in terms of creation and configuration in a post [HERE](https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/#tanzu-kubernetes-grid-cluster-recap).
 
 I created a new vSphere Namespace, named it `ns-hackazon-app` and configured it properly. Right after clicking on **CREATE** this new vSphere object will also be created as a "real" Kubernetes Namespace on the Supervisor Cluster.
 
@@ -75,7 +75,7 @@ Creating the vSphere Namespace was a requirement for deploying our application t
 
 `Error from server (Forbidden): error when creating "STDIN": deployments.apps is forbidden: User "sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net" cannot create resource "deployments" in API group "apps" in the namespace "default"`
 
-Yes, I'm using the `administrator@cpod-nsxv8.az-stc.cloud-garage.net (vsphere.local)` user. Normally, you would assign a user or a user-goup to the vSphere Namespace which have the proper privileges in vSphere configured. But, you know...for the sake...
+Yes, I'm using the `administrator@cpod-nsxv8.az-stc.cloud-garage.net (vsphere.local)` user. Normally, you would assign a user or a user-goup to the vSphere Namespace which have the proper privileges in vSphere configured. But, you know...for the sake of the demo it's okay.
 
 In Terms of the **Supervisor Cluster** (once again). Keep the following in mind:
 
@@ -168,8 +168,6 @@ By taking another look on the Kubernetes Events section in the vSphere Namespace
 
 This new `Service` will be used by the Ingress resource which will be created next.
 
-> [^1] "...use Ingress to route traffic to their backend services."
-
 #### Application Ingress
 
 The Ingress configuration which I'm going to apply is using a `host` and `pathType: Prefix` rule. I'm using a precise match for my `host` value which means that I'm providing a hostname (FQDN) for my app instead of using a wildcard. Therefore, the HTTP `host` header has to match the value in the specification (`- host: hackazon.cpod-nsxv8.az-stc.cloud-garage.net`).
@@ -248,16 +246,33 @@ upstream connect error or disconnect/reset before headers. reset reason: connect
 
 Since we know that everything networking and security related is done by NSX, it's only a natural consequence that we have to leverage NSX to find the root cause for this issue.
 
-Login into the NSX Manager and select **Plan & Troubleshoot**. Select **Traffic Analysis** on the left pane and then **Traceflow**.
+In order to understand specific (mostly networking related) issues better, I often have to create illustrations of the communication. *Figure VIII* below shows the packetflow from my client to where it gets dropped.
+
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" caption="Figure VIII: Packet-Flow" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" >}}
+
+#### External to Internal Communication
+
+The logical order of validation in this case is like it is shown on the drawing (*Figure VIII*):
+
+{{< mermaid >}}
+graph LR;
+    A( Client ) --> B( 1. NSX LB VIP)
+    B --> C(2. Envoy/Contour)
+    C -->  D(3. Hackazon Pod)
+{{< /mermaid >}}
+
+By browsing the URL, I already validated the communication-targets 1 and 2. This is because of instead getting the response `This site can't be reached`, I got a response from the Contour pod, telling me about the mentioned `Upstream connect` error. Therefore, DNS naming resolution as well as a functioning NSX Load Balancer were validated.
 
 #### Internal to External Communication
 
-First, we'd like to validate if a communication from one Hackazon Pod to my jumphost is possible. *Figure VIII* below shows the configuration.
+Now, let's flip the picture and do some reverse engineering. Login into the NSX Manager and select **Plan & Troubleshoot**. Select **Traffic Analysis** on the left pane and then **Traceflow**.
+
+We'd like to validate if a communication from one Hackazon Pod to my jumphost is possible. *Figure VIX* below shows the configuration.
 
 - **Source Type** is the Port/Interface of the Hackazon Pod.
 - **Destination Type** is Layer-3, the IP address of my jumphost
 
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" caption="Figure VIII: Traceflow Pod Hackazon to Jumphost" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" >}}
+{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" caption="Figure VIX: Traceflow Pod Hackazon to Jumphost" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_1.png" >}}
 
 **TRACE**
 
@@ -273,7 +288,7 @@ Next, is validating the Pod-to-Pod communication over two different vSphere Name
 
 Therefore, not only a multitude of networking, routing and load balancing capabilities are available per vSphere Namespace but also a Zero-Trust approach which is applied to every workload running inside a vSphere Namespace.
 
-This is IMO an absolut great and tereffic benefit and demonstrates the deep integration of three awesome solutions.
+This is IMO an absolut tereffic benefit and demonstrates the deep integration of three awesome solutions.
 
 I'm beginning with the communication from the Envoy Pod running in namespace `svc-contour-domain-c8` to the Hackazon Pod running in namespace `ns-hackazon-app`.
 
@@ -319,10 +334,6 @@ By clicking on the `Applied To` object, you can see all by this rule affected me
 
 {{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" caption="Figure XVI: Rule ID 1005 'Applied to' Group: " src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_8a.png" >}}
 
-In order to understand specific (mostly networking related) issues better, I often have to create illustrations of the communication. *Figure XVII* below shows the packetflow as it is with the DFW rule in place.
-
-{{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" caption="Figure XVII: Packet-Flow" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_9.png" >}}
-
 Just for the fun, let's "overrule" Rule 1005 to see if the packet will be finally delivered. The Distributed Firewall in NSX has a hierarchy for DFW Policies. We will create a new Policy in level **INFRASTRUCTURE** and name it e.g. *OverwriteEverything*. This level is two levels obove the **APPLICATION** level in which Rule 1005 is configured.
 
 Next is, creating a new Rule which could be named *AnyAnyAny*. The configuration will be the following:
@@ -363,7 +374,7 @@ The ultimate solution is the creation of a new Network Policy for our applicatio
 
 I'm specifying the `policyType: Ingress`, also `from` where the expected communication is coming from `namespaceSelector: matchLabels svc-contour-domain-c8`, who's establishing the communication `podSelector: matchLabels contour` and to which port the traffic is going to `port: 80`.
 
-By applying the following configuration, a new DFW Policy will be created named `ns-hackazon-app-hackazon-app-network-policy-allowlist`.
+**NOTICE!** This is a native Kubernetes `NetworkPolicy` and nothing VMware NSX specific.
 
 ```yaml
 kubectl -n ns-hackazon-app apply -f - <<EOF
@@ -392,15 +403,17 @@ spec:
 EOF
 ```
 
-The DFW Rule named `TCP.80-ingress-allow` was created accordingly and contains the specifications of the Network Policy.
+By applying the configuration, a new DFW Policy named `ns-hackazon-app-hackazon-app-network-policy-allowlist` is created automagically for you :sparkles:
+
+Also, the DFW Rule named `TCP.80-ingress-allow` was created accordingly and contains the specifications of the Network Policy.
 
 {{< image src="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" caption="Figure XXII: NSX DFW Policy created by Network Policy" src-s="/img/posts/202303_supervisor_services_part_2/202303_supervisor_services_part_2_14.png" >}}
 
+This shows the **deep integration** between **Kubernetes**, the Container Networking Interface **NCP** and **VMware NSX**.
+
 ## Credits
 
-I'd like to **THANK** my very respected fellow [Andreas Marqvardsen](https://blog.andreasm.io/) who helped me getting a better understanding how networking with VMware NSX is used properly in vSphere with Tanzu (TKGS).
-
-[^1]:[Ingress description](#example-web-shop-application)
+I'd like to **THANK** my very respected fellow [Andreas Marqvardsen](https://blog.andreasm.io/) who reviewed this post and helped me getting a better understanding how networking with VMware NSX is used properly in vSphere with Tanzu (TKGS).
 
 ## Resources
 
