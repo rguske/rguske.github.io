@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services - Robert Guske</title><meta name="Description" content="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."><meta property="og:title" content="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" />
+<meta property="og:description" content="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-09T11:50:04+02:00" />
+<meta property="article:modified_time" content="2023-05-09T11:50:04+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"/>
+<meta name="twitter:description" content="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services\/"
+        },"genre": "posts","keywords": "Harbor, VMware, Extensibility, CloudNative, Kubernetes","wordcount":  1954 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services\/","datePublished": "2023-05-09T11:50:04+02:00","dateModified": "2023-05-09T11:50:04+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "Through this part, I'd like to bring you the lifecycle of a Supervisor Service a bit closer. I'm going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-09">2023-05-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1954 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/supervisor-services-3-cover.png"
+        data-srcset="/img/supervisor-services-3-cover.png, /img/supervisor-services-3-cover.png 1.5x, /img/supervisor-services-3-cover.png 2x"
+        data-sizes="auto"
+        alt="/img/supervisor-services-3-cover.png"
+        title="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#recap-and-intro">Recap and Intro</a></li>
+    <li><a href="#lifecycle-management-operations">Lifecycle Management Operations</a>
+      <ul>
+        <li><a href="#dos-and-donts">DO&rsquo;S and DON&rsquo;TS</a></li>
+      </ul>
+    </li>
+    <li><a href="#reconfiguring-a-supervisor-service">Reconfiguring a Supervisor Service</a></li>
+    <li><a href="#updating-a-supervisor-service">Updating a Supervisor Service</a></li>
+    <li><a href="#uninstalling-a-supervisor-service">Uninstalling a Supervisor Service</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="recap-and-intro">Recap and Intro</h2>
+<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> and <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">II</a> of my blog series on the Supervisor Services in vSphere with Tanzu (TKG with Supervisor Model), I covered the topics from registering and installing a new service on a Supervisor Cluster until how to leverage a service for functionalities like e.g. hosting container images (<a href="https://github.com/vsphere-tmm/Supervisor-Services#cloud-native-registry-service" target="_blank" rel="noopener noreffer ">Registry Service</a>) or handling incoming traffic (<a href="https://github.com/vsphere-tmm/Supervisor-Services#kubernetes-ingress-controller-service" target="_blank" rel="noopener noreffer ">Ingress Service</a>) for vSphere Pod based applications.</p>
+<p>Through this part, I&rsquo;d like to bring you the <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreffer ">lifecycle of a Supervisor Service</a> a bit closer. I&rsquo;m going to touch on how to handle a <em>reconfiguration</em>, <em>a version update</em> and an <em>uninstallation</em> of an existing Supervisor Service.</p>
+<h2 id="lifecycle-management-operations">Lifecycle Management Operations</h2>
+<p>Before I start with the first topic, the <strong>reconfiguraiton</strong> of an already existing Supervisor Service, I will briefly touch on <strong>DON&rsquo;TS</strong> based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Only for vSphere 8<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The Registry Service - Harbor is only supported with vSphere 8. Check the <a href="https://github.com/vsphere-tmm/Supervisor-Services#supervisor-services-catalog" target="_blank" rel="noopener noreffer ">compatibility matrix</a>.</div>
+        </div>
+    </div>
+<h3 id="dos-and-donts">DO&rsquo;S and DON&rsquo;TS</h3>
+<p>What happened? 🤔 I was right in the middle of working on a new blog post series (stay tuned) and one task which had to be documented is the relocation (copying a bundle from one registry to another) of a heavy-weight image bundle.</p>
+<p>This operation failed right in the middle of the image bundle relocation with the following error:</p>
+<div class="details admonition failure open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>imgpkg: Error:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">[&hellip;]
+imgpkg: Error: POST <a href="https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/" target="_blank" rel="noopener noreffer ">https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/</a>:
+UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir Path:/storage/docker/registry/v2/repositories/tap/tap-packages-1.5.0/_uploads/444bc0e9-fdba-4d54-a44f-1d97e8e7dca4]]</div>
+        </div>
+    </div>
+<p>This meaningful message is indicating that there&rsquo;s no space left on my Harbor instance. Since everything is declared via the <code>harbor-data-values.yml</code> file, I thought that simply adjusting the data for the respective storage value should be fine.</p>
+<p>Unfortunately, it wasn&rsquo;t obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the <strong>Workload Management/Services</strong> section but non of the available actions provided me what I was looking for. Also not the <strong>Edit</strong> action.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-sub-html="<h2>Figure I: Available Actions for an existing Supervisor Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" />
+    </a><figcaption class="image-caption">Figure I: Available Actions for an existing Supervisor Service</figcaption>
+    </figure>
+<p>Also, I looked it up on our docs but I haven&rsquo;t found anything related. Therefore, I continued&hellip;☠️</p>
+<blockquote>
+<p>Me thinking: <em>I will figure out a solution on my own, won&rsquo;t I?</em> 😬 👍</p>
+</blockquote>
+<p>Taking my full self-confidence, I connected to the Supervisor Cluster (<code>kubectl vsphere login...</code>) and <code>edit</code>ed the <code>PersistentVolumeClaim</code> for the <code>harbor-registry</code> service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 edit pvc harbor-registry
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  accessModes:
+</span></span><span class="line"><span class="cl">  - ReadWriteOnce
+</span></span><span class="line"><span class="cl">  resources:
+</span></span><span class="line"><span class="cl">    requests:
+</span></span><span class="line"><span class="cl">      storage: 50Gi
+</span></span><span class="line"><span class="cl">  storageClassName: ftt0-r0
+</span></span><span class="line"><span class="cl">  volumeMode: Filesystem
+</span></span><span class="line"><span class="cl">  volumeName: pvc-fecf7048-55ab-41b5-9f63-dfc8f307ff39
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I simply increased the capacity as it suited me (10GB &ndash;&gt; 50GB). After saving the configuration ( <code>:wq</code>) the extension of the container volume happened automagically in vSphere and voilà, I was able to relocate my heavy image bundle successfully.</p>
+<p>Of course I had to pay the bill shortly afterwards.</p>
+<p>I already had my concerns when I did the adjustment directly to the <code>pvc</code> but this self-destructive curiosity overcame me once again 🤓 💻</p>
+<p>I knew that <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreffer ">kapp-controller</a> is being used on the Supervisor cluster to handle such Supervisor Service (Package) installations. Consequently, a reconciliation must happen at some point in time.</p>
+<div class="details admonition failure open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>ReconcileFailed<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">ReconcileFailed. kapp: Error: update statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: Updating resource statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: API server says: StatefulSet.apps &ldquo;harbor-database&rdquo; is invalid: spec: Forbidden: updates to statefulset spec for fields other than &lsquo;replicas&rsquo;, &rsquo;template&rsquo;, &lsquo;updateStrategy&rsquo;, &lsquo;persistentVolumeClaimRetentionPolicy&rsquo; and &lsquo;minReadySeconds&rsquo; are forbidden (reason: Invalid).</div>
+        </div>
+    </div>
+<p>Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Proofed it. Ergo&hellip;uninstalling (covered further down) and reinstalling the whole Service. 🤦 <strong>Think twice before you do such operations!</strong></p>
+<h2 id="reconfiguring-a-supervisor-service">Reconfiguring a Supervisor Service</h2>
+<p>Know that I explained <strong>DON&rsquo;TS</strong> let&rsquo;s make it right. <strong>DO&rsquo;S</strong> on how to reconfigure an existing Supervisor Service.</p>
+<p>When I reinstalled Harbor, I configured the storage for the <code>harbor-registry</code> service with 55GB (<em>Figure II</em>)</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" data-sub-html="<h2>Figure II: Image Registry Service - PVCs</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" />
+    </a><figcaption class="image-caption">Figure II: Image Registry Service - PVCs</figcaption>
+    </figure>
+<p>Let&rsquo;s increase the value to 60GB and observe on both sites (vSphere and Kubernetes) what happens. In the <strong>Workload Management</strong> section, select <strong>Supervisors</strong>. Click on the name (hyperlink) of your Supervisor cluster which hosts the service. I only have one deployed in my environment.</p>
+<p>Next, go to <strong>Configure</strong> and <strong>Supervisor Services/Overview</strong>. Select the Service and click on <strong>Edit</strong> (Figure III).</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png" data-sub-html="<h2>Figure III: Edit an existing Supervisor Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_3.png" />
+    </a><figcaption class="image-caption">Figure III: Edit an existing Supervisor Service</figcaption>
+    </figure>
+<p>The <code>YAML Service Config</code> editor will open which we have to use to adjust values. As mentioned, I&rsquo;m going to increase the <code>storage</code> value to 60GB (<em>Figure IV</em>).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">accessMode</span><span class="p">:</span><span class="w"> </span><span class="l">ReadWriteOnce</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l">60Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt0-r0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png" data-sub-html="<h2>Figure IV: Editing values using the YAML Service Config editor</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_4.png" />
+    </a><figcaption class="image-caption">Figure IV: Editing values using the YAML Service Config editor</figcaption>
+    </figure>
+<p>Adjustments will take place after clicking <strong>OK</strong></p>
+<p>Let&rsquo;s check what happens in vSphere. Multiple sections are helpful and providing valueable information. Obviously <strong>All Tasks</strong> on the vCenter level but also the <strong>Events</strong> on the appropriate vSphere Namespace.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" data-sub-html="<h2>Figure V: Capacity expansion - Tasks and Kubernetes Events in the vSphere Client</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" />
+    </a><figcaption class="image-caption">Figure V: Capacity expansion - Tasks and Kubernetes Events in the vSphere Client</figcaption>
+    </figure>
+<p>Events created by Kubernetes (Supervisor Cluster) can be queried as well by using <code>kubectl</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 events
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">LAST SEEN              TYPE      REASON                       OBJECT                                  MESSAGE
+</span></span><span class="line"><span class="cl">6m53s <span class="o">(</span>x24 over 27h<span class="o">)</span>   Normal    Resizing                     PersistentVolumeClaim/harbor-registry   External resizer is resizing volume pvc-fecf7048-55ab-41b5-9f63-dfc8f307ff39
+</span></span><span class="line"><span class="cl">6m53s <span class="o">(</span>x2 over 27h<span class="o">)</span>    Normal    FileSystemResizeRequired     PersistentVolumeClaim/harbor-registry   Require file system resize of volume on node
+</span></span><span class="line"><span class="cl">6m24s <span class="o">(</span>x2 over 27h<span class="o">)</span>    Normal    FileSystemResizeSuccessful   Pod/harbor-registry-68c6d76c67-drpzz    MountVolume.ExpandVolume <span class="k">for</span> PVC svc-harbor-domain-c8/harbor-registry <span class="k">for</span> pod.Volume registry-data succeeded
+</span></span><span class="line"><span class="cl">6m24s <span class="o">(</span>x2 over 27h<span class="o">)</span>    Normal    FileSystemResizeSuccessful   PersistentVolumeClaim/harbor-registry   MountVolume.ExpandVolume <span class="k">for</span> PVC svc-harbor-domain-c8/harbor-registry <span class="k">for</span> pod.Volume registry-data succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Checking the results on both platforms:</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png" data-sub-html="<h2>Figure VI: Container Volume expansion succeeded</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_6.png" />
+    </a><figcaption class="image-caption">Figure VI: Container Volume expansion succeeded</figcaption>
+    </figure>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 get pvc <span class="p">|</span> grep <span class="s1">&#39;harbor-registry&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">harbor-registry                   Bound    pvc-fecf7048-55ab-41b5-9f63-dfc8f307ff39   60Gi       RWO            ftt0-r0        31h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Done the right way ✅</p>
+<h2 id="updating-a-supervisor-service">Updating a Supervisor Service</h2>
+<p>As of now, new versions for a Supervisor Service will be provided via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md" target="_blank" rel="noopener noreffer ">Supervisor Services Catalog</a> on <i class='fab fa-github fa-fw'></i>. I have no information if this is going to change in the future. Drop me a comment if you think it would make sense to have the versions shared via the <a href="https://marketplace.cloud.vmware.com/services?search=Supervisor%20Service" target="_blank" rel="noopener noreffer ">VMware Marketplace</a>.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">The screenshots made for this chapter are taken from an environment running on vSphere 7. They&rsquo;ll differ a little when running the operations on a vSphere 8 environment.</div>
+        </div>
+    </div>
+<p>I installed version v1.2.0 of the Supervisor Service for <a href="https://github.com/vsphere-tmm/Supervisor-Services#backup--recovery-service" target="_blank" rel="noopener noreffer ">Backup &amp; Recovery</a> on my existing Supervisor cluster, which is going to install the Velero vSphere Operator on the Supervisor Control Plane Nodes(!). I&rsquo;m explicitly mentioning this detail, because one would expect that vSphere Pods are showing up in the vSphere client when installing this service.</p>
+<p>In order to update to a newer version, you have to download the updated <code>SupervisorServiceDefinition</code> yaml file <a href="https://github.com/vsphere-tmm/Supervisor-Services#velero-versions" target="_blank" rel="noopener noreffer ">for Velero</a> first. Go to <strong>Workload Management/Services</strong>, click on <strong>ACTIONS</strong> on the appropriate service tile and select <strong>Add New Version</strong> (<em>Figure VII</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" data-sub-html="<h2>Figure VII: Add New Supervisor Service Version</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" />
+    </a><figcaption class="image-caption">Figure VII: Add New Supervisor Service Version</figcaption>
+    </figure>
+<p>Upload the desired <code>SupervisorServiceDefinition</code> yaml file and validate the provided version information.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png" data-sub-html="<h2>Figure VIII: Upload new SupervisorServiceDefinition YAML</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_8.png" />
+    </a><figcaption class="image-caption">Figure VIII: Upload new SupervisorServiceDefinition YAML</figcaption>
+    </figure>
+<p>New notifications are showing up in the vSphere client after successfully registering a new service version on the vCenter Server.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png" data-sub-html="<h2>Figure IX: New Supervisor Service Version registered</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_9.png" />
+    </a><figcaption class="image-caption">Figure IX: New Supervisor Service Version registered</figcaption>
+    </figure>
+<p>Now, there are actually two ways to have a new version installed on your Supervisor cluster(s). The first way is to basically follow the same process like it is when you install a new service on a Supervisor cluster for the first time. Click on <strong>ACTIONS</strong> and select <strong>Install on Supervisors</strong>. You should be able to select the newly added version of the service.</p>
+<p>In vSphere 7, you could add data to the values <code>registryName</code>, <code>registryUsername</code> and <code>registryPasswd</code>. This looks already different in vSphere 8! In vSphere 8, you have the ability to provide your custom values with the appropriate data via the embedded editor (<em>Figure Xa</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png" data-sub-html="<h2>Figure X: vSphere 7: Install a new Version Option 1</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10.png" />
+    </a><figcaption class="image-caption">Figure X: vSphere 7: Install a new Version Option 1</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png" data-sub-html="<h2>Figure Xa: vSphere 8: Install a new Version Option 1</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_10a.png" />
+    </a><figcaption class="image-caption">Figure Xa: vSphere 8: Install a new Version Option 1</figcaption>
+    </figure>
+<p>The second provided way is to <strong>Edit</strong> the service via the (per) <strong>Supervisor Configuration - Service Overview</strong> section in the vSphere Client. In vSphere 7, this section is available when you select your vSphere cluster in the <strong>Hosts and Clusters Inventory</strong> view and then via the <strong>Configure</strong> tab.</p>
+<p>It differs in vSphere 8. In vSphere 8, you have to first select <strong>Workload Management</strong>, then <strong>Supervisors</strong>, your Supervisor Cluster and ultimately it&rsquo;ll show up under the <strong>Configure</strong> tab as well.</p>
+<p>Notice the <strong>New</strong> version info behind the already installed version.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png" data-sub-html="<h2>Figure XI: Install a new Version - Option 2</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_11.png" />
+    </a><figcaption class="image-caption">Figure XI: Install a new Version - Option 2</figcaption>
+    </figure>
+<p>When you select the desired service and click on <strong>Edit</strong>, you&rsquo;ll be provided with the same options as it is with the first described way of doing it.</p>
+<p>Select the new version and click on <strong>OK</strong>.</p>
+<p>Installing the new version will be done via a complete redeployment of the service (Kubernetes application) itself. This is typically for Kubernetes applications and therefore important that you provide your custom value specifications when registering a new service version and when ultimately updating a service.</p>
+<p>Redeploying a new service will not have an impact on persistent data! This is e.g. important for the Container Image Registry Service - Harbor.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png" data-sub-html="<h2>Figure XII: Install a new Version - Option 2</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_12.png" />
+    </a><figcaption class="image-caption">Figure XII: Install a new Version - Option 2</figcaption>
+    </figure>
+<p>🎥 I recorded the rollout of the new Velero vSphere Operator service version v1.3.0. By watching this short recording, you&rsquo;ll notice after the first half that new pods are going to be created (<code>ContainerCreating</code>) and old pods are going to be deleted (<code>Terminating</code>).</p>
+<script async id="asciicast-pwF9BaTN8A8EUOVN6p73VTQO0" src="https://asciinema.org/a/pwF9BaTN8A8EUOVN6p73VTQO0.js"></script>
+<p>After a couple of seconds wait time, the new version is ready to serve.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png" data-sub-html="<h2>Figure XIII: New Supervisor Service Version installed</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_13.png" />
+    </a><figcaption class="image-caption">Figure XIII: New Supervisor Service Version installed</figcaption>
+    </figure>
+<p>Picture <em>XIV</em> only intends to illustrate the old (v1.2.0) used container image reference (left) vs. the new (v1.3.0) installed container image reference (right).</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png" data-sub-html="<h2>Figure XIV: Container Image Reference comparison</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_14.png" />
+    </a><figcaption class="image-caption">Figure XIV: Container Image Reference comparison</figcaption>
+    </figure>
+<h2 id="uninstalling-a-supervisor-service">Uninstalling a Supervisor Service</h2>
+<p>The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red <strong>DELETE</strong> button (fire and forget) would be a to simplistic approach to handle this lifecycle operation. Therefore, the first step is the <code>deactivation</code> of a Service itself in case e.g. it&rsquo;s not needed/consumed anymore.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Lifecycle Operations Privileges<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">In order to execute lifecycle operations on Supervisor services, you need at least the <code>Manage Supervisor Services</code> privileges in vSphere.</div>
+        </div>
+    </div>
+<p>Go to the Supervisor Services section in the vSphere client and select <strong>Delete</strong> via the <strong>ACTIONS</strong> button on the respective service tile.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" data-sub-html="<h2>Figure XV: Supervisor Service Action - Delete</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" />
+    </a><figcaption class="image-caption">Figure XV: Supervisor Service Action - Delete</figcaption>
+    </figure>
+<p>All three steps are showing up on the next window (<em>Figure XVI</em>) with a brief description on each step. <strong>Deactivate</strong> the Velero service by clicking on <strong>CONFIRM</strong>. This first step will only deactivate the option to install this particular service on other Supervisor clusters.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png" data-sub-html="<h2>Figure XVI: Step 1 - Deactivate the Supervisor Service Velero</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_16.png" />
+    </a><figcaption class="image-caption">Figure XVI: Step 1 - Deactivate the Supervisor Service Velero</figcaption>
+    </figure>
+<p>A confirmation of a successful deactivation of the service will appear within the same window (<em>Figure XVII</em>). Notice the ✅ behind step 1.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" data-sub-html="<h2>Figure XVII: Service deactivation notifications</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" />
+    </a><figcaption class="image-caption">Figure XVII: Service deactivation notifications</figcaption>
+    </figure>
+<p>The second step is the uninstallation of the Supervisor Service from the cluster. In case of the Velero Supervisor Service, this means the unstallation from the Supervisor control plane nodes. Click <strong>CONFIRM</strong> on step 2.</p>
+<p>The uninstallation will be kicked off in the background. If you are not planning to completly unregister the service via step 3, you can go ahead and close the wizard.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" data-sub-html="<h2>Figure XVIII: Uninstalling the Velero Supervisor Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" />
+    </a><figcaption class="image-caption">Figure XVIII: Uninstalling the Velero Supervisor Service</figcaption>
+    </figure>
+<p>🎥 I also recorded the uninstallation of the Velero vSphere Operator service.</p>
+<script async id="asciicast-cPF94Hz1fED0v7rxEaRpkdTMn" src="https://asciinema.org/a/cPF94Hz1fED0v7rxEaRpkdTMn.js"></script>
+<p>If you intend to not use the service ever again, step 3 will unregister the service version(s) from the vCenter Server.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png" data-sub-html="<h2>Figure XIX: Confirming the unregistration of the Velero Supervisor Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_19.png" />
+    </a><figcaption class="image-caption">Figure XIX: Confirming the unregistration of the Velero Supervisor Service</figcaption>
+    </figure>
+<p>By selecting <strong>CONFIRM</strong> on step 3, the big red <strong>DELETE</strong> button will appear and will execute the final judgment on the service.</p>
+<figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png" data-sub-html="<h2>Figure XX: Final Judgement - DELETE</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png"
+            data-srcset="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png 1.5x, /img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_20.png" />
+    </a><figcaption class="image-caption">Figure XX: Final Judgement - DELETE</figcaption>
+    </figure>
+<p>I hope this part of my series enlightened you on the lifecycle operations of the vSphere with Tanzu Supervisor Services.</p>
+<p>Thanks for reading.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-05-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-via="vmw_rguske" data-hashtags="Harbor,VMware,Extensibility,CloudNative,Kubernetes"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-description="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-description="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.480e58b2c2a8605d406f34667e92ff8f1ae50cfee5b653bead570f004839a983.js" integrity="sha256-SA5YssKoYF1AbzRmfpL/jxrlDP7ltlO+rVcPAEg5qYM="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>

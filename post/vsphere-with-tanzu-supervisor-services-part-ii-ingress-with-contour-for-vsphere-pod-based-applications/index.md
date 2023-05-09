@@ -3,7 +3,7 @@
 
 ## Recap and Intro
 
-In [Part I](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/) of my blog series on the *Supervisor Services in vSphere with Tanzu (TKGS)*, I introdcued the overall concept, the idea, the requirements as well as how to register and install a new Supervisor Service in vSphere.
+In [Part I](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/) of my blog series on the *Supervisor Services in vSphere with Tanzu (TKGS)*, I introduced the overall concept, the idea, the requirements as well as how to register and install a new Supervisor Service in vSphere.
 
 Read [HERE](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#supervisor-services)
 

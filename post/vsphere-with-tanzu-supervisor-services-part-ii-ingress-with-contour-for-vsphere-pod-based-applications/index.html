@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-03-17T11:30:30+01:00" />
-<meta property="article:modified_time" content="2023-03-20T15:03:05+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-04-24T11:32:45+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"/>
 <meta name="twitter:description" content="In this second part, I&#39;m going to demonstrate how the *Kubernetes Ingress Controller Service (Contour)* will be used for serving a vSphere Pod based web-shop application with Ingress functionalities. Also, I&#39;m going over the NSX-site of the house in terms of networking, the distributed firewall as well as troubleshooting when using vSphere Pods in TKGS."/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -29,7 +29,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications\/"
         },"genre": "posts","keywords": "NSX, Contour, VMware, Extensibility, CloudNative, Kubernetes","wordcount":  2513 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications\/","datePublished": "2023-03-17T11:30:30+01:00","dateModified": "2023-03-20T15:03:05+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications\/","datePublished": "2023-03-17T11:30:30+01:00","dateModified": "2023-04-24T11:32:45+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -146,7 +146,7 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="recap-and-intro">Recap and Intro</h2>
-<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> of my blog series on the <em>Supervisor Services in vSphere with Tanzu (TKGS)</em>, I introdcued the overall concept, the idea, the requirements as well as how to register and install a new Supervisor Service in vSphere.</p>
+<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> of my blog series on the <em>Supervisor Services in vSphere with Tanzu (TKGS)</em>, I introduced the overall concept, the idea, the requirements as well as how to register and install a new Supervisor Service in vSphere.</p>
 <p>Read <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#supervisor-services" target="_blank" rel="noopener noreffer ">HERE</a></p>
 <p>Furthermore, I covered the feature vSphere Pods and how they come to beneficial use for the Supervisor Services.</p>
 <p>Read <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#vsphere-pods" target="_blank" rel="noopener noreffer ">HERE</a></p>
@@ -820,8 +820,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-03-20&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/25ce75f61a6edb7b605691d6b5eecce205c9fd74" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 25ce75f61a6edb7b605691d6b5eecce205c9fd74: updated supervisor post 2">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>25ce75f</a></span>
+                <span>Updated on 2023-04-24&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/6419ee9073b3b2c7962db2ff208b1c94bdbf2b31" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 6419ee9073b3b2c7962db2ff208b1c94bdbf2b31: backup april">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>6419ee9</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
@@ -840,7 +840,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</a></div>
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</a>
+            <a href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" class="next" rel="next" title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services">vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments"><div id="utterances" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
