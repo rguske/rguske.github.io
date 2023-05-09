@@ -9,7 +9,7 @@ Through this part, I'd like to bring you the [lifecycle of a Supervisor Service]
 
 ## Lifecycle Management Operations
 
-Before I start with the first topic, the **reconfiguraiton** of an already existing Supervisor Service, I will briefly touch on **DON'TS** based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I [HERE](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor).
+Before I start with the first topic, the **reconfiguration** of an already existing Supervisor Service, I will briefly touch on **DON'TS** based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I [HERE](https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor).
 
 {{< admonition note "Only for vSphere 8" true >}}
 The Registry Service - Harbor is only supported with vSphere 8. Check the [compatibility matrix](https://github.com/vsphere-tmm/Supervisor-Services#supervisor-services-catalog).
@@ -29,11 +29,11 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 
 This meaningful message is indicating that there's no space left on my Harbor instance. Since everything is declared via the `harbor-data-values.yml` file, I thought that simply adjusting the data for the respective storage value should be fine.
 
-Unfortunately, it wasn't obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the **Workload Management/Services** section but non of the available actions provided me what I was looking for. Also not the **Edit** action.
+Unfortunately, it wasn't obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the **Workload Management/Services** section but none of the available actions provided me what I was looking for. Also not the **Edit** action.
 
 {{< image src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" caption="Figure I: Available Actions for an existing Supervisor Service" src-s="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" >}}
 
-Also, I looked it up on our docs but I haven't found anything related. Therefore, I continued...:skull_and_crossbones: 
+I looked into our docs to find information related, but couldn’t find anything. So, I continued...:skull_and_crossbones:
 
 > Me thinking: *I will figure out a solution on my own, won't I?* :grimacing: :thumbsup:
 
@@ -67,11 +67,11 @@ I knew that [kapp-controller](https://carvel.dev/kapp-controller/) is being used
 ReconcileFailed. kapp: Error: update statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: Updating resource statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: API server says: StatefulSet.apps "harbor-database" is invalid: spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'template', 'updateStrategy', 'persistentVolumeClaimRetentionPolicy' and 'minReadySeconds' are forbidden (reason: Invalid).
 {{< /admonition >}}
 
-Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Proofed it. Ergo...uninstalling (covered further down) and reinstalling the whole Service. :facepalm: **Think twice before you do such operations!**
+Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Validated it. Ergo...uninstalling (covered further down) and reinstalling the whole Service. :facepalm: **Think twice before you do such operations!**
 
 ## Reconfiguring a Supervisor Service
 
-Know that I explained **DON'TS** let's make it right. **DO'S** on how to reconfigure an existing Supervisor Service.
+Having explained the **DON'TS** let me introduce the **DO'S** on how to reconfigure an existing Supervisor Service.
 
 When I reinstalled Harbor, I configured the storage for the `harbor-registry` service with 55GB (*Figure II*)
 
@@ -99,7 +99,7 @@ The `YAML Service Config` editor will open which we have to use to adjust values
 
 Adjustments will take place after clicking **OK**
 
-Let's check what happens in vSphere. Multiple sections are helpful and providing valueable information. Obviously **All Tasks** on the vCenter level but also the **Events** on the appropriate vSphere Namespace.
+Let's check what happens in vSphere. Multiple sections are helpful and providing valuable information. Obviously **All Tasks** on the vCenter level but also the **Events** on the appropriate vSphere Namespace.
 
 {{< image src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" caption="Figure V: Capacity expansion - Tasks and Kubernetes Events in the vSphere Client" src-s="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" >}}
 
@@ -189,7 +189,7 @@ Picture *XIV* only intends to illustrate the old (v1.2.0) used container image r
 
 ## Uninstalling a Supervisor Service
 
-The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red **DELETE** button (fire and forget) would be a to simplistic approach to handle this lifecycle operation. Therefore, the first step is the `deactivation` of a Service itself in case e.g. it's not needed/consumed anymore.
+The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red **DELETE** button (fire and forget) would be a too simplistic approach to handle this lifecycle operation. Therefore, the first step is the `deactivation` of a Service itself in case e.g. it's not needed/consumed anymore.
 
 {{< admonition info "Lifecycle Operations Privileges" true >}}
 In order to execute lifecycle operations on Supervisor services, you need at least the `Manage Supervisor Services` privileges in vSphere.
@@ -207,7 +207,7 @@ A confirmation of a successful deactivation of the service will appear within th
 
 {{< image src="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" caption="Figure XVII: Service deactivation notifications" src-s="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" >}}
 
-The second step is the uninstallation of the Supervisor Service from the cluster. In case of the Velero Supervisor Service, this means the unstallation from the Supervisor control plane nodes. Click **CONFIRM** on step 2.
+The second step is the uninstallation of the Supervisor Service from the cluster. In case of the Velero Supervisor Service, this means the uninstallation from the Supervisor control plane nodes. Click **CONFIRM** on step 2.
 
 The uninstallation will be kicked off in the background. If you are not planning to completly unregister the service via step 3, you can go ahead and close the wizard.
 

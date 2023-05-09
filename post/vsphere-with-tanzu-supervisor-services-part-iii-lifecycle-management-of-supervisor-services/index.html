@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-05-09T11:50:04+02:00" />
-<meta property="article:modified_time" content="2023-05-09T11:50:04+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-05-09T11:53:44+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services\/"
-        },"genre": "posts","keywords": "Harbor, VMware, Extensibility, CloudNative, Kubernetes","wordcount":  1954 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services\/","datePublished": "2023-05-09T11:50:04+02:00","dateModified": "2023-05-09T11:50:04+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "Harbor, VMware, Extensibility, CloudNative, Kubernetes","wordcount":  1952 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services\/","datePublished": "2023-05-09T11:50:04+02:00","dateModified": "2023-05-09T11:53:44+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -102,7 +102,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-09">2023-05-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1954 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-09">2023-05-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1952 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -133,7 +133,7 @@
 <p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> and <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">II</a> of my blog series on the Supervisor Services in vSphere with Tanzu (TKG with Supervisor Model), I covered the topics from registering and installing a new service on a Supervisor Cluster until how to leverage a service for functionalities like e.g. hosting container images (<a href="https://github.com/vsphere-tmm/Supervisor-Services#cloud-native-registry-service" target="_blank" rel="noopener noreffer ">Registry Service</a>) or handling incoming traffic (<a href="https://github.com/vsphere-tmm/Supervisor-Services#kubernetes-ingress-controller-service" target="_blank" rel="noopener noreffer ">Ingress Service</a>) for vSphere Pod based applications.</p>
 <p>Through this part, I&rsquo;d like to bring you the <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreffer ">lifecycle of a Supervisor Service</a> a bit closer. I&rsquo;m going to touch on how to handle a <em>reconfiguration</em>, <em>a version update</em> and an <em>uninstallation</em> of an existing Supervisor Service.</p>
 <h2 id="lifecycle-management-operations">Lifecycle Management Operations</h2>
-<p>Before I start with the first topic, the <strong>reconfiguraiton</strong> of an already existing Supervisor Service, I will briefly touch on <strong>DON&rsquo;TS</strong> based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>Before I start with the first topic, the <strong>reconfiguration</strong> of an already existing Supervisor Service, I will briefly touch on <strong>DON&rsquo;TS</strong> based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
 <div class="details admonition note open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Only for vSphere 8<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -156,7 +156,7 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
         </div>
     </div>
 <p>This meaningful message is indicating that there&rsquo;s no space left on my Harbor instance. Since everything is declared via the <code>harbor-data-values.yml</code> file, I thought that simply adjusting the data for the respective storage value should be fine.</p>
-<p>Unfortunately, it wasn&rsquo;t obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the <strong>Workload Management/Services</strong> section but non of the available actions provided me what I was looking for. Also not the <strong>Edit</strong> action.</p>
+<p>Unfortunately, it wasn&rsquo;t obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the <strong>Workload Management/Services</strong> section but none of the available actions provided me what I was looking for. Also not the <strong>Edit</strong> action.</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-sub-html="<h2>Figure I: Available Actions for an existing Supervisor Service</h2>">
         <img
             class="lazyload"
@@ -167,7 +167,7 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
             alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" />
     </a><figcaption class="image-caption">Figure I: Available Actions for an existing Supervisor Service</figcaption>
     </figure>
-<p>Also, I looked it up on our docs but I haven&rsquo;t found anything related. Therefore, I continued&hellip;☠️</p>
+<p>I looked into our docs to find information related, but couldn’t find anything. So, I continued&hellip;☠️</p>
 <blockquote>
 <p>Me thinking: <em>I will figure out a solution on my own, won&rsquo;t I?</em> 😬 👍</p>
 </blockquote>
@@ -216,9 +216,9 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
             <div class="admonition-content">ReconcileFailed. kapp: Error: update statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: Updating resource statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: API server says: StatefulSet.apps &ldquo;harbor-database&rdquo; is invalid: spec: Forbidden: updates to statefulset spec for fields other than &lsquo;replicas&rsquo;, &rsquo;template&rsquo;, &lsquo;updateStrategy&rsquo;, &lsquo;persistentVolumeClaimRetentionPolicy&rsquo; and &lsquo;minReadySeconds&rsquo; are forbidden (reason: Invalid).</div>
         </div>
     </div>
-<p>Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Proofed it. Ergo&hellip;uninstalling (covered further down) and reinstalling the whole Service. 🤦 <strong>Think twice before you do such operations!</strong></p>
+<p>Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Validated it. Ergo&hellip;uninstalling (covered further down) and reinstalling the whole Service. 🤦 <strong>Think twice before you do such operations!</strong></p>
 <h2 id="reconfiguring-a-supervisor-service">Reconfiguring a Supervisor Service</h2>
-<p>Know that I explained <strong>DON&rsquo;TS</strong> let&rsquo;s make it right. <strong>DO&rsquo;S</strong> on how to reconfigure an existing Supervisor Service.</p>
+<p>Having explained the <strong>DON&rsquo;TS</strong> let me introduce the <strong>DO&rsquo;S</strong> on how to reconfigure an existing Supervisor Service.</p>
 <p>When I reinstalled Harbor, I configured the storage for the <code>harbor-registry</code> service with 55GB (<em>Figure II</em>)</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_2.png" data-sub-html="<h2>Figure II: Image Registry Service - PVCs</h2>">
         <img
@@ -274,7 +274,7 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
     </a><figcaption class="image-caption">Figure IV: Editing values using the YAML Service Config editor</figcaption>
     </figure>
 <p>Adjustments will take place after clicking <strong>OK</strong></p>
-<p>Let&rsquo;s check what happens in vSphere. Multiple sections are helpful and providing valueable information. Obviously <strong>All Tasks</strong> on the vCenter level but also the <strong>Events</strong> on the appropriate vSphere Namespace.</p>
+<p>Let&rsquo;s check what happens in vSphere. Multiple sections are helpful and providing valuable information. Obviously <strong>All Tasks</strong> on the vCenter level but also the <strong>Events</strong> on the appropriate vSphere Namespace.</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_5.png" data-sub-html="<h2>Figure V: Capacity expansion - Tasks and Kubernetes Events in the vSphere Client</h2>">
         <img
             class="lazyload"
@@ -448,7 +448,7 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
     </a><figcaption class="image-caption">Figure XIV: Container Image Reference comparison</figcaption>
     </figure>
 <h2 id="uninstalling-a-supervisor-service">Uninstalling a Supervisor Service</h2>
-<p>The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red <strong>DELETE</strong> button (fire and forget) would be a to simplistic approach to handle this lifecycle operation. Therefore, the first step is the <code>deactivation</code> of a Service itself in case e.g. it&rsquo;s not needed/consumed anymore.</p>
+<p>The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red <strong>DELETE</strong> button (fire and forget) would be a too simplistic approach to handle this lifecycle operation. Therefore, the first step is the <code>deactivation</code> of a Service itself in case e.g. it&rsquo;s not needed/consumed anymore.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Lifecycle Operations Privileges<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -490,7 +490,7 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
             alt="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_17.png" />
     </a><figcaption class="image-caption">Figure XVII: Service deactivation notifications</figcaption>
     </figure>
-<p>The second step is the uninstallation of the Supervisor Service from the cluster. In case of the Velero Supervisor Service, this means the unstallation from the Supervisor control plane nodes. Click <strong>CONFIRM</strong> on step 2.</p>
+<p>The second step is the uninstallation of the Supervisor Service from the cluster. In case of the Velero Supervisor Service, this means the uninstallation from the Supervisor control plane nodes. Click <strong>CONFIRM</strong> on step 2.</p>
 <p>The uninstallation will be kicked off in the background. If you are not planning to completly unregister the service via step 3, you can go ahead and close the wizard.</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_18.png" data-sub-html="<h2>Figure XVIII: Uninstalling the Velero Supervisor Service</h2>">
         <img
@@ -532,7 +532,8 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-05-09</span>
+                <span>Updated on 2023-05-09&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/144becd368209d9ee0da0b348823879e8eba3968" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 144becd368209d9ee0da0b348823879e8eba3968: finished supervisor services part 3 post">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>144becd</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
