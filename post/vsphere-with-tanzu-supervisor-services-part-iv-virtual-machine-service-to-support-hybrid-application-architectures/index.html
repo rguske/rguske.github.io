@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures - Robert Guske</title><meta name="Description" content="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."><meta property="og:title" content="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" />
+<meta property="og:description" content="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-15T19:48:14+02:00" />
+<meta property="article:modified_time" content="2023-07-15T19:48:14+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"/>
+<meta name="twitter:description" content="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/"
+        },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, CloudNative, Extensibility, Tools, vSphere","wordcount":  4970 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-15T19:48:14+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-07-15">2023-07-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4970 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;24 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/ova-vm-service-cover.png"
+        data-srcset="/img/ova-vm-service-cover.png, /img/ova-vm-service-cover.png 1.5x, /img/ova-vm-service-cover.png 2x"
+        data-sizes="auto"
+        alt="/img/ova-vm-service-cover.png"
+        title="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#hybrid-application-architectures">Hybrid Application Architectures</a></li>
+    <li><a href="#vsphere-with-tanzu-supervisor-services-throwback">vSphere with Tanzu Supervisor Services Throwback</a></li>
+    <li><a href="#virtual-machine-service-to-deploy-virtual-appliances">Virtual Machine Service to deploy Virtual Appliances</a>
+      <ul>
+        <li><a href="#vsphere-8-update-1-puts-vm-service-on-steriods">vSphere 8 Update 1 puts VM Service on Steriods</a></li>
+      </ul>
+    </li>
+    <li><a href="#vmware-marketplace-to-accelerate-your-business">VMware Marketplace to accelerate your Business</a></li>
+    <li><a href="#deploying-the-bitnami-postgresql-ova-using-kubectl">Deploying the Bitnami PostgreSQL OVA using <code>kubectl</code></a>
+      <ul>
+        <li><a href="#vsphere-content-library-for-vm-images">vSphere Content Library for VM Images</a></li>
+        <li><a href="#virtual-machine-manifest-preperations">Virtual Machine Manifest Preperations</a>
+          <ul>
+            <li><a href="#extract-configurable-properties-using-the-ovftool">Extract Configurable Properties using the <code>ovftool</code></a></li>
+            <li><a href="#extract-configurable-properties-using-kubectl">Extract Configurable Properties using <code>kubectl</code></a></li>
+          </ul>
+        </li>
+        <li><a href="#create-the-virtual-machine-manifest">Create the Virtual Machine Manifest</a></li>
+        <li><a href="#kubectl-apply--f-vmyaml"><code>kubectl apply -f vm.yaml</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#postgresql-vm-post-deployment-configurations">PostgreSQL-VM Post Deployment Configurations</a></li>
+    <li><a href="#run-pgadmin-in-a-container">Run pgAdmin in a Container</a></li>
+    <li><a href="#example-kubernetes-application">Example Kubernetes Application</a>
+      <ul>
+        <li><a href="#deploy-the-application-as-a-kubernetes-job">Deploy the Application as a Kubernetes Job</a></li>
+        <li><a href="#validating-the-written-data">Validating the written Data</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#extra">Extra</a>
+      <ul>
+        <li><a href="#veba-vm-service-manifest">VEBA VM Service Manifest</a></li>
+        <li><a href="#kubernetes-appliance-vm-service-manifest">Kubernetes Appliance VM Service Manifest</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="hybrid-application-architectures">Hybrid Application Architectures</h2>
+<p>As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of service-oriented architectures (SOA) with the reliability and versatility of virtual machines (VMs).</p>
+<p>Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an applications into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.</p>
+<p>Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems, or similar specific applications which are not easily to containerize or to be refactored.</p>
+<p>Other issues besides the incompatibility of an application to be containerized are:</p>
+<ul>
+<li>your application requires a specific hardware</li>
+<li>your application is designed for a custom kernel or a custom operating system</li>
+</ul>
+<p>or also quite simple, your application is better suited to run in a virtual machine.</p>
+<p>The hybridization of an application, through the combined power of SOAs and VMs, allows enterprises benefit from the best of both worlds.</p>
+<hr>
+<p>In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion.</p>
+<p>Furthermore, to support the idea and message of this article, I&rsquo;ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service.</p>
+<hr>
+<p>Belows <em>Figure I</em> provides a high-level overview of a hybrid application which components are deployed and managed using the Supervisor Services in vSphere with Tanzu.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png" data-sub-html="<h2>Figure I: Hybrid Application Architecture</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_0.png" />
+    </a><figcaption class="image-caption">Figure I: Hybrid Application Architecture</figcaption>
+    </figure>
+<h2 id="vsphere-with-tanzu-supervisor-services-throwback">vSphere with Tanzu Supervisor Services Throwback</h2>
+<p>As described in articles before like <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">HERE</a>, <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">HERE</a>, and <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">HERE</a>, vSphere with Tanzu is supercharging the vSphere platform with Kubernetes power.</p>
+<p>Supervisor Services in vSphere with Tanzu enabling modern Platform/DevOps teams to deploy and manage Tanzu Kubernetes Clusters (Tanzu Kubernetes Grid Service), vSphere Pods (vSphere Pod Service - pods natively running on the ESXi) and also <strong>virtual machines</strong> (VM Service).</p>
+<p>All mentioned resources can be deployed in a declaritive way using the exposed Kubernetes API of the Supervisor Cluster.</p>
+<h2 id="virtual-machine-service-to-deploy-virtual-appliances">Virtual Machine Service to deploy Virtual Appliances</h2>
+<p>Shipping virtual machines in a ready-to-use single file fashion is done by the Open Virtual Appliance (OVA) format. Well known and adopted by customers. The purpose of an OVA is to provide a single file distribution which contains packaged files like <code>.ovf</code>, <code>.vmdk</code> or <code>.nvram</code> of which a virtual appliance is made of. A virtual appliance could be the vSphere control-plane <a href="https://www.vmware.com/products/vcenter.html" target="_blank" rel="noopener noreffer ">vCenter Server</a> or e.g. the VMware Fling <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance - VEBA</a>.</p>
+<p>The Virtual Machine Service was <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-vcenter-server-7-vsphere-with-tanzu-release-notes.html#wn04272021" target="_blank" rel="noopener noreffer ">initially introduced</a> with vSphere 7 U2a. It allows users to deploy and manage virtual machines using Kubernetes standard APIs. In order to provide these functionalities, the <a href="https://github.com/vmware-tanzu/vm-operator" target="_blank" rel="noopener noreffer ">Virtual Machine Operator</a>, open-sourced by VMware, had to be developed and integrated in vSphere.</p>
+<p>If you&rsquo;re touching this exciting technology for the first time, you may would like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.</p>
+<p>Level 100:</p>
+<ul>
+<li><a href="https://medium.com/analytics-vidhya/the-new-modern-workload-on-vsphere-fed63d57ff8d" target="_blank" rel="noopener noreffer ">The new modern Workload on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreffer ">Navneet Verma</a></li>
+<li><a href="https://blogs.vmware.com/vsphere/2021/04/introducing-the-vsphere-virtual-machine-service.html" target="_blank" rel="noopener noreffer ">Introducing the vSphere Virtual Machine Service</a> by <a href="https://www.linkedin.com/in/glensimon/" target="_blank" rel="noopener noreffer ">Glen Simon</a></li>
+</ul>
+<p>Level 200/300:</p>
+<ul>
+<li><a href="https://penso.io/2021/04/26/the-future-of-vms-is-kubernetes/" target="_blank" rel="noopener noreffer ">The future of VM’s is Kubernetes</a> by <a href="https://www.linkedin.com/in/openso/" target="_blank" rel="noopener noreffer ">Oren Penso</a></li>
+<li><a href="https://williamlam.com/2021/05/exploring-the-new-vsphere-with-tanzu-vm-service-with-nested-esxi.html" target="_blank" rel="noopener noreffer ">Exploring the new vSphere with Tanzu VM Service with Nested ESXi</a> by <a href="https://www.linkedin.com/in/lamwilliam/" target="_blank" rel="noopener noreffer ">William Lam</a></li>
+<li><a href="https://medium.com/analytics-vidhya/installing-harbor-using-vm-operator-on-vsphere-7bf69036f67c" target="_blank" rel="noopener noreffer ">Installing Harbor using VM Operator on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreffer ">Navneet Verma</a></li>
+<li><a href="https://core.vmware.com/blog/introducing-virtual-machine-provisioning-kubernetes-vm-service" target="_blank" rel="noopener noreffer ">Introducing Virtual Machine Provisioning, via Kubernetes with VM Service</a> by <a href="https://www.linkedin.com/in/mylesgray/" target="_blank" rel="noopener noreffer ">Myles Gray</a>.</li>
+</ul>
+<h3 id="vsphere-8-update-1-puts-vm-service-on-steriods">vSphere 8 Update 1 puts VM Service on Steriods</h3>
+<p>Initially, it was only possible to use the by VMware provided virtual machine images for Ubuntu and CentOS. Both are downloadable via the VMware Marketplace <a href="https://marketplace.cloud.vmware.com/services?search=VM%20Service%20Image%20for" target="_blank" rel="noopener noreffer ">HERE</a>. This limitation is documented on VMware Docs:</p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Limitations pre-vSphere 8 U1<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">VM Service supports a limited number of VM images and guest OSes. Compatible VM images appear on VMware Marketplace as OVFs​.</div>
+        </div>
+    </div>
+<p>vSphere 8 U1 now unleashes the full potential of Virtual Machine Service.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>VM Service 2.0<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">You can now use CloudInit to <strong>customize any Linux image</strong> in OVF format conformant to the VM Service image specification (<a href="https://kb.vmware.com/s/article/88506" target="_blank" rel="noopener noreffer ">KB88506</a>) as well as <strong>utilize OVF templating through vAppConfig</strong> to enable the deployment of legacy Linux images.</div>
+        </div>
+    </div>
+<p>The advanced support of CloudInit to customize any Linux image is already awesome but even more exciting is the capability to now utilize OVF templating through the <code>vAppConfig</code> within the <code>VirtualMachine</code> deployment manifest 😃</p>
+<p>We will take a look at it in a bit.</p>
+<h2 id="vmware-marketplace-to-accelerate-your-business">VMware Marketplace to accelerate your Business</h2>
+<p>For the sake of this blog post, I&rsquo;ve downloaded (sign in required) the PostgreSQL OVA from the VMware Marketplace. The VMware Marketplace offers certified and validated ecosystem solutions to VMware&rsquo;s customers, community and partners. The amount of solutions which can be discovered and tested is huge. One reason for this is the addition of the extensive Bitnami (by VMware) application catalog in the VMware Marketplace.</p>
+<p>⬇️ <a href="https://marketplace.cloud.vmware.com/services/details/postgresql?slug=true" target="_blank" rel="noopener noreffer ">VMware Bitnami PostgreSQL DB virtual appliance (OVA)</a></p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" data-sub-html="<h2>Figure II: Download the PostgreSQL OVA</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" />
+    </a><figcaption class="image-caption">Figure II: Download the PostgreSQL OVA</figcaption>
+    </figure>
+<h2 id="deploying-the-bitnami-postgresql-ova-using-kubectl">Deploying the Bitnami PostgreSQL OVA using <code>kubectl</code></h2>
+<p>Over the next chapters, I&rsquo;m going to explain briefly what needs to be done in terms of prerequisites and requirements in order to deploy the VMware Bitnami PostgreSQL DB virtual appliance (OVA) using a DevOps approach. I&rsquo;m going to describe the desired state of the virtual machine in a <code>yaml</code> manifest and will define OS relevant data and parameters via the new <code>vAppConfig</code> section.</p>
+<p>Ultimately, I will hand over the manifest to the exposed Kubernetes API of the Supervisor Cluster using <code>kubectl</code>. The Virtual Machine Service (VM Operator) will then take care of the desired state for us.</p>
+<h3 id="vsphere-content-library-for-vm-images">vSphere Content Library for VM Images</h3>
+<p>For the next steps I presume that you are familiar with the Workload Management feature of vSphere with Tanzu. This includes the creation and configuration of vSphere Namespaces, including RBAC, Storage Policies, VM Classes, etc. as well as the deployment and management of Tanzu Kubernetes Clusters (TKC).</p>
+<p>Since I wanted to have the virtual machine (appliance) images separated from the content library which contains the Kubernetes node images (<code>TKR</code>) for the TKCs, I&rsquo;ve created a dedicated content library named <code>vm-images</code>.</p>
+<p>In terms of the configuration for the new <strong>Local vSphere Content Library</strong> , I kept everything default (next-next-finish) and started the upload of the Bitnami PostgreSQL OVA.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png" data-sub-html="<h2>Figure III: OVA Upload to a vSphere Content Library</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_6.png" />
+    </a><figcaption class="image-caption">Figure III: OVA Upload to a vSphere Content Library</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png" data-sub-html="<h2>Figure IV: Uploaded OVAs available in vSphere Content Library</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_9.png" />
+    </a><figcaption class="image-caption">Figure IV: Uploaded OVAs available in vSphere Content Library</figcaption>
+    </figure>
+<p>Consequently, the next step is to add the <code>Virtual Machine Images Content Library</code> to my vSphere Namespace which I named <code>ns-hybrid-app-1</code>&hellip;</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png" data-sub-html="<h2>Figure V: Add Content Library to vSphere Namespace</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_7.png" />
+    </a><figcaption class="image-caption">Figure V: Add Content Library to vSphere Namespace</figcaption>
+    </figure>
+<p>&hellip;and in which my Tanzu Kubernetes Cluster is already running.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n ns-hybrid-app-1 get cluster,machinesets,vm
+</span></span><span class="line"><span class="cl">NAME                                             PHASE         AGE    VERSION
+</span></span><span class="line"><span class="cl">cluster.cluster.x-k8s.io/rguske-tkc-hybrid-app   Provisioned   5d6h   v1.24.9+vmware.1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                                     CLUSTER                 REPLICAS   READY   AVAILABLE   AGE    VERSION
+</span></span><span class="line"><span class="cl">machineset.cluster.x-k8s.io/rguske-tkc-hybrid-app-md-0-n4t9d-76dd79dc8   rguske-tkc-hybrid-app   <span class="m">1</span>          <span class="m">1</span>       <span class="m">1</span>           5d6h   v1.24.9+vmware.1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                                                    POWER-STATE   AGE
+</span></span><span class="line"><span class="cl">virtualmachine.vmoperator.vmware.com/rguske-tkc-hybrid-app-md-0-n4t9d-76dd79dc8-kd7b6   poweredOn     5d6h
+</span></span><span class="line"><span class="cl">virtualmachine.vmoperator.vmware.com/rguske-tkc-hybrid-app-sprxr-r2bdn                  poweredOn     5d6h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>After adding the new content library to the vSphere Namespace, it will be available on the Kubernetes layer as well:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n ns-hybrid-app-1 get contentsourcebindings.vmoperator.vmware.com
+</span></span><span class="line"><span class="cl">NAME                                   AGE
+</span></span><span class="line"><span class="cl">02f5a0ab-cd42-41b4-b107-9f479a14d2e1   6d8h
+</span></span><span class="line"><span class="cl">b9a1de5e-fb67-4a34-977a-ff88776b54da   6d8h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The content library itself will be displayed only with its UUID. I guess this is due to the fact that Kubernetes requires everything is written in DNS conformant notations. Probably users may not always be able to ensure this for a global vSphere object. Therefore, uniqueness is required.</p>
+<p>However, unless you aren&rsquo;t Neo 😎 try reading the UUID&rsquo;s won&rsquo;t tell you which content library it actually is right away. You can figure it out using the vSphere client.</p>
+<p>By selecting a content library in the vSphere client, you&rsquo;ll notice a UUID in the URL which can be used to get the relation.</p>
+<p>Like belows <em>Figure VI</em> shows.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" data-sub-html="<h2>Figure VI: UUID matching</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" />
+    </a><figcaption class="image-caption">Figure VI: UUID matching</figcaption>
+    </figure>
+<p>Hint: I tried <code>kubectl describe</code> as well as <code>kubectl get... -o yaml</code> as well but without positive results 😉</p>
+<p>Before I head over to the next step, let me briefly summarize what has been done up to this point:</p>
+<ul>
+<li>OVA downloaded ✅</li>
+<li>Created a Local vSphere Content Library ✅</li>
+<li>Uploaded the OVA ✅</li>
+<li>Associated the new Content Library with a vSphere Namespace ✅</li>
+</ul>
+<h3 id="virtual-machine-manifest-preperations">Virtual Machine Manifest Preperations</h3>
+<p>In this next step I&rsquo;m finally going to cover the creation of the virtual machine manifest. What&rsquo;s required and where to get the required data from.</p>
+<p>Again, the goal is to deploy an OVA using the VM Service and most important, to describe the values and data using the new <code>vAppConfig</code>.</p>
+<p>Normally, if you deploy an OVA, you&rsquo;ll enter values (<code>integer</code>, <code>string</code> or <code>boolean</code>) for keys like IP Address, Default Gateway, Password, etc. via the <code>Customize template</code> step.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" data-sub-html="<h2>Figure VII: OVA Deployment example</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" />
+    </a><figcaption class="image-caption">Figure VII: OVA Deployment example</figcaption>
+    </figure>
+<p>These configurable fields are specified in the OVF file as <code>ovf:userConfigurable=&quot;true&quot;</code> and are of high interst for the creation of a virtual machine manifest.</p>
+<p><em>Resource: VMware Docs - <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-FB31603E-EE1D-4413-8567-DD2A5834929C.html" target="_blank" rel="noopener noreffer ">Deploy VMs with Configurable OVF Properties</a></em></p>
+<p>In the following, I wll explain two ways how to get the data.</p>
+<h4 id="extract-configurable-properties-using-the-ovftool">Extract Configurable Properties using the <code>ovftool</code></h4>
+<p>Option one is admittedly associated with a little bit more overhead but in comparison to option two, it requires no access to the Supervisor cluster (high priviledged user required). Download the VMware OVF tool from VMware&rsquo;s Developer Portal .</p>
+<p>⬇️ <a href="https://developer.vmware.com/web/tool/4.6.0/ovf-tool" target="_blank" rel="noopener noreffer ">Open Virtualization Format (OVF) Tool</a></p>
+<p>The following command will extract the packaged files from the OVA.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ovftool --allowExtraConfig --skipManifestCheck <span class="s2">&#34;bitnami-postgresql-11.20.0-r1-debian-11-amd64.ova&#34;</span> <span class="s2">&#34;postgressql/bitnami-postgresql-11.20.0-r1.ovf&#34;</span>
+</span></span><span class="line"><span class="cl">Opening OVA source: bitnami-postgresql-11.20.0-r1-debian-11-amd64.ova
+</span></span><span class="line"><span class="cl">The manifest does not validate
+</span></span><span class="line"><span class="cl">Opening OVF target: postgresql/bitnami-postgresql-11.20.0-r1.ovf
+</span></span><span class="line"><span class="cl">Writing OVF package: postgresql/bitnami-postgresql-11.20.0-r1/bitnami-postgresql-11.20.0-r1.ovf
+</span></span><span class="line"><span class="cl">Transfer Completed
+</span></span><span class="line"><span class="cl">Warning:
+</span></span><span class="line"><span class="cl"> - The manifest is present but user flag causing to skip it
+</span></span><span class="line"><span class="cl">Completed successfully
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Browse the created folder until you found the <code>*.ovf</code> file. In my case it&rsquo;s the <code>bitnami-postgresql-11.20.0-r1.ovf</code>. If you run e.g. a <code>cat</code> on the file and you browse to section <code>&lt;EulaSection&gt;</code> or basically to the end of the ovf, you will find the wanted <code>ovfEnv</code> keys (<code>ovf:userConfigurable=&quot;true&quot;</code>) for our manifest file.</p>
+<p>Here&rsquo;s is my example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">[...]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;ProductSection&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Info&gt;</span>VM Arguments<span class="nt">&lt;/Info&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Category&gt;</span>VM Properties<span class="nt">&lt;/Category&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;va-ssh-public-key&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>Set the SSH public key allowed to access the appliance<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>This will enable the SSHD service and configure the specified public key for the user <span class="ni">&amp;apos;</span>bitnami<span class="ni">&amp;apos;</span><span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;user-data&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>User data to be made available inside the instance<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>This allows to pass any text to the appliance. It will be executed if it starts with a shebang (<span class="ni">&amp;quot;</span>#!<span class="ni">&amp;quot;</span>). The value should be encoded in base64<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Category&gt;</span>Networking Properties<span class="nt">&lt;/Category&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;network.ip0&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>Network 1 IP Address<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>The IP address for the interface (IP/netmask, e.g.: 192.168.1.10/32). Leave blank to enable DHCP.<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;network.gateway&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>Default Gateway<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>The default network gateway address. Leave blank to enable DHCP.<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;network.dns&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>Domain Name Servers<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>Comma-separated list of IP addresses to DNS servers.<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;network.domain&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>Domain Name<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>The fully-qualified domain name.<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Property</span> <span class="na">ovf:key=</span><span class="s">&#34;network.searchpath&#34;</span> <span class="na">ovf:type=</span><span class="s">&#34;string&#34;</span> <span class="na">ovf:userConfigurable=</span><span class="s">&#34;true&#34;</span> <span class="na">ovf:value=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Label&gt;</span>DNS Search Path<span class="nt">&lt;/Label&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Description&gt;</span>Comma-separated list of domains to add to the DNS search path.<span class="nt">&lt;/Description&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Property&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/ProductSection&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[...]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="extract-configurable-properties-using-kubectl">Extract Configurable Properties using <code>kubectl</code></h4>
+<p>Option two provides the desired data quicker but as already mentioned, you&rsquo;ll need access to the Supervisor cluster. Since the Content Library is associated with our vSphere Namespace, we only have to execute the following <code>kubectl</code> command:</p>
+<p><code>kubectl -n ns-hybrid-app-1 get vmimage bitnami-postgresql-11.20.0-r1-debian-11-amd64 -o jsonpath='{.spec}' | jq</code></p>
+<p>The output on the terminal is immediately providing the necessary <code>ovfEnv</code> keys:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;hwVersion&#34;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;imageID&#34;</span><span class="p">:</span> <span class="s2">&#34;a4bcc115-f81b-427a-a2c6-dc368718abfd&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;imageSourceType&#34;</span><span class="p">:</span> <span class="s2">&#34;Content Library&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;osInfo&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;debian10_64Guest&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;10&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;ovfEnv&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;network.dns&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Comma-separated list of IP addresses to DNS servers.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;network.dns&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;Domain Name Servers&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;network.domain&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;The fully-qualified domain name.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;network.domain&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;Domain Name&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;network.gateway&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;The default network gateway address. Leave blank to enable DHCP.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;network.gateway&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;Default Gateway&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;network.ip0&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;The IP address for the interface (IP/netmask, e.g.: 192.168.1.10/32). Leave blank to enable DHCP.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;network.ip0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;Network 1 IP Address&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;network.searchpath&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Comma-separated list of domains to add to the DNS search path.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;network.searchpath&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;DNS Search Path&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;user-data&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;This allows to pass any text to the appliance. It will be executed if it starts with a shebang (\&#34;#!\&#34;). The value should be encoded in base64&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;user-data&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;User data to be made available inside the instance&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;va-ssh-public-key&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;This will enable the SSHD service and configure the specified public key for the user &#39;bitnami&#39;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;key&#34;</span><span class="p">:</span> <span class="s2">&#34;va-ssh-public-key&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;label&#34;</span><span class="p">:</span> <span class="s2">&#34;Set the SSH public key allowed to access the appliance&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;productInfo&#34;</span><span class="p">:</span> <span class="p">{},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;providerRef&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;apiVersion&#34;</span><span class="p">:</span> <span class="s2">&#34;vmoperator.vmware.com/v1alpha1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;kind&#34;</span><span class="p">:</span> <span class="s2">&#34;ContentLibraryProvider&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;02f5a0ab-cd42-41b4-b107-9f479a14d2e1&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;ovf&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="create-the-virtual-machine-manifest">Create the Virtual Machine Manifest</h3>
+<p>By having all the required data for our manifest file, we can finally start describing the desired state of our virtual machine. The manifest basically contains two Kubernetes objects. The first object is <code>kind: VirtualMachine</code>. Within this section, values are described for the virtual machine configuration in terms of e.g. name, deployment zone, virtual machine class, storage policy, network, etc.</p>
+<p>The second section, <code>kind: ConfigMap</code>, is where the extracted ovf data is going to.</p>
+<p>This is how my PostgreSQL VM manifest looks like. I&rsquo;ve added comments (<code>#</code>) into the manifest in order to help understanding the keys.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bitnami-postgresql</span><span class="w"> </span><span class="c"># &lt;-- name of the virtual machine object</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql-vm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#    topology.kubernetes.io/zone: az01 # &lt;-- applicable if you have a vSphere with Tanzu three zone deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">vmoperator.vmware.com/image-supported-check</span><span class="p">:</span><span class="w"> </span><span class="l">enable</span><span class="w"> </span><span class="c"># &lt;-- image validation webhook option</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">imageName</span><span class="p">:</span><span class="w"> </span><span class="l">bitnami-postgresql-11.20.0-r1-debian-11-amd64</span><span class="w"> </span><span class="c"># &lt;-- virtual machine image (uploaded OVA)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">className</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-medium</span><span class="w"> </span><span class="c"># &lt;-- configured virtual machine class</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">powerState</span><span class="p">:</span><span class="w"> </span><span class="l">poweredOn</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">ftt0-r0</span><span class="w"> </span><span class="c"># &lt;-- configured vSphere storage policy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">networkInterfaces</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#  - networkType: nsx-t # &lt;-- if you have vSphere with Tanzu with NSX</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">networkType</span><span class="p">:</span><span class="w"> </span><span class="l">vsphere-distributed</span><span class="w"> </span><span class="c"># &lt;-- if you&#39;re using the vSphere networking stack</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networkName</span><span class="p">:</span><span class="w"> </span><span class="l">vlan-1053-wkld-1</span><span class="w"> </span><span class="c"># &lt;-- distributed port group name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">vmMetadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">configMapName</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql-vm-cm</span><span class="w"> </span><span class="c"># &lt;-- name of the configMap (section below)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">vAppConfig</span><span class="w"> </span><span class="c"># &lt;-- specify if using the OVF runtime environment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#    transport: CloudInit # &lt;-- when using CloudInit to for instance initialisation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql-vm-cm</span><span class="w"> </span><span class="c"># &lt;-- name of the configMap which is referenced in the section above</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="c"># &lt;-- this section is for all the configurable user data:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Set the SSH public key allowed to access the appliance. This will enable the SSHD service and configure the specified public key for the user bitnami.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">va-ssh-public-key</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;ssh-rsa AAAAB3N... user@hostname&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># User data to be made available inside the instance. This allows to pass any text to the appliance. It will be executed if it starts with a shebang (#!). The value should be encoded in base64.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">user-data</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Network 1 IP Address. The IP address for the interface (IP/netmask, e.g.: 192.168.1.10/32). Leave blank to enable DHCP.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">network.ip0</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.105.3.50/24&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Default Gateway. The default network gateway address. Leave blank to enable DHCP.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">network.gateway</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.105.3.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Domain Name Servers. Comma-separated list of IP addresses to DNS servers.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">network.dns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.21.105.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Domain Name. The fully-qualified domain name.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">network.domain</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;postgresql01.cpod-aviv8.az-wdc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># DNS Search Path. Comma-separated list of domains to add to the DNS search path.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">network.searchpath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;cpod-aviv8.az-wdc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="kubectl-apply--f-vmyaml"><code>kubectl apply -f vm.yaml</code></h3>
+<p>With the VM configuration described in a <code>yaml</code> file, everything is settled for a deployment. The next step is similar (familiar) to any other Kubernetes deployment using <code>kubectl</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n app-ns-1 apply -f bitnami-postgresql-vm.yaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">virtualmachine.vmoperator.vmware.com/bitnami-postgresql created
+</span></span><span class="line"><span class="cl">configmap/postgresql-vm-cm created
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Both objects are created on the Supervisor cluster and the vm deployment can be followed in the vSphere client.</p>
+<p>After a successful deployment, the vm will be powered on (<code>powerState: poweredOn</code>) and you can also watch the initialisation progress via one of the consoles.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png" data-sub-html="<h2>Figure VIII: VM Initialisation</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_10.png" />
+    </a><figcaption class="image-caption">Figure VIII: VM Initialisation</figcaption>
+    </figure>
+<p>Speaking of console 😁 Another new feature which were introduced with vSphere 8U1 is the web-console support for VM Service VMs.</p>
+<p>Let&rsquo;s check it out:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl vsphere -n ns-hybrid-app-1 vm web-console bitnami-postgresql
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Successfully created a new WebConsoleRequest <span class="s1">&#39;bitnami-postgresql-g8qf4&#39;</span> in namespace <span class="s1">&#39;ns-hybrid-app-1&#39;</span>
+</span></span><span class="line"><span class="cl">Waiting <span class="k">for</span> the above WebConsoleRequest to be processed...
+</span></span><span class="line"><span class="cl">Web-Console URL: https://sv1-avi.cpod-aviv8.az-wdc.cloud-garage.net/vm/web-console?host<span class="o">=</span>esx01.cpod-aviv8.az-wdc.cloud-garage.net<span class="p">&amp;</span><span class="nv">name</span><span class="o">=</span>bitnami-postgresql<span class="p">&amp;</span><span class="nv">port</span><span class="o">=</span>443<span class="p">&amp;</span><span class="nv">ticket</span><span class="o">=</span>d1d17dd20e4aa87c<span class="p">&amp;</span><span class="nv">vm_moid</span><span class="o">=</span>vm-5093
+</span></span><span class="line"><span class="cl">This URL is <span class="k">for</span> one-time use and will expire at 2023-07-14T18:13:16+02:00 <span class="o">(</span>in about 1m59s<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Here we go:</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png" data-sub-html="<h2>Figure IX: VM Web-Console</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_11.png" />
+    </a><figcaption class="image-caption">Figure IX: VM Web-Console</figcaption>
+    </figure>
+<h2 id="postgresql-vm-post-deployment-configurations">PostgreSQL-VM Post Deployment Configurations</h2>
+<p>Before I can actually connect to the DB and start writing data into it, I have to make some post-deployment configurations. As <em>Figure IX</em> shows, the default user for the PostgreSQL DB is <code>postgres</code>. The password for the user is created randomly and also displayed on the &ldquo;welcome screen&rdquo;.</p>
+<p>The default user for the vm on the other hand is <code>bitnami</code>. This user will be used to <code>ssh</code> into the vm.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh -i ~/.ssh/id_rsa bitnami@postgresql01.cpod-aviv8.az-wdc.cloud-garage.net
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>After <code>ssh</code>ing into the vm, I configured the listening IP address as well as the port for the PostgreSQL.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ vi /opt/bitnami/postgresql/conf/postgresql.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">listen_addresses</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>          <span class="c1"># what IP address(es) to listen on;</span>
+</span></span><span class="line"><span class="cl">                                        <span class="c1"># comma-separated list of addresses;</span>
+</span></span><span class="line"><span class="cl">                                        <span class="c1"># defaults to &#39;localhost&#39;; use &#39;*&#39; for all</span>
+</span></span><span class="line"><span class="cl">                                        <span class="c1"># (change requires restart)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">port</span> <span class="o">=</span> <span class="s1">&#39;5432&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I kept it simple for my use case and configured basically any IP (<code>*</code>) and sticked with the default port <code>5432</code>.</p>
+<p>The next configuration file which has to adjusted properly was for the client authentication. This can be done via the <code>pg_hba.conf</code> file. HBA stands for host-based authentication.</p>
+<p>Add the <code>all</code> configuration to the end of the file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi /opt/bitnami/postgresql/conf/pg_hba.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="sb">```</span>shell
+</span></span><span class="line"><span class="cl"><span class="nb">local</span>    all             all                                     md5
+</span></span><span class="line"><span class="cl">host     all             all        127.0.0.1/32                 md5
+</span></span><span class="line"><span class="cl">host     all             all        ::1/128                      md5
+</span></span><span class="line"><span class="cl"><span class="c1"># allow all</span>
+</span></span><span class="line"><span class="cl">host     all             all        all                          md5
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Finally, apply the configuration by restarting the <code>postgresql service</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ sudo /opt/bitnami/ctlscript.sh restart postgresql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Validate your configuration:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ netstat -aon <span class="p">|</span> grep <span class="s1">&#39;5432&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:5432            0.0.0.0:*               LISTEN      off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">tcp6       <span class="m">0</span>      <span class="m">0</span> :::5432                 :::*                    LISTEN      off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">unix  <span class="m">2</span>      <span class="o">[</span> ACC <span class="o">]</span>     STREAM     LISTENING     <span class="m">16993</span>    /tmp/.s.PGSQL.5432
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Well, the system settings are looking promising and I tried to connect to the DB using the PostgreSQL cli <code>psql</code>. Unfortunately, it hasn&rsquo;t worked out well for me. The connection always ran into a <code>timeout</code> error. It took me some efforts and the help of my appreciated colleague <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> to figure out, that <code>nftables</code> are used on the Debian system and that it&rsquo;s blocking all the incoming traffic except <code>ssh</code>.</p>
+<p><strong>ProTip:</strong> In order to validate that incoming traffic is allowed, you can start a <code>http.server</code> using <code>Python</code>.</p>
+<p>By executing the following command <code>python3 -m http.server</code> on the shell, it&rsquo;ll start a simple http server listening on localhost port 8000. Try <code>curl</code>ing the endpoint.</p>
+<p>That really comes into handy in such troubleshooting situations.</p>
+<p>On the server:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ python3 -m http.server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Serving HTTP on 0.0.0.0 port <span class="m">8000</span> <span class="o">(</span>http://0.0.0.0:8000/<span class="o">)</span> ...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>On the client: <code>curl 10.105.3.50:8000</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&#34;Content-Type&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;text/html; charset=utf-8&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Directory listing for /<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[...]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I didn&rsquo;t wanted to start configuring <code>nftables</code> properly in order to allow the incoming traffic. Consequently, I completely <code>stop</code>ed the service on the system level by executing <code>systemctl stop nftables</code>.</p>
+<p>Connection check using <code>psql</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Login with user postgres</span>
+</span></span><span class="line"><span class="cl">psql -U postgres -h 10.105.3.50 -p <span class="m">5432</span> -d postgres
+</span></span><span class="line"><span class="cl">Password <span class="k">for</span> user postgres:
+</span></span><span class="line"><span class="cl">*********
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">psql <span class="o">(</span>15.3 <span class="o">(</span>Ubuntu 15.3-1.pgdg20.04+1<span class="o">)</span>, server 11.20<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Type <span class="s2">&#34;help&#34;</span> <span class="k">for</span> help.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Show connection details (\conninfo)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">postgres</span><span class="o">=</span><span class="c1"># \conninfo</span>
+</span></span><span class="line"><span class="cl">You are connected to database <span class="s2">&#34;postgres&#34;</span> as user <span class="s2">&#34;postgres&#34;</span> on host <span class="s2">&#34;10.105.3.50&#34;</span> at port <span class="s2">&#34;5432&#34;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List all available databases (\l)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">postgres</span><span class="o">=</span><span class="c1"># \l</span>
+</span></span><span class="line"><span class="cl">                                                 List of databases
+</span></span><span class="line"><span class="cl">   Name    <span class="p">|</span>  Owner   <span class="p">|</span> Encoding <span class="p">|</span>   Collate   <span class="p">|</span>    Ctype    <span class="p">|</span> ICU Locale <span class="p">|</span> Locale Provider <span class="p">|</span>   Access privileges
+</span></span><span class="line"><span class="cl">-----------+----------+----------+-------------+-------------+------------+-----------------+-----------------------
+</span></span><span class="line"><span class="cl"> postgres  <span class="p">|</span> postgres <span class="p">|</span> UTF8     <span class="p">|</span> en_US.UTF-8 <span class="p">|</span> en_US.UTF-8 <span class="p">|</span>            <span class="p">|</span> libc            <span class="p">|</span>
+</span></span><span class="line"><span class="cl"> template0 <span class="p">|</span> postgres <span class="p">|</span> UTF8     <span class="p">|</span> en_US.UTF-8 <span class="p">|</span> en_US.UTF-8 <span class="p">|</span>            <span class="p">|</span> libc            <span class="p">|</span> <span class="o">=</span>c/postgres          +
+</span></span><span class="line"><span class="cl">           <span class="p">|</span>          <span class="p">|</span>          <span class="p">|</span>             <span class="p">|</span>             <span class="p">|</span>            <span class="p">|</span>                 <span class="p">|</span> <span class="nv">postgres</span><span class="o">=</span>CTc/postgres
+</span></span><span class="line"><span class="cl"> template1 <span class="p">|</span> postgres <span class="p">|</span> UTF8     <span class="p">|</span> en_US.UTF-8 <span class="p">|</span> en_US.UTF-8 <span class="p">|</span>            <span class="p">|</span> libc            <span class="p">|</span> <span class="o">=</span>c/postgres          +
+</span></span><span class="line"><span class="cl">           <span class="p">|</span>          <span class="p">|</span>          <span class="p">|</span>             <span class="p">|</span>             <span class="p">|</span>            <span class="p">|</span>                 <span class="p">|</span> <span class="nv">postgres</span><span class="o">=</span>CTc/postgres
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">3</span> rows<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Fabulous! We have a configured PostgreSQL DB VM up and running deployed via the Virtual Machine Service. Nevertheless, in order to really have the &ldquo;DevOps-feeling&rdquo;, the post-deployment task needs to be automated as well.</p>
+<h2 id="run-pgadmin-in-a-container">Run pgAdmin in a Container</h2>
+<p>I&rsquo;m not an expert in PostgreSQL. Therefore, I was looking for the most simple and effective way to configure and read the DB. <a href="https://www.pgadmin.org/" target="_blank" rel="noopener noreffer ">pgAdmin</a> is the tool of the DB admin&rsquo;s choice (me guessing again) and fortunately, a container image for pgAdmin exists.</p>
+<p>The following <code>docker</code> command will spin up a local <code>pgadmin</code> instance on your computer/jumphost:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -p 80:80 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_EMAIL=rguske@vmware.com&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_PASSWORD=VMware1!&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -d dpage/pgadmin4:7.4
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The pgAdmin portal is accessible via your browser. Either <code>http://localhost</code> or if you are using a jumphost (in my case <code>ssh</code> only) like me, then use the IP address of your jumphost.</p>
+<p>I&rsquo;m using the given data in order to establish the connection to my PostgreSQL instance.</p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png" data-sub-html="<h2>Figure X: pgAdmin Portal - Connect to PostgreSQL DB Instance</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_12.png" />
+    </a><figcaption class="image-caption">Figure X: pgAdmin Portal - Connect to PostgreSQL DB Instance</figcaption>
+    </figure>
+<h2 id="example-kubernetes-application">Example Kubernetes Application</h2>
+<p>When creating this post as well as the associated demo, the overall idea which I had in mind was to create a <a href="#hybrid-application-architectures" rel="">Hybrid Application Architecture</a> using the power of the Supervisor Services of vSphere with Tanzu. A Tanzu Kubernetes Cluster will host an application which will write data into a Database instance running as a virtual machine and most important, declaratively deployed using the Virtual Machine Service. This time, I deployed everything manually but ultimately it would be part of a CI/CD pipeline.</p>
+<p>I don&rsquo;t had an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine 🤖&hellip; 😉</p>
+<p>You can find the <code>Postgresql-Writer-k8s-Job</code> application on my <i class='fab fa-github fa-fw'></i> repository <a href="https://github.com/rguske/postgresql-writer-k8s-job/tree/main" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>Quickly explained:</p>
+<p>The application will <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L14" target="_blank" rel="noopener noreffer ">establish a connection to the database</a> using the by a user <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L4" target="_blank" rel="noopener noreffer ">defined data which is stored in a Kubernetes secret</a>.</p>
+<p>After the connection has been established, the application will write <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L18" target="_blank" rel="noopener noreffer ">example data</a> <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L25" target="_blank" rel="noopener noreffer ">into a defined table</a>.</p>
+<p>In order to not only use <code>psql</code> or <code>pgAdmin</code> to validate the written data, I added the functionality to the application that a <code>search_query</code> will be executed and the results will be send to <code>stdout</code>. Therefore, using <code>kubectl logs</code> will give you the results as well.</p>
+<h3 id="deploy-the-application-as-a-kubernetes-job">Deploy the Application as a Kubernetes Job</h3>
+<p>Let&rsquo;s deploy the Postgres-Writer application as a Kubernetes job. Make sure being in the right Kubernetes context (<code>kubectl config use-context</code>).</p>
+<p>Create a new Kubernetes namespace:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns postgres-app
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The next step must be the creation of the Kubernetes secret. Remember, the application will read sensible data from the secret.</p>
+<p>Create the secret:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create secret generic postgres-secret <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">username</span><span class="o">=</span><span class="s1">&#39;postgres&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span><span class="s1">&#39;0yt5JR63W5I2&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">host</span><span class="o">=</span><span class="s1">&#39;10.105.3.50&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">port</span><span class="o">=</span><span class="s1">&#39;5432&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">database</span><span class="o">=</span><span class="s1">&#39;vmware&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">table</span><span class="o">=</span><span class="s1">&#39;myappdata&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">column1</span><span class="o">=</span><span class="s1">&#39;value&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">column2</span><span class="o">=</span><span class="s1">&#39;data&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --namespace<span class="o">=</span><span class="s1">&#39;postgres-app&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ultimately, deploy the application as a Kubernetes job and validate the results after the jobs completion.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n postgres-app create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-writer-job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-writer-pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-writer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">rguske/postgres-writer-app:1.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POSTGRES_HOST</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">host</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POSTGRES_PORT</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">port</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POSTGRES_USERNAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">username</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POSTGRES_PASSWORD</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">password</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">POSTGRES_DB</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">database</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">TABLE</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">table</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">COLUMN1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">column1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">COLUMN2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">valueFrom</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="nt">secretKeyRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">postgres-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">column2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;python&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;postgresql-app.py&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#      imagePullSecrets:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#        - name:   # Optional: If your image is in a private registry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">backoffLimit</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">  </span><span class="c"># Ensures that the job doesn&#39;t retry in case of failure</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The job (<code>completion 1/1</code>) as well as the pod (<code>Completed</code>) got deployed and executed successfully.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n postgres-app get job,pod
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                            COMPLETIONS   DURATION   AGE
+</span></span><span class="line"><span class="cl">job.batch/postgres-writer-job   1/1           28s        2m1s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                            READY   STATUS      RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/postgres-writer-job-zzhx4   0/1     Completed   <span class="m">0</span>          2m1s
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="validating-the-written-data">Validating the written Data</h3>
+<p>We have three variants to use to validate that data was successfully written into the db table and columns.</p>
+<ul>
+<li>
+<ol>
+<li>Using <code>kubectl</code></li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n postgres-app logs jobs/postgres-writer-job -f
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="s1">&#39;John&#39;</span>, <span class="s1">&#39;Doe&#39;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="s1">&#39;Jane&#39;</span>, <span class="s1">&#39;Smith&#39;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="s1">&#39;Alice&#39;</span>, <span class="s1">&#39;Johnson&#39;</span><span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The output shows the written example data ✅</p>
+<ul>
+<li>
+<ol start="2">
+<li>Using <code>psql</code>:</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">psql -U postgres -h 10.105.3.50 -p <span class="m">5432</span> -d vmware -c <span class="s1">&#39;SELECT * FROM myappdata&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Password <span class="k">for</span> user postgres:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> value <span class="p">|</span> data
+</span></span><span class="line"><span class="cl">---------+---------
+</span></span><span class="line"><span class="cl"> John    <span class="p">|</span> Doe
+</span></span><span class="line"><span class="cl"> Jane    <span class="p">|</span> Smith
+</span></span><span class="line"><span class="cl"> Alice   <span class="p">|</span> Johnson
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">3</span> rows<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>✅</p>
+<ul>
+<li>
+<ol start="3">
+<li>Using <code>pgAdmin</code></li>
+</ol>
+</li>
+</ul>
+<p>Go to <strong>Tools</strong> and select <strong>Query Tool</strong>. Enter the following <code>search_query</code> and press the play button:</p>
+<p><code>SELECT * FROM public.myappdata</code></p>
+<figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png" data-sub-html="<h2>Figure XI: pgAdmin Search Query Results</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_13.png" />
+    </a><figcaption class="image-caption">Figure XI: pgAdmin Search Query Results</figcaption>
+    </figure>
+<p>✅</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>As technology continues to evolve, modern hybrid application architectures providing a practical and pragmatic approach to bridge the gap between service-oriented architectures and traditional workloads hosted on virtual machines. By blending the scalability and agility of SOA with the reliability and versatility of VMs, organizations can modernize their applications while leveraging existing investments.</p>
+<p>Although challenges exist, the benefits of modern hybrid architectures make them an attractive option for businesses looking to strike a balance between legacy systems and cloud-native principles.</p>
+<p>VMware&rsquo;s comprehensive solution portfolio for application and platform modernization, <a href="https://tanzu.vmware.com/tanzu" target="_blank" rel="noopener noreffer ">Tanzu</a>, can help enterprises to achieve the aforementioned objectives and goals.</p>
+<p>Thanks a lot for reading.</p>
+<h2 id="extra">Extra</h2>
+<p>I tried the deployment of other OVA&rsquo;s like the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance</a> 😍 as well as my <a href="https://github.com/rguske/kubernetes-appliance" target="_blank" rel="noopener noreffer ">Kubernetes Appliance OVA</a> too. Both works like a charme and I wanted to provide the manifests for both here as well.</p>
+<h3 id="veba-vm-service-manifest">VEBA VM Service Manifest</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n veba-ns get virtualmachineimages.vmoperator.vmware.com --field-selector metadata.name<span class="o">=</span>veba-v0.7.5
+</span></span><span class="line"><span class="cl">NAME          PROVIDER-NAME                          CONTENT-LIBRARY-NAME   IMAGE-NAME    VERSION   OS-TYPE      FORMAT   AGE
+</span></span><span class="line"><span class="cl">veba-v0.7.5   87b2c9ec-81e5-4e01-9367-be8f6d74ecf7                          veba-v0.7.5   v0.7.5    otherGuest   ovf      4d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba01</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">veba01</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">topology.kubernetes.io/zone</span><span class="p">:</span><span class="w"> </span><span class="l">az01</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">imageName</span><span class="p">:</span><span class="w"> </span><span class="l">veba-v0.7.5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">className</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-large</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">powerState</span><span class="p">:</span><span class="w"> </span><span class="l">poweredOn</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">sp-az-consumption-domain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">networkInterfaces</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">networkType</span><span class="p">:</span><span class="w"> </span><span class="l">vsphere-distributed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networkName</span><span class="p">:</span><span class="w"> </span><span class="l">vlan-1403-wkld1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">vmMetadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">configMapName</span><span class="p">:</span><span class="w"> </span><span class="l">veba01-cm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">vAppConfig</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba01-cm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.debug</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.hostname</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;veba01.cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.ipaddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.14.3.60&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.netmask</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;24 (255.255.255.0)&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.gateway</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.14.3.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.dns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.24.14.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.domain</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.ntp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.24.14.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.http_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.https_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.no_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.root_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.enable_ssh</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_server</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;vcsa.cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kn-ro@cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_veba_ui_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;administrator@cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_veba_ui_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;PASSWORD&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_disable_tls_verification</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_server</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_domain</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_disable_tls_verification</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.webhook</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.webhook_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.webhook_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.custom_tls_private_key</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.custom_tls_ca_cert</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.pod_network_cidr</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;192.168.0.0/20&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.syslog_server_hostname</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.syslog_server_port</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.syslog_server_protocol</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.syslog_server_format</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png" data-sub-html="<h2>Figure XI: VMware Event Broker Appliance Deployment</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_4.png" />
+    </a><figcaption class="image-caption">Figure XI: VMware Event Broker Appliance Deployment</figcaption>
+    </figure>
+<h3 id="kubernetes-appliance-vm-service-manifest">Kubernetes Appliance VM Service Manifest</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">k8s02</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">k8s02</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">topology.kubernetes.io/zone</span><span class="p">:</span><span class="w"> </span><span class="l">az02</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">imageName</span><span class="p">:</span><span class="w"> </span><span class="l">k8s-app-v030</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">className</span><span class="p">:</span><span class="w"> </span><span class="l">best-effort-medium</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">powerState</span><span class="p">:</span><span class="w"> </span><span class="l">poweredOn</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l">sp-az-consumption-domain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">networkInterfaces</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">networkType</span><span class="p">:</span><span class="w"> </span><span class="l">vsphere-distributed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networkName</span><span class="p">:</span><span class="w"> </span><span class="l">vlan-1403-wkld1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">vmMetadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">configMapName</span><span class="p">:</span><span class="w"> </span><span class="l">k8s02-cm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">vAppConfig</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">k8s02-cm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.hostname</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;k8s02.cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.ipaddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.14.3.58&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.netmask</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;24 (255.255.255.0)&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.gateway</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;10.14.3.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.dns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.24.14.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.domain</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.ntp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.24.14.1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># specify the hostname of the first k8s-node which this node will join (cluster)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.node_fqdn</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;k8s01.cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.node_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.http_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.https_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.no_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.root_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.debug</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># default is 172.17.0.1/16</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.docker_network_cidr</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.17.0.1/16&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># default is 10.10.0.0/16</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.pod_network_cidr</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;192.168.0.0/20&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png" data-sub-html="<h2>Figure XII: Kubernetes Appliance OVA Deployment</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png"
+            data-srcset="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png 1.5x, /img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_16.png" />
+    </a><figcaption class="image-caption">Figure XII: Kubernetes Appliance OVA Deployment</figcaption>
+    </figure>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-07-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-via="vmw_rguske" data-hashtags="VMware,VEBA,Kubernetes,CloudNative,Extensibility,Tools,vSphere"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-description="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-description="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
