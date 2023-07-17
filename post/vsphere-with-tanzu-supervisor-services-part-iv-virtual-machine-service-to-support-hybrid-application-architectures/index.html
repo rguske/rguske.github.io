@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-07-15T19:48:14+02:00" />
-<meta property="article:modified_time" content="2023-07-15T19:48:14+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-07-15T21:56:32+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -29,7 +29,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/"
         },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, CloudNative, Extensibility, Tools, vSphere","wordcount":  4970 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-15T19:48:14+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-15T21:56:32+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -158,8 +158,8 @@
 </nav></div>
             </div><div class="content" id="content"><h2 id="hybrid-application-architectures">Hybrid Application Architectures</h2>
 <p>As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of service-oriented architectures (SOA) with the reliability and versatility of virtual machines (VMs).</p>
-<p>Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an applications into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.</p>
-<p>Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems, or similar specific applications which are not easily to containerize or to be refactored.</p>
+<p>Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an application into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.</p>
+<p>Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems or similar specific applications which are not easily to containerize or to be refactored.</p>
 <p>Other issues besides the incompatibility of an application to be containerized are:</p>
 <ul>
 <li>your application requires a specific hardware</li>
@@ -189,7 +189,7 @@
 <h2 id="virtual-machine-service-to-deploy-virtual-appliances">Virtual Machine Service to deploy Virtual Appliances</h2>
 <p>Shipping virtual machines in a ready-to-use single file fashion is done by the Open Virtual Appliance (OVA) format. Well known and adopted by customers. The purpose of an OVA is to provide a single file distribution which contains packaged files like <code>.ovf</code>, <code>.vmdk</code> or <code>.nvram</code> of which a virtual appliance is made of. A virtual appliance could be the vSphere control-plane <a href="https://www.vmware.com/products/vcenter.html" target="_blank" rel="noopener noreffer ">vCenter Server</a> or e.g. the VMware Fling <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance - VEBA</a>.</p>
 <p>The Virtual Machine Service was <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-vcenter-server-7-vsphere-with-tanzu-release-notes.html#wn04272021" target="_blank" rel="noopener noreffer ">initially introduced</a> with vSphere 7 U2a. It allows users to deploy and manage virtual machines using Kubernetes standard APIs. In order to provide these functionalities, the <a href="https://github.com/vmware-tanzu/vm-operator" target="_blank" rel="noopener noreffer ">Virtual Machine Operator</a>, open-sourced by VMware, had to be developed and integrated in vSphere.</p>
-<p>If you&rsquo;re touching this exciting technology for the first time, you may would like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.</p>
+<p>If you&rsquo;re touching this exciting technology for the first time, you might like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.</p>
 <p>Level 100:</p>
 <ul>
 <li><a href="https://medium.com/analytics-vidhya/the-new-modern-workload-on-vsphere-fed63d57ff8d" target="_blank" rel="noopener noreffer ">The new modern Workload on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreffer ">Navneet Verma</a></li>
@@ -317,7 +317,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>The content library itself will be displayed only with its UUID. I guess this is due to the fact that Kubernetes requires everything is written in DNS conformant notations. Probably users may not always be able to ensure this for a global vSphere object. Therefore, uniqueness is required.</p>
-<p>However, unless you aren&rsquo;t Neo 😎 try reading the UUID&rsquo;s won&rsquo;t tell you which content library it actually is right away. You can figure it out using the vSphere client.</p>
+<p>However, unless you&rsquo;re not Neo 😎 trying to read the UUID&rsquo;s won&rsquo;t tell you which content library it actually is right away. You can figure it out using the vSphere client.</p>
 <p>By selecting a content library in the vSphere client, you&rsquo;ll notice a UUID in the URL which can be used to get the relation.</p>
 <p>Like belows <em>Figure VI</em> shows.</p>
 <figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" data-sub-html="<h2>Figure VI: UUID matching</h2>">
@@ -352,9 +352,9 @@
             alt="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" />
     </a><figcaption class="image-caption">Figure VII: OVA Deployment example</figcaption>
     </figure>
-<p>These configurable fields are specified in the OVF file as <code>ovf:userConfigurable=&quot;true&quot;</code> and are of high interst for the creation of a virtual machine manifest.</p>
+<p>These configurable fields are specified in the OVF file as <code>ovf:userConfigurable=&quot;true&quot;</code> and are of high interest for the creation of a virtual machine manifest.</p>
 <p><em>Resource: VMware Docs - <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-FB31603E-EE1D-4413-8567-DD2A5834929C.html" target="_blank" rel="noopener noreffer ">Deploy VMs with Configurable OVF Properties</a></em></p>
-<p>In the following, I wll explain two ways how to get the data.</p>
+<p>In the following, I will explain two ways how to get the data.</p>
 <h4 id="extract-configurable-properties-using-the-ovftool">Extract Configurable Properties using the <code>ovftool</code></h4>
 <p>Option one is admittedly associated with a little bit more overhead but in comparison to option two, it requires no access to the Supervisor cluster (high priviledged user required). Download the VMware OVF tool from VMware&rsquo;s Developer Portal .</p>
 <p>⬇️ <a href="https://developer.vmware.com/web/tool/4.6.0/ovf-tool" target="_blank" rel="noopener noreffer ">Open Virtualization Format (OVF) Tool</a></p>
@@ -383,7 +383,7 @@
 </span></span><span class="line"><span class="cl">Completed successfully
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Browse the created folder until you found the <code>*.ovf</code> file. In my case it&rsquo;s the <code>bitnami-postgresql-11.20.0-r1.ovf</code>. If you run e.g. a <code>cat</code> on the file and you browse to section <code>&lt;EulaSection&gt;</code> or basically to the end of the ovf, you will find the wanted <code>ovfEnv</code> keys (<code>ovf:userConfigurable=&quot;true&quot;</code>) for our manifest file.</p>
+</div><p>Browse the created folder until you find the <code>*.ovf</code> file. In my case it&rsquo;s the <code>bitnami-postgresql-11.20.0-r1.ovf</code>. If you run e.g. a <code>cat</code> on the file and you browse to section <code>&lt;EulaSection&gt;</code> or basically to the end of the ovf, you will find the wanted <code>ovfEnv</code> keys (<code>ovf:userConfigurable=&quot;true&quot;</code>) for our manifest file.</p>
 <p>Here&rsquo;s is my example:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1507,7 +1507,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-07-15</span>
+                <span>Updated on 2023-07-15&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/7e86658d05a8b721863622e5ebc2e25af4060c0c" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 7e86658d05a8b721863622e5ebc2e25af4060c0c: finalized new post sv part 4 hybrid app arch">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>7e86658</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>

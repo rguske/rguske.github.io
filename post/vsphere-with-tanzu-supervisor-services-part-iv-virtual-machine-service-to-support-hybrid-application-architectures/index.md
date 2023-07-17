@@ -5,9 +5,9 @@
 
 As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of service-oriented architectures (SOA) with the reliability and versatility of virtual machines (VMs).
 
-Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an applications into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.
+Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an application into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.
 
-Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems, or similar specific applications which are not easily to containerize or to be refactored.
+Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems or similar specific applications which are not easily to containerize or to be refactored.
 
 Other issues besides the incompatibility of an application to be containerized are:
 
@@ -44,7 +44,7 @@ Shipping virtual machines in a ready-to-use single file fashion is done by the O
 
 The Virtual Machine Service was [initially introduced](https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-vcenter-server-7-vsphere-with-tanzu-release-notes.html#wn04272021) with vSphere 7 U2a. It allows users to deploy and manage virtual machines using Kubernetes standard APIs. In order to provide these functionalities, the [Virtual Machine Operator](https://github.com/vmware-tanzu/vm-operator), open-sourced by VMware, had to be developed and integrated in vSphere.
 
-If you're touching this exciting technology for the first time, you may would like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.
+If you're touching this exciting technology for the first time, you might like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.
 
 Level 100:
 
@@ -132,7 +132,7 @@ b9a1de5e-fb67-4a34-977a-ff88776b54da   6d8h
 
 The content library itself will be displayed only with its UUID. I guess this is due to the fact that Kubernetes requires everything is written in DNS conformant notations. Probably users may not always be able to ensure this for a global vSphere object. Therefore, uniqueness is required.
 
-However, unless you aren't Neo :sunglasses: try reading the UUID's won't tell you which content library it actually is right away. You can figure it out using the vSphere client.
+However, unless you're not Neo :sunglasses: trying to read the UUID's won't tell you which content library it actually is right away. You can figure it out using the vSphere client.
 
 By selecting a content library in the vSphere client, you'll notice a UUID in the URL which can be used to get the relation.
 
@@ -159,11 +159,11 @@ Normally, if you deploy an OVA, you'll enter values (`integer`, `string` or `boo
 
 {{< image src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" caption="Figure VII: OVA Deployment example" src-s="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_8.png" >}}
 
-These configurable fields are specified in the OVF file as `ovf:userConfigurable="true"` and are of high interst for the creation of a virtual machine manifest.
+These configurable fields are specified in the OVF file as `ovf:userConfigurable="true"` and are of high interest for the creation of a virtual machine manifest.
 
 *Resource: VMware Docs - [Deploy VMs with Configurable OVF Properties](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-FB31603E-EE1D-4413-8567-DD2A5834929C.html)*
 
-In the following, I wll explain two ways how to get the data.
+In the following, I will explain two ways how to get the data.
 
 #### Extract Configurable Properties using the `ovftool`
 
@@ -185,7 +185,7 @@ Warning:
 Completed successfully
 ```
 
-Browse the created folder until you found the `*.ovf` file. In my case it's the `bitnami-postgresql-11.20.0-r1.ovf`. If you run e.g. a `cat` on the file and you browse to section `<EulaSection>` or basically to the end of the ovf, you will find the wanted `ovfEnv` keys (`ovf:userConfigurable="true"`) for our manifest file.
+Browse the created folder until you find the `*.ovf` file. In my case it's the `bitnami-postgresql-11.20.0-r1.ovf`. If you run e.g. a `cat` on the file and you browse to section `<EulaSection>` or basically to the end of the ovf, you will find the wanted `ovfEnv` keys (`ovf:userConfigurable="true"`) for our manifest file.
 
 Here's is my example:
 
