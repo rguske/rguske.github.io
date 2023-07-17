@@ -416,7 +416,7 @@ port = '5432'
 
 I kept it simple for my use case and configured basically any IP (`*`) and sticked with the default port `5432`.
 
-The next configuration file which has to adjusted properly was for the client authentication. This can be done via the `pg_hba.conf` file. HBA stands for host-based authentication.
+The next configuration file which has to be adjusted properly was for the client authentication. This can be done via the `pg_hba.conf` file. HBA stands for host-based authentication.
 
 Add the `all` configuration to the end of the file:
 
@@ -447,7 +447,7 @@ tcp6       0      0 :::5432                 :::*                    LISTEN      
 unix  2      [ ACC ]     STREAM     LISTENING     16993    /tmp/.s.PGSQL.5432
 ```
 
-Well, the system settings are looking promising and I tried to connect to the DB using the PostgreSQL cli `psql`. Unfortunately, it hasn't worked out well for me. The connection always ran into a `timeout` error. It took me some efforts and the help of my appreciated colleague [Andreas Marqvardsen](https://blog.andreasm.io/) to figure out, that `nftables` are used on the Debian system and that it's blocking all the incoming traffic except `ssh`.
+Well, the system settings are look promising and I tried to connect to the DB using the PostgreSQL cli `psql`. Unfortunately, it hasn't worked out well for me. The connection always ran into a `timeout` error. It took me some efforts and the help of my appreciated colleague [Andreas Marqvardsen](https://blog.andreasm.io/) to figure out, that `nftables` are used on the Debian system and that it's blocking all the incoming traffic except `ssh`.
 
 **ProTip:** In order to validate that incoming traffic is allowed, you can start a `http.server` using `Python`.
 
@@ -475,7 +475,7 @@ On the client: `curl 10.105.3.50:8000`.
 [...]
 ```
 
-I didn't wanted to start configuring `nftables` properly in order to allow the incoming traffic. Consequently, I completely `stop`ed the service on the system level by executing `systemctl stop nftables`.
+I didn't want to start configuring `nftables` properly in order to allow the incoming traffic. Consequently, I completely `stop`ed the service on the system level by executing `systemctl stop nftables`.
 
 Connection check using `psql`:
 
@@ -530,7 +530,7 @@ I'm using the given data in order to establish the connection to my PostgreSQL i
 
 When creating this post as well as the associated demo, the overall idea which I had in mind was to create a [Hybrid Application Architecture](#hybrid-application-architectures) using the power of the Supervisor Services of vSphere with Tanzu. A Tanzu Kubernetes Cluster will host an application which will write data into a Database instance running as a virtual machine and most important, declaratively deployed using the Virtual Machine Service. This time, I deployed everything manually but ultimately it would be part of a CI/CD pipeline.
 
-I don't had an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine :robot:... :wink:
+I didn't have an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine :robot:... :wink:
 
 You can find the `Postgresql-Writer-k8s-Job` application on my <i class='fab fa-github fa-fw'></i> repository [HERE](https://github.com/rguske/postgresql-writer-k8s-job/tree/main).
 
@@ -702,7 +702,7 @@ Thanks a lot for reading.
 
 ## Extra
 
-I tried the deployment of other OVA's like the [VMware Event Broker Appliance](https://flings.vmware.com/vmware-event-broker-appliance) :heart_eyes: as well as my [Kubernetes Appliance OVA](https://github.com/rguske/kubernetes-appliance) too. Both works like a charme and I wanted to provide the manifests for both here as well.
+I tried the deployment of other OVA's like the [VMware Event Broker Appliance](https://flings.vmware.com/vmware-event-broker-appliance) :heart_eyes: as well as my [Kubernetes Appliance OVA](https://github.com/rguske/kubernetes-appliance) too. Both work like a charme and I wanted to provide the manifests for both here as well.
 
 ### VEBA VM Service Manifest
 

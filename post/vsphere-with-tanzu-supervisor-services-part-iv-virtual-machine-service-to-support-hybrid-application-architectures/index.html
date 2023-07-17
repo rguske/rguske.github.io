@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-07-15T19:48:14+02:00" />
-<meta property="article:modified_time" content="2023-07-15T21:56:32+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-07-17T09:00:35+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/"
-        },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, CloudNative, Extensibility, Tools, vSphere","wordcount":  4970 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-15T21:56:32+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, CloudNative, Extensibility, Tools, vSphere","wordcount":  4971 ,
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-17T09:00:35+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -102,7 +102,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-07-15">2023-07-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4970 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-07-15">2023-07-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4971 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;24 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -791,7 +791,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>I kept it simple for my use case and configured basically any IP (<code>*</code>) and sticked with the default port <code>5432</code>.</p>
-<p>The next configuration file which has to adjusted properly was for the client authentication. This can be done via the <code>pg_hba.conf</code> file. HBA stands for host-based authentication.</p>
+<p>The next configuration file which has to be adjusted properly was for the client authentication. This can be done via the <code>pg_hba.conf</code> file. HBA stands for host-based authentication.</p>
 <p>Add the <code>all</code> configuration to the end of the file:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -841,7 +841,7 @@
 </span></span><span class="line"><span class="cl">unix  <span class="m">2</span>      <span class="o">[</span> ACC <span class="o">]</span>     STREAM     LISTENING     <span class="m">16993</span>    /tmp/.s.PGSQL.5432
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Well, the system settings are looking promising and I tried to connect to the DB using the PostgreSQL cli <code>psql</code>. Unfortunately, it hasn&rsquo;t worked out well for me. The connection always ran into a <code>timeout</code> error. It took me some efforts and the help of my appreciated colleague <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> to figure out, that <code>nftables</code> are used on the Debian system and that it&rsquo;s blocking all the incoming traffic except <code>ssh</code>.</p>
+</div><p>Well, the system settings are look promising and I tried to connect to the DB using the PostgreSQL cli <code>psql</code>. Unfortunately, it hasn&rsquo;t worked out well for me. The connection always ran into a <code>timeout</code> error. It took me some efforts and the help of my appreciated colleague <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> to figure out, that <code>nftables</code> are used on the Debian system and that it&rsquo;s blocking all the incoming traffic except <code>ssh</code>.</p>
 <p><strong>ProTip:</strong> In order to validate that incoming traffic is allowed, you can start a <code>http.server</code> using <code>Python</code>.</p>
 <p>By executing the following command <code>python3 -m http.server</code> on the shell, it&rsquo;ll start a simple http server listening on localhost port 8000. Try <code>curl</code>ing the endpoint.</p>
 <p>That really comes into handy in such troubleshooting situations.</p>
@@ -879,7 +879,7 @@
 </span></span><span class="line"><span class="cl">[...]
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>I didn&rsquo;t wanted to start configuring <code>nftables</code> properly in order to allow the incoming traffic. Consequently, I completely <code>stop</code>ed the service on the system level by executing <code>systemctl stop nftables</code>.</p>
+</div><p>I didn&rsquo;t want to start configuring <code>nftables</code> properly in order to allow the incoming traffic. Consequently, I completely <code>stop</code>ed the service on the system level by executing <code>systemctl stop nftables</code>.</p>
 <p>Connection check using <code>psql</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -965,7 +965,7 @@
     </figure>
 <h2 id="example-kubernetes-application">Example Kubernetes Application</h2>
 <p>When creating this post as well as the associated demo, the overall idea which I had in mind was to create a <a href="#hybrid-application-architectures" rel="">Hybrid Application Architecture</a> using the power of the Supervisor Services of vSphere with Tanzu. A Tanzu Kubernetes Cluster will host an application which will write data into a Database instance running as a virtual machine and most important, declaratively deployed using the Virtual Machine Service. This time, I deployed everything manually but ultimately it would be part of a CI/CD pipeline.</p>
-<p>I don&rsquo;t had an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine 🤖&hellip; 😉</p>
+<p>I didn&rsquo;t have an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine 🤖&hellip; 😉</p>
 <p>You can find the <code>Postgresql-Writer-k8s-Job</code> application on my <i class='fab fa-github fa-fw'></i> repository <a href="https://github.com/rguske/postgresql-writer-k8s-job/tree/main" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
 <p>Quickly explained:</p>
 <p>The application will <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L14" target="_blank" rel="noopener noreffer ">establish a connection to the database</a> using the by a user <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L4" target="_blank" rel="noopener noreffer ">defined data which is stored in a Kubernetes secret</a>.</p>
@@ -1244,7 +1244,7 @@
 <p>VMware&rsquo;s comprehensive solution portfolio for application and platform modernization, <a href="https://tanzu.vmware.com/tanzu" target="_blank" rel="noopener noreffer ">Tanzu</a>, can help enterprises to achieve the aforementioned objectives and goals.</p>
 <p>Thanks a lot for reading.</p>
 <h2 id="extra">Extra</h2>
-<p>I tried the deployment of other OVA&rsquo;s like the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance</a> 😍 as well as my <a href="https://github.com/rguske/kubernetes-appliance" target="_blank" rel="noopener noreffer ">Kubernetes Appliance OVA</a> too. Both works like a charme and I wanted to provide the manifests for both here as well.</p>
+<p>I tried the deployment of other OVA&rsquo;s like the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance</a> 😍 as well as my <a href="https://github.com/rguske/kubernetes-appliance" target="_blank" rel="noopener noreffer ">Kubernetes Appliance OVA</a> too. Both work like a charme and I wanted to provide the manifests for both here as well.</p>
 <h3 id="veba-vm-service-manifest">VEBA VM Service Manifest</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1507,8 +1507,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-07-15&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/7e86658d05a8b721863622e5ebc2e25af4060c0c" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 7e86658d05a8b721863622e5ebc2e25af4060c0c: finalized new post sv part 4 hybrid app arch">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>7e86658</a></span>
+                <span>Updated on 2023-07-17&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/7b93cc3d51b27eefa52445bf76b790898fc0e3c4" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 7b93cc3d51b27eefa52445bf76b790898fc0e3c4: fixed typos in latest posts">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>7b93cc3</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
