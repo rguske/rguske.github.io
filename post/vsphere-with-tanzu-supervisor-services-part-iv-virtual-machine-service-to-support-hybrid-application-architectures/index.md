@@ -516,7 +516,7 @@ The following `docker` command will spin up a local `pgadmin` instance on your c
 ```shell
 docker run -p 80:80 \
     -e 'PGADMIN_DEFAULT_EMAIL=rguske@vmware.com' \
-    -e 'PGADMIN_DEFAULT_PASSWORD=VMware1!' \
+    -e 'PGADMIN_DEFAULT_PASSWORD=*******' \
     -d dpage/pgadmin4:7.4
 ```
 
@@ -559,7 +559,7 @@ Create the secret:
 ```shell
 kubectl create secret generic postgres-secret \
   --from-literal=username='postgres' \
-  --from-literal=password='0yt5JR63W5I2' \
+  --from-literal=password='*******' \
   --from-literal=host='10.105.3.50' \
   --from-literal=port='5432' \
   --from-literal=database='vmware' \
@@ -756,7 +756,7 @@ data:
   guestinfo.vcenter_username: "kn-ro@cpod-v8u1maz.az-stc.cloud-garage.net"
   guestinfo.vcenter_password: "VMware1!"
   guestinfo.vcenter_veba_ui_username: "administrator@cpod-v8u1maz.az-stc.cloud-garage.net"
-  guestinfo.vcenter_veba_ui_password: "PASSWORD"
+  guestinfo.vcenter_veba_ui_password: "******"
   guestinfo.vcenter_disable_tls_verification: "True"
   guestinfo.horizon: ""
   guestinfo.horizon_server: ""
@@ -820,7 +820,7 @@ data:
   guestinfo.proxy_username: ""
   guestinfo.proxy_password: ""
   guestinfo.no_proxy: ""
-  guestinfo.root_password: "VMware1!"
+  guestinfo.root_password: "*******"
   guestinfo.debug: "True"
   # default is 172.17.0.1/16
   guestinfo.docker_network_cidr: "172.17.0.1/16"

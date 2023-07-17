@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-07-15T19:48:14+02:00" />
-<meta property="article:modified_time" content="2023-07-17T09:00:35+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+<meta property="article:modified_time" content="2023-07-17T09:52:10+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
@@ -29,7 +29,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/"
         },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, CloudNative, Extensibility, Tools, vSphere","wordcount":  4971 ,
-        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-17T09:00:35+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures\/","datePublished": "2023-07-15T19:48:14+02:00","dateModified": "2023-07-17T09:52:10+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -947,7 +947,7 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -p 80:80 <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_EMAIL=rguske@vmware.com&#39;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_PASSWORD=VMware1!&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_PASSWORD=*******&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    -d dpage/pgadmin4:7.4
 </span></span></code></pre></td></tr></table>
 </div>
@@ -1000,7 +1000,7 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create secret generic postgres-secret <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">username</span><span class="o">=</span><span class="s1">&#39;postgres&#39;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span><span class="s1">&#39;0yt5JR63W5I2&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span><span class="s1">&#39;*******&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">host</span><span class="o">=</span><span class="s1">&#39;10.105.3.50&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">port</span><span class="o">=</span><span class="s1">&#39;5432&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">database</span><span class="o">=</span><span class="s1">&#39;vmware&#39;</span> <span class="se">\
@@ -1366,7 +1366,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;kn-ro@cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_veba_ui_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;administrator@cpod-v8u1maz.az-stc.cloud-garage.net&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_veba_ui_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;PASSWORD&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_veba_ui_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;******&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.vcenter_disable_tls_verification</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.horizon_server</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
@@ -1485,7 +1485,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.proxy_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.no_proxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.root_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VMware1!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.root_password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;*******&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.debug</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># default is 172.17.0.1/16</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">guestinfo.docker_network_cidr</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;172.17.0.1/16&#34;</span><span class="w">
@@ -1507,8 +1507,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-07-17&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/7b93cc3d51b27eefa52445bf76b790898fc0e3c4" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 7b93cc3d51b27eefa52445bf76b790898fc0e3c4: fixed typos in latest posts">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>7b93cc3</a></span>
+                <span>Updated on 2023-07-17&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/acd1806ac5621e5ab07d148fe338b7d5e9258b78" target="_blank" title="commit by Robert Guske(rguske@vmware.com) acd1806ac5621e5ab07d148fe338b7d5e9258b78: fixed typos in latest posts">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>acd1806</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
