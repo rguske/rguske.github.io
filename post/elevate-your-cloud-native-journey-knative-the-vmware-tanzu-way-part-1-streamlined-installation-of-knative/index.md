@@ -1,4 +1,4 @@
-# Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative
+# Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative
 
 
 ## Knative :blue_heart:
