@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative - Robert Guske</title><meta name="Description" content="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey."><meta property="og:title" content="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative" />
+<meta property="og:description" content="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-04T21:30:31+02:00" />
+<meta property="article:modified_time" content="2023-10-04T21:50:31+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"/>
+<meta name="twitter:description" content="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative\/"
+        },"genre": "posts","keywords": "Knative, VMware, Tanzu, CloudNative, Kubernetes, Carvel","wordcount":  5078 ,
+        "url": "https:\/\/rguske.github.io\/post\/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative\/","datePublished": "2023-10-04T21:30:31+02:00","dateModified": "2023-10-04T21:50:31+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-3" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-4" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/serverless/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Serverless</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-10-04">2023-10-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;5078 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;24 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/cnr_knative_cover.png"
+        data-srcset="/img/cnr_knative_cover.png, /img/cnr_knative_cover.png 1.5x, /img/cnr_knative_cover.png 2x"
+        data-sizes="auto"
+        alt="/img/cnr_knative_cover.png"
+        title="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#knative-">Knative 💙</a></li>
+    <li><a href="#vmware-tanzu-cloud-native-runtimes">VMware Tanzu Cloud Native Runtimes</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#-relocation-of-image-bundlespackages">⬇⬆ Relocation of Image-Bundles/Packages</a>
+      <ul>
+        <li><a href="#relocating-tanzu-kubernetes-grid-packages">Relocating Tanzu Kubernetes Grid Packages</a></li>
+        <li><a href="#relocating-tanzu-application-platform-packages---option-1">Relocating Tanzu Application Platform Packages - Option #1</a></li>
+        <li><a href="#relocating-tanzu-application-platform-packages---option-2">Relocating Tanzu Application Platform Packages - Option #2</a></li>
+      </ul>
+    </li>
+    <li><a href="#preperations-for-tanzu-packages-installation">Preperations for Tanzu Packages Installation</a>
+      <ul>
+        <li><a href="#adding-the-tap-package-repository">Adding the TAP Package Repository</a></li>
+      </ul>
+    </li>
+    <li><a href="#installation-of-tanzu-packages">Installation of Tanzu Packages</a>
+      <ul>
+        <li><a href="#installing-cert-manager">Installing Cert-Manager</a></li>
+        <li><a href="#installing-contour">Installing Contour</a></li>
+      </ul>
+    </li>
+    <li><a href="#dns-wildcard-subdomain">DNS Wildcard Subdomain</a></li>
+    <li><a href="#securing-workloads-in-cnr">Securing Workloads in CNR</a>
+      <ul>
+        <li><a href="#another-way-to-use-your-own-tls-certificates">Another way to use your own TLS Certificates</a></li>
+        <li><a href="#use-wildcard-certificates-with-cloud-native-runtimes">Use wildcard certificates with Cloud Native Runtimes</a></li>
+      </ul>
+    </li>
+    <li><a href="#installing-cloud-native-runtimes-">Installing Cloud Native Runtimes 🚀</a>
+      <ul>
+        <li><a href="#pod-security-admission-controller-">Pod Security Admission Controller 👊</a></li>
+      </ul>
+    </li>
+    <li><a href="#update-cloud-native-runtimes-configuration">Update Cloud Native Runtimes configuration</a></li>
+    <li><a href="#verify-knative-serving-functionalities">Verify Knative Serving Functionalities</a></li>
+    <li><a href="#installing-knative-eventing-">Installing Knative Eventing ⭐</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="knative-">Knative 💙</h2>
+<p>In the rapidly evolving landscape of modern software architecture, event-driven systems have emerged as a pivotal paradigm, empowering organizations to create highly responsive, scalable, and adaptable applications. Knative stands at the forefront of this revolution, offering a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing.</p>
+<p>I&rsquo;m evangelizing and supporting the <a href="https://knative.dev/docs/" target="_blank" rel="noopener noreffer ">Knative project</a> for a longer time already. I recently had the pleasure to demonstarte parts of its comprehensive feature set at the great <a href="https://www.containerdays.io/" target="_blank" rel="noopener noreffer ">ContainerDays</a> event in beautiful Hamburg, Germany.</p>
+<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">After a rough start AV wise the demo gods are with ⁦<a href="https://twitter.com/vmw_rguske?ref_src=twsrc%5Etfw">@vmw_rguske</a>⁩! Amazing live coding session going on at stage K4🤘 <a href="https://twitter.com/hashtag/CDS23?src=hash&amp;ref_src=twsrc%5Etfw">#CDS23</a> <a href="https://twitter.com/hashtag/kubernetes?src=hash&amp;ref_src=twsrc%5Etfw">#kubernetes</a> <a href="https://twitter.com/hashtag/k8s?src=hash&amp;ref_src=twsrc%5Etfw">#k8s</a> <a href="https://twitter.com/hashtag/knative?src=hash&amp;ref_src=twsrc%5Etfw">#knative</a> <a href="https://t.co/vSbzhFbVta">pic.twitter.com/vSbzhFbVta</a></p>&mdash; David de Hoop ☁️🚀🧑‍💻 (@DavidShadoow) <a href="https://twitter.com/DavidShadoow/status/1701219483145093496?ref_src=twsrc%5Etfw">September 11, 2023</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+ </center>
+<p>The overall positive feedback afterwards was gratifying and confirmed best that Knative is just awesome 🚀.</p>
+<p>Like it is often with exciting technologies which captivate me, the more I get into it, the more my excitement increases. But still, it feels like I&rsquo;m just scratching the surface giving the fact, that the project continues to evolve and that it admittedly also has its complexity.</p>
+<p>In my blog post <a href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" target="_blank" rel="noopener noreffer ">Demoing Knative Serving and Eventing using Demo-Magic-Scripts</a>, I barely touched two of the three building blocks of Knative, which are <a href="https://knative.dev/docs/serving/" target="_blank" rel="noopener noreffer ">Serving</a>, <a href="https://knative.dev/docs/eventing/" target="_blank" rel="noopener noreffer ">Eventing</a> and <a href="https://knative.dev/docs/functions/" target="_blank" rel="noopener noreffer ">Functions</a>. But the intention of the post was more to promote the <a href="https://github.com/paxtonhare/demo-magic/tree/master" target="_blank" rel="noopener noreffer ">demo-magic scripts</a> I&rsquo;ve created in order to &ldquo;easily&rdquo; demo some Serving and Eventing goodness, as well as a recording of my VMware {Code} session.</p>
+<p>Therefore, it&rsquo;s about time to start a new blog series and to share with you what I&rsquo;ve touched on so far, which experiences I&rsquo;ve made on my journey and most important, to provide resources, hints and tips &amp; tricks which hopefully helps you on your journey with this thrilling project.</p>
+<p>Naturally, such a series (IMO) has to start with guidance on how-to install Knative on an existing Kubernetes environment. Consequently, this first post will cover the installation of Knative.</p>
+<p>The easiest way to get started is clearly <a href="https://knative.dev/docs/install/quickstart-install/" target="_blank" rel="noopener noreffer ">Knative Quickstart</a>, which is a plugin for the Knative cli <code>kn</code>. It&rsquo;ll install the minimium of the Serving and Eventing components on a local <a href="https://github.com/kubernetes-sigs/kind" target="_blank" rel="noopener noreffer ">KinD</a> cluster. But of course this means, it&rsquo;s just for experimentation use only. Which is fine for the start!</p>
+<p>Giving the fact that I&rsquo;m working for VMware, I&rsquo;m going to describe how to <em><strong>install Knative the VMware Tanzu way</strong></em>.</p>
+<h2 id="vmware-tanzu-cloud-native-runtimes">VMware Tanzu Cloud Native Runtimes</h2>
+<p><a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/cnr-overview.html" target="_blank" rel="noopener noreffer ">Tanzu Cloud Native Runtimes</a>, commonly known as CNR, is VMware&rsquo;s supported Knative offering for Serving and Eventing. In a nutshell, it&rsquo;s a packaged, simple to deploy and with some VMware goodies equipped Knative version.</p>
+<p>Simple to deploy because Day-1 as well as Day-2 operations of each building block (Serving, Eventing) will be done using the <a href="https://carvel.dev" target="_blank" rel="noopener noreffer ">Carvel</a> tools suite. A comprehensive set of reliable, single-purpose tools which simplify the life-cycle of applications (<em>Figure I</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png" title="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png" data-thumbnail="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png" data-sub-html="<h2>Figure I: Carvel Tools Overview</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png"
+            data-srcset="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png, /img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png 1.5x, /img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202309_knative_part_1/202309_knative_part_1_carvel.png" />
+    </a><figcaption class="image-caption">Figure I: Carvel Tools Overview</figcaption>
+    </figure>
+<p>The mentioned &ldquo;goodies&rdquo; are covered in one of the next posts.</p>
+<p>In order to manage internal and external access to the services in a cluster, CNR uses <a href="https://projectcontour.io/" target="_blank" rel="noopener noreffer ">Contour</a>, an open source Kubernetes ingress controller maintained by VMware.</p>
+<p>As of writing this series, <a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/release-notes.html" target="_blank" rel="noopener noreffer ">CNR version 2.3.1</a> is <code>latest</code> and also the version which I&rsquo;m using for the sake of this post. It&rsquo;s recommended to check the CNR release notes before start installing CNR (as usual). CNR version 2.3.1 includes Knative 1.10.2 and supports Kubernetes version 1.25 and higher.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Here&rsquo;s the thing! Cloud Native Runtimes is not a single purchasable VMware solution. It&rsquo;s part of VMware&rsquo;s modular application development platform solution <a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/index.html" target="_blank" rel="noopener noreffer ">Tanzu Application Platform</a> (TAP). It is used as the runtime foundation for TAP and provides many of the great Knative Serving features, like:</p>
+<ul>
+<li>scale from 0 to many and back to 0 (concurrency-based scaling)</li>
+<li>traffic routing/splitting</li>
+<li>traffic encryption</li>
+</ul>
+<p>Therefore, the TAP documentation is the source of truth for topics like prerequisites and installation details. Please make sure to read it carefully and to meet the documented prerequisites.</p>
+<ul>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/prerequisites.html" target="_blank" rel="noopener noreffer ">Prerequisites for installing Tanzu Application Platform</a></li>
+</ul>
+<p><strong>TL;DR:</strong></p>
+<ul>
+<li>A <a href="https://network.tanzu.vmware.com/" target="_blank" rel="noopener noreffer ">Tanzu Network</a> account to download Tanzu Application Platform packages</li>
+<li>Network access to <a href="https://registry.tanzu.vmware.com" target="_blank" rel="noopener noreffer ">https://registry.tanzu.vmware.com</a></li>
+<li>A container image registry, such as <a href="https://goharbor.io/" target="_blank" rel="noopener noreffer ">Harbor</a> for application images, base images, and runtime dependencies
+<ul>
+<li>with enough storage capacity</li>
+</ul>
+</li>
+<li>A wildcard subdomain for applications</li>
+<li>An appropriate Kubernetes cluster-size - <a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/prerequisites.html" target="_blank" rel="noopener noreffer ">Resource requirements</a></li>
+<li>Installation of the <a href="https://docs.vmware.com/en/Cluster-Essentials-for-VMware-Tanzu/1.6/cluster-essentials/deploy.html" target="_blank" rel="noopener noreffer ">Cluster Essentials</a> for non-Tanzu Kubernetes clusters (TKC)</li>
+</ul>
+<p><strong>Important:</strong></p>
+<p>If you are planning to install CNR on a non-Tanzu Kubernetes Grid (TKG = VMware&rsquo;s Kubernetes solution) cluster, please make sure to install the <a href="https://docs.vmware.com/en/Cluster-Essentials-for-VMware-Tanzu/1.6/cluster-essentials/deploy.html" target="_blank" rel="noopener noreffer ">Cluster Essentials</a> as described.</p>
+<h2 id="-relocation-of-image-bundlespackages">⬇⬆ Relocation of Image-Bundles/Packages</h2>
+<p>One preperation for the actual installation requires the relocation of the necessary installation <a href="https://carvel.dev/imgpkg/" target="_blank" rel="noopener noreffer ">image-bundles</a>. Relocation describes the download and upload of an image-bundle. A bundle captures your configuration files and a list of references to images on which they depend.</p>
+<p>Basically, it&rsquo;s not a &ldquo;hard&rdquo; requirement but it&rsquo;s recommended to relocate the bundles to your own private Cloud Native Registry, like Harbor, in order to be independed from the availability of the VMware Registry.</p>
+<p>Two bundles can be relocated.</p>
+<blockquote>
+<p>Image Bundle(s) == Package(s)</p>
+</blockquote>
+<ul>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2/about-tkg/packages-index.html" target="_blank" rel="noopener noreffer ">Packages</a> for TKG
+<ul>
+<li>Packages includes certain Kubernetes cluster extensibilities like Antrea (CNI), Contour (Ingress), Harbor (Registry), cert-manager (cert issuer) and more</li>
+</ul>
+</li>
+<li>TAP specific packages
+<ul>
+<li>necessary for the installation of TAP</li>
+</ul>
+</li>
+</ul>
+<p>Two options exist to achieve our goal. The first option is to download the packages as <code>tar</code> ball (<code>--to-tar</code>) and to ultimately upload the file.</p>
+<div class="mermaid" id="id-1"></div>
+<p>The second option is to directly copy the packages over from one registry to another (<code>--to-repo</code>).</p>
+<div class="mermaid" id="id-2"></div>
+<p>I dedicated a separate article on <a href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" target="_blank" rel="noopener noreffer ">Sharing Container Images using the Docker CLI or Carvel&rsquo;s imgpkg</a>. You&rsquo;ll find many helpful details in this post.</p>
+<h3 id="relocating-tanzu-kubernetes-grid-packages">Relocating Tanzu Kubernetes Grid Packages</h3>
+<p>The TKG-Packages can be relocated using the <code>tanzu</code> cli. Make sure you have at least 10G of disk space available before initiating the download process. Here&rsquo;s a working example:</p>
+<p><strong>Download</strong>:</p>
+<p>Make sure you&rsquo;ve created a folder beforehand, otherwise you&rsquo;ll float your <code>dir</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu isolated-cluster download-bundle <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--source-repo projects.registry.vmware.com/tkg <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--tkg-version v2.1.1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Upload</strong>:</p>
+<p>The following command will upload the downloaded image-bundles (packages) to a referenced registry repository.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu isolated-cluster upload-bundle <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--source-directory /home/vmware/packages <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--destination-repo harbor01.cpod-nsxv8.az-stc.cloud-garage.net/packages <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ca-certificate /home/vmware/harbor01/ca.crt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I skipped the relocation of the (standard) Packages for TKG and kept the pre-configured online package repository for TKG.</p>
+<h3 id="relocating-tanzu-application-platform-packages---option-1">Relocating Tanzu Application Platform Packages - Option #1</h3>
+<p>Let&rsquo;s start relocating the packages for TAP.</p>
+<ol>
+<li>Export specific metadata as variables:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TAP_VERSION</span><span class="o">=</span><span class="s1">&#39;1.6.3&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">IMGPKG_REGISTRY_HOSTNAME</span><span class="o">=</span><span class="s1">&#39;harbor01.cpod-nsxv8.az-stc.cloud-garage.net&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">REGISTRY_CA_PATH</span><span class="o">=</span><span class="s1">&#39;/home/vmware/stuff/harbor01/ca.crt&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">IMGPKG_REGISTRY_USERNAME</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">IMGPKG_REGISTRY_PASSWORD</span><span class="o">=</span><span class="s1">&#39;******&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>Download the TAP packages:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:<span class="nv">$TAP_VERSION</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --to-tar tap-packages-<span class="nv">$TAP_VERSION</span>.tar <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --include-non-distributable-layers
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If everything went well, the operation will end with the result <code>succeeded</code> and the tar-ball has a size of roughly 10G.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">du -h tap-packages-1.6.3.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">9,5G    tap-packages-1.6.3.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>Upload the packages to your private registry instance:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --tar tap-packages-<span class="nv">$TAP_VERSION</span>.tar <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --to-repo <span class="nv">$IMGPKG_REGISTRY_HOSTNAME</span>/tap/tap-packages-<span class="nv">$TAP_VERSION</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --registry-ca-cert-path <span class="nv">$REGISTRY_CA_PATH</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --include-non-distributable-layers
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Hopefully a similar result applies to this operation as well.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">copy <span class="p">|</span> importing <span class="m">265</span> images...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">9.42 GiB / 9.43 GiB <span class="o">[</span>---------------------------------------------------&gt;<span class="o">]</span> 99.91% 16.02 MiB p/s
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span>
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span> uploading images
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> Warning: <span class="s1">&#39;--include-non-distributable-layers&#39;</span> flag provided, but no images contained a non-distributable layer.
+</span></span><span class="line"><span class="cl">copy <span class="p">|</span> Tagging images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ultimately, all image bundles are showing up in our registry (<em>Figure II</em>).</p>
+<figure><a class="lightgallery" href="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png" title="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png" data-thumbnail="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png" data-sub-html="<h2>Figure II: Uploaded TAP Packages in Harbor</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png"
+            data-srcset="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png, /img/posts/202309_knative_part_1/202309_knative_part_1_packages.png 1.5x, /img/posts/202309_knative_part_1/202309_knative_part_1_packages.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202309_knative_part_1/202309_knative_part_1_packages.png" />
+    </a><figcaption class="image-caption">Figure II: Uploaded TAP Packages in Harbor</figcaption>
+    </figure>
+<h3 id="relocating-tanzu-application-platform-packages---option-2">Relocating Tanzu Application Platform Packages - Option #2</h3>
+<p>Like initially introduced, the 2nd option is to directly <code>copy</code> the images over. The first option helps in case you are running an internet-restricted environment (air-gapped) and the image-bundles have to be shared via organisation comliant ways.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -b registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:<span class="nv">$TAP_VERSION</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --to-repo harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-<span class="nv">$TAP_VERSION</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --registry-ca-cert-path<span class="o">=</span><span class="nv">$REGISTRY_CA_PATH</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The result is identical to option #1. With this, three check marks can be set on the prerequisites:</p>
+<ul>
+<li>Access to Tanzu Network ✅</li>
+<li>Network access to VMware registry ✅</li>
+<li>Relocation of the Tanzu Application Packages ✅</li>
+</ul>
+<p>Next - Tazu Package installation preperations.</p>
+<h2 id="preperations-for-tanzu-packages-installation">Preperations for Tanzu Packages Installation</h2>
+<p>As aforementioned, I&rsquo;m using VMware Tanzu Kubernetes Grid to instantiate Kubernetes clusters on vSphere and I&rsquo;ve also mentioned that I&rsquo;m going to use the Carvel tools to install certain Kubernetes cluster extensions (Ingress, etc.). The <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreffer ">kapp-controller</a> is a crucial component which needs to run in your k8s cluster. It runs by default on every deployed Tanzu Kubernetes Cluster (TKC).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tkg-system get deploy
+</span></span><span class="line"><span class="cl">NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">kapp-controller                         1/1     <span class="m">1</span>            <span class="m">1</span>           108m
+</span></span><span class="line"><span class="cl">tanzu-capabilities-controller-manager   1/1     <span class="m">1</span>            <span class="m">1</span>           106m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As listed in the <a href="#prerequisites" rel="">prerequisites</a> section, install the Cluster Essentials on Kubernetes clusters which aren&rsquo;t TKG, to have e.g. the kapp-controller available as well.</p>
+<p>Furthermore, in order to easily distribute secrets across namespaces, the <a href="https://github.com/carvel-dev/secretgen-controller" target="_blank" rel="noopener noreffer ">secretgen-controller</a> is used and also installed on TKCs by default.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n secretgen-controller get deploy
+</span></span><span class="line"><span class="cl">NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">secretgen-controller   1/1     <span class="m">1</span>            <span class="m">1</span>           107m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="adding-the-tap-package-repository">Adding the TAP Package Repository</h3>
+<p>I won&rsquo;t cover Tanzu Packages specificly in this post. In case you aren&rsquo;t familiar with it, read up on it <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreffer ">HERE</a>, <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">HERE</a> and <a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>Per default, the custom resource (CR) <code>packagerepositories.packaging.carvel.dev</code> named <code>tanzu-standard</code> within the <code>tkg-system</code> namespace&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k get packagerepositories.packaging.carvel.dev -n tkg-system
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME             AGE   DESCRIPTION
+</span></span><span class="line"><span class="cl">tanzu-standard   27d   Reconcile succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>&hellip; is configured with the url for the Tanzu Packages for TKG. See:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository list -n tkg-system
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME            REPOSITORY                                                       TAG                  STATUS               DETAILS
+</span></span><span class="line"><span class="cl">tanzu-standard  extensions.aws-usw2.tmc.cloud.vmware.com/packages/standard/repo  v2023.7.13_update.2  Reconcile succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>By using the command <code>tanzu package available list -n tkg-system</code>, the kapp-controller will retrieve all available packages from the configured url. We want to have the same for the relocated TAP packages.</p>
+<p>We start with the creation of a new namespace for the TAP packages.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k create ns tap-packages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">namespace/tap-packages created
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This namespace will be used to store TAP packages related resources (<code>configmaps</code>, <code>secrets</code>, etc.) within the namespace.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository add tap-1.6.3 --url harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-1.6.3 -n tap-packages
+</span></span><span class="line"><span class="cl">ℹ   Adding package repository <span class="s1">&#39;tap-1.6.3&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Validating provided settings <span class="k">for</span> the package repository
+</span></span><span class="line"><span class="cl">ℹ   Creating package repository resource
+</span></span><span class="line"><span class="cl">ℹ   Waiting <span class="k">for</span> <span class="s1">&#39;PackageRepository&#39;</span> reconciliation <span class="k">for</span> <span class="s1">&#39;tap-1.6.3&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="se">\ </span><span class="s1">&#39;PackageRepository&#39;</span> resource install status: Reconciling!
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Please consider using <span class="s1">&#39;tanzu package repository update&#39;</span> to update the package repository with correct settings
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageRepository&#39;</span> resource install status: Reconciling
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Error: resource reconciliation failed: vendir: Error: Syncing directory <span class="s1">&#39;0&#39;</span>:
+</span></span><span class="line"><span class="cl">  Syncing directory <span class="s1">&#39;.&#39;</span> with imgpkgBundle contents:
+</span></span><span class="line"><span class="cl">    Error <span class="k">while</span> preparing a transport to talk with the registry:
+</span></span><span class="line"><span class="cl">      Unable to create round tripper:
+</span></span><span class="line"><span class="cl">        Get <span class="s2">&#34;https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/&#34;</span>: tls: failed to verify certificate: x509: certificate signed by unknown authority
+</span></span><span class="line"><span class="cl">. Reconcile failed: Fetching resources: Error <span class="o">(</span>see .status.usefulErrorMessage <span class="k">for</span> details<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If your kapp-controller is not configured to trust your private registry, the operations will quickly end with the shown error.</p>
+<div class="details admonition bug open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-bug fa-fw" aria-hidden="true"></i>x509 Certificate Error<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">Get &ldquo;<a href="https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/%22" target="_blank" rel="noopener noreffer ">https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/"</a>: tls: failed to verify certificate: x509: certificate signed by unknown authority</div>
+        </div>
+    </div>
+<p>I&rsquo;ve covered this topic in my blog post <a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/#optional-kapp-controller-secret-vs-configmap" target="_blank" rel="noopener noreffer ">Deploy VMware Tanzu Packages from a private Container Registry</a>.</p>
+<p>In order to have the kapp-controller trust my registry, I have to present the registry certificate via a secret.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n tkg-system create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">kapp-controller-config</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tkg-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">stringData</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">caCerts</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    -----BEGIN CERTIFICATE-----
+</span></span></span><span class="line"><span class="cl"><span class="sd">    MIIDKDCCAhCgAwIBAgIQJBt7sHm36rcMe4G8l3WytjANBgkqhkiG9w0BAQsFADAU
+</span></span></span><span class="line"><span class="cl"><span class="sd">    MRIwEAYDVQQDEwlIYXJib3IgQ0EwHhcNMjMwNDI2MDc0NTUyWhcNMzMwNDIzMDc0</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">[</span><span class="l">...]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">httpProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">httpsProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">noProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">dangerousSkipTLSVerify</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tkg-system get secret
+</span></span><span class="line"><span class="cl">NAME                     TYPE                             DATA   AGE
+</span></span><span class="line"><span class="cl">kapp-controller-config   Opaque                           <span class="m">5</span>      8s
+</span></span><span class="line"><span class="cl">tanzu-standard-fetch-0   kubernetes.io/dockerconfigjson   <span class="m">1</span>      27d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Delete the kapp-controller pod to pick up the additional configuration.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tkg-system delete po kapp-controller-57d6c9d7bf-b749v
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pod <span class="s2">&#34;kapp-controller-57d6c9d7bf-b749v&#34;</span> deleted
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Due to the failed adding of the TAP packagerepository, the CR is still in <code>Reconcile failed</code> state. Let&rsquo;s validate if the updated kapp-controller configuration works by using the command <code>tanzu package repository update</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository update tap-1.6.3 --url harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-1.6.3 -n tap-packages
+</span></span><span class="line"><span class="cl">ℹ   Updating package repository <span class="s1">&#39;tap-1.6.3&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Getting package repository <span class="s1">&#39;tap-1.6.3&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Validating provided settings <span class="k">for</span> the package repository
+</span></span><span class="line"><span class="cl">ℹ   Updating package repository resource
+</span></span><span class="line"><span class="cl">ℹ   Waiting <span class="k">for</span> <span class="s1">&#39;PackageRepository&#39;</span> reconciliation <span class="k">for</span> <span class="s1">&#39;tap-1.6.3&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageRepository&#39;</span> resource install status: ReconcileSucceeded
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageRepository&#39;</span> resource successfully reconciled
+</span></span><span class="line"><span class="cl">ℹ  Updated package repository <span class="s1">&#39;tap-1.6.3&#39;</span> in namespace <span class="s1">&#39;tap-packages&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Looks better already. Checking the ultimate state:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository list -n tap-packages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  NAME       REPOSITORY                                                          TAG       STATUS               DETAILS
+</span></span><span class="line"><span class="cl">  tap-1.6.3  harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-1.6.3  <span class="o">(</span>&gt;0.0.0<span class="o">)</span>  Reconcile succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Perfect! Now, lets check which packages are available using <code>tanzu package available list -n tap-packages</code>.</p>
+<p><strong>Hint:</strong> Make sure to run a decent screen resolution 😉</p>
+<figure><a class="lightgallery" href="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" title="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" data-thumbnail="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" data-sub-html="<h2>Figure III: All available Tanzu Application Platform Packages</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png"
+            data-srcset="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png, /img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png 1.5x, /img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" />
+    </a><figcaption class="image-caption">Figure III: All available Tanzu Application Platform Packages</figcaption>
+    </figure>
+<p>That&rsquo;s quite A LOT of packages but keep calm, not all are necessarely needed for TAP. Positively speaking, it is good to only have one repository to maintain, one source of truth for TAP.</p>
+<p>Furthermore, if it is TAP related, like Cloud Native Runtimes, make sure to only use packages provided by the TAP packages repository.</p>
+<p>Example: Here&rsquo;s a direct comparison of the provided cert-manager versions for the two available package repositories <code>tanzu-standard</code> and <code>tap-1.6.3</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Tanzu Standard - Cert-Manager Version</th>
+<th style="text-align:center">TAP Packages - Cert-Manager Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1.11.1+vmware.1-tkg.1</td>
+<td style="text-align:center">2.3.1</td>
+</tr>
+</tbody>
+</table>
+<p>You can notice that the available versions for cert-manager differs from each other.</p>
+<p><strong>Preperations:</strong></p>
+<ul>
+<li>Adding the TAP Package Repository ✅</li>
+</ul>
+<h2 id="installation-of-tanzu-packages">Installation of Tanzu Packages</h2>
+<p>This section describes the actual installation of <strong>Cloud Native Runtimes</strong> with having the above mentioned prerequisites and preperations in place. Packages which I&rsquo;m going to install are:</p>
+<ul>
+<li>cert-manager.tanzu.vmware.com</li>
+<li>contour.tanzu.vmware.com</li>
+<li>cloud-native-runtimes.tanzu.vmware.com</li>
+<li>eventing.tanzu.vmware.com</li>
+</ul>
+<p>Normally, the first three listed packages are installed when following the TAP installation routine. This is not my intention and therefore I have to install the packages one by one. Also, this will affect the <code>values.yaml</code> file for the CNR installation itself, since we have to specify that we are using an existing Contour installation.</p>
+<p>Two different ways can be used to operate packages. You can either use the <code>tanzu</code> cli or the <code>kubectl</code> cli. For the sake of showing how this looks like, I&rsquo;m going to demonstrate it for the packages cert-manager and Contour.</p>
+<h3 id="installing-cert-manager">Installing Cert-Manager</h3>
+<p>The certificate-controller cert-manager is the first component which will be installed.</p>
+<ul>
+<li>Using the <code>tanzu</code> cli:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 2.3.1 -n tap-packages --wait
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ℹ   Installing package <span class="s1">&#39;cert-manager.tanzu.vmware.com&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Getting package metadata <span class="k">for</span> <span class="s1">&#39;cert-manager.tanzu.vmware.com&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating service account <span class="s1">&#39;cert-manager-tap-packages-sa&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating cluster admin role <span class="s1">&#39;cert-manager-tap-packages-cluster-role&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating cluster role binding <span class="s1">&#39;cert-manager-tap-packages-cluster-rolebinding&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating package resource
+</span></span><span class="line"><span class="cl">ℹ   Waiting <span class="k">for</span> <span class="s1">&#39;PackageInstall&#39;</span> reconciliation <span class="k">for</span> <span class="s1">&#39;cert-manager&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageInstall&#39;</span> resource install status: Reconciling
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageInstall&#39;</span> resource install status: ReconcileSucceeded
+</span></span><span class="line"><span class="cl">ℹ
+</span></span><span class="line"><span class="cl"> Added installed package <span class="s1">&#39;cert-manager&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Using <code>kubectl</code>:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceAccount</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">admin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cluster-admin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceAccount</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">packaging.carvel.dev/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PackageInstall</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">packageRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">refName</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager.tanzu.vmware.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">versionSelection</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">constraints</span><span class="p">:</span><span class="w"> </span><span class="m">2.3.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">secretRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager-data-values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager-data-values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">stringData</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">values.yml</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    ---
+</span></span></span><span class="line"><span class="cl"><span class="sd">    namespace: cert-manager</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The installation can be validated checking the <code>packageinstall</code> CR.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package installed list -n tap-packages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                   PACKAGE-NAME                   PACKAGE-VERSION        STATUS
+</span></span><span class="line"><span class="cl">cert-manager           cert-manager.tanzu.vmware.com  2.3.1                  Reconcile succeeded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tap-packages get packageinstall
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME           PACKAGE NAME                    PACKAGE VERSION         DESCRIPTION           AGE
+</span></span><span class="line"><span class="cl">cert-manager   cert-manager.tanzu.vmware.com   2.3.1                   Reconcile succeeded   34m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="installing-contour">Installing Contour</h3>
+<p>Contour will be deployed the same way like cert-manager but since Contour provides a few more <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.6/vmware-tanzu-kubernetes-grid-16/GUID-packages-ingress-contour.html#configs" target="_blank" rel="noopener noreffer ">configurations for the installation</a>, a dedicated <code>values.yaml</code> file will be used. I created a new file named <code>contour-data-values.yaml</code> and added the following content:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">infrastructure_provider</span><span class="p">:</span><span class="w"> </span><span class="l">vsphere</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tanzu-system-ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">contour</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">configFileContents</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">useProxyProtocol</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pspNames</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;vmware-system-restricted&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">logLevel</span><span class="p">:</span><span class="w"> </span><span class="l">info</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">envoy</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">service</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">externalTrafficPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Cluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">disableWait</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hostPorts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">https</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hostNetwork</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">terminationGracePeriodSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">300</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">logLevel</span><span class="p">:</span><span class="w"> </span><span class="l">info</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pspNames</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">certificates</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l">8760h</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">renewBefore</span><span class="p">:</span><span class="w"> </span><span class="l">360h</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>By default the <code>service type</code> for Envoy is <code>NodePort</code> but since I&rsquo;m installing Contour to a vSphere cluster that uses NSX (same applies to the NSX Advanced Load Balancer) as a load balancer service provider, I adjusted this option to use <code>LoadBalancer</code> instead.</p>
+<p>The installation will be kicked-off by executing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package install contour --package-name contour.tanzu.vmware.com --version 1.24.4+vmware.1-tkg.1 -n tap-packages --values-file contour-data-values.yaml --wait
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ℹ   Installing package <span class="s1">&#39;contour.tanzu.vmware.com&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Getting package metadata <span class="k">for</span> <span class="s1">&#39;contour.tanzu.vmware.com&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating service account <span class="s1">&#39;contour-tap-packages-sa&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating cluster admin role <span class="s1">&#39;contour-tap-packages-cluster-role&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating cluster role binding <span class="s1">&#39;contour-tap-packages-cluster-rolebinding&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating secret <span class="s1">&#39;contour-tap-packages-values&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   Creating package resource
+</span></span><span class="line"><span class="cl">ℹ   Waiting <span class="k">for</span> <span class="s1">&#39;PackageInstall&#39;</span> reconciliation <span class="k">for</span> <span class="s1">&#39;contour&#39;</span>
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageInstall&#39;</span> resource install status: Reconciling
+</span></span><span class="line"><span class="cl">ℹ   <span class="s1">&#39;PackageInstall&#39;</span> resource install status: ReconcileSucceeded
+</span></span><span class="line"><span class="cl">ℹ
+</span></span><span class="line"><span class="cl"> Added installed package <span class="s1">&#39;contour&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>The <code>kubectl</code> way:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceAccount</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour-role-binding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cluster-admin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceAccount</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">packaging.carvel.dev/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PackageInstall</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l">contour-sa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">packageRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">refName</span><span class="p">:</span><span class="w"> </span><span class="l">contour.tanzu.vmware.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">versionSelection</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">constraints</span><span class="p">:</span><span class="w"> </span><span class="m">1.24.4</span><span class="l">+vmware.1-tkg.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">secretRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour-values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contour-values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tap-packages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">stringData</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">values.yaml</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    contour:
+</span></span></span><span class="line"><span class="cl"><span class="sd">     configFileContents: {}
+</span></span></span><span class="line"><span class="cl"><span class="sd">     useProxyProtocol: false
+</span></span></span><span class="line"><span class="cl"><span class="sd">     replicas: 2
+</span></span></span><span class="line"><span class="cl"><span class="sd">     pspNames: vmware-system-restricted
+</span></span></span><span class="line"><span class="cl"><span class="sd">     logLevel: info
+</span></span></span><span class="line"><span class="cl"><span class="sd">    envoy:
+</span></span></span><span class="line"><span class="cl"><span class="sd">     service:
+</span></span></span><span class="line"><span class="cl"><span class="sd">       type: LoadBalancer
+</span></span></span><span class="line"><span class="cl"><span class="sd">       annotations: {}
+</span></span></span><span class="line"><span class="cl"><span class="sd">       externalTrafficPolicy: Cluster
+</span></span></span><span class="line"><span class="cl"><span class="sd">       disableWait: false
+</span></span></span><span class="line"><span class="cl"><span class="sd">     hostPorts:
+</span></span></span><span class="line"><span class="cl"><span class="sd">       enable: false
+</span></span></span><span class="line"><span class="cl"><span class="sd">       http: 80
+</span></span></span><span class="line"><span class="cl"><span class="sd">       https: 443
+</span></span></span><span class="line"><span class="cl"><span class="sd">     hostNetwork: false
+</span></span></span><span class="line"><span class="cl"><span class="sd">     terminationGracePeriodSeconds: 300
+</span></span></span><span class="line"><span class="cl"><span class="sd">     logLevel: info
+</span></span></span><span class="line"><span class="cl"><span class="sd">    certificates:
+</span></span></span><span class="line"><span class="cl"><span class="sd">     duration: 8760h
+</span></span></span><span class="line"><span class="cl"><span class="sd">     renewBefore: 360h</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Validating it at the end:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tap-packages get packageinstall
+</span></span><span class="line"><span class="cl">NAME           PACKAGE NAME                    PACKAGE VERSION         DESCRIPTION           AGE
+</span></span><span class="line"><span class="cl">cert-manager   cert-manager.tanzu.vmware.com   2.3.1                   Reconcile succeeded   4h52m
+</span></span><span class="line"><span class="cl">contour        contour.tanzu.vmware.com        1.24.4+vmware.1-tkg.1   Reconcile succeeded   4h18m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="dns-wildcard-subdomain">DNS Wildcard Subdomain</h2>
+<p>Knative allocates a wildcard subdomain for Knative Services. What is a Knative Service? I&rsquo;m planning to create a dedicated blog post on Knative Serving in which this specific resource will be part of. For now, a Knative Service describes an application like a webserver or a function for example which got deployed using Knative.</p>
+<p>In my environment, DNS services are provided using <a href="https://en.wikipedia.org/wiki/Dnsmasq#:~:text=dnsmasq%20is%20free%20software%20providing,dnsmasq" target="_blank" rel="noopener noreffer ">dnsmasq</a>. All future workloads which will run on my Knative installation will use this subdomain. Using a wildcard subdomain like e.g. <code>jarvis.cpod-nsxv8.az-stc.cloud-garage.net</code> requires an IP address which can be used for proper resolution. This IP address is provided by the high-performnce, robust and flexible proxy Envoy which comes with the Contour installation.</p>
+<p>The IP address can be obtained via:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get service envoy -n tanzu-system-ingress --output <span class="s1">&#39;jsonpath={.status.loadBalancer.ingress}&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[{</span><span class="s2">&#34;ip&#34;</span>:<span class="s2">&#34;10.15.8.7&#34;</span><span class="o">}]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I&rsquo;m gpoing to use the given IP address to create the needed entry in my <code>/etc/dnsmasq.conf</code> file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">vim /etc/dnsmasq.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">address</span><span class="o">=</span>/jarvis.cpod-nsxv8.az-stc.cloud-garage.net/10.15.8.7
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>A restart of the <code>dnsmasq.service</code> is required to take effect on the made changes (<code>systemctl restart dnsmasq.service</code>).</p>
+<h2 id="securing-workloads-in-cnr">Securing Workloads in CNR</h2>
+<p>Multiple options are provided to secure <code>http</code> connections to your instantiated applications. Since cert-manager is already installed to add certificates and certificate issuers as resource types to Kubernetes clusters, we can use it to obtain, renew, and use our own certificates.</p>
+<p>I created a new <a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.6/tap/security-and-compliance-tls-and-certificates-ingress-issuer.html" target="_blank" rel="noopener noreffer ">shared ingress issuer</a> as an on-platform representation of my certificate authority. Therefore, all new workloads get their ingress certificates issued by the <em>shared ingress issuer</em>.</p>
+<p>The first step is to create a secret type <code>kubernetes.io/tls</code>. This secret contains &ldquo;myCA&rdquo; <code>tls.crt</code> as well as <code>tls.key</code> data.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">kubernetes.io/tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-company-ca</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">stringData</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls.crt</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    -----BEGIN CERTIFICATE-----
+</span></span></span><span class="line"><span class="cl"><span class="sd">    MIID9TCCAt2gAwIBAgIUQpwKWpTwO42xl6JpL1Xk1Vn6KjcwDQYJKoZIhvcNAQEL
+</span></span></span><span class="line"><span class="cl"><span class="sd">    [...]</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls.key</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    -----BEGIN RSA PRIVATE KEY-----
+</span></span></span><span class="line"><span class="cl"><span class="sd">    MIIEpAIBAAKCAQEAr3NTAVllxJBzOw9+2guOnzt+kmZrbC88NFJpl8fkbC5WmgB8
+</span></span></span><span class="line"><span class="cl"><span class="sd">    [...]</span><span class="w">    
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>This step is followed by the creation of the <code>ClusterIssuer</code> itself. I simply named it <code>my-company</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">cert-manager.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIssuer</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-company</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ca</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">my-company-ca</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>This issuer has the earlier created <code>tls</code> certificate <code>my-company-ca</code> configured.</p>
+<h3 id="another-way-to-use-your-own-tls-certificates">Another way to use your own TLS Certificates</h3>
+<p>It is also possible to bypass the <code>ClusterIssuer</code> and use the Contour CR <code>TLSCertificateDelegation</code> instead. This flexibility makes it possible to provide custom certificates and delegate these to your <code>targetNamespaces</code>.</p>
+<p>Here&rsquo;s a working example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f - <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">---
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: projectcontour.io/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: TLSCertificateDelegation
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: default-delegation
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: cert-manager
+</span></span></span><span class="line"><span class="cl"><span class="s">spec:
+</span></span></span><span class="line"><span class="cl"><span class="s">  delegations:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - secretName: my-company-ca
+</span></span></span><span class="line"><span class="cl"><span class="s">    targetNamespaces:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - &#34;my-app-namespace&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>Source:</em> <a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/knative-default-tls.html" target="_blank" rel="noopener noreffer ">Use your existing TLS Certificate for Cloud Native Runtimes</a></p>
+<h3 id="use-wildcard-certificates-with-cloud-native-runtimes">Use wildcard certificates with Cloud Native Runtimes</h3>
+<p>And just another option which is available to explore is to set up a custom ingress issuer that issues wildcard certificates.</p>
+<p>Look it up on VMware Docs: <a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/tls-guides-wildcard-cert.html" target="_blank" rel="noopener noreffer ">Use wildcard certificates with Cloud Native Runtimes</a>.</p>
+<h2 id="installing-cloud-native-runtimes-">Installing Cloud Native Runtimes 🚀</h2>
+<p>Having everything settled and in place, I can start achieving the ultimate goal, the installation of Knative Serving via VMware&rsquo;s Cloud Native Runtimes. Similar to what I used for the Contour package, I also have to provide a <code>values.yaml</code> file to apply certain configurations for the installation.</p>
+<p>My configuration includes the following:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Key</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>domain_name</code></td>
+<td style="text-align:center">&ldquo;jarvis.cpod-nsxv8.az-stc.cloud-garage.net&rdquo;</td>
+<td style="text-align:center">Wildcard domain name for Knative Services which I configured with the assigned load balancer IP address of the Envoy proxy.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>domain_template</code></td>
+<td style="text-align:center">&ldquo;{{.Name}}.{{.Domain}}&rdquo;</td>
+<td style="text-align:center">This option gives you the flexibility to construct the DNS name for the Knative Service.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>ingress_issuer</code></td>
+<td style="text-align:center">&ldquo;cpod-jarvis&rdquo;</td>
+<td style="text-align:center">Using this option sets the Auto-TLS feature to <code>true</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>ingress</code> (internal and external)</td>
+<td style="text-align:center">&ldquo;tanzu-system-ingress&rdquo;</td>
+<td style="text-align:center">Configures Contour to route ingress traffic for external and internal services.</td>
+</tr>
+</tbody>
+</table>
+<p>Create the file and add the following configurations (adjusted properly) to it.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">domain_name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;jarvis.cpod-nsxv8.az-stc.cloud-garage.net&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">domain_template</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;{{.Name}}.{{.Domain}}&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">ingress_issuer</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;cpod-jarvis&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">ingress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">external</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tanzu-system-ingress&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">internal</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tanzu-system-ingress&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>And off we go:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package install cloud-native-runtimes <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-p cnrs.tanzu.vmware.com <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v 2.3.1 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-n tap-packages <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-f values.yaml <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--poll-timeout 30m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Oh, oh, no Kubernetes deployments or pods showing up&hellip;</p>
+<h3 id="pod-security-admission-controller-">Pod Security Admission Controller 👊</h3>
+<p>After a long breath of waiting for pods finally showing up on my cluster, I got troubled. The Pods Security Policy admission controller hitted me a couple of times already. Therefore, I checked one of the created <code>replicaSets</code> within the <code>Knative-Serving</code> namespace and there I found it:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">message: <span class="err">&#39;</span>pods <span class="s2">&#34;activator-65b6db76d7-8wmh4&#34;</span> is forbidden: violates PodSecurity
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;restricted:latest&#34;</span>: seccompProfile <span class="o">(</span>pod or container <span class="s2">&#34;activator&#34;</span> must <span class="nb">set</span> securityContext.seccompProfile.type
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Since I&rsquo;m running a Kubernetes v1.26 cluster in my environment&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k get nodes
+</span></span><span class="line"><span class="cl">NAME                                       STATUS   ROLES           AGE   VERSION
+</span></span><span class="line"><span class="cl">rguske-cnr-1-lgf5s-hftsg                   Ready    control-plane   30h   v1.26.5+vmware.2-fips.1
+</span></span><span class="line"><span class="cl">rguske-cnr-1-lgf5s-ldrsw                   Ready    control-plane   30h   v1.26.5+vmware.2-fips.1
+</span></span><span class="line"><span class="cl">rguske-cnr-1-lgf5s-q8jfl                   Ready    control-plane   30h   v1.26.5+vmware.2-fips.1
+</span></span><span class="line"><span class="cl">rguske-cnr-1-md-0-9z52m-5878bb7888-dtdnd   Ready    &lt;none&gt;          30h   v1.26.5+vmware.2-fips.1
+</span></span><span class="line"><span class="cl">rguske-cnr-1-md-0-9z52m-5878bb7888-xl769   Ready    &lt;none&gt;          30h   v1.26.5+vmware.2-fips.1
+</span></span><span class="line"><span class="cl">rguske-cnr-1-md-0-9z52m-5878bb7888-xm2xt   Ready    &lt;none&gt;          30h   v1.26.5+vmware.2-fips.1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>&hellip;the Pods Security Policy admission controller isn&rsquo;t used anymore. The new Pod Security admission controller was introduced in Kubernetes v1.25 and is the &ldquo;successor&rdquo; of the Pods Security Policy admission controller. Consequently, I configured the pod-security with <code>privileged</code> for all my namespaces:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl label --overwrite ns --all pod-security.kubernetes.io/enforce<span class="o">=</span>privileged
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">namespace/cert-manager labeled
+</span></span><span class="line"><span class="cl">namespace/default labeled
+</span></span><span class="line"><span class="cl">namespace/knative-serving labeled
+</span></span><span class="line"><span class="cl">namespace/kube-node-lease labeled
+</span></span><span class="line"><span class="cl">namespace/kube-public labeled
+</span></span><span class="line"><span class="cl">namespace/kube-system labeled
+</span></span><span class="line"><span class="cl">namespace/secretgen-controller labeled
+</span></span><span class="line"><span class="cl">namespace/tanzu-system-ingress not labeled
+</span></span><span class="line"><span class="cl">namespace/tap-packages labeled
+</span></span><span class="line"><span class="cl">namespace/tkg-system labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-antrea not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-auth not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-cloud-provider labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-csi not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-tkg labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-tmc not labeled
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-tkg/GUID-B57DA879-89FD-4C34-8ADB-B21CB3AE67F6.html" target="_blank" rel="noopener noreffer ">Configure Pod Security for TKR 1.25 and Later</a></p>
+<p>I had to wait a moment until the <code>reconciliation</code> operation kicked in again for the new installed package. You can always check the status of the <code>packageinstalls.packaging.carvel.dev</code> CR, short <code>app</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k get app -A
+</span></span><span class="line"><span class="cl">NAMESPACE           NAME                                      DESCRIPTION           SINCE-DEPLOY   AGE
+</span></span><span class="line"><span class="cl">tap-packages        cert-manager                              Reconcile succeeded   8m58s          2d5h
+</span></span><span class="line"><span class="cl">tap-packages        cloud-native-runtimes                     Reconcile succeeded   8m49s          47h
+</span></span><span class="line"><span class="cl">tap-packages        contour                                   Reconcile succeeded   40s            2d5h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-antrea                       Reconcile succeeded   6m37s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-capabilities                 Reconcile succeeded   4m18s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-guest-cluster-auth-service   Reconcile succeeded   7m57s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-metrics-server               Reconcile succeeded   7m28s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-pinniped                     Reconcile succeeded   8m             2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-secretgen-controller         Reconcile succeeded   4m15s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-vsphere-cpi                  Reconcile succeeded   5m14s          2d6h
+</span></span><span class="line"><span class="cl">vmware-system-tkg   rguske-cnr-1-vsphere-pv-csi               Reconcile succeeded   32s            2d6h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="update-cloud-native-runtimes-configuration">Update Cloud Native Runtimes configuration</h2>
+<p>There are many package configuration options exposed through data values that allows you to customize your Cloud Native Runtimes installation. The available values can be obtained executing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CNR_VERSION</span><span class="o">=</span>2.3.1
+</span></span><span class="line"><span class="cl">tanzu package available get cnrs.tanzu.vmware.com/<span class="si">${</span><span class="nv">CNR_VERSION</span><span class="si">}</span> --values-schema -n tap-packages &gt; cnr-values-schema.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Also, if you want to check which values were used for the initial installation of a package, you can get it from the corresponding <code>secret</code> inside the namespace which were used for the package. Obvisouly, the values aren&rsquo;t available in plain text. However, you can simply decode the <code>base64</code> encoded data.</p>
+<p>Here&rsquo;s an example for the CNR package.</p>
+<ul>
+<li>First: Retrieve the encoded data</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tap-packages get secret cloud-native-runtimes-tap-packages-values -oyaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">apiVersion: v1
+</span></span><span class="line"><span class="cl">data:
+</span></span><span class="line"><span class="cl">  values.yaml: <span class="nv">LS0tCmRvbWFpbl9uYW1lOiAiamFydmlzLmNwb2QtbnN4djguYXotc3RjLmNsb3VkLWdhcmFnZS5uZXQiCmRvbWFpbl90ZW1wbGF0ZTogInt7Lk5hbWV9fS57ey5Eb21haW59fSIKIy0tLQojZGVmYXVsdF90bHNfc2VjcmV0OiAiY2VydC1tYW5hZ2VyL215LWNvbXBhbnktY2EiCi0tLQppbmdyZXNzX2lzc3VlcjogImNwb2QtamFydmlzIgotLS0KaW5ncmVzczoKICBleHRlcm5hbDoKICAgIG5hbWVzcGFjZTogInRhbnp1LXN5c3RlbS1pbmdyZXNzIgogIGludGVybmFsOgogICAgbmFtZXNwYWNlOiAidGFuenUtc3lzdGVtLWluZ3Jlc3MiCg</span><span class="o">==</span>
+</span></span><span class="line"><span class="cl">kind: Secret
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  creationTimestamp: <span class="s2">&#34;2023-10-02T19:56:13Z&#34;</span>
+</span></span><span class="line"><span class="cl">  name: cloud-native-runtimes-tap-packages-values
+</span></span><span class="line"><span class="cl">  namespace: tap-packages
+</span></span><span class="line"><span class="cl">  resourceVersion: <span class="s2">&#34;663595&#34;</span>
+</span></span><span class="line"><span class="cl">  uid: 0c2d9e9e-6c63-4495-8762-76bbb59eeabd
+</span></span><span class="line"><span class="cl">type: Opaque
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Second: Decode the data</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="sb">`</span><span class="nb">echo</span> <span class="s1">&#39;LS0tCmRvbWFpbl9uYW1lOiAiamFydmlzLmNwb2QtbnN4djguYXotc3RjLmNsb3VkLWdhcmFnZS5uZXQiCmRvbWFpbl90ZW1wbGF0ZTogInt7Lk5hbWV9fS57ey5Eb21haW59fSIKIy0tLQojZGVmYXVsdF90bHNfc2VjcmV0OiAiY2VydC1tYW5hZ2VyL215LWNvbXBhbnktY2EiCi0tLQppbmdyZXNzX2lzc3VlcjogImNwb2QtamFydmlzIgotLS0KaW5ncmVzczoKICBleHRlcm5hbDoKICAgIG5hbWVzcGFjZTogInRhbnp1LXN5c3RlbS1pbmdyZXNzIgogIGludGVybmFsOgogICAgbmFtZXNwYWNlOiAidGFuenUtc3lzdGVtLWluZ3Jlc3MiCg==&#39;</span> <span class="p">|</span> base64 -d<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">domain_name: <span class="s2">&#34;jarvis.cpod-nsxv8.az-stc.cloud-garage.net&#34;</span>
+</span></span><span class="line"><span class="cl">domain_template: <span class="s2">&#34;{{.Name}}.{{.Domain}}&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#---</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#default_tls_secret: &#34;cert-manager/my-company-ca&#34;</span>
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">ingress_issuer: <span class="s2">&#34;cpod-jarvis&#34;</span>
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">ingress:
+</span></span><span class="line"><span class="cl">  external:
+</span></span><span class="line"><span class="cl">    namespace: <span class="s2">&#34;tanzu-system-ingress&#34;</span>
+</span></span><span class="line"><span class="cl">  internal:
+</span></span><span class="line"><span class="cl">    namespace: <span class="s2">&#34;tanzu-system-ingress&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you want to apply any additional configurations, add the values to your <code>values.yaml</code> file and reapply it using the <code>tanzu package installed update</code> command:</p>
+<p><code>tanzu package installed update cloud-native-runtimes -p cnr.tanzu.vmware.com -v 2.3.1 --values-file values-issuer.yaml -n tap-packages</code></p>
+<h2 id="verify-knative-serving-functionalities">Verify Knative Serving Functionalities</h2>
+<p>Now having Knative Serving up and running, the fun can begin 😁. I&rsquo;m using a simple web-server application for my validation. I created the Knative Service imperatively: <code>kn service create containerdays23-v1 --image registry.cloud-garage.net/rguske/webapp:v1 -n myapp --port 80</code></p>
+<p>Again, I will cover Serving in detail in my next post of this series. For now, I keep it at a basic level. The Knative Service deployment can be checked using <code>kn service list -n myapp</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kn service list -n myapp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                 URL                                                                          LATEST                     AGE     CONDITIONS   READY     REASON
+</span></span><span class="line"><span class="cl">containerdays23-v2   https://containerdays23-v1.myapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net   containerdays23-v1-00001   5m44s   <span class="m">1</span> OK / <span class="m">3</span>     Unknown   CertificateNotReady : Certificate route-a192b381-d677-40ea-8e49-6287601ed5ba is not ready.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition bug open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-bug fa-fw" aria-hidden="true"></i>CertificateNotReady<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">CertificateNotReady : Certificate route-a192b381-d677-40ea-8e49-6287601ed5ba is not ready.</div>
+        </div>
+    </div>
+<p>This wasn&rsquo;t expected 🤔.</p>
+<p>There&rsquo;s a resource in Knative named <code>certificates.networking.internal.knative.dev</code>. I checked the state of it in my <code>myapp</code> namespace.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n myapp get certificates.networking.internal.knative.dev route-a192b381-d677-40ea-8e49-6287601ed5ba -oyaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And the status <code>message</code> surprised me very much.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">status:
+</span></span><span class="line"><span class="cl">  conditions:
+</span></span><span class="line"><span class="cl">  - lastTransitionTime: <span class="s2">&#34;2023-10-03T15:38:23Z&#34;</span>
+</span></span><span class="line"><span class="cl">    message: <span class="s1">&#39;error creating Certmanager Certificate: cannot create valid length CommonName:
+</span></span></span><span class="line"><span class="cl"><span class="s1">      (containerdays23-v1.myapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net) still longer
+</span></span></span><span class="line"><span class="cl"><span class="s1">      than 63 characters, cannot shorten&#39;</span>
+</span></span><span class="line"><span class="cl">    reason: CommonName Too Long
+</span></span><span class="line"><span class="cl">    status: <span class="s2">&#34;False&#34;</span>
+</span></span><span class="line"><span class="cl">    type: Ready
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The issue occurs due the fact, that I kept the default configuration for Knative Service naming which is <code>&quot;{{.Name}}.{{.Namespace}}.{{.Domain}}</code>. Therefore, the created name <code>containerdays23-v1.myapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net</code> is 4 characters too long 🤦</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;containerdays23-v1.myapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net&#39;</span> <span class="p">|</span> wc -c
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">67</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I looked it up and found that this is a known issue: <a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/troubleshooting.html#when-using-autotls-knative-service-fails-with-certificatenotready-19" target="_blank" rel="noopener noreffer ">When using auto-tls, Knative Service Fails with CertificateNotReady.</a></p>
+<p>The solution for me was simply to shorten the <code>domain_template</code> by applying the following configuration:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Key</th>
+<th style="text-align:center">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>domain_template</code></td>
+<td style="text-align:center">&ldquo;{{.Name}}.{{.Domain}}&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>Therefore, it is now: <code>containerdays23-v1.jarvis.cpod-nsxv8.az-stc.cloud-garage.net</code></p>
+<h2 id="installing-knative-eventing-">Installing Knative Eventing ⭐</h2>
+<p>Last but absolutely not least is the installation of the Knative Eventing package. Knative Eventing depends on Knative Serving. For the installation itself are no additional values necessary. Therefore, it&rsquo;s just straight forward.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package install eventing <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-p eventing.tanzu.vmware.com <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v 2.2.4 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-n tap-packages <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--poll-timeout 30m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Unfortunately, the Pod Security Admission Controllers hits the second time.</p>
+<div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>forbidden: violates PodSecurity &#39;restricted:latest&#39;<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>[&hellip;]</p>
+<p>message: &lsquo;pods &ldquo;rabbitmq-broker-webhook-7557658cf6-9qxpw&rdquo; is forbidden: violates
+PodSecurity &ldquo;restricted:latest&rdquo;: unrestricted capabilities (container &ldquo;rabbitmq-broker-webhook&rdquo;
+must set securityContext.capabilities.drop=[&ldquo;ALL&rdquo;]), seccompProfile (pod or
+container &ldquo;rabbitmq-broker-webhook&rdquo; must set securityContext.seccompProfile.type
+to &ldquo;RuntimeDefault&rdquo; or &ldquo;Localhost&rdquo;)&rsquo;</p>
+<p>[&hellip;]</p>
+</div>
+        </div>
+    </div>
+<p>This is due to the PSA &ldquo;default baseline&rdquo; in vSphere with Tanzu (TKGS). I had to apply the PSA <code>pod-security.kubernetes.io/enforce=privileged</code>, like <a href="#pod-security-admission-controller-punch" rel="">here</a>, to the new created namespaces for Eventing during the installation of the package as well. You have to be &ldquo;quick&rdquo;.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl label --overwrite ns --all pod-security.kubernetes.io/enforce<span class="o">=</span>privileged
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">namespace/cert-manager not labeled
+</span></span><span class="line"><span class="cl">namespace/default not labeled
+</span></span><span class="line"><span class="cl">namespace/knative-eventing labeled
+</span></span><span class="line"><span class="cl">namespace/knative-serving labeled
+</span></span><span class="line"><span class="cl">namespace/knative-sources not labeled
+</span></span><span class="line"><span class="cl">namespace/kube-node-lease not labeled
+</span></span><span class="line"><span class="cl">namespace/kube-public not labeled
+</span></span><span class="line"><span class="cl">namespace/kube-system labeled
+</span></span><span class="line"><span class="cl">namespace/myapp not labeled
+</span></span><span class="line"><span class="cl">namespace/secretgen-controller labeled
+</span></span><span class="line"><span class="cl">namespace/tanzu-system-ingress not labeled
+</span></span><span class="line"><span class="cl">namespace/tap-packages not labeled
+</span></span><span class="line"><span class="cl">namespace/tkg-system labeled
+</span></span><span class="line"><span class="cl">namespace/triggermesh labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-sources not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-antrea not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-auth not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-cloud-provider labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-csi not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-tkg not labeled
+</span></span><span class="line"><span class="cl">namespace/vmware-system-tmc not labeled
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I wonder if this behaviour survives user-feedback&hellip;</p>
+<p>However, this is treated differently in Tanzu Kubernetes Grid (M).</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Knative provides a more approachable abstraction on top of Kubernetes. I will dive deeper into its comprehensive feature set in the next blog posts of this series. Cloud Native Runtimes (CNR) is VMware&rsquo;s official Knative offering which is part of the modular application development platform Tanzu Application Platform (TAP). The streamlined installation of Knative Serving and Eventing is done using Tanzu Packages for TAP. Tanzu Packages are applications which are not only packaged but also completely life-cycled in a modern way using the VMware maintained OSS project Carvel.</p>
+<p>The next blog post will show a lot of the great features which are provided by Knative Serving. Buckle up for some cool demos.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://knative.dev/docs/" target="_blank" rel="noopener noreffer ">Knative project</a></li>
+<li><a href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" target="_blank" rel="noopener noreffer ">Demoing Knative Serving and Eventing using Demo-Magic-Scripts</a></li>
+<li><a href="https://knative.dev/docs/serving/" target="_blank" rel="noopener noreffer ">Serving</a></li>
+<li><a href="https://knative.dev/docs/eventing/" target="_blank" rel="noopener noreffer ">Eventing</a></li>
+<li><a href="https://knative.dev/docs/functions/" target="_blank" rel="noopener noreffer ">Functions</a></li>
+<li><a href="https://knative.dev/docs/install/quickstart-install/" target="_blank" rel="noopener noreffer ">Knative Quickstart</a></li>
+<li><a href="https://github.com/kubernetes-sigs/kind" target="_blank" rel="noopener noreffer ">KinD</a></li>
+<li><a href="https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/2.3/tanzu-cloud-native-runtimes/cnr-overview.html" target="_blank" rel="noopener noreffer ">Tanzu Cloud Native Runtimes</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/index.html" target="_blank" rel="noopener noreffer ">Tanzu Application Platform</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/prerequisites.html" target="_blank" rel="noopener noreffer ">Prerequisites for installing Tanzu Application Platform</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/prerequisites.html" target="_blank" rel="noopener noreffer ">Resource requirements</a></li>
+<li><a href="https://docs.vmware.com/en/Cluster-Essentials-for-VMware-Tanzu/1.6/cluster-essentials/deploy.html" target="_blank" rel="noopener noreffer ">Cluster Essentials</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2/about-tkg/packages-index.html" target="_blank" rel="noopener noreffer ">Packages</a></li>
+<li><a href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" target="_blank" rel="noopener noreffer ">Sharing Container Images using the Docker CLI or Carvel&rsquo;s imgpkg</a></li>
+<li><a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/#optional-kapp-controller-secret-vs-configmap" target="_blank" rel="noopener noreffer ">Deploy VMware Tanzu Packages from a private Container Registry</a></li>
+<li><a href="https://github.com/carvel-dev/secretgen-controller" target="_blank" rel="noopener noreffer ">secretgen-controller</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.6/tap/security-and-compliance-tls-and-certificates-ingress-issuer.html" target="_blank" rel="noopener noreffer ">shared ingress issuer</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-tkg/GUID-B57DA879-89FD-4C34-8ADB-B21CB3AE67F6.html" target="_blank" rel="noopener noreffer ">Configure Pod Security for TKR 1.25 and Later</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-10-04&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/ce5e50080611e394539ed0ceb90776c1b384f2aa" target="_blank" title="commit by Robert Guske(rguske@vmware.com) ce5e50080611e394539ed0ceb90776c1b384f2aa: finalized knative part 1 post">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>ce5e500</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative" data-via="vmw_rguske" data-hashtags="Knative,VMware,Tanzu,CloudNative,Kubernetes,Carvel"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative" data-description="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" data-title="Elevate Your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative" data-description="Knative offers a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing. This first part of my blog series on Knative starts with the installation of Knative Serving and Eventing going the VMware Tanzu way. Embark with me on a transformative odyssey."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/knative/">Knative</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/carvel/">Carvel</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( User ) --\u003e| imgpkg copy -b VMware Repo-URL --to-tar bundle.tar | B( Locally )\n    B --\u003e A\n    A --\u003e| imgpkg copy --tar bundle.tar --to-repo Harbor Repo-URL | C( Registry )","id-2":"graph LR;\n    A( User ) --\u003e| imgpkg copy -b VMware Repo-URL --to-repo Harbor Repo-URL | B( Registry )","id-3":"Robert Guske","id-4":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-3":["id-3"],"id-4":["id-4"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>
