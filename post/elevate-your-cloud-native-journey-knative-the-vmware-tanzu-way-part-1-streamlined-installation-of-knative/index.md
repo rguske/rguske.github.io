@@ -5,7 +5,7 @@
 
 In the rapidly evolving landscape of modern software architecture, event-driven systems have emerged as a pivotal paradigm, empowering organizations to create highly responsive, scalable, and adaptable applications. Knative stands at the forefront of this revolution, offering a robust and flexible framework for building event-driven architectures (EDA) that seamlessly integrate diverse components, enhance automation, and enable real-time data processing.
 
-I'm evangelizing and supporting the [Knative project](https://knative.dev/docs/) for a longer time already. I recently had the pleasure to demonstarte parts of its comprehensive feature set at the great [ContainerDays](https://www.containerdays.io/) event in beautiful Hamburg, Germany.
+I'm evangelizing and supporting the [Knative project](https://knative.dev/docs/) for a longer time already. I recently had the pleasure to demonstrate parts of its comprehensive feature set at the great [ContainerDays](https://www.containerdays.io/) event in beautiful Hamburg, Germany.
 
 <center> {{< tweet user="davidshadoow" id="1701219483145093496" >}} </center>
 
@@ -15,11 +15,11 @@ Like it is often with exciting technologies which captivate me, the more I get i
 
 In my blog post [Demoing Knative Serving and Eventing using Demo-Magic-Scripts](https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/), I barely touched two of the three building blocks of Knative, which are [Serving](https://knative.dev/docs/serving/), [Eventing](https://knative.dev/docs/eventing/) and [Functions](https://knative.dev/docs/functions/). But the intention of the post was more to promote the [demo-magic scripts](https://github.com/paxtonhare/demo-magic/tree/master) I've created in order to "easily" demo some Serving and Eventing goodness, as well as a recording of my VMware {Code} session.
 
-Therefore, it's about time to start a new blog series and to share with you what I've touched on so far, which experiences I've made on my journey and most important, to provide resources, hints and tips & tricks which hopefully helps you on your journey with this thrilling project.
+Therefore, it's about time to start a new blog series and to share with you what I've touched on so far, which experiences I've made on my journey and most important, to provide hints, resources and tips & tricks which hopefully helps you on your journey with this thrilling project.
 
 Naturally, such a series (IMO) has to start with guidance on how-to install Knative on an existing Kubernetes environment. Consequently, this first post will cover the installation of Knative.
 
-The easiest way to get started is clearly [Knative Quickstart](https://knative.dev/docs/install/quickstart-install/), which is a plugin for the Knative cli `kn`. It'll install the minimium of the Serving and Eventing components on a local [KinD](https://github.com/kubernetes-sigs/kind) cluster. But of course this means, it's just for experimentation use only. Which is fine for the start!
+The easiest way to get started is [Knative Quickstart](https://knative.dev/docs/install/quickstart-install/), a plugin for the Knative cli `kn`. It'll install the minimium of the Serving and Eventing components on a local [KinD](https://github.com/kubernetes-sigs/kind) cluster. But keep in mind, it's for experimentation use only. Which is fine for the start!
 
 Giving the fact that I'm working for VMware, I'm going to describe how to ***install Knative the VMware Tanzu way***.
 
@@ -61,7 +61,7 @@ Therefore, the TAP documentation is the source of truth for topics like prerequi
 
 **Important:**
 
-If you are planning to install CNR on a non-Tanzu Kubernetes Grid (TKG = VMware's Kubernetes solution) cluster, please make sure to install the [Cluster Essentials](https://docs.vmware.com/en/Cluster-Essentials-for-VMware-Tanzu/1.6/cluster-essentials/deploy.html) as described.
+If you are planning to install CNR on a non-Tanzu Kubernetes Grid (TKG = VMware's Kubernetes solution) cluster, please make sure to install the [Cluster Essentials](https://docs.vmware.com/en/Cluster-Essentials-for-VMware-Tanzu/1.6/cluster-essentials/deploy.html) as documented.
 
 ## :down_arrow::up_arrow: Relocation of Image-Bundles/Packages
 
@@ -76,7 +76,7 @@ Two bundles can be relocated.
 - [Packages](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/2/about-tkg/packages-index.html) for TKG
   - Packages includes certain Kubernetes cluster extensibilities like Antrea (CNI), Contour (Ingress), Harbor (Registry), cert-manager (cert issuer) and more
 - TAP specific packages
-  - necessary for the installation of TAP
+  - necessary for the installation of TAP/CNR
 
 Two options exist to achieve our goal. The first option is to download the packages as `tar` ball (`--to-tar`) and to ultimately upload the file.
 
@@ -98,7 +98,7 @@ I dedicated a separate article on [Sharing Container Images using the Docker CLI
 
 ### Relocating Tanzu Kubernetes Grid Packages
 
-The TKG-Packages can be relocated using the `tanzu` cli. Make sure you have at least 10G of disk space available before initiating the download process. Here's a working example:
+The TKG packages can be relocated using the `tanzu` cli. Make sure you have at least 10G of disk space available before initiating the download process. Here's a working example:
 
 **Download**:
 
@@ -121,7 +121,7 @@ tanzu isolated-cluster upload-bundle \
 --ca-certificate /home/vmware/harbor01/ca.crt
 ```
 
-I skipped the relocation of the (standard) Packages for TKG and kept the pre-configured online package repository for TKG.
+I skipped the relocation of the (standard) packages for TKG and kept the pre-configured online package repository.
 
 ### Relocating Tanzu Application Platform Packages - Option #1
 
@@ -199,7 +199,7 @@ The result is identical to option #1. With this, three check marks can be set on
 - Network access to VMware registry :white_check_mark:
 - Relocation of the Tanzu Application Packages :white_check_mark:
 
-Next - Tazu Package installation preperations.
+Next - Tanzu packages installation preperations.
 
 ## Preperations for Tanzu Packages Installation
 
@@ -224,20 +224,14 @@ secretgen-controller   1/1     1            1           107m
 
 ### Adding the TAP Package Repository
 
-I won't cover Tanzu Packages specificly in this post. In case you aren't familiar with it, read up on it [HERE](https://beyondelastic.com/2022/01/04/tanzu-packages-explained/), [HERE](https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/) and [HERE](https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/).
-
-Per default, the custom resource (CR) `packagerepositories.packaging.carvel.dev` named `tanzu-standard` within the `tkg-system` namespace...
+Per default, the custom resource (CR) `packagerepositories.packaging.carvel.dev` named `tanzu-standard` within the `tkg-system` namespace is configured with the url for the Standard Packages.
 
 ```shell
 k get packagerepositories.packaging.carvel.dev -n tkg-system
 
 NAME             AGE   DESCRIPTION
 tanzu-standard   27d   Reconcile succeeded
-```
 
-... is configured with the url for the Tanzu Packages for TKG. See:
-
-```shell
 tanzu package repository list -n tkg-system
 
 NAME            REPOSITORY                                                       TAG                  STATUS               DETAILS
@@ -342,8 +336,8 @@ Looks better already. Checking the ultimate state:
 ```shell
 tanzu package repository list -n tap-packages
 
-  NAME       REPOSITORY                                                          TAG       STATUS               DETAILS
-  tap-1.6.3  harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-1.6.3  (>0.0.0)  Reconcile succeeded
+NAME       REPOSITORY                                                          TAG       STATUS               DETAILS
+tap-1.6.3  harbor01.cpod-nsxv8.az-stc.cloud-garage.net/tap/tap-packages-1.6.3  (>0.0.0)  Reconcile succeeded
 ```
 
 Perfect! Now, lets check which packages are available using `tanzu package available list -n tap-packages`.
@@ -352,7 +346,7 @@ Perfect! Now, lets check which packages are available using `tanzu package avail
 
 {{< image src="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" caption="Figure III: All available Tanzu Application Platform Packages" src-s="/img/posts/202309_knative_part_1/202309_knative_part_1_tap_packages.png" >}}
 
-That's quite A LOT of packages but keep calm, not all are necessarely needed for TAP. Positively speaking, it is good to only have one repository to maintain, one source of truth for TAP.
+That's quite A LOT of packages but keep calm, not all are necessarily needed for TAP. Positively speaking, it is good to only have one repository to maintain, one source of truth for TAP.
 
 Furthermore, if it is TAP related, like Cloud Native Runtimes, make sure to only use packages provided by the TAP packages repository.
 
@@ -742,11 +736,11 @@ tanzu package install cloud-native-runtimes \
 --poll-timeout 30m
 ```
 
-Oh, oh, no Kubernetes deployments or pods showing up...
+Oh, oh, no deployments or pods showing up...
 
 ### Pod Security Admission Controller :punch:
 
-After a long breath of waiting for pods finally showing up on my cluster, I got troubled. The Pods Security Policy admission controller hitted me a couple of times already. Therefore, I checked one of the created `replicaSets` within the `Knative-Serving` namespace and there I found it:
+After a long breath of waiting for pods finally showing up on my cluster, I got troubled. The (old) Pods Security Policy admission controller hitted me a couple of times already. Therefore, I checked one of the created `replicaSets` within the `Knative-Serving` namespace and there I found it:
 
 ```shell
 [...]
@@ -797,6 +791,7 @@ I had to wait a moment until the `reconciliation` operation kicked in again for 
 
 ```shell
 k get app -A
+
 NAMESPACE           NAME                                      DESCRIPTION           SINCE-DEPLOY   AGE
 tap-packages        cert-manager                              Reconcile succeeded   8m58s          2d5h
 tap-packages        cloud-native-runtimes                     Reconcile succeeded   8m49s          47h
