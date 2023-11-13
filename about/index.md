@@ -47,7 +47,9 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. He's a tech enthusiast who's actively engaged in shaping the future of cloud-native tech through his commitment and passion for the principles of collaboration and innovation that drive the community forward.
+
+In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
 Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
 
@@ -57,11 +59,11 @@ He's very keen on cloud native technologies and an active team-member and contri
 
 <center> {{< image src="/img/about/veba_logo_stacked.png" src-s="/img/about/veba_logo_stacked.png" caption="Official VEBA Logo" >}} </center>
 
-- **Homepage:** https://vmweventbroker.io
-- **<i class='fab fa-github fa-fw'></i> Repository:** https://github.com/vmware-samples/vcenter-event-broker-appliance/
-- **VEBA @ vBrownBag:** https://www.youtube.com/watch?v=tOjp5_qn-Fg&feature=youtu.be
-- **VEBA related articles written by Robert:** https://rguske.github.io/tags/veba/
-- **VEBA related articles written by William Lam:**  https://williamlam.com/?s=veba
+- Homepage: https://vmweventbroker.io
+- <i class='fab fa-github fa-fw'></i> Repository: https://github.com/vmware-samples/vcenter-event-broker-appliance/
+- VEBA @ vBrownBag: https://www.youtube.com/watch?v=tOjp5_qn-Fg&feature=youtu.be
+- VEBA related articles written by Robert: https://rguske.github.io/tags/veba/
+- VEBA related articles written by William Lam:  https://williamlam.com/?s=veba
 
 ## Achievements
 
@@ -111,14 +113,32 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
 
+## 2023
+
+### VMware Explore Europe 2023
+
+| **Breakout** | **Title** | **Link** |
+|:---: | :---: | :---:|
+| **MAPB1264BCN** | *Get Started with Containers, Kubernetes and VMware Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1684138787121001fwFz&videoId=6340723571112) |
+
+<center> {{< tweet user="vmw_rguske" id="1724112422066176159" >}} </center>
+
+### ContainerDays 2023
+
+| **Title** | **Link** |
+| :---: | :---:|
+| **Enabling event-driven automation using Knative** | [LINK](https://www.youtube.com/watch?v=J_3-ILnPbQQ&t=1s) |
+
+<center> {{< tweet user="DavidShadoow" id="1701219483145093496" >}} </center>
+
 ## 2022
 
 ### VMware Explore Europe 2022
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [#OSB2534EUR](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
-| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [#KUBT2977EUR](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112)
+| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
+| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112) |
 
 <center> {{< tweet user="vmw_rguske" id="1592138082618609664" >}} </center>
 
@@ -136,7 +156,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **CODE2762** | *DIY Deployment of Event-Driven Automation in vSphere Environments* | [#CODE2762](https://youtu.be/ieUqfir5Oag) |
+| **CODE2762** | *DIY Deployment of Event-Driven Automation in vSphere Environments* | [VMworld Video Library](https://youtu.be/ieUqfir5Oag) |
 
 <center> {{< youtube ieUqfir5Oag >}} </center>
 
