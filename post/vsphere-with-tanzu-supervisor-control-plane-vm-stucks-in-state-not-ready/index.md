@@ -100,6 +100,18 @@ I was also trying to figure out if there's a way to get this fixed on the Operat
 
 ## vSphere ESXi Agent Manager
 
+> Updated November, 2023
+
+I was ask by our Global Support Services team to add the following statement to this article. Please read it carefully.
+
+{{< admonition warning "Disclaimer - THIS IS NOT A VALID TROUBLESHOOTING METHOD FOR CUSTOMERS" true >}}
+Do not delete eam agencies without the **EXPRESS** permission of a VMware support engineer. Depending on versions and the existing health of the supervisor cluster it is entirely possible to render the entire cluster un-recoverable. If VMware Support finds evidence of a customer manually deleting an EAM Agency, they may mark your cluster as unsupported and require you redeploy the entire vSphere with Tanzu solution.
+
+Read VMware [KB90194](https://kb.vmware.com/s/article/90194?lang=en_US)
+
+**Proceeding from here is on your own risk.**
+{{< /admonition >}}
+
 If the desired state cannot be recovered automatically again, what option remains?
 
 Well, there's always something to learn. My well appreciated colleague [Dominik Zorgnotti](https://www.why-did-it.fail/) was pointing me to the [vSphere ESXi Agent Manager (EAM)](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.monitoring.doc/GUID-D56ABFF4-4529-409C-9AA2-8D8D4E235601.html), which in the end turned out to be the solution for my problem. To be honest, I never was in the situation to make use of the EAM before and therefore it wasn't on my radar at all but I was quite happy to get to know this component now. What it does?
