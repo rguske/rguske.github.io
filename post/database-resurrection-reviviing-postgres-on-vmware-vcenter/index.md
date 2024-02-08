@@ -3,15 +3,17 @@
 
 ## Power Failure causes Problems again
 
-Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine at home. I'm running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. My vCenter Server is (still) running on the vSAN cluster but only compute-wise. I have a Synology NAS runing as well which is providing an additional NFS datastore in order to at least have the VCSA storage outsourced from the cluster.
+Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine. I'm running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. The vCenter Server is still running on the vSAN cluster but only compute-wise. I have a Synology NAS running as well which is providing an additional NFS datastore in order to have at least the VCSA (VM) storage outsourced from the cluster.
 
-However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldnt right this and [this](https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/) and [this](https://rguske.github.io/posts/) article :smile:
+However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn't write articles like this one, and [this](https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/) one and [this](https://rguske.github.io/posts/) one :smile:
 
 ## VMware-vPostgres Service won't start anymore
 
-After checking the cause of the outage and making sure it won't happen again, I brought everything back in running state. I logged into the vSphere Client and I immediately got the information that the inventory objects can't be displayed. First instinct was checking the state of all services via the vCenter Appliance Management Interface (VAMI). And here we go :fearful:
+After checking the cause of the outage and making sure it won't happen again, I brought everything back in running state. I logged into the vSphere Client and immediately faced the consequences. `The vSphere inventory objects can't be displayed`.
 
-Most of the services kept staying in `stopped` state. I checked the services and I roughly knew the right start-order, or dependency-order of the affected services. One of the first services I tried starting was the `VMware Postgres` service. It almost immediately failed with a not really informative error.
+My first instinct was checking the state of all vCenter services via the vCenter Appliance Management Interface (VAMI). And here we go :fearful:
+
+Most of the services kept staying in `stopped` state. I roughly knew the right start-order, or dependency-order of the affected services and checked them. One of the first services I tried starting was the `VMware Postgres` service. It almost immediately failed with a not really informative error. `Operation failed!...`
 
 Consequently, I `ssh`ed into my VCSA and continued troubleshooting from there.
 
@@ -55,6 +57,8 @@ Service-control failed. Error: {
 Before I executed the `service-control` command, I started a second connection to my VCSA (I'm a fan of using the window-multiplexer [tmux](https://github.com/tmux/tmux/wiki)) and ran a `tail -f` on the vCenter service `vpxd` log. Here's a snipped from the log:
 
 ```code
+[...]
+
 2024-01-29T08:12:39.441Z error vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket "/var/run/vpostgres/.s.PGSQL.5432" failed: No such file or directory
 -->     Is the server running locally and accepting connections on that socket?
 --> .  Retry attempt: 479617 ...
@@ -76,7 +80,7 @@ Before I executed the `service-control` command, I started a second connection t
 ^C
 ```
 
-It don't need a PHD to get a clue that the following error: `Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket "/var/run/vpostgres/.s.PGSQL.5432" failed: No such file or directory` isn't good at all.
+It don't need a PHD to get a clue that the error `Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket "/var/run/vpostgres/.s.PGSQL.5432" failed: No such file or directory` isn't good at all.
 
 Okay, my vPostgres instance got affected badly by the "unplanned shutdown".
 
@@ -88,8 +92,8 @@ You should raise a ticket at the VMware support first, before intervene with cri
 
 I started searching on the internet for appropriate tips and tricks but only found a couple of mainly outdated hints. Better than nothing, right?! My first attempt consisted of checking if I still can connect to the VCSA vPostgres instance using the postgres `psql` CLI.
 
-```code
-root@vcsa [ ~ ]# /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
+```shell
+root@vcsa [ ~ ] /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
 
 psql.bin: error: connection to server on socket "/var/run/vpostgres/.s.PGSQL.5432" failed: No such file or directory
         Is the server running locally and accepting connections on that socket?
@@ -107,12 +111,12 @@ The Postgres WAL (Write-Ahead Log) is the location in the Postgres cluster where
 
 I started with:
 
-```code
-root@vcsa [ ~ ]# su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
+```shell
+root@vcsa [ ~ ] su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
 Cannot execute /opt/vmware/vpostgres/current/bin/pg_resetxlog
 ```
 
-Okay, this kind of message was unexpected but I quickly found out, that the command `pg_resetxlog` is for Postgres versions prior 10. It got [renamed](https://www.postgresql.org/docs/12/app-pgresetxlog.html) in 10 to `pg_resetwal`.
+Okay, this kind of message was unexpected but I quickly found out, that the command `pg_resetxlog` is for Postgres versions prior 10. It got [renamed](https://www.postgresql.org/docs/12/app-pgresetxlog.html) in v10 to `pg_resetwal`.
 
 I'm already running vSphere 8 Update 2 and the used Postgres version here is 14.
 
@@ -122,28 +126,28 @@ Now, let's give the right command for the right version a try.
 
 Start a `sh`ell session:
 
-```code
-root@vcsa [ ~ ]# su vpostgres -s /bin/sh
+```shell
+root@vcsa [ ~ ] su vpostgres -s /bin/sh
 ```
 
 Change into the dir where the binary is located:
 
-```code
+```shell
 sh-5.0$ cd /opt/vmware/vpostgres/14/bin/
 ```
 
 Unleash the process:
 
-```code
+```shell
 sh-5.0$ ./pg_resetwal /storage/db/vpostgres
 The database server was not shut down cleanly.
 Resetting the write-ahead log might cause data to be lost.
 If you want to proceed anyway, use -f to force reset.
 ```
 
-May the `force` be with me:
+May the `force` be with you:
 
-```code
+```shell
 sh-5.0$ ./pg_resetwal /storage/db/vpostgres -f
 Write-ahead log reset
 sh-5.0$ exit
@@ -152,8 +156,8 @@ exit
 
 Done! Check starting the `vmware-vpostgres` once again.
 
-```code
-root@vcsa [ ~ ]# service-control --start vmware-vpostgres
+```shell
+root@vcsa [ ~ ] service-control --start vmware-vpostgres
 Operation not cancellable. Please wait for it to finish...
 Performing start operation on service vmware-vpostgres...
 Successfully started service vmware-vpostgres
@@ -163,8 +167,8 @@ Successfully started service vmware-vpostgres
 
 Consequently, the rest of the services have to follow accordingly:
 
-```code
-root@vcsa [ ~ ]# service-control --start --all
+```shell
+root@vcsa [ ~ ] service-control --start --all
 Operation not cancellable. Please wait for it to finish...
 Performing start operation on service lwsmd...
 Successfully started service lwsmd

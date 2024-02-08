@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Database Resurrection - Reviving vPostgres DB on VMware vCenter Server - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" />
-<meta property="og:description" content="Power Failure causes Problems again Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine at home. I&rsquo;m running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. My vCenter Server is (still) running on the vSAN cluster but only compute-wise. I have a Synology NAS runing as well which is providing an additional NFS datastore in order to at least have the VCSA storage outsourced from the cluster." />
+        <title>Database Resurrection - Reviving vPostgres DB on VMware vCenter Server - Robert Guske</title><meta name="Description" content="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><meta property="og:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" />
+<meta property="og:description" content="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-02-07T23:44:08+01:00" />
@@ -15,7 +15,7 @@
 <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
 
 <meta name="twitter:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"/>
-<meta name="twitter:description" content="Power Failure causes Problems again Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine at home. I&rsquo;m running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. My vCenter Server is (still) running on the vSAN cluster but only compute-wise. I have a Synology NAS runing as well which is providing an additional NFS datastore in order to at least have the VCSA storage outsourced from the cluster."/>
+<meta name="twitter:description" content="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."/>
 <meta name="application-name" content="Robert Guske">
 <meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" /><link rel="prev" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -28,13 +28,13 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/database-resurrection-reviviing-postgres-on-vmware-vcenter\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Tools, Hack, Troubleshooting","wordcount":  1364 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Tools, Hack, Troubleshooting","wordcount":  1370 ,
         "url": "https:\/\/rguske.github.io\/post\/database-resurrection-reviviing-postgres-on-vmware-vcenter\/","datePublished": "2024-02-07T23:44:08+01:00","dateModified": "2024-02-08T00:40:11+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
-            },"description": ""
+            },"description": "The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -102,7 +102,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-07">2024-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1364 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-07">2024-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1370 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -111,7 +111,7 @@
         data-srcset="/img/vcsa_vpostgres_trouble_cover.png, /img/vcsa_vpostgres_trouble_cover.png 1.5x, /img/vcsa_vpostgres_trouble_cover.png 2x"
         data-sizes="auto"
         alt="/img/vcsa_vpostgres_trouble_cover.png"
-        title="/img/vcsa_vpostgres_trouble_cover.png" /></div><div class="details toc" id="toc-static"  data-kept="">
+        title="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care." /></div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
                     <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
@@ -129,11 +129,12 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="power-failure-causes-problems-again">Power Failure causes Problems again</h2>
-<p>Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine at home. I&rsquo;m running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. My vCenter Server is (still) running on the vSAN cluster but only compute-wise. I have a Synology NAS runing as well which is providing an additional NFS datastore in order to at least have the VCSA storage outsourced from the cluster.</p>
-<p>However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldnt right this and <a href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" target="_blank" rel="noopener noreffer ">this</a> and <a href="https://rguske.github.io/posts/" target="_blank" rel="noopener noreffer ">this</a> article 😄</p>
+<p>Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine. I&rsquo;m running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. The vCenter Server is still running on the vSAN cluster but only compute-wise. I have a Synology NAS running as well which is providing an additional NFS datastore in order to have at least the VCSA (VM) storage outsourced from the cluster.</p>
+<p>However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn&rsquo;t write articles like this one, and <a href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" target="_blank" rel="noopener noreffer ">this</a> one and <a href="https://rguske.github.io/posts/" target="_blank" rel="noopener noreffer ">this</a> one 😄</p>
 <h2 id="vmware-vpostgres-service-wont-start-anymore">VMware-vPostgres Service won&rsquo;t start anymore</h2>
-<p>After checking the cause of the outage and making sure it won&rsquo;t happen again, I brought everything back in running state. I logged into the vSphere Client and I immediately got the information that the inventory objects can&rsquo;t be displayed. First instinct was checking the state of all services via the vCenter Appliance Management Interface (VAMI). And here we go 😨</p>
-<p>Most of the services kept staying in <code>stopped</code> state. I checked the services and I roughly knew the right start-order, or dependency-order of the affected services. One of the first services I tried starting was the <code>VMware Postgres</code> service. It almost immediately failed with a not really informative error.</p>
+<p>After checking the cause of the outage and making sure it won&rsquo;t happen again, I brought everything back in running state. I logged into the vSphere Client and immediately faced the consequences. <code>The vSphere inventory objects can't be displayed</code>.</p>
+<p>My first instinct was checking the state of all vCenter services via the vCenter Appliance Management Interface (VAMI). And here we go 😨</p>
+<p>Most of the services kept staying in <code>stopped</code> state. I roughly knew the right start-order, or dependency-order of the affected services and checked them. One of the first services I tried starting was the <code>VMware Postgres</code> service. It almost immediately failed with a not really informative error. <code>Operation failed!...</code></p>
 <p>Consequently, I <code>ssh</code>ed into my VCSA and continued troubleshooting from there.</p>
 <p>Same try, different approach. I tried starting the service using the <code>service-control</code> CLI.</p>
 <div class="highlight"><div class="chroma">
@@ -228,9 +229,13 @@
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">2024-01-29T08:12:39.441Z error vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &#34;/var/run/vpostgres/.s.PGSQL.5432&#34; failed: No such file or directory
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[...]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.441Z error vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &#34;/var/run/vpostgres/.s.PGSQL.5432&#34; failed: No such file or directory
 </span></span><span class="line"><span class="cl">--&gt;     Is the server running locally and accepting connections on that socket?
 </span></span><span class="line"><span class="cl">--&gt; .  Retry attempt: 479617 ...
 </span></span><span class="line"><span class="cl">2024-01-29T08:12:39.451Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
@@ -251,7 +256,7 @@
 </span></span><span class="line"><span class="cl">^C
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>It don&rsquo;t need a PHD to get a clue that the following error: <code>Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &quot;/var/run/vpostgres/.s.PGSQL.5432&quot; failed: No such file or directory</code> isn&rsquo;t good at all.</p>
+</div><p>It don&rsquo;t need a PHD to get a clue that the error <code>Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &quot;/var/run/vpostgres/.s.PGSQL.5432&quot; failed: No such file or directory</code> isn&rsquo;t good at all.</p>
 <p>Okay, my vPostgres instance got affected badly by the &ldquo;unplanned shutdown&rdquo;.</p>
 <h2 id="reset-to-the-last-known-working-checkpoint">Reset to the last known working Checkpoint</h2>
 <div class="details admonition warning open">
@@ -271,9 +276,9 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vcsa [ ~ ]# /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">psql.bin: error: connection to server on socket &#34;/var/run/vpostgres/.s.PGSQL.5432&#34; failed: No such file or directory
+</span></span><span class="line"><span class="cl">psql.bin: error: connection to server on socket <span class="s2">&#34;/var/run/vpostgres/.s.PGSQL.5432&#34;</span> failed: No such file or directory
 </span></span><span class="line"><span class="cl">        Is the server running locally and accepting connections on that socket?
 </span></span></code></pre></td></tr></table>
 </div>
@@ -295,11 +300,11 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vcsa [ ~ ]# su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
 </span></span><span class="line"><span class="cl">Cannot execute /opt/vmware/vpostgres/current/bin/pg_resetxlog
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Okay, this kind of message was unexpected but I quickly found out, that the command <code>pg_resetxlog</code> is for Postgres versions prior 10. It got <a href="https://www.postgresql.org/docs/12/app-pgresetxlog.html" target="_blank" rel="noopener noreffer ">renamed</a> in 10 to <code>pg_resetwal</code>.</p>
+</div><p>Okay, this kind of message was unexpected but I quickly found out, that the command <code>pg_resetxlog</code> is for Postgres versions prior 10. It got <a href="https://www.postgresql.org/docs/12/app-pgresetxlog.html" target="_blank" rel="noopener noreffer ">renamed</a> in v10 to <code>pg_resetwal</code>.</p>
 <p>I&rsquo;m already running vSphere 8 Update 2 and the used Postgres version here is 14.</p>
 <h3 id="2nd-attempt-pg_resetwal">2nd attempt pg_resetwal</h3>
 <p>Now, let&rsquo;s give the right command for the right version a try.</p>
@@ -309,7 +314,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vcsa [ ~ ]# su vpostgres -s /bin/sh
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /bin/sh
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Change into the dir where the binary is located:</p>
@@ -318,7 +323,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sh-5.0$ cd /opt/vmware/vpostgres/14/bin/
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ <span class="nb">cd</span> /opt/vmware/vpostgres/14/bin/
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Unleash the process:</p>
@@ -330,13 +335,13 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres
 </span></span><span class="line"><span class="cl">The database server was not shut down cleanly.
 </span></span><span class="line"><span class="cl">Resetting the write-ahead log might cause data to be lost.
 </span></span><span class="line"><span class="cl">If you want to proceed anyway, use -f to force reset.
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>May the <code>force</code> be with me:</p>
+</div><p>May the <code>force</code> be with you:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -345,10 +350,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres -f
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres -f
 </span></span><span class="line"><span class="cl">Write-ahead log reset
-</span></span><span class="line"><span class="cl">sh-5.0$ exit
-</span></span><span class="line"><span class="cl">exit
+</span></span><span class="line"><span class="cl">sh-5.0$ <span class="nb">exit</span>
+</span></span><span class="line"><span class="cl"><span class="nb">exit</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Done! Check starting the <code>vmware-vpostgres</code> once again.</p>
@@ -360,8 +365,8 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vcsa [ ~ ]# service-control --start vmware-vpostgres
-</span></span><span class="line"><span class="cl">Operation not cancellable. Please wait for it to finish...
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start vmware-vpostgres
+</span></span><span class="line"><span class="cl">Operation not cancellable. Please <span class="nb">wait</span> <span class="k">for</span> it to finish...
 </span></span><span class="line"><span class="cl">Performing start operation on service vmware-vpostgres...
 </span></span><span class="line"><span class="cl">Successfully started service vmware-vpostgres
 </span></span></code></pre></td></tr></table>
@@ -390,8 +395,8 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vcsa [ ~ ]# service-control --start --all
-</span></span><span class="line"><span class="cl">Operation not cancellable. Please wait for it to finish...
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start --all
+</span></span><span class="line"><span class="cl">Operation not cancellable. Please <span class="nb">wait</span> <span class="k">for</span> it to finish...
 </span></span><span class="line"><span class="cl">Performing start operation on service lwsmd...
 </span></span><span class="line"><span class="cl">Successfully started service lwsmd
 </span></span><span class="line"><span class="cl">Performing start operation on service vmafdd...
@@ -423,7 +428,7 @@
                             <a class="link-to-markdown" href="/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Tools,Hack,Troubleshooting"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description=""><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description=""><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Tools,Hack,Troubleshooting"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/database-resurrection-reviviing-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description="The VCSA vPostgres fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
