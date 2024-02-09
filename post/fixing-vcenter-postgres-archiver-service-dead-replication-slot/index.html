@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot - Robert Guske</title><meta name="Description" content="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance."><meta property="og:title" content="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot" />
+<meta property="og:description" content="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-09T16:00:47+01:00" />
+<meta property="article:modified_time" content="2024-02-09T16:13:18+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"/>
+<meta name="twitter:description" content="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="prev" href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/fixing-vcenter-postgres-archiver-service-dead-replication-slot\/"
+        },"genre": "posts","keywords": "VMware, vSphere, Tools, Hack, Troubleshooting","wordcount":  864 ,
+        "url": "https:\/\/rguske.github.io\/post\/fixing-vcenter-postgres-archiver-service-dead-replication-slot\/","datePublished": "2024-02-09T16:00:47+01:00","dateModified": "2024-02-09T16:13:18+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "After a homelab crash, the VCSA file-based backup isn't working anymore. In this post I'm describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-09">2024-02-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;864 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/vcsa_vpostgres_archiver_trouble_cover.png"
+        data-srcset="/img/vcsa_vpostgres_archiver_trouble_cover.png, /img/vcsa_vpostgres_archiver_trouble_cover.png 1.5x, /img/vcsa_vpostgres_archiver_trouble_cover.png 2x"
+        data-sizes="auto"
+        alt="/img/vcsa_vpostgres_archiver_trouble_cover.png"
+        title="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#of-course-i-run-backups-">Of course I run Backups 🤥</a></li>
+    <li><a href="#vmware-postgres-archiver-service-stopped">VMware Postgres Archiver Service stopped</a>
+      <ul>
+        <li><a href="#removing-the-pg_replication_slot">Removing the PG_Replication_Slot</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="of-course-i-run-backups-">Of course I run Backups 🤥</h2>
+<p>This time I had luck with the outcome of my recent homelab crash. If I weren&rsquo;t able to fix my broken vCenter Server, as described in my <a href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" target="_blank" rel="noopener noreffer ">previous article</a>, I would have had to reinstall my vSphere (+ vSAN, + Tanzu) environment basically from scratch again.</p>
+<p>Is this actually true?</p>
+<p>Actually NO! Because if I would have configured my vSphere environment correctly, <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-installation/GUID-3EAED005-B0A3-40CF-B40D-85AD247D7EA4.html" target="_blank" rel="noopener noreffer ">vCenter Server file-based backup</a> were configured properly and I wouldn&rsquo;t have had to worry about the consequences in the end.</p>
+<p>But, I <strong>didn&rsquo;t configured backup</strong> and therefore, I wanted to do it the right way now.</p>
+<h2 id="vmware-postgres-archiver-service-stopped">VMware Postgres Archiver Service stopped</h2>
+<p>I logged in into the vCenter Appliance Management Interface (VAMI) and started configuring my backup. When I kicked-off the first backup operation manually, an error was thrown on me immediateley. The error was telling me that something is wrong with the Backup Service. Consequently, I check the responsible <code>VMware Postgres Archiver</code> service.</p>
+<figure><a class="lightgallery" href="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png" title="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png" data-thumbnail="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png" data-sub-html="<h2>Figure I: VMware Postgres Archiver Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png"
+            data-srcset="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png, /img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png 1.5x, /img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service.png" />
+    </a><figcaption class="image-caption">Figure I: VMware Postgres Archiver Service</figcaption>
+    </figure>
+<p>Turned out, mine was in <code>stopped</code> state. Trying to simply start the service manually via <code>service-control --start vmware-postgres-archiver</code> didn&rsquo;t do the trick (too easy!).</p>
+<p>Do we have chatty service logs? Yes, the Postgres Archiver Service has a dedicated <code>stderr</code> log which can be queried.</p>
+<p><code>tail -f /var/log/vmware/vpostgres/pg_archiver.log.stderr</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">2024-01-29T10:07:07.339Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;00000001000000010000008A.gz&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.340Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;000000010000000300000098.gz&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.340Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;00000001000000030000009C.gz&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.340Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;0000000100000003000000A6.gz&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.340Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;0000000100000003000000AB.gz&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.343Z DEBUG  pg_archiver Updated startup LSN using segment file <span class="s2">&#34;0000000100000003000000AD.gz.partial&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.360Z DEBUG  pg_archiver starting log streaming at 3/AD000000 <span class="o">(</span>timeline 1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">2024-01-29T10:07:07.361Z ERROR  pg_archiver unexpected termination of replication stream: ERROR:  requested WAL segment 0000000100000003000000AD has already been removed
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><code>ERROR  pg_archiver unexpected termination of replication stream</code> 🤔</p>
+</blockquote>
+<p>I continued with inspecting the <code>postgresql.log</code> and found this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tail -f /var/log/vmware/vpostgres/postgresql.log
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.725 UTC 65b778ca.25a22 <span class="m">0</span> archiver archiver <span class="o">[</span>local<span class="o">]</span> <span class="m">154146</span> 3DETAIL:  User <span class="s2">&#34;archiver&#34;</span> has no password assigned.
+</span></span><span class="line"><span class="cl">        Connection matched pg_hba.conf line 72: <span class="s2">&#34;local        all             all                             scram-sha-256&#34;</span>
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.725 UTC 65b778ca.25a22 <span class="m">0</span> archiver archiver <span class="o">[</span>local<span class="o">]</span> <span class="m">154146</span> 4LOG:  could not send data to client: Broken pipe
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.747 UTC 65b778ca.25a28 <span class="m">0</span> <span class="o">[</span>unknown<span class="o">]</span> <span class="o">[</span>unknown<span class="o">]</span> <span class="o">[</span>local<span class="o">]</span> <span class="m">154152</span> 1LOG:  connection received: <span class="nv">host</span><span class="o">=[</span>local<span class="o">]</span>
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.749 UTC 65b778ca.25a28 <span class="m">0</span> <span class="o">[</span>unknown<span class="o">]</span> archiver <span class="o">[</span>local<span class="o">]</span> <span class="m">154152</span> 2LOG:  connection authenticated: <span class="nv">identity</span><span class="o">=</span><span class="s2">&#34;vpostgres&#34;</span> <span class="nv">method</span><span class="o">=</span>peer <span class="o">(</span>/storage/db/vpostgres/pg_hba.conf:9<span class="o">)</span>
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.749 UTC 65b778ca.25a28 <span class="m">0</span> <span class="o">[</span>unknown<span class="o">]</span> archiver <span class="o">[</span>local<span class="o">]</span> <span class="m">154152</span> 3LOG:  replication connection authorized: <span class="nv">user</span><span class="o">=</span>archiver <span class="nv">application_name</span><span class="o">=</span>pg_archiver
+</span></span><span class="line"><span class="cl">2024-01-29 10:07:06.752 UTC 65b778ca.25a28 <span class="m">0</span> <span class="o">[</span>unknown<span class="o">]</span> archiver <span class="o">[</span>local<span class="o">]</span> <span class="m">154152</span> 4ERROR:  replication slot <span class="s2">&#34;vpg_archiver&#34;</span> already exists
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><code>ERROR:  replication slot &quot;vpg_archiver&quot; already exists</code></p>
+</blockquote>
+<p>I searched for <code>replication_slot</code> in the official <a href="https://www.postgresql.org/docs/14/view-pg-replication-slots.html" target="_blank" rel="noopener noreffer ">PostgreSQL documentation</a> and found how to query the <code>pg_replication_slots</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB -c <span class="s2">&#34;select * from pg_replication_slots;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  slot_name   <span class="p">|</span> plugin <span class="p">|</span> slot_type <span class="p">|</span> datoid <span class="p">|</span> database <span class="p">|</span> temporary <span class="p">|</span> active <span class="p">|</span> active_pid <span class="p">|</span> xmin <span class="p">|</span> catalog_xmin <span class="p">|</span> restart_lsn <span class="p">|</span> confirmed_flush_lsn <span class="p">|</span> wal_status <span class="p">|</span> safe_wal_size <span class="p">|</span> two_phase
+</span></span><span class="line"><span class="cl">--------------+--------+-----------+--------+----------+-----------+--------+------------+------+--------------+-------------+---------------------+------------+---------------+-----------
+</span></span><span class="line"><span class="cl"> vpg_archiver <span class="p">|</span>        <span class="p">|</span> physical  <span class="p">|</span>        <span class="p">|</span>          <span class="p">|</span> f         <span class="p">|</span> f      <span class="p">|</span>            <span class="p">|</span>      <span class="p">|</span>              <span class="p">|</span> 3/AD000000  <span class="p">|</span>                     <span class="p">|</span> reserved   <span class="p">|</span>               <span class="p">|</span> f
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">1</span> row<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Interesting to me was the <code>boolean</code> in column <code>active</code>. It was <code>false</code>.</p>
+<p>In PostgreSQL, the &ldquo;active&rdquo; column represents whether a replication slot is currently actively being used or not. An &ldquo;<code>f</code>&rdquo; in this column indicates that the replication slot is not active, meaning it is not currently being utilized. Conversely, a value of &ldquo;t&rdquo; would indicate that the replication slot is active and is currently being used.</p>
+<p>I continued gathering information and found VMware internally the final hints.</p>
+<h3 id="removing-the-pg_replication_slot">Removing the PG_Replication_Slot</h3>
+<div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>Disclaimer<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">You should raise a ticket at the VMware support first, before interfere with critical components of the vCenter Server. Therefore, the next steps are for non-production environments only.</div>
+        </div>
+    </div>
+<p>The solution here would be to remove the <code>vpg_archiver</code> replication slot using <code>pg_drop_replication_slot</code>.</p>
+<p>From the vCenter Server <code>shell</code> execute:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB -c <span class="s2">&#34;select pg_drop_replication_slot(&#39;vpg_archiver&#39;);&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> pg_drop_replication_slot
+</span></span><span class="line"><span class="cl">--------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">1</span> row<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Query the <code>pg_replication_slots</code> once more to validate its removal.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">/opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB -c <span class="s2">&#34;select * from pg_replication_slots;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> slot_name <span class="p">|</span> plugin <span class="p">|</span> slot_type <span class="p">|</span> datoid <span class="p">|</span> database <span class="p">|</span> temporary <span class="p">|</span> active <span class="p">|</span> active_pid <span class="p">|</span> xmin <span class="p">|</span> catalog_xmin <span class="p">|</span> restart_lsn <span class="p">|</span> confirmed_flush_lsn <span class="p">|</span> wal_status <span class="p">|</span> safe_wal_size <span class="p">|</span> two_phase
+</span></span><span class="line"><span class="cl">-----------+--------+-----------+--------+----------+-----------+--------+------------+------+--------------+-------------+---------------------+------------+---------------+-----------
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">0</span> rows<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As a final step before trying to restart the <code>vmware-postgres-archiver</code> service, is the deletion of already existing <code>segments</code> within <code>/storage/archive/vpostgres/</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> df -h /storage/archive/vpostgres/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Filesystem                      Size  Used Avail Use% Mounted on
+</span></span><span class="line"><span class="cl">/dev/mapper/archive_vg-archive   49G  4.8G   42G  11% /storage/archive
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Remove it: <code>rm /storage/archive/vpostgres/*</code></p>
+<p>Start the <code>vmware-postgres-archiver</code> service:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service-control --start vmware-postgres-archiver
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Operation not cancellable. Please <span class="nb">wait</span> <span class="k">for</span> it to finish...
+</span></span><span class="line"><span class="cl">Performing start operation on service vmware-postgres-archiver...
+</span></span><span class="line"><span class="cl">Successfully started service vmware-postgres-archiver
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>After bringing the service back into operating state, I started a new backup.</p>
+<figure><a class="lightgallery" href="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png" title="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png" data-thumbnail="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png" data-sub-html="<h2>Figure II: VMware Postgres Archiver Service</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png"
+            data-srcset="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png, /img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png 1.5x, /img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_fixing_postgres_archiver_service/202402_fixing_postgres_archiver_service_backup.png" />
+    </a><figcaption class="image-caption">Figure II: VMware Postgres Archiver Service</figcaption>
+    </figure>
+<p>As you can see on <em>Figure II</em>, it took a few attempts but ultimately, it works again. Maybe the VCSA needed a moment to sort things out.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-02-09&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/27363575305e5ae54d5b8495f2e2bd4c89610862" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 27363575305e5ae54d5b8495f2e2bd4c89610862: finalized vmware postgres archiver post">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>2736357</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Tools,Hack,Troubleshooting"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot" data-description="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" data-title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot" data-description="After a homelab crash, the VCSA file-based backup isn&#39;t working anymore. In this post I&#39;m describing how I was able to get the VMware Postgres Archiver service back in operating state by interfere with vCenters vPostgres instance."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/hack/">Hack</a>,&nbsp;<a href="/tags/troubleshooting/">Troubleshooting</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" class="prev" rel="prev" title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>

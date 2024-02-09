@@ -5,7 +5,7 @@
 
 Once in a while power failures happens and can (mostly will!) cause troubles for small homelabs like mine. I'm running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. The vCenter Server is still running on the vSAN cluster but only compute-wise. I have a Synology NAS running as well which is providing an additional NFS datastore in order to have at least the VCSA (VM) storage outsourced from the cluster.
 
-However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn't write articles like this one, and [this](https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/) one and [this](https://rguske.github.io/posts/) one :smile:
+However, if a power outage happens nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn't write articles like this one, and [this](https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/) one and [this](https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/) one :smile:
 
 ## VMware-vPostgres Service won't start anymore
 
