@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Rebuilding from the Break - Restoring the VMware Avi Controller - Robert Guske</title><meta name="Description" content="rguske.github.io is a personal website which provides informational &amp; detailed content, based on Robert Guske´s gained experiences with solutions by VMware (primarily)."><meta property="og:title" content="Rebuilding from the Break - Restoring the VMware Avi Controller" />
+<meta property="og:description" content="Avi Portal - Bad Service Oh my! I wasn&rsquo;t expecting a three-part series as an outcome of my recent homelab crash, but here we are 😄 Check out my recent posts Database Resurrection - Reviving vPostgres DB on VMware vCenter Server and Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot on my made experiences with recovering the vCenter Server database.
+Actually, I thought I was &ldquo;out of the woods&rdquo; with fixiing the broken but unfortunately my Avi Controller was also affected from the outage." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-01T09:00:58+01:00" />
+<meta property="article:modified_time" content="2024-03-01T10:28:13+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
+
+<meta name="twitter:title" content="Rebuilding from the Break - Restoring the VMware Avi Controller"/>
+<meta name="twitter:description" content="Avi Portal - Bad Service Oh my! I wasn&rsquo;t expecting a three-part series as an outcome of my recent homelab crash, but here we are 😄 Check out my recent posts Database Resurrection - Reviving vPostgres DB on VMware vCenter Server and Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot on my made experiences with recovering the vCenter Server database.
+Actually, I thought I was &ldquo;out of the woods&rdquo; with fixiing the broken but unfortunately my Avi Controller was also affected from the outage."/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" /><link rel="prev" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Rebuilding from the Break - Restoring the VMware Avi Controller",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/rebuilding-from-the-break-restoring-the-vmware-avi-controller\/"
+        },"genre": "posts","keywords": "VMware, Avi, Tanzu, CloudNative, Kubernetes","wordcount":  2839 ,
+        "url": "https:\/\/rguske.github.io\/post\/rebuilding-from-the-break-restoring-the-vmware-avi-controller\/","datePublished": "2024-03-01T09:00:58+01:00","dateModified": "2024-03-01T10:28:13+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rebuilding from the Break - Restoring the VMware Avi Controller</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-03-01">2024-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2839 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/recover_avi_ctrl_cover.png"
+        data-srcset="/img/recover_avi_ctrl_cover.png, /img/recover_avi_ctrl_cover.png 1.5x, /img/recover_avi_ctrl_cover.png 2x"
+        data-sizes="auto"
+        alt="/img/recover_avi_ctrl_cover.png"
+        title="/img/recover_avi_ctrl_cover.png" /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#avi-portal---bad-service">Avi Portal - Bad Service</a></li>
+    <li><a href="#troubleshooting-the-system">Troubleshooting the System</a></li>
+    <li><a href="#backups-ftw">Backups FTW!</a></li>
+    <li><a href="#restoring-the-avi-controller">Restoring the Avi Controller</a>
+      <ul>
+        <li><a href="#backup-the-backup">Backup the Backup</a></li>
+        <li><a href="#the-restore-process">The Restore Process</a></li>
+        <li><a href="#deploying-a-fresh-instance">Deploying a fresh Instance</a></li>
+      </ul>
+    </li>
+    <li><a href="#back-on-the-job">Back on the Job</a></li>
+    <li><a href="#bonus-docker-run-avi-shell">Bonus: Docker run Avi Shell</a></li>
+    <li><a href="#bonus-powershell-and-bash-scripts-to-download-avi-backup-files">Bonus: Powershell and Bash Scripts to download Avi Backup Files</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="avi-portal---bad-service">Avi Portal - Bad Service</h2>
+<p>Oh my! I wasn&rsquo;t expecting a three-part series as an outcome of my recent homelab crash, but here we are 😄 Check out my recent posts <a href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" target="_blank" rel="noopener noreffer ">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</a> and <a href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" target="_blank" rel="noopener noreffer ">Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a> on my made experiences with recovering the vCenter Server database.</p>
+<p>Actually, I thought I was &ldquo;out of the woods&rdquo; with fixiing the broken but unfortunately my Avi Controller was also affected from the outage.</p>
+<p>When I tried accessing the portal, I got a <code>Bad service</code> error (see 👆).</p>
+<p>First troubleshooting actions like e.g. using a different browser, clearing the browser-cache and cookies, etc. led to nothing.</p>
+<p>Also &ldquo;<em>Have you turn it on and off again</em> 🤓&rdquo; didn&rsquo;t help.</p>
+<h2 id="troubleshooting-the-system">Troubleshooting the System</h2>
+<p>Consequently, I established a connection via <code>ssh</code> to the Avi controller directly and checked its condition on the system-level.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh admin@avi-ctrl.jarvis.lab
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Cloud Controller
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Networks software, Copyright <span class="o">(</span>C<span class="o">)</span> 2013-2017 by Avi Networks, Inc.
+</span></span><span class="line"><span class="cl">All rights reserved.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Management:   10.10.70.10/24      UP
+</span></span><span class="line"><span class="cl">Gateway:      10.10.70.1          UP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">admin@avi-ctrl.jarvis.lab<span class="err">&#39;</span>s password:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The copyrights to certain works contained in this software are</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># owned by other third parties and used and distributed under</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># license. Certain components of this software are licensed under</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># the GNU General Public License (GPL) version 2.0 or the GNU</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Lesser General Public License (LGPL) Version 2.1. A copy of each</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># such license is available at</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># http://www.opensource.org/licenses/gpl-2.0.php and</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># http://www.opensource.org/licenses/lgpl-2.1.php</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Last login: Tue Feb  <span class="m">6</span> 16:19:05 <span class="m">2024</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I ran <code>journalctl</code> to check the systemd journal and my terminal filled up with errors like:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ journalctl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">-- Logs begin at Tue 2024-02-06 18:18:43 UTC, end at Wed 2024-02-07 07:06:22 UTC. --
+</span></span><span class="line"><span class="cl">Feb <span class="m">06</span> 18:18:43 10-10-70-10 sshd<span class="o">[</span>902<span class="o">]</span>: error: connect_to localhost port 5025: failed.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><code>error: connect_to localhost port 5025: failed.</code></p>
+</blockquote>
+<p>The port number itself varied per entry. I looked it up on the internet but I couldn&rsquo;t find any useful information.</p>
+<p>Next, I checked with the system and service manager <code>systemd</code> the conditions of the units (services, etc.) which are supposed to be up and running but it was a dead-end too. Only one unit was in state <code>failed</code> but I putted it aside, since it was only the <code>motd-news.service</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl list-units --state<span class="o">=</span>failed
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  UNIT              LOAD   ACTIVE SUB    DESCRIPTION
+</span></span><span class="line"><span class="cl">● motd-news.service loaded failed failed Message of the Day
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">LOAD</span>   <span class="o">=</span> Reflects whether the unit definition was properly loaded.
+</span></span><span class="line"><span class="cl"><span class="nv">ACTIVE</span> <span class="o">=</span> The high-level unit activation state, i.e. generalization of SUB.
+</span></span><span class="line"><span class="cl"><span class="nv">SUB</span>    <span class="o">=</span> The low-level unit activation state, values depend on unit type.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">1</span> loaded units listed.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I continued digging around on the issue and read logs, checked on VMware&rsquo;s Knowledge Base (KB) and other internal resources but unfortunately in vain. I started realizing that I faced a low-level corruption of the system which can&rsquo;t be fixed in a simple fashion.</p>
+<p>My suspicion got even more supported when I tried accessing the <a href="https://avinetworks.com/docs/22.1/cli-guide/" target="_blank" rel="noopener noreffer ">Avi Shell</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ shell --address 10.10.70.10
+</span></span><span class="line"><span class="cl">Login: admin
+</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">The controller at <span class="o">[</span><span class="s1">&#39;https://10.10.70.10&#39;</span><span class="o">]</span> is not active. If this is not the controller address, please restart the shell using the --address flag to specify the address of the controller.
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s2">&#34;error&#34;</span>: <span class="s2">&#34;Bad service&#34;</span><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Bonus - Docker run Avi Shell<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">In section <a href="#bonus-docker-run-avi-shell" rel="">Bonus: Docker run Avi Shell</a> I&rsquo;m providing a brief guidance on how to run the Avi <code>shell</code> inside a container which you can easily start and use from basically any remote system which provides a container runtime.</div>
+        </div>
+    </div>
+<hr>
+<p>Problem is, that simply deploying a new instance a starting from scratch (w/o restoring data) isn&rsquo;t really an option, because other lab (business 😉) critical systems relying on the Avi controller - on the Load Balancer service.</p>
+<p>My Supervisor cluster (vSphere with Tanzu (TKGS)) for example:</p>
+<figure><a class="lightgallery" href="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png" title="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png" data-thumbnail="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png" data-sub-html="<h2>Figure I: Supervisor Service affected</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png"
+            data-srcset="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png 1.5x, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_down.png" />
+    </a><figcaption class="image-caption">Figure I: Supervisor Service affected</figcaption>
+    </figure>
+<h2 id="backups-ftw">Backups FTW!</h2>
+<p>Well, fixing the Avi controller manually on the system-level wasn&rsquo;t an option anymore, therefore <strong>restoring</strong> the &ldquo;Good&rdquo; from a backup was next on the list.</p>
+<p>By default, the Avi controller runs backups periodically and stores the files locally in <code>/var/lib/avi/backups</code>. You might remember that you&rsquo;ve configured the passphrase for the backups as one of the first steps when you&rsquo;ve deployed the controller.</p>
+<p>In a working instance, the configuration in terms of frequency, retention and remote backup location can be adjusted under <strong>Administration - Configuration Backup</strong>.</p>
+<figure><a class="lightgallery" href="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png" title="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png" data-thumbnail="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png" data-sub-html="<h2>Figure II: Avi Controller Backup Configuration</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png"
+            data-srcset="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png 1.5x, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_backup_conf.png" />
+    </a><figcaption class="image-caption">Figure II: Avi Controller Backup Configuration</figcaption>
+    </figure>
+<p>Per default, the backup is configured to run every 10 minutes and has a retention of 4 files. Best practice is of course to additionally store (copy) the backup-files on a remote server location using either <code>SCP</code> or <code>SFTP</code>.</p>
+<p>I recommend looking up the official documentation for more options on backing up the Avi configuraiton. The documentation contains great examples on how to configure the Avi backup using e.g. the <code>avi_shell</code>, the Avi API, REST API or even via Python.</p>
+<p>📖 <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-0CE79F00-ECC3-49AE-B5F5-004D1A835400.html" target="_blank" rel="noopener noreffer ">Backup and Restore of Avi Vantage Configuration</a>. Alternatively, check <code>origin</code> <a href="https://avinetworks.com/docs/22.1/backup-and-restore-of-avi-vantage-configuration/" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<h2 id="restoring-the-avi-controller">Restoring the Avi Controller</h2>
+<p>I had a plan!</p>
+<h3 id="backup-the-backup">Backup the Backup</h3>
+<p>My plan included the following:</p>
+<ol>
+<li>Copy the files to my computer to have a copy of an existing backup.</li>
+<li>Run the <code>restore_config.py</code> script with the <code>--flushdb</code> option as descriped in the docs - <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-B300E74E-F366-46D7-99C5-AB64961FCC48.html" target="_blank" rel="noopener noreffer ">Restore the VMware NSX Advanced Load Balancer Configuration</a>.</li>
+<li>Celebrating the restored instance.</li>
+</ol>
+<p><strong>Let&rsquo;s go!</strong></p>
+<p>Like I&rsquo;ve mentioned earlier, the backup-files are stored locally in <code>/var/lib/avi/backups</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ls -rtl
+</span></span><span class="line"><span class="cl">total <span class="m">10904</span>
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">3040701</span> Jan <span class="m">26</span> 11:00 backup_Default-Scheduler_20240126_110041.json
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">3044239</span> Feb  <span class="m">1</span> 11:00 backup_Default-Scheduler_20240201_110048.json
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">2536819</span> Feb  <span class="m">2</span> 11:00 backup_Default-Scheduler_20240202_110041.json
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">2533528</span> Feb  <span class="m">3</span> 11:00 backup_Default-Scheduler_20240203_110044.json
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Since I was still able to connect to my Avi controller via <code>ssh</code>, I was also able to remote-copy (<code>scp</code>) the files.</p>
+<p>I started packaging the files into a tar-ball:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo tar -czf /tmp/backup.tar *.json
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ls -rtl /tmp/backup.tar
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">18042880</span> Feb <span class="m">29</span> 10:28 /tmp/backup.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Next was &ldquo;downloading&rdquo; the files to my computer:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp admin@10.10.70.10:/tmp/backup.tar ~/Downloads/avibackup
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Cloud Controller
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Networks software, Copyright <span class="o">(</span>C<span class="o">)</span> 2013-2017 by Avi Networks, Inc.
+</span></span><span class="line"><span class="cl">All rights reserved.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Management:   10.10.70.10/24      UP
+</span></span><span class="line"><span class="cl">Gateway:      10.10.70.1          UP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">admin@10.10.70.10<span class="err">&#39;</span>s password:
+</span></span><span class="line"><span class="cl">backup.tar                                 100%   17MB  80.6MB/s   00:00
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>BONUS - Powershell and Bash Scripts available<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">I&rsquo;ve created a Powershell as well a Bash script to simplify the download of the backup-files from the Avi Controller. Both scripts can be copied from <a href="#bonus-powershell-and-bash-scripts-to-download-avi-backup-files" rel="">here</a>.</div>
+        </div>
+    </div>
+<h3 id="the-restore-process">The Restore Process</h3>
+<p>Now that I have a backup of my backup, I was brave enough to execute the <code>restore_config.py</code> script with the option <code>--flushdb</code>.</p>
+<p>BTW! If you don&rsquo;t use the option, the restore script will immediately end with the error:</p>
+<blockquote>
+<p><code>Restore config must be run on a clean controller. Please run with the --flushdb option or do a reboot clean to clear all config before restoring.</code></p>
+</blockquote>
+<p>Executing <code>restore_config.py</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo /opt/avi/scripts/restore_config.py --config /var/lib/avi/backups/backup_Default-Scheduler_20240203_110044.json --passphrase <span class="s1">&#39;VMware1!&#39;</span> --flushdb
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+</span></span><span class="line"><span class="cl">  File <span class="s2">&#34;/opt/avi/scripts/restore_config.py&#34;</span>, line 98, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">    user, <span class="nv">token</span> <span class="o">=</span> get_username_token<span class="o">()</span>
+</span></span><span class="line"><span class="cl">  File <span class="s2">&#34;/opt/avi/python/lib/avi/util/login.py&#34;</span>, line 136, in get_username_token
+</span></span><span class="line"><span class="cl">    <span class="nv">rsp</span> <span class="o">=</span> json.loads<span class="o">(</span>response.stdout<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  File <span class="s2">&#34;/usr/lib/python3.8/json/__init__.py&#34;</span>, line 357, in loads
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> _default_decoder.decode<span class="o">(</span>s<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  File <span class="s2">&#34;/usr/lib/python3.8/json/decoder.py&#34;</span>, line 340, in decode
+</span></span><span class="line"><span class="cl">    raise JSONDecodeError<span class="o">(</span><span class="s2">&#34;Extra data&#34;</span>, s, end<span class="o">)</span>
+</span></span><span class="line"><span class="cl">json.decoder.JSONDecodeError: Extra data: line <span class="m">1</span> column <span class="m">9</span> <span class="o">(</span>char 8<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">restore_config.py on node <span class="o">(</span>10-10-70-10<span class="o">)</span> crash -- Pls investigate further.
+</span></span><span class="line"><span class="cl">core_archive.20240207_152903.tar.gz not collected due to similar stack-trace se
+</span></span><span class="line"><span class="cl"><span class="nv">en</span><span class="o">=</span>restore_config.py.20240207_152728.stack_trace
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>🤔 Not what I expected!</p>
+<p>I tried it with other files once again but without success. I also tried executing the <code>flush_db.py</code> script alone:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:/opt/avi/scripts$ sudo ./flushdb.sh
+</span></span><span class="line"><span class="cl">rm: cannot remove <span class="s1">&#39;/etc/luna/cert/server/*&#39;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">rm: cannot remove <span class="s1">&#39;/etc/luna/cert/client/*&#39;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">debconf: unable to initialize frontend: Dialog
+</span></span><span class="line"><span class="cl">debconf: <span class="o">(</span>No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 76.<span class="o">)</span>
+</span></span><span class="line"><span class="cl">debconf: falling back to frontend: Readline
+</span></span><span class="line"><span class="cl">Creating SSH2 RSA key<span class="p">;</span> this may take some <span class="nb">time</span> ...
+</span></span><span class="line"><span class="cl"><span class="m">3072</span> SHA256:OZDiQ2SqCXaWR5+Dd1PLc95ekDY6Ix5el0JPAHoc9Ck root@10-10-70-10 <span class="o">(</span>RSA<span class="o">)</span>
+</span></span><span class="line"><span class="cl">rescue-ssh.target is a disabled or a static unit, not starting it.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>But it also failed.</p>
+<p>Well, if the <code>flush_db</code> option erases the controller config anyway, then deploying a fresh instance is an option too.</p>
+<h3 id="deploying-a-fresh-instance">Deploying a fresh Instance</h3>
+<p>So, I deployed a new instance of the Avi controller (OVA), <code>scp</code>ed the existing backup-files to the new controller, connected via <code>ssh</code> and executed the <code>restore_config.py</code> once again.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo /opt/avi/scripts/restore_config.py --config /tmp/backup_Default-Scheduler_20240203_110044.json --passphrase VMware1! --flushdb
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Restoring config will duplicate the environment of the config. If the environment is active elsewhere there will be conflicts.
+</span></span><span class="line"><span class="cl">                Please confirm <span class="k">if</span> you still want to <span class="k">continue</span> <span class="o">(</span>yes/no<span class="o">)</span><span class="nv">yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">========</span> Configuration Restored <span class="k">for</span> 1-node <span class="nv">cluster</span> <span class="o">========</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Note:</strong> The documentation is mentioning options like:</p>
+<ul>
+<li><code>--do_not_form_cluster</code></li>
+<li><code>--vip</code></li>
+<li><code>--followers</code></li>
+</ul>
+<p>These options are not supported in version 22.1.3 and onwards anymore.</p>
+<p>If you are running the Avi controller in cluster-mode (three-nodes), roll out the other two nodes as well, configure the same IP-addresses as you have used before and simply add them to the Controller Cluster using the gui <strong>Administration -&gt; Controller -&gt; Nodes -&gt; Edit</strong>.</p>
+<p>It is not intended to execute the restore process on the <code>follower</code> nodes!. They&rsquo;ll get the configuration mirrored from the <code>leader</code>.</p>
+<h2 id="back-on-the-job">Back on the Job</h2>
+<p>Restoring the Avi controller is really a simple and effective procedure. Ultimately, troubleshooting my broken instance costed me more time than simply restoring a new one.</p>
+<p>But we won&rsquo;t be engineers if we wouldn&rsquo;t try to fix the broken, right? On the bright sight, additionally to this article, two scripts and a way how to run the <code>avi_shell</code> in a container on your computer are the outcome.</p>
+<p>Here we go!</p>
+<figure><a class="lightgallery" href="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png" title="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png" data-thumbnail="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png" data-sub-html="<h2>Figure III: vSphere with Tanzu Supervisor Service is back in healthy condition</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png"
+            data-srcset="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png 1.5x, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_sv_healthy.png" />
+    </a><figcaption class="image-caption">Figure III: vSphere with Tanzu Supervisor Service is back in healthy condition</figcaption>
+    </figure>
+<h2 id="bonus-docker-run-avi-shell">Bonus: Docker run Avi Shell</h2>
+<p>In the <a href="#troubleshooting-the-system" rel="">first section</a> of my article, I mentioned that I wasn&rsquo;t able to open the Avi Shell from within the controller. When I entered the command <code>shell</code> in order to start it, I received the error:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ shell
+</span></span><span class="line"><span class="cl">Login: admin
+</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">The controller at <span class="o">[</span><span class="s1">&#39;https://10.10.70.10&#39;</span><span class="o">]</span> is not active. If this is not the controller address, please restart the shell using the --address flag to specify the address of the controller.
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s2">&#34;error&#34;</span>: <span class="s2">&#34;Bad service&#34;</span><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I also tried it with the option <code>--address</code> but unfortunately without changing the result. Interesting is, that when entering <code>shell</code> on the controller, a container will spin up in the background and will provide the <code>shell</code>.</p>
+<p>This got me thinking. It can come in handy if you can quickly make a shell available in a container without having to install the <code>shell</code> itself on a system.</p>
+<p>Therefore, here&rsquo;s a way to run a container on your system which will host the Avi <code>shell</code>:</p>
+<ul>
+<li>Identify the container image on the Avi controller using <code>docker images</code>:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo docker images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> admin:
+</span></span><span class="line"><span class="cl">REPOSITORY                  TAG           IMAGE ID       CREATED        SIZE
+</span></span><span class="line"><span class="cl">avinetworks/cli             22.1.5.9093   8fd02452dac3   <span class="m">4</span> months ago   484MB
+</span></span><span class="line"><span class="cl">avinetworks/controlscript   22.1.5.9093   ecc7d8244a83   <span class="m">7</span> months ago   72.8MB
+</span></span><span class="line"><span class="cl">avinetworks/grafana         influxdb3     4a4cc4a8f5e6   <span class="m">3</span> years ago    159MB
+</span></span><span class="line"><span class="cl">avinetworks/grafana         latest        38e8ff91a07e   <span class="m">4</span> years ago    246MB
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Package the container image into a tar-ball using <code>docker save</code>:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo docker save avinetworks/cli -o /tmp/avinetworks-cli.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">admin@10-10-70-10:~$ ls -l /tmp/avinetworks-cli.tar
+</span></span><span class="line"><span class="cl">-rw------- <span class="m">1</span> root root <span class="m">500762624</span> Feb <span class="m">28</span> 14:50 /tmp/avinetworks-cli.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Give the Avi default user <code>admin</code> owner permissions to the tar-ball:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo chown admin /tmp/avinetworks-cli.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">admin@10-10-70-10:~/avicli-image$ ls -l
+</span></span><span class="line"><span class="cl">total <span class="m">489032</span>
+</span></span><span class="line"><span class="cl">-rw------- <span class="m">1</span> admin root <span class="m">500762624</span> Feb <span class="m">28</span> 14:45 avinetworks-cli.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Download the tar-ball from the Avi controller:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp admin@10.10.70.10:/tmp/avinetworks-cli.tar ~/Downloads/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Cloud Controller
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Avi Networks software, Copyright <span class="o">(</span>C<span class="o">)</span> 2013-2017 by Avi Networks, Inc.
+</span></span><span class="line"><span class="cl">All rights reserved.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Management:   10.10.70.10/24      UP
+</span></span><span class="line"><span class="cl">Gateway:      10.10.70.1          UP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">admin@10.10.70.10<span class="err">&#39;</span>s password:
+</span></span><span class="line"><span class="cl">avinetworks-cli.                    100%  478MB  35.8MB/s   00:13
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Import the container image to your system using <code>docker load</code>:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker load -i avinetworks-cli.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Check its availability:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker images <span class="p">|</span> grep avinetworks
+</span></span><span class="line"><span class="cl">avinetworks/cli    22.1.5.9093         8fd02452dac3   <span class="m">4</span> months ago    484MB
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Run the Avi <code>shell</code> in a container and directly connect to your Avi controller:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -it --rm --name avishell  avinetworks/cli:22.1.5.9093 /usr/local/bin/avi_shell --address 10.10.70.10 --user admin --password <span class="s1">&#39;VMware1!&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show backup
+</span></span><span class="line"><span class="cl">+---------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> UUID                                        <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> backup-e97d3c3e-ade9-4249-8a94-4e77d358d74d <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> backup-36bdd91c-b952-4644-82eb-1138803a1e04 <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> backup-329c1194-8073-4acb-82d0-41b976e60668 <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> backup-e14992c7-b2e1-4ff0-9fb3-ca760bc60203 <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------------------------+
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show backupconfiguration Backup-Configuration
+</span></span><span class="line"><span class="cl">+-------------------------------+----------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> Field                         <span class="p">|</span> Value                                                    <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+-------------------------------+----------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> uuid                          <span class="p">|</span> backupconfiguration-34c64416-83d8-4f56-9775-f66489fe80ce <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> name                          <span class="p">|</span> Backup-Configuration                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> save_local                    <span class="p">|</span> True                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> maximum_backups_stored        <span class="p">|</span> <span class="m">4</span>                                                        <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> backup_passphrase             <span class="p">|</span> &lt;sensitive&gt;                                              <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> remote_file_transfer_protocol <span class="p">|</span> SCP                                                      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> tenant_ref                    <span class="p">|</span> admin                                                    <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+-------------------------------+----------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The Avi <code>shell</code> can be very usefull when you&rsquo;d like to obtain specific information or if you&rsquo;d like to make adjustments on the existing configuration to the Avi controller without using the GUI.</p>
+<p>Check out the <a href="https://avinetworks.com/docs/latest/cli-top-level-commands/" target="_blank" rel="noopener noreffer ">CLI Top-Level Commands</a>.</p>
+<p><strong>Examples</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show virtualservice
+</span></span><span class="line"><span class="cl">+--------------------------------------------------------+-------------+-------------+-----------+---------------+------------+----------------+--------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> Name                                                   <span class="p">|</span> IP Address  <span class="p">|</span> IP6 Address <span class="p">|</span> Services  <span class="p">|</span> Cloud         <span class="p">|</span> Oper State <span class="p">|</span> Type           <span class="p">|</span> Parent <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+--------------------------------------------------------+-------------+-------------+-----------+---------------+------------+----------------+--------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--ns-mk1-rguske-mk1-control-plane-service  <span class="p">|</span> 10.10.70.56 <span class="p">|</span> -           <span class="p">|</span> <span class="m">6443</span>      <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--svc-contour-domain-c1015-envoy           <span class="p">|</span> 10.10.70.54 <span class="p">|</span> -           <span class="p">|</span> 80,443    <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--kube-system-kube-apiserver-lb-svc        <span class="p">|</span> 10.10.70.51 <span class="p">|</span> -           <span class="p">|</span> 443,6443  <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--vmware-system-csi-vsphere-csi-controller <span class="p">|</span> 10.10.70.50 <span class="p">|</span> -           <span class="p">|</span> 2112,2113 <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--ns-mk2-rguske-mk2-control-plane-service  <span class="p">|</span> 10.10.70.55 <span class="p">|</span> -           <span class="p">|</span> <span class="m">6443</span>      <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> domain-c1015--ns-mk2-rguske-mk2-431dce4740524bc9173aa  <span class="p">|</span> 10.10.70.57 <span class="p">|</span> -           <span class="p">|</span> 9000,9001 <span class="p">|</span> Default-Cloud <span class="p">|</span> OPER_UP    <span class="p">|</span> VS_TYPE_NORMAL <span class="p">|</span> -      <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+--------------------------------------------------------+-------------+-------------+-----------+---------------+------------+----------------+--------+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show placement vip detail
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> Field                     <span class="p">|</span> Value                                                 <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip                       <span class="p">|</span> 10.10.70.55                                           <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> primary_se_info<span class="o">[</span>1<span class="o">]</span>        <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-02e46378-8271-478a-9264-c3ed893562a6               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-ljvci                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> secondary_se_info<span class="o">[</span>1<span class="o">]</span>      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-5b8f5b8b-39b3-45f0-8ec9-39c3a901eb2f               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-tumzb                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> con_info<span class="o">[</span>1<span class="o">]</span>               <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_uuid                <span class="p">|</span> virtualservice-9dfc3721-0fb2-4e93-918b-4df3f40ea991#0 <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_name                <span class="p">|</span> domain-c1015--ns-mk2-rguske-mk2-control-plane-service <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip6                      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> uuid                      <span class="p">|</span> vsvip-badee2b7-c908-40bb-998b-295d23be77c9#0          <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> Field                     <span class="p">|</span> Value                                                 <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip                       <span class="p">|</span> 10.10.70.56                                           <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> primary_se_info<span class="o">[</span>1<span class="o">]</span>        <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-5b8f5b8b-39b3-45f0-8ec9-39c3a901eb2f               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-tumzb                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> secondary_se_info<span class="o">[</span>1<span class="o">]</span>      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-02e46378-8271-478a-9264-c3ed893562a6               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-ljvci                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> con_info<span class="o">[</span>1<span class="o">]</span>               <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_uuid                <span class="p">|</span> virtualservice-2f08dfac-bb3d-4e5f-b928-5b23f5f97db0#0 <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_name                <span class="p">|</span> domain-c1015--ns-mk1-rguske-mk1-control-plane-service <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip6                      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> uuid                      <span class="p">|</span> vsvip-e5e99c90-1402-4425-b495-6e4ef56ae9cd#0          <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> Field                     <span class="p">|</span> Value                                                 <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip                       <span class="p">|</span> 10.10.70.57                                           <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> primary_se_info<span class="o">[</span>1<span class="o">]</span>        <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-02e46378-8271-478a-9264-c3ed893562a6               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-ljvci                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> secondary_se_info<span class="o">[</span>1<span class="o">]</span>      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_uuid                 <span class="p">|</span> se-5b8f5b8b-39b3-45f0-8ec9-39c3a901eb2f               <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   se_name                 <span class="p">|</span> avi-se-tumzb                                          <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   num_consumers_using_vip <span class="p">|</span> <span class="m">1</span>                                                     <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> con_info<span class="o">[</span>1<span class="o">]</span>               <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_uuid                <span class="p">|</span> virtualservice-dae117d8-eaad-4ebf-86b7-d99c6f2ecc53#0 <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   con_name                <span class="p">|</span> domain-c1015--ns-mk2-rguske-mk2-431dce4740524bc9173aa <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> vip6                      <span class="p">|</span>                                                       <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span> uuid                      <span class="p">|</span> vsvip-e86cdd4e-bde1-4222-9384-eb85dba5d8ec#0          <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+---------------------------+-------------------------------------------------------+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="bonus-powershell-and-bash-scripts-to-download-avi-backup-files">Bonus: Powershell and Bash Scripts to download Avi Backup Files</h2>
+<p>Powershell (with <code>pscp.exe</code>):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Define the variables</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$remoteServer</span> <span class="p">=</span> <span class="s2">&#34;admin@10.10.70.10&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$remotePath</span> <span class="p">=</span> <span class="s2">&#34;/var/lib/avi/backups/*&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$baseLocalPath</span> <span class="p">=</span> <span class="s2">&#34;C:\avibackups&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Download pscp from: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$pscpPath</span> <span class="p">=</span> <span class="s2">&#34;C:\avibackups\pscp.exe&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Generate a timestamp</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$timestamp</span> <span class="p">=</span> <span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s2">&#34;yyyy-MM-dd_HH-mm-ss&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Create a new directory with the timestamp</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$newLocalPath</span> <span class="p">=</span> <span class="nb">Join-Path</span> <span class="n">-Path</span> <span class="p">${</span><span class="n">baseLocalPath</span><span class="p">}</span> <span class="n">-ChildPath</span> <span class="p">${</span><span class="n">timestamp</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="p">${</span><span class="n">newLocalPath</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Optional: Add your SSH key path if you&#39;re using one</span>
+</span></span><span class="line"><span class="cl"><span class="c"># $sshKeyPath = &#34;C:\path\to\your\private_key.ppk&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Download files from remote server into the newly created directory using $sshKeyPath</span>
+</span></span><span class="line"><span class="cl"><span class="c"># &amp; $pscpPath -i ${sshKeyPath} ${remoteServer}:${remotePath} ${newLocalPath}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Download files from remote server into the newly created directory</span>
+</span></span><span class="line"><span class="cl"><span class="p">&amp;</span> <span class="nv">$pscpPath</span> <span class="p">${</span><span class="n">remoteServer</span><span class="p">}</span><span class="err">:</span><span class="p">${</span><span class="n">remotePath</span><span class="p">}</span> <span class="p">${</span><span class="n">newLocalPath</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png" title="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png" data-thumbnail="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png" data-sub-html="<h2>Figure IV: Powershell Avi Config-files Backup</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png"
+            data-srcset="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png 1.5x, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_ps_backup.png" />
+    </a><figcaption class="image-caption">Figure IV: Powershell Avi Config-files Backup</figcaption>
+    </figure>
+<p>Bash:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -euo pipefail
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define variables</span>
+</span></span><span class="line"><span class="cl"><span class="nv">REMOTE_SERVER</span><span class="o">=</span><span class="s2">&#34;admin@10.10.70.10&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">REMOTE_PATH</span><span class="o">=</span><span class="s2">&#34;/var/lib/avi/backups/*&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">BASE_LOCAL_PATH</span><span class="o">=</span><span class="s2">&#34;/Users/rguske/Downloads/avibackup&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate a timestamp</span>
+</span></span><span class="line"><span class="cl"><span class="nv">TIMESTAMP</span><span class="o">=</span><span class="k">$(</span>date +<span class="s2">&#34;%Y-%m-%d_%H-%M-%S&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create a new directory with the timestamp</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NEW_LOCAL_PATH</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$BASE_LOCAL_PATH</span><span class="s2">/</span><span class="nv">$TIMESTAMP</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">mkdir -p <span class="s2">&#34;</span><span class="nv">$NEW_LOCAL_PATH</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Download files from the remote server into the newly created directory</span>
+</span></span><span class="line"><span class="cl">scp -r <span class="s2">&#34;</span><span class="si">${</span><span class="nv">REMOTE_SERVER</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">REMOTE_PATH</span><span class="si">}</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">NEW_LOCAL_PATH</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><a class="lightgallery" href="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png" title="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png" data-thumbnail="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png" data-sub-html="<h2>Figure V: Bash Avi Config-files Backup</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png"
+            data-srcset="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png 1.5x, /img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202402_recover_avi_ctrl/202402_recover_avi_ctrl_bash_backup.png" />
+    </a><figcaption class="image-caption">Figure V: Bash Avi Config-files Backup</figcaption>
+    </figure>
+<p><strong>Thanks for reading my article</strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-03-01&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/db9f1ff475543d3ecbf10c2ed2713348fb9efd84" target="_blank" title="commit by Robert Guske(rguske@vmware.com) db9f1ff475543d3ecbf10c2ed2713348fb9efd84: finalized avo restore post">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>db9f1ff</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-via="vmw_rguske" data-hashtags="VMware,Avi,Tanzu,CloudNative,Kubernetes"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-description=""><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-description=""><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/avi/">Avi</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" class="prev" rel="prev" title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a></div>
+</div>
+<div id="comments"><div id="utterances" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+</html>

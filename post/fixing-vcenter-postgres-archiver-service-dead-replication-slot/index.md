@@ -9,7 +9,7 @@ Is this actually true?
 
 Actually NO! Because if I would have configured my vSphere environment correctly, [vCenter Server file-based backup](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-installation/GUID-3EAED005-B0A3-40CF-B40D-85AD247D7EA4.html) were configured properly and I wouldn't have had to worry about the consequences in the end.
 
-But, I **didn't configured backup** and therefore, I wanted to do it the right way now.
+But, I **haven't configured backup** and therefore, I wanted to do it the right way now.
 
 ## VMware Postgres Archiver Service stopped
 
