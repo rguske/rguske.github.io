@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped - Robert Guske</title><meta name="Description" content="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless."><meta property="og:title" content="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped" />
+<meta property="og:description" content="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" /><meta property="og:image" content="http://localhost:1313/img/avatar2.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-05T08:36:21+02:00" />
+<meta property="article:modified_time" content="2024-02-07T19:43:00+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://localhost:1313/img/avatar2.png" /><meta name="twitter:title" content="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped"/>
+<meta name="twitter:description" content="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless."/>
+<meta name="twitter:site" content="@vmw_rguske"/>
+<meta name="application-name" content="Robert Guske">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" /><link rel="prev" href="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="next" href="http://localhost:1313/post/quickly-recover-a-broken-avi-controller/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/post\/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped\/"
+        },"genre": "posts","keywords": "Knative, VMware, Tanzu, CloudNative, Kubernetes, Serverless","wordcount":  2784 ,
+        "url": "http:\/\/localhost:1313\/post\/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped\/","datePublished": "2023-10-05T08:36:21+02:00","dateModified": "2024-02-07T19:43:00+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": "Robert Guske"},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I'll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I'll try to demonstrate why it's fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites" rel="noopener noreffer" target="_blank"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Robert Guske"><span id="id-3" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites" rel="noopener noreffer" target="_blank">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content always-active" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/serverless/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Serverless</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-10-05">2023-10-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2784 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/cnr_knative_cover_2.png"
+        data-srcset="/img/cnr_knative_cover_2.png, /img/cnr_knative_cover_2.png 1.5x, /img/cnr_knative_cover_2.png 2x"
+        data-sizes="auto"
+        alt="/img/cnr_knative_cover_2.png"
+        title="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#knative-serving">Knative Serving</a></li>
+    <li><a href="#not-all-services-are-the-same">Not all Services are the Same</a></li>
+    <li><a href="#a-practical-comparison">A Practical Comparison</a>
+      <ul>
+        <li><a href="#how-it-is-with-kubernetes">How it is with Kubernetes</a></li>
+        <li><a href="#knative---how-easy-it-can-be-">Knative - How easy it can be 🤯</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="knative-serving">Knative Serving</h2>
+<p>Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern <code>HTTP</code> workloads. In this second part of my series on Knative, I&rsquo;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&rsquo;ll demonstrate why it&rsquo;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless.</p>
+<p>Whether you&rsquo;re a seasoned Kubernetes veteran or a newcomer looking to explore serverless options, there&rsquo;s something in Knative Serving for everyone.</p>
+<p>In the context of Knative, serverless implies Knative&rsquo;s ability to abstracts away much of the underlying infrastructure complexity, allowing relevant teams to focus on writing code and defining the desired state of their  applications.</p>
+<p>Key capabilities of Serving are:</p>
+<ul>
+<li>Serverless experience for <code>HTTP</code> workloads</li>
+<li>Scale-to-zero, request-driven compute runtime</li>
+<li>Point-in-time snapshot of your code and configuration (<code>Revision</code>)</li>
+<li>Traffic routing amongst <code>revisions</code></li>
+<li>Supports deployment patterns like Blue/Green, Canary and Progressive</li>
+<li>Automatic DNS and TLS handling</li>
+</ul>
+<h2 id="not-all-services-are-the-same">Not all Services are the Same</h2>
+<p>In Kubernetes, a <a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener noreffer ">Service</a> is a fundamental resource used to define a network service and provide network connectivity to one or multiple pods. Kubernetes Services are essential for ensuring reliable communication and load balancing between different parts of your application within a cluster.</p>
+<p>In Knative, a <a href="https://github.com/knative/specs/blob/main/specs/serving/knative-api-specification-1.0.md#service" target="_blank" rel="noopener noreffer ">Knative Service</a> (<code>ksvc</code>) represents a part of your application or function. It&rsquo;s like a magic box for your applications that takes care of the technical details of your application, making it easier to run and manage it in a flexible and efficient way. When a <code>ksvc</code> gets created, it creates several other resources named <code>configuration</code>, a <code>revision</code> and <code>route</code>.</p>
+<figure><a class="lightgallery" href="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png" title="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png" data-thumbnail="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png" data-sub-html="<h2>Figure I: Knative Service Construct</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png"
+            data-srcset="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png, /img/posts/202310_knative_part_2/202310_knative_part_2_service.png 1.5x, /img/posts/202310_knative_part_2/202310_knative_part_2_service.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202310_knative_part_2/202310_knative_part_2_service.png" />
+    </a><figcaption class="image-caption">Figure I: Knative Service Construct</figcaption>
+    </figure>
+<p><em>Source: <a href="https://knative.dev/docs/serving/#knative-serving" target="_blank" rel="noopener noreffer ">Knative Docs - Serving</a></em></p>
+<p>Knative Serving custom resources (CRs) in Kubernetes are:</p>
+<ul>
+<li><code>services.serving.knative.dev</code> (<code>ksvc</code>)</li>
+<li><code>configurations.serving.knative.dev</code> (<code>config</code>)</li>
+<li><code>revisions.serving.knative.dev</code> (<code>rev</code>)</li>
+<li><code>routes.serving.knative.dev</code> (<code>rt</code>)</li>
+</ul>
+<h2 id="a-practical-comparison">A Practical Comparison</h2>
+<p>Now that you know what&rsquo;s inside the magic box, what makes it so flexible and efficient? And what are the responsibilities of the mentioned CRs.</p>
+<p>Let&rsquo;s take a closer look using a practical example. We want to deploy a really basic webserver application to Kubernetes <strong>WITHOUT</strong> using Knative. The webserver should be accessible on Layer-7 via <code>HTTPS</code>, which requires an Ingress resource and a configured <code>TLS</code> certificate. Furthermore, we want the Kubernetes <a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/" target="_blank" rel="noopener noreffer ">Horizontal Pod Autoscaler</a> to scale our application based on compute utilization.</p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Out of Scope<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">Custom metrics, DNS, traffic splitting and rollout-management.</div>
+        </div>
+    </div>
+<h3 id="how-it-is-with-kubernetes">How it is with Kubernetes</h3>
+<p>The first resource we&rsquo;re going to create the deployment itself which includes metadata like <code>name</code>, <code>annotations</code> and <code>labels</code> as well as certain configurations like <code>image</code> reference, # of <code>replicas</code> as well as <code>resource</code> specs.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">deployment.kubernetes.io/revision</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">revisionHistoryLimit</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">IfNotPresent</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">250Mi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>In order to expose our app on the network, we will create an ingress resource. This requires an existing Ingress Controller like project <a href="https://projectcontour.io" target="_blank" rel="noopener noreffer ">Contour</a>. Before this resource gets created, we have to make sure that incoming network traffic will automatically be distributed among the pods associated with the service.</p>
+<p>Therefore, a Kubernetes <code>service</code> type <code>ClusterIP</code> has to be created first.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-svc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>For the sake of this example, I could leave TLS a side and just go with <code>HTTP</code> only, so no SSL/TLS termination at all. But I&rsquo;d like to stay on the bright path. We need a <code>TLS</code> secret to secure communication over <code>HTTPS</code>. These secrets typically contain two pieces of data:</p>
+<ul>
+<li><code>tls.crt</code>: This is the TLS certificate itself, including the server&rsquo;s public key.</li>
+<li><code>tls.key</code>: This is the private key associated with the TLS certificate.</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">kubernetes.io/tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls.crt</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;base64 encoded data&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls.key</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;base64 encoded data&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>The ingress object is a resource used to configure external access to services within a Kubernetes cluster. It serves as a way to manage and control <code>HTTP</code> and <code>HTTPS</code> traffic into the cluster. Besides SSL/TLS termination, it also provides features like routing and load balancing.</p>
+<p>When configuring <code>HTTPS</code> for ingress resources, you can reference the <code>TLS</code> secret using the <code>tls.secretName</code> field. This allows you to specify which <code>TLS</code> certificate to use for a particular host or domain.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">webapp.cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">webapp.cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l">Prefix</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">service</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-svc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>Last but not least, automatical scaling (horizontal) of our application. This is done by using the Kubernetes Horizontal Pod Autoscaler (HPA). In my provided configuration, the HPA will scale the app to a max of 3 replicas when an average CPU utilization of 2% is present for 15 seconds (default).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">autoscaling/v2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">HorizontalPodAutoscaler</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-hpa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">scaleTargetRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">minReplicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">maxReplicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">metrics</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Resource</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cpu</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">target</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Utilization</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">averageUtilization</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you successfully deployed all of the above, you should see the following resources within the namespace <code>myapp</code> are showing up.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n myapp get po,deploy,svc,secret,ingress,hpa
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                 READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod/knative-webapp-f75d4b9f6-2284j   1/1     Running   <span class="m">0</span>          59m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">deployment.apps/knative-webapp   1/1     <span class="m">1</span>            <span class="m">1</span>           59m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>   AGE
+</span></span><span class="line"><span class="cl">service/knative-webapp-svc   ClusterIP   10.96.131.102   &lt;none&gt;        80/TCP    58m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                TYPE                DATA   AGE
+</span></span><span class="line"><span class="cl">secret/knative-webapp-tls                           kubernetes.io/tls   <span class="m">2</span>      47m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                               CLASS    HOSTS                                       ADDRESS     PORTS     AGE
+</span></span><span class="line"><span class="cl">ingress.networking.k8s.io/knative-webapp-ingress   &lt;none&gt;   webapp.cpod-nsxv8.az-stc.cloud-garage.net   10.15.8.7   80, <span class="m">443</span>   48m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                     REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+</span></span><span class="line"><span class="cl">horizontalpodautoscaler.autoscaling/knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          46m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ultimately, your simple webserver should be available via the configured url. For me it&rsquo;s <code>https://webapp.cpod-nsxv8.az-stc.cloud-garage.net/</code></p>
+<p>Via <strong>terminal</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -kI https://webapp.cpod-nsxv8.az-stc.cloud-garage.net
+</span></span><span class="line"><span class="cl">HTTP/2 <span class="m">200</span>
+</span></span><span class="line"><span class="cl">server: envoy
+</span></span><span class="line"><span class="cl">date: Mon, <span class="m">09</span> Oct <span class="m">2023</span> 13:37:20 GMT
+</span></span><span class="line"><span class="cl">content-type: text/html
+</span></span><span class="line"><span class="cl">content-length: <span class="m">1905</span>
+</span></span><span class="line"><span class="cl">last-modified: Fri, <span class="m">06</span> Oct <span class="m">2023</span> 07:06:18 GMT
+</span></span><span class="line"><span class="cl">etag: <span class="s2">&#34;651fb1ea-771&#34;</span>
+</span></span><span class="line"><span class="cl">accept-ranges: bytes
+</span></span><span class="line"><span class="cl">x-envoy-upstream-service-time: <span class="m">26</span>
+</span></span><span class="line"><span class="cl">vary: Accept-Encoding
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Via <strong>browser</strong>:</p>
+<figure><a class="lightgallery" href="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png" title="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png" data-thumbnail="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png" data-sub-html="<h2>Figure II: Simple Webserver Deployment on Kubernetes</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png"
+            data-srcset="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png, /img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png 1.5x, /img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202310_knative_part_2/202310_knative_part_2_k8s_kn_webapp.png" />
+    </a><figcaption class="image-caption">Figure II: Simple Webserver Deployment on Kubernetes</figcaption>
+    </figure>
+<p>Reachability is validated but automatical scaling not yet. Let&rsquo;s put some load on it. The following example from the Kubernetes documentation can be greatly used:</p>
+<p><code>kubectl -n myapp run -i --tty load-generator --rm --image=projects.registry.vmware.com/tanzu_ese_poc/busybox:latest --restart=Never -- /bin/sh -c &quot;while sleep 0.01; do wget -q -O- http://webapp.cpod-nsxv8.az-stc.cloud-garage.net; done&quot;</code></p>
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>HTTP used<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">To avoid a TLS certificate validation error from the busybox pod, we&rsquo;ll use <code>HTTP</code> for the sake of simplicity.</div>
+        </div>
+    </div>
+<p>If you start watching (<code>-w</code>) what&rsquo;s going on in the <code>myapp</code> namespace, you&rsquo;ll see your workload scaling up and down automatically:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n myapp get events -w
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">LAST SEEN   TYPE     REASON              OBJECT                                MESSAGE
+</span></span><span class="line"><span class="cl">0s          Normal    Started             pod/load-generator                    Started container load-generator
+</span></span><span class="line"><span class="cl">0s          Normal    SuccessfulRescale   horizontalpodautoscaler/knative-webapp-hpa   New size: 2<span class="p">;</span> reason: cpu resource utilization <span class="o">(</span>percentage of request<span class="o">)</span> above target
+</span></span><span class="line"><span class="cl">0s          Normal    ScalingReplicaSet   deployment/knative-webapp                    Scaled up replica <span class="nb">set</span> knative-webapp-f75d4b9f6 to <span class="m">2</span> from <span class="m">1</span>
+</span></span><span class="line"><span class="cl">0s          Normal    SuccessfulCreate    replicaset/knative-webapp-f75d4b9f6          Created pod: knative-webapp-f75d4b9f6-vkrl5
+</span></span><span class="line"><span class="cl">0s          Normal    Scheduled           pod/knative-webapp-f75d4b9f6-vkrl5           Successfully assigned myapp/knative-webapp-f75d4b9f6-vkrl5 to rguske-cnr-1-md-0-9z52m-5794dccc77-nnm8c
+</span></span><span class="line"><span class="cl">0s          Normal    Pulling             pod/knative-webapp-f75d4b9f6-vkrl5           Pulling image <span class="s2">&#34;projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1&#34;</span>
+</span></span><span class="line"><span class="cl">1s          Normal    Pulled              pod/knative-webapp-f75d4b9f6-vkrl5           Successfully pulled image <span class="s2">&#34;projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1&#34;</span> in 11.17134876s <span class="o">(</span>11.171369522s including waiting<span class="o">)</span>
+</span></span><span class="line"><span class="cl">0s          Normal    Created             pod/knative-webapp-f75d4b9f6-vkrl5           Created container knative-webapp
+</span></span><span class="line"><span class="cl">0s          Normal    Started             pod/knative-webapp-f75d4b9f6-vkrl5           Started container knative-webapp
+</span></span><span class="line"><span class="cl">0s          Normal    SuccessfulRescale   horizontalpodautoscaler/knative-webapp-hpa   New size: 1<span class="p">;</span> reason: All metrics below target
+</span></span><span class="line"><span class="cl">1s          Normal    ScalingReplicaSet   deployment/knative-webapp                    Scaled down replica <span class="nb">set</span> knative-webapp-f75d4b9f6 to <span class="m">1</span> from <span class="m">2</span>
+</span></span><span class="line"><span class="cl">0s          Normal    SuccessfulDelete    replicaset/knative-webapp-f75d4b9f6          Deleted pod: knative-webapp-f75d4b9f6-vkrl5
+</span></span><span class="line"><span class="cl">0s          Normal    Killing             pod/knative-webapp-f75d4b9f6-vkrl5           Stopping container knative-webapp
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>It&rsquo;s pretty nice to follow the events and to see how the emerging load is dealt with.</p>
+<p>The operations can also be followed by requesting the <code>hpa</code> resource directly:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n myapp get hpa knative-webapp-hpa --watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                 REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          26m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   1%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          33m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   2%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          34m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   2%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          34m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   1%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          34m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   1%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          35m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   4%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">1</span>          35m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   2%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          35m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   1%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          36m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          36m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          37m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          37m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          37m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   1%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          38m
+</span></span><span class="line"><span class="cl">knative-webapp-hpa   Deployment/knative-webapp   0%/2%     <span class="m">1</span>         <span class="m">3</span>         <span class="m">2</span>          38m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Multiple load-generator instances<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">If you loose patience and don&rsquo;t want to wait until the app gets scaled, simply run multiple busybox instances (<code>load-generator</code>, <code>load-generator-2</code>&hellip;).</div>
+        </div>
+    </div>
+<p>In summary one can say, it takes a lot of <code>yaml</code> to provide a small web service with required extras to be considered &ldquo;production-ready&rdquo;.</p>
+<h3 id="knative---how-easy-it-can-be-">Knative - How easy it can be 🤯</h3>
+<p>Without any further ado, this is what you have to <code>apply</code> when using Knative:</p>
+<p><strong>Declaratively:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp create -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>And it is even less <strong>imperatively</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1">### Creating Knative Service using kn cli</span>
+</span></span><span class="line"><span class="cl">kn -n myapp service create knative-webapp --image projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1 --port <span class="m">80</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Warning: Kubernetes default value is insecure, Knative may default this to secure in a future release: spec.template.spec.containers<span class="o">[</span>0<span class="o">]</span>.securityContext.allowPrivilegeEscalation, spec.template.spec.containers<span class="o">[</span>0<span class="o">]</span>.securityContext.capabilities, spec.template.spec.containers<span class="o">[</span>0<span class="o">]</span>.securityContext.runAsNonRoot, spec.template.spec.containers<span class="o">[</span>0<span class="o">]</span>.securityContext.seccompProfile
+</span></span><span class="line"><span class="cl">Creating service <span class="s1">&#39;knative-webapp&#39;</span> in namespace <span class="s1">&#39;myapp&#39;</span>:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  0.699s The Route is still working to reflect the latest desired specification.
+</span></span><span class="line"><span class="cl">  0.876s Configuration <span class="s2">&#34;knative-webapp&#34;</span> is waiting <span class="k">for</span> a Revision to become ready.
+</span></span><span class="line"><span class="cl"> 26.558s ...
+</span></span><span class="line"><span class="cl"> 27.252s Ingress has not yet been reconciled.
+</span></span><span class="line"><span class="cl"> 27.445s Waiting <span class="k">for</span> Envoys to receive Endpoints data.
+</span></span><span class="line"><span class="cl"> 28.350s Waiting <span class="k">for</span> load balancer to be ready
+</span></span><span class="line"><span class="cl"> 29.078s Certificate route-6a3f0955-7515-421d-9d01-0a595b510839 is not ready.
+</span></span><span class="line"><span class="cl"> 29.690s Ingress has not yet been reconciled.
+</span></span><span class="line"><span class="cl"> 29.961s Waiting <span class="k">for</span> Envoys to receive Endpoints data.
+</span></span><span class="line"><span class="cl"> 31.172s Waiting <span class="k">for</span> load balancer to be ready
+</span></span><span class="line"><span class="cl"> 31.532s Ready to serve.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Service <span class="s1">&#39;knative-webapp&#39;</span> created to latest revision <span class="s1">&#39;knative-webapp-00001&#39;</span> is available at URL:
+</span></span><span class="line"><span class="cl">https://knative-webapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>How awesome is that? &#x1f680; AND! Knative provides <strong>out-of-the-box scale-to-0 and scale-to-n</strong>.</p>
+<ul>
+<li>
+<p><strong>Scaling</strong>: It makes sure your workload can handle as many incoming requests as needed. The more incoming traffic reaches your workload, the more it&rsquo;ll be scaled. Depending on <code>--max-scale</code>.  When nobody&rsquo;s around, it makes some servers disappear to save resources.</p>
+</li>
+<li>
+<p><strong>URL</strong>: It gives your application a special web address (URL) that doesn&rsquo;t change, even when your application changes. This means people can always find your app at the same place on the internet.</p>
+</li>
+<li>
+<p><strong>Traffic Control</strong>: It helps you control how traffic flows to different versions of your app. You can gradually roll out new features or switch back to older ones without people even noticing.</p>
+</li>
+<li>
+<p><strong>Easy Updates</strong>: When you want to update your app, you just put the new version in the magic box. It takes care of the rest, making sure the transition is smooth and without any downtime.</p>
+</li>
+<li>
+<p><strong>Configuration</strong>: A Knative Service resource includes configuration settings for your application or function. This includes information like container image details, environment variables, and build specifications.</p>
+</li>
+<li>
+<p><strong>Auto-scaling</strong>: Knative Services automatically handle the scaling of your application or function based on incoming traffic. You can define scaling policies within the Knative Service resource to control how and when the service scales.</p>
+</li>
+<li>
+<p><strong>Route Configuration</strong>: Knative Services often include route configuration, which defines how traffic is routed to different revisions of your application. This enables canary deployments, blue-green deployments, and traffic splitting between different versions.</p>
+</li>
+<li>
+<p><strong>Service Discovery</strong>: Knative Services come with built-in service discovery mechanisms, making it easy for other services and external clients to discover and interact with your application or function.</p>
+</li>
+<li>
+<p><strong>Revision Management</strong>: Knative Services allow you to manage different revisions of your application, which can be useful for rollbacks or A/B testing. Each revision corresponds to a specific deployment of your application.</p>
+</li>
+<li>
+<p><strong>Event Triggers</strong>: You can also configure event triggers within a Knative Service resource, allowing your service to respond to external events or changes in the environment.</p>
+</li>
+<li>
+<p><strong>Annotations and Labels</strong>: Knative Services can be annotated and labeled to provide additional metadata and information about the service.</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp get configurations.serving.knative.dev knative-webapp -oyaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/creator</span><span class="p">:</span><span class="w"> </span><span class="l">sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/lastModifier</span><span class="p">:</span><span class="w"> </span><span class="l">sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/routes</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:21Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">generation</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/service</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/serviceUID</span><span class="p">:</span><span class="w"> </span><span class="l">0c2ac867-693d-4acc-80a2-df9db8d182e0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">myapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ownerReferences</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">blockOwnerDeletion</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">controller</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">0c2ac867-693d-4acc-80a2-df9db8d182e0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;7746466&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">748fc5d8-79b3-47fa-8311-37d1e60ef120</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">client.knative.dev/updateTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:21Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">client.knative.dev/user-image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containerConcurrency</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">user-container</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">readinessProbe</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">successThreshold</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">tcpSocket</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">enableServiceLinks</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">timeoutSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">300</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">conditions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:48Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Ready</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">latestCreatedRevisionName</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-00001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">latestReadyRevisionName</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-00001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">observedGeneration</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp get revisions.serving.knative.dev knative-webapp-00001 -oyaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Revision</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">client.knative.dev/updateTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:21Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">client.knative.dev/user-image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/creator</span><span class="p">:</span><span class="w"> </span><span class="l">sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/routes</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/routingStateModified</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:22Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:22Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">generation</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/configuration</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/configurationGeneration</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/configurationUID</span><span class="p">:</span><span class="w"> </span><span class="l">748fc5d8-79b3-47fa-8311-37d1e60ef120</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/routingState</span><span class="p">:</span><span class="w"> </span><span class="l">active</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/service</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/serviceUID</span><span class="p">:</span><span class="w"> </span><span class="l">0c2ac867-693d-4acc-80a2-df9db8d182e0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-00001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">myapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ownerReferences</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">blockOwnerDeletion</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">controller</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">748fc5d8-79b3-47fa-8311-37d1e60ef120</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;7749777&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">41ae1fe0-86e5-4281-8bc5-f1f31b91fc75</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containerConcurrency</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">user-container</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">readinessProbe</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">successThreshold</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">tcpSocket</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enableServiceLinks</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">timeoutSeconds</span><span class="p">:</span><span class="w"> </span><span class="m">300</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">actualReplicas</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">conditions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:40:37Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="l">The target is not receiving traffic.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="l">NoTraffic</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l">Info</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;False&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Active</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:48Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ContainerHealthy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:48Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Ready</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:24Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ResourcesAvailable</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containerStatuses</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">imageDigest</span><span class="p">:</span><span class="w"> </span><span class="l">projects.registry.vmware.com/tanzu_ese_poc/rguske/knative-webapp@sha256:fd918309bb55c5a0d8877aa3c2786da5cd12e30408accadddcc0b778d43b4019</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">user-container</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">desiredReplicas</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">observedGeneration</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n myapp get routes.serving.knative.dev knative-webapp -oyaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Route</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/creator</span><span class="p">:</span><span class="w"> </span><span class="l">sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/lastModifier</span><span class="p">:</span><span class="w"> </span><span class="l">sso:Administrator@cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:22Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">finalizers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">routes.serving.knative.dev</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">generation</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serving.knative.dev/service</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">myapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ownerReferences</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">serving.knative.dev/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">blockOwnerDeletion</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">controller</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">0c2ac867-693d-4acc-80a2-df9db8d182e0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;7746612&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">6a3f0955-7515-421d-9d01-0a595b510839</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">traffic</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">configurationName</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">latestRevision</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">percent</span><span class="p">:</span><span class="w"> </span><span class="m">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">address</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l">http://knative-webapp.myapp.svc.cluster.local</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">conditions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:48Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">AllTrafficAssigned</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:51Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">CertificateProvisioned</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:53Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">IngressReady</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">lastTransitionTime</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2023-10-09T21:36:53Z&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;True&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">Ready</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">observedGeneration</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">traffic</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">latestRevision</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">percent</span><span class="p">:</span><span class="w"> </span><span class="m">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">revisionName</span><span class="p">:</span><span class="w"> </span><span class="l">knative-webapp-00001</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l">https://knative-webapp.jarvis.cpod-nsxv8.az-stc.cloud-garage.net</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"></div>
+        </div>
+    </div>
+<p>Knative Services automatically scale up or down based on incoming traffic. When there are no requests, it can scale to zero, effectively reducing resource consumption and costs. As requests increase, it can scale up to handle the load, ensuring optimal resource utilization.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"></th>
+<th style="text-align:center"></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="mermaid" id="id-1"></div>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-02-07&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/f2d817210c3c5a5cccd228440668ec190af4c9b5" target="_blank" title="commit by Robert Guske(rguske@vmware.com) f2d817210c3c5a5cccd228440668ec190af4c9b5: working on post knative part 2">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>f2d8172</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped" data-via="vmw_rguske" data-hashtags="Knative,VMware,Tanzu,CloudNative,Kubernetes,Serverless"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped" data-description="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="http://localhost:1313/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-2-knative-serving-unwrapped/" data-title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part II - Knative Serving unwrapped" data-description="Knative Serving is the runtime component of the Knative project. At its core, Knative Serving provides a Kubernetes-native platform to deploy, run, and manage modern HTTP workloads. In this second part of my series on Knative, I&#39;ll dive deep into the capabilities of Knative Serving and explore its unique features. Ultimately, I&#39;ll try to demonstrate why it&#39;s fast becoming the go-to choice for developers as well as platfrom engineers who want the flexibility of Kubernetes combined with the ease of serverless."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/knative/">Knative</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/serverless/">Serverless</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" class="prev" rel="prev" title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative</a>
+            <a href="/post/quickly-recover-a-broken-avi-controller/" class="next" rel="next" title="Quickly Recover a Broken Avi Controller">Quickly Recover a Broken Avi Controller<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/mermaid/mermaid.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    subgraph HAProxy Appliance\n    A[ Management ]\n    B[ Workload ]\n    C[ Frontend / VIPs ]\n    end\n    subgraph Traffic from\n    G( Client / Service )\n    end\n    subgraph Load Balancer VIPs\n    E[ Supervisor Cluster VMs ]\n    F[ Guest Cluster VMs ]\n    end\n    A \u0026 B \u0026 C --- E\n    B \u0026 C --- F\n    G -.- C -.-\u003e F \u0026 E","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

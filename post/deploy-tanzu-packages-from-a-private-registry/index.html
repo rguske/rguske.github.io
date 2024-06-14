@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <title>Deploy VMware Tanzu Packages from a private Container Registry - Robert Guske</title><meta name="Description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><meta property="og:title" content="Deploy VMware Tanzu Packages from a private Container Registry" />
 <meta property="og:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" /><meta property="og:image" content="http://localhost:1313/img/avatar2.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-02-09T12:00:40+01:00" />
 <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Deploy VMware Tanzu Packages from a private Container Registry"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://localhost:1313/img/avatar2.png" /><meta name="twitter:title" content="Deploy VMware Tanzu Packages from a private Container Registry"/>
 <meta name="twitter:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."/>
+<meta name="twitter:site" content="@vmw_rguske"/>
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" /><link rel="prev" href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><link rel="next" href="https://rguske.github.io/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" /><link rel="prev" href="http://localhost:1313/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><link rel="next" href="http://localhost:1313/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -27,9 +26,9 @@
         "inLanguage": "en",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/rguske.github.io\/post\/deploy-tanzu-packages-from-a-private-registry\/"
+            "@id": "http:\/\/localhost:1313\/post\/deploy-tanzu-packages-from-a-private-registry\/"
         },"genre": "posts","keywords": "VMware, Extensibility, CloudNative, Kubernetes, Harbor","wordcount":  2779 ,
-        "url": "https:\/\/rguske.github.io\/post\/deploy-tanzu-packages-from-a-private-registry\/","datePublished": "2022-02-09T12:00:40+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "http:\/\/localhost:1313\/post\/deploy-tanzu-packages-from-a-private-registry\/","datePublished": "2022-02-09T12:00:40+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -45,7 +44,7 @@
             <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites" rel="noopener noreffer" target="_blank"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -87,7 +86,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites" rel="noopener noreffer" target="_blank">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
@@ -417,9 +416,9 @@
     </figure>
 <p>I&rsquo;ve written a couple of blog posts covering e.g. the deployment using <code>helm</code> or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor container registry.</p>
 <p>Check out:</p>
-<p>📝 <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></p>
-<p>📝 <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</a></p>
-<p>📝 <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreffer ">Using Harbor with the VMware Event Broker Appliance</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreffer ">Using Harbor with the VMware Event Broker Appliance</a></p>
 <h3 id="download-the-harbor-certificate">Download the Harbor Certificate</h3>
 <p>You can skip this section if you are using a different registry.</p>
 <blockquote>
@@ -617,7 +616,7 @@
 </div><blockquote>
 <p>Notice: The Kubernetes namespaces <code>tkg-system</code> as well as <code>tanzu-package-repo-global</code> was created as part of the deployment. Keep them in mind!</p>
 </blockquote>
-<p>Installation successfully ✅</p>
+<p>Installation successfully &#x2705;</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -680,7 +679,7 @@
 </span></span><span class="line"><span class="cl">imgpkg copy --tar packages.tar --to-repo harbor.jarvis.tanzu/tanzu-packages/tanzu-packages --registry-ca-cert-path<span class="o">=</span>ca.crt --registry-username<span class="o">=</span>admin --registry-password<span class="o">=</span><span class="nv">$PASSWORD</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>🎥 Watch the thrilling and somewhat boring recording: (⏩ is your friend 😉)</p>
+</div><p>&#x1f3a5; Watch the thrilling and somewhat boring recording: (&#x23e9; is your friend &#x1f609;)</p>
 <script id="asciicast-wKfybXtagW70j8Q62wD8D7UfV" src="https://asciinema.org/a/wKfybXtagW70j8Q62wD8D7UfV.js" async></script>
 <figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" data-sub-html="<h2>Figure III: Pushed kapp-controller image</h2>">
         <img
@@ -758,7 +757,7 @@
 </span></span><span class="line"><span class="cl">  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-package-repo-global
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Certificates&hellip; 🙄</p>
+</div><p>Certificates&hellip; &#x1f644;</p>
 <p>Let&rsquo;s get it done:</p>
 <p><strong>Step 1:</strong> Edit the kapp-controller <code>configMap</code>:</p>
 <div class="highlight"><div class="chroma">
@@ -830,7 +829,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kapp.k14s.io/change-group</span><span class="p">:</span><span class="w"> </span><span class="l">apps.kappctrl.k14s.io/kapp-controller-config</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubectl.kubernetes.io/last-applied-configuration</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span></span></span><span class="line"><span class="cl"><span class="sd">      </span><span class="w">      </span>{<span class="s2">&#34;apiVersion&#34;</span><span class="p">:</span><span class="s2">&#34;v1&#34;</span><span class="p">,</span><span class="s2">&#34;data&#34;</span><span class="p">:</span>{<span class="s2">&#34;caCerts&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;dangerousSkipTLSVerify&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;httpProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;httpsProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;noProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span>}<span class="p">,</span><span class="s2">&#34;kind&#34;</span><span class="p">:</span><span class="s2">&#34;ConfigMap&#34;</span><span class="p">,</span><span class="s2">&#34;metadata&#34;</span><span class="p">:</span>{<span class="s2">&#34;annotations&#34;</span><span class="p">:</span>{<span class="s2">&#34;kapp.k14s.io/change-group&#34;</span><span class="p">:</span><span class="s2">&#34;apps.kappctrl.k14s.io/kapp-controller-config&#34;</span>}<span class="p">,</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;kapp-controller-config&#34;</span><span class="p">,</span><span class="s2">&#34;namespace&#34;</span><span class="p">:</span><span class="s2">&#34;tkg-system&#34;</span>}}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      {&#34;apiVersion&#34;:&#34;v1&#34;,&#34;data&#34;:{&#34;caCerts&#34;:&#34;&#34;,&#34;dangerousSkipTLSVerify&#34;:&#34;&#34;,&#34;httpProxy&#34;:&#34;&#34;,&#34;httpsProxy&#34;:&#34;&#34;,&#34;noProxy&#34;:&#34;&#34;},&#34;kind&#34;:&#34;ConfigMap&#34;,&#34;metadata&#34;:{&#34;annotations&#34;:{&#34;kapp.k14s.io/change-group&#34;:&#34;apps.kappctrl.k14s.io/kapp-controller-config&#34;},&#34;name&#34;:&#34;kapp-controller-config&#34;,&#34;namespace&#34;:&#34;tkg-system&#34;}}</span><span class="w">      
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2022-02-08T12:31:35Z&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">kapp-controller-config</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tkg-system</span><span class="w">
@@ -871,7 +870,7 @@
 </div>
         </div>
     </div>
-<p>❗ Don&rsquo;t stop here ❗ Adding the certificate to the kapp-controller <code>configMap</code> is only half the way if your repository is not configured as <strong>Public</strong> (without authentication).</p>
+<p>&#x2757; Don&rsquo;t stop here &#x2757; Adding the certificate to the kapp-controller <code>configMap</code> is only half the way if your repository is not configured as <strong>Public</strong> (without authentication).</p>
 <h2 id="create-a-secret-to-authenticate-with-your-registry">Create a Secret to Authenticate with your Registry</h2>
 <p>To let the kapp-controller authenticate with your private registry, you have to create a Kubernetes <code>secret</code> which in turn has to be referenced in the <code>PackageRepository</code> custom resource (CR).</p>
 <p><strong>Step 1:</strong> Create the Kubernetes <code>secret</code>:</p>
@@ -1053,7 +1052,7 @@
 </span></span><span class="line"><span class="cl"> Added installed package <span class="s1">&#39;cert-manager&#39;</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>🎉 🎉 🎉</p>
+</div><p>&#x1f389; &#x1f389; &#x1f389;</p>
 <p>The reconciliation status of a specific Package can be verified every time using e.g.:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1142,7 +1141,7 @@
 <li>VMware Docs - <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html" target="_blank" rel="noopener noreffer ">Install and Configure Packages</a></li>
 <li>beyondelastic.com - <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreffer ">Tanzu Packages Explained</a></li>
 <li>beyondelastic.com - <a href="https://beyondelastic.com/2021/06/21/configure-vsphere-with-tanzu-behind-a-proxy-plus-tkg-extensions/" target="_blank" rel="noopener noreffer ">Configure vSphere with Tanzu behind a Proxy plus TKG Extensions</a></li>
-<li>Stay here 😉 - <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></li>
+<li>Stay here &#x1f609; - <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></li>
 <li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreffer ">Configuring the Controller</a></li>
 <li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/private-registry-auth/" target="_blank" rel="noopener noreffer ">Authenticating to Private Registries</a></li>
 <li>Kubernetes Docs - <a href="https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/" target="_blank" rel="noopener noreffer ">Pull an Image from a Private Registry</a></li>
@@ -1159,7 +1158,7 @@
                             <a class="link-to-markdown" href="/post/deploy-tanzu-packages-from-a-private-registry/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-via="vmw_rguske" data-hashtags="VMware,Extensibility,CloudNative,Kubernetes,Harbor"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-via="vmw_rguske" data-hashtags="VMware,Extensibility,CloudNative,Kubernetes,Harbor"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="http://localhost:1313/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -1174,11 +1173,9 @@
     <div class="post-nav"><a href="/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" class="prev" rel="prev" title="Deploying Tanzu Packages using Tanzu Mission Control Catalog"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Deploying Tanzu Packages using Tanzu Mission Control Catalog</a>
             <a href="/post/building-a-vmware-photonos-based-kubernetes-appliance/" class="next" rel="next" title="Building a VMware PhotonOS based Kubernetes Appliance for vSphere">Building a VMware PhotonOS based Kubernetes Appliance for vSphere<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
@@ -1188,8 +1185,5 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

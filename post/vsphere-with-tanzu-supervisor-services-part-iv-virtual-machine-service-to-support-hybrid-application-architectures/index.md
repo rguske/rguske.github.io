@@ -3,9 +3,9 @@
 
 ## Hybrid Application Architectures
 
-As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of service-oriented architectures (SOA) with the reliability and versatility of virtual machines (VMs).
+As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of microservice architectures with the reliability and versatility of virtual machines (VMs).
 
-Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an application into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.
+Microservice architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an application into smaller chunks, loosely coupled services, this architectural style enables organizations to achieve better modularity, reusability, and interoperability. These services communicating with each other through well-defined APIs.
 
 Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems or similar specific applications which are not easily to containerize or to be refactored.
 
@@ -16,7 +16,7 @@ Other issues besides the incompatibility of an application to be containerized a
 
 or also quite simple, your application is better suited to run in a virtual machine.
 
-The hybridization of an application, through the combined power of SOAs and VMs, allows enterprises benefit from the best of both worlds.
+The hybridization of an application, through the combined power of microservices and vms, allows enterprises benefit from the best of both worlds.
 
 ---
 
@@ -58,7 +58,7 @@ Level 200/300:
 - [Installing Harbor using VM Operator on vSphere](https://medium.com/analytics-vidhya/installing-harbor-using-vm-operator-on-vsphere-7bf69036f67c) by [Navneet Verma](https://www.linkedin.com/in/navneet-verma/)
 - [Introducing Virtual Machine Provisioning, via Kubernetes with VM Service](https://core.vmware.com/blog/introducing-virtual-machine-provisioning-kubernetes-vm-service) by [Myles Gray](https://www.linkedin.com/in/mylesgray/).
 
-### vSphere 8 Update 1 puts VM Service on Steriods
+### Virtual Machine Service Enhanced
 
 Initially, it was only possible to use the by VMware provided virtual machine images for Ubuntu and CentOS. Both are downloadable via the VMware Marketplace [HERE](https://marketplace.cloud.vmware.com/services?search=VM%20Service%20Image%20for). This limitation is documented on VMware Docs:
 
@@ -66,7 +66,7 @@ Initially, it was only possible to use the by VMware provided virtual machine im
 VM Service supports a limited number of VM images and guest OSes. Compatible VM images appear on VMware Marketplace as OVFs​.
 {{< /admonition >}}
 
-vSphere 8 U1 now unleashes the full potential of Virtual Machine Service.
+vSphere 8 U1 unleashed the full potential of the Virtual Machine Service.
 
 {{< admonition info "VM Service 2.0" true >}}
 You can now use CloudInit to **customize any Linux image** in OVF format conformant to the VM Service image specification ([KB88506](https://kb.vmware.com/s/article/88506)) as well as **utilize OVF templating through vAppConfig** to enable the deployment of legacy Linux images.
@@ -124,23 +124,18 @@ virtualmachine.vmoperator.vmware.com/rguske-tkc-hybrid-app-sprxr-r2bdn          
 After adding the new content library to the vSphere Namespace, it will be available on the Kubernetes layer as well:
 
 ```shell
-kubectl -n ns-hybrid-app-1 get contentsourcebindings.vmoperator.vmware.com
-NAME                                   AGE
-02f5a0ab-cd42-41b4-b107-9f479a14d2e1   6d8h
-b9a1de5e-fb67-4a34-977a-ff88776b54da   6d8h
+kubectl -n ns-hybrid-app-1 get contentlibraries.imageregistry.vmware.com
+NAME                   VSPHERENAME   TYPE    WRITABLE   ALLOWIMPORT   STORAGETYPE   AGE
+cl-8f349ed205643b28a   vm-images     Local   false      false         Datastore     6d8h
 ```
 
-The content library itself will be displayed only with its UUID. I guess this is due to the fact that Kubernetes requires everything is written in DNS conformant notations. Probably users may not always be able to ensure this for a global vSphere object. Therefore, uniqueness is required.
-
-However, unless you're not Neo :sunglasses: trying to read the UUID's won't tell you which content library it actually is right away. You can figure it out using the vSphere client.
+Prior to vSphere 8 Update 2, the Kubernetes CR for the vSphere Content Library was not `contentlibraries.imageregistry.vmware.com`, instead it was `contentsourcebindings.vmoperator.vmware.com`. Furthermore, the content library was displayed only with its UUID and unless you are not Neo :sunglasses: the UUID won't tell you which content library it actually is right away. However, you can figure it out using the vSphere client.
 
 By selecting a content library in the vSphere client, you'll notice a UUID in the URL which can be used to get the relation.
 
 Like belows *Figure VI* shows.
 
 {{< image src="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" caption="Figure VI: UUID matching" src-s="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_15.png" >}}
-
-Hint: I tried `kubectl describe` as well as `kubectl get... -o yaml` as well but without positive results :wink:
 
 Before I head over to the next step, let me briefly summarize what has been done up to this point:
 
@@ -231,17 +226,16 @@ Here's is my example:
 
 #### Extract Configurable Properties using `kubectl`
 
-Option two provides the desired data quicker but as already mentioned, you'll need access to the Supervisor cluster. Since the Content Library is associated with our vSphere Namespace, we only have to execute the following `kubectl` command:
+Option two provides the desired data quicker but as already mentioned, you'll need access to the Supervisor cluster. Since the content library is associated with our vSphere Namespace, we only have to execute the following `kubectl` command:
 
-`kubectl -n ns-hybrid-app-1 get vmimage bitnami-postgresql-11.20.0-r1-debian-11-amd64 -o jsonpath='{.spec}' | jq`
+`kubectl -n ns-hybrid-app-1 get vmimage vmi-06d0a6ab5664f7c88 -o jsonpath='{.spec}' | jq`
 
 The output on the terminal is immediately providing the necessary `ovfEnv` keys:
 
 ```json
 {
   "hwVersion": 14,
-  "imageID": "a4bcc115-f81b-427a-a2c6-dc368718abfd",
-  "imageSourceType": "Content Library",
+  "imageID": "f5999f84-f832-487c-bf5a-c89e55087132",
   "osInfo": {
     "type": "debian10_64Guest",
     "version": "10"
@@ -292,11 +286,11 @@ The output on the terminal is immediately providing the necessary `ovfEnv` keys:
   },
   "productInfo": {},
   "providerRef": {
-    "apiVersion": "vmoperator.vmware.com/v1alpha1",
-    "kind": "ContentLibraryProvider",
-    "name": "02f5a0ab-cd42-41b4-b107-9f479a14d2e1"
+    "apiVersion": "imageregistry.vmware.com/v1alpha1",
+    "kind": "ContentLibraryItem",
+    "name": "clitem-06d0a6ab5664f7c88"
   },
-  "type": "ovf"
+  "type": "OVF"
 }
 ```
 
@@ -319,7 +313,7 @@ metadata:
   annotations:
     vmoperator.vmware.com/image-supported-check: enable # <-- image validation webhook option
 spec:
-  imageName: bitnami-postgresql-11.20.0-r1-debian-11-amd64 # <-- virtual machine image (uploaded OVA)
+  imageName: vmi-06d0a6ab5664f7c88 # <-- virtual machine image id (uploaded OVA)
   className: best-effort-medium # <-- configured virtual machine class
   powerState: poweredOn
   storageClass: ftt0-r0 # <-- configured vSphere storage policy
@@ -708,8 +702,8 @@ I tried the deployment of other OVA's like the [VMware Event Broker Appliance](h
 
 ```shell
 k -n veba-ns get virtualmachineimages.vmoperator.vmware.com --field-selector metadata.name=veba-v0.7.5
-NAME          PROVIDER-NAME                          CONTENT-LIBRARY-NAME   IMAGE-NAME    VERSION   OS-TYPE      FORMAT   AGE
-veba-v0.7.5   87b2c9ec-81e5-4e01-9367-be8f6d74ecf7                          veba-v0.7.5   v0.7.5    otherGuest   ovf      4d
+NAME                    PROVIDER-NAME              CONTENT-LIBRARY-NAME   IMAGE-NAME      VERSION   OS-TYPE               FORMAT   AGE
+vmi-c193ffa02a93080e9   clitem-c193ffa02a93080e9   cl-8f349ed205643b28a   veba-v0.7.5        v0.7.5    vmwarePhoton64Guest   OVF      4d
 ```
 
 ```yaml
