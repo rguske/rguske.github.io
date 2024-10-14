@@ -3,13 +3,13 @@
 
 ## Welcome to Robert Guske's blog
 
-{{< image src="/img/about/rguske_2.png" src-s="/img/about/rguske_2.png" width="500" >}}
+{{< image src="/img/about/rguske_3.jpg" src-s="/img/about/rguske_3.jpg" width="500" >}}
 
 ## Contact
 
 - <i class="far fa-envelope fa-fw"></i> [Mail](mailto:robert.guske@gmail.com)
 - <i class="fab fa-linkedin fa-fw"></i><a href="https://www.linkedin.com/in/robert-guske-830853111/" target="_blank"> Robert Guske</a>
-- <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/vmw_rguske" target="_blank"> @vmw_rguske</a>
+- <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/RobertGuske" target="_blank"> @RobertGuske</a>
 - <i class='fab fa-github fa-fw'></i><a href="https://github.com/rguske" target="_blank"> rguske</a>
 - vExpert: [#3288](https://vexpert.vmware.com/directory/3288)
 
@@ -20,16 +20,16 @@ metadata:
   name: Robert Guske
   region: EMEA
   country: Germany
-  company: VMware by Broadcom
-  businessUnit: Tanzu and VMware Cloud Foundation Division
+  company: coming soon
+  businessUnit: coming soon
 replicas: 2
 ---
 apiVersion: profile/v1
 kind: Role
 metadata:
-  name: Lead Emerging Solutions Engineer
+  name: coming soon
   programs:
-    vmware/internally: Office of the CTO, Ambassador
+    tbd/internally: 
     vmware/externally: vExpert
 subject:
   - kind: Experise
@@ -111,7 +111,17 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 {{< image src="/img/about/vexpert_modernapps_2020.png" src-s="/img/about/vexpert_modernapps_2020.png" height="100" width="200" >}}
 
-## Public Events - Speaking, Demoing, Staff and Initiatives
+## Speaking, Podcasting, Demoing, Staff and Initiatives
+
+## 2024
+
+###  Epic Tech Podcast Episode #1 - August 2024
+
+| **Title** | **Link** |
+| :---: | :---:|
+| **10 Jahre Container Innovation mit VMware** | [LINK](https://pod.link/1555109397/episode/a7106f5d07a676f515e3de19d1d023a3) |
+
+<center> {{< image src="/img/epic-tech-podcast-1.jpeg" src-s="/img/epic-tech-podcast-1.jpeg" >}} </center>
 
 ## 2023
 
@@ -130,6 +140,15 @@ The annual VMware vExpert title is given to individuals who have significantly c
 | **Enabling event-driven automation using Knative** | [LINK](https://www.youtube.com/watch?v=J_3-ILnPbQQ&t=1s) |
 
 <center> {{< tweet user="DavidShadoow" id="1701219483145093496" >}} </center>
+
+### Burn-4-IT Podcast Episode #34 - February 2023
+
+| **Title** | **Link** |
+| :---: | :---:|
+| **Event getriebene Automatisierung mit Robert Guske** | [LINK](https://burn4it.podigee.io/34-event-getriebene-automatisierung-mit-robert-guske) |
+
+<center> {{< image src="/img/burn4it-podcast-episode34.jpg" src-s="/img/burn4it-podcast-episode34.jpg" >}} </center>
+
 
 ## 2022
 
