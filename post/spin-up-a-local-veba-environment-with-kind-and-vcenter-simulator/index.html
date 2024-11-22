@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator - Robert Guske</title><meta name="Description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><meta property="og:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" />
-<meta property="og:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-10-16T12:00:57+02:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator - Robert Guske</title><meta name="Description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><meta property="og:url" content="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/">
+  <meta property="og:site_name" content="Robert Guske">
+  <meta property="og:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator">
+  <meta property="og:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-10-16T12:00:57+02:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VEBA">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="KinD">
+    <meta property="article:tag" content="FaaS">
+    <meta property="article:tag" content="Fusion">
+    <meta property="og:image" content="http://localhost:1313/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png" /><meta name="twitter:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"/>
-<meta name="twitter:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."/>
-<meta name="twitter:site" content="@vmw_rguske"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/img/avatar2.png">
+  <meta name="twitter:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator">
+  <meta name="twitter:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator.">
+      <meta name="twitter:site" content="@RobertGuske">
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="http://localhost:1313/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="next" href="http://localhost:1313/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -26,9 +37,9 @@
         "inLanguage": "en",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/"
+            "@id": "http:\/\/localhost:1313\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/"
         },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, KinD, FaaS, Fusion, Workstation, OpenSource","wordcount":  2591 ,
-        "url": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/","datePublished": "2020-10-16T12:00:57+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "http:\/\/localhost:1313\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/","datePublished": "2020-10-16T12:00:57+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
                 "@type": "Person",
@@ -188,40 +199,40 @@
 <p>With a decent desktop model, you could run VEBA as well as the vCenter Server locally but from a hardware requirement point of view this would mean that your desktop should be equipped with at least 24 GB of RAM for adequate testing. And not to forget about the ESXi host (nested) and at least one VM!</p>
 <h4 id="appliances-deployment-requirements">Appliance(s) deployment requirements</h4>
 <table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Appliance</strong></th>
-<th style="text-align:center"><strong>CPU</strong></th>
-<th style="text-align:center"><strong>Memory</strong></th>
-<th style="text-align:center"><strong>Documentation</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">vCenter Server Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">12 GB</td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreffer ">Documentation</a></td>
-</tr>
-<tr>
-<td style="text-align:center">VMware Event Broker Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">8 GB</td>
-<td style="text-align:center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer ">Documentation</a></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">4 vCPU&rsquo;s</td>
-<td style="text-align:center">20 GB Memory</td>
-<td></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: center"><strong>Appliance</strong></th>
+          <th style="text-align: center"><strong>CPU</strong></th>
+          <th style="text-align: center"><strong>Memory</strong></th>
+          <th style="text-align: center"><strong>Documentation</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">vCenter Server Appliance</td>
+          <td style="text-align: center">2</td>
+          <td style="text-align: center">12 GB</td>
+          <td style="text-align: center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreffer ">Documentation</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">VMware Event Broker Appliance</td>
+          <td style="text-align: center">2</td>
+          <td style="text-align: center">8 GB</td>
+          <td style="text-align: center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer ">Documentation</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"><strong>TOTAL</strong></td>
+          <td style="text-align: center"><strong>TOTAL</strong></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">4 vCPU&rsquo;s</td>
+          <td style="text-align: center">20 GB Memory</td>
+          <td style="text-align: left"></td>
+      </tr>
+  </tbody>
 </table>
 <h3 id="lightweight">Lightweight</h3>
 <p>The lightweight alternative would be, to e.g. leverage VMware&rsquo;s <a href="https://www.vmware.com/products/fusion/faq.html" target="_blank" rel="noopener noreffer ">Fusion</a> or <a href="https://www.vmware.com/products/workstation-pro/faq.html" target="_blank" rel="noopener noreffer ">Workstation</a> to spin up a Kubernetes cluster locally and to deploy the Event Router, OpenFaaS as well as your function(s) on top of it.</p>
@@ -229,40 +240,40 @@
 <p>Here comes <a href="https://github.com/vmware/govmomi/tree/master/vcsim" target="_blank" rel="noopener noreffer ">vcsim</a> into play. <code>vcsim</code> is a vSphere API mock framework which is part of the <a href="https://github.com/vmware/govmomi" target="_blank" rel="noopener noreffer ">govmomi</a> project, a Go library for interacting with VMware vSphere APIs - or in simple terms - it&rsquo;s a vCenter and ESXi API based simulator.</p>
 <p>The following content in the table below serves as an overview of what and how we are going to deploy in the next sections. As I have already indicated, my intention is to use Fusion (I&rsquo;m a Mac user) to instantiate the Kubernetes cluster but ultimately, you could use any tool that runs Kubernetes local on your machine.</p>
 <table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Component</strong></th>
-<th style="text-align:center"><strong>Kind</strong></th>
-<th style="text-align:center"><strong>Installation via</strong></th>
-<th style="text-align:center">Documentation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Kubernetes</td>
-<td style="text-align:center">1 Node</td>
-<td style="text-align:center">via Fusion - <code>vctl</code> and <code>kind</code></td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreffer ">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
-</tr>
-<tr>
-<td style="text-align:center">OpenFaaS</td>
-<td style="text-align:center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreffer ">Deployment</a></td>
-<td style="text-align:center">via <code>.yaml</code> files</td>
-<td style="text-align:center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer ">Deployment guide for Kubernetes</a></td>
-</tr>
-<tr>
-<td style="text-align:center">vcsim</td>
-<td style="text-align:center">Binary or Container</td>
-<td style="text-align:center">via <code>kubectl</code> or <code>vctl</code></td>
-<td style="text-align:center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreffer ">govcsim Installation</a></td>
-</tr>
-<tr>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">Container</td>
-<td style="text-align:center">via <code>faas-cli</code></td>
-<td style="text-align:center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreffer ">Get started: Install the CLI</a></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: center"><strong>Component</strong></th>
+          <th style="text-align: center"><strong>Kind</strong></th>
+          <th style="text-align: center"><strong>Installation via</strong></th>
+          <th style="text-align: center">Documentation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Kubernetes</td>
+          <td style="text-align: center">1 Node</td>
+          <td style="text-align: center">via Fusion - <code>vctl</code> and <code>kind</code></td>
+          <td style="text-align: center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreffer ">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">OpenFaaS</td>
+          <td style="text-align: center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreffer ">Deployment</a></td>
+          <td style="text-align: center">via <code>.yaml</code> files</td>
+          <td style="text-align: center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer ">Deployment guide for Kubernetes</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">vcsim</td>
+          <td style="text-align: center">Binary or Container</td>
+          <td style="text-align: center">via <code>kubectl</code> or <code>vctl</code></td>
+          <td style="text-align: center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreffer ">govcsim Installation</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Function</td>
+          <td style="text-align: center">Container</td>
+          <td style="text-align: center">via <code>faas-cli</code></td>
+          <td style="text-align: center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreffer ">Get started: Install the CLI</a></td>
+      </tr>
+  </tbody>
 </table>
 <p><strong>CLI&rsquo;s we are going to use:</strong></p>
 <ul>
@@ -1090,9 +1101,12 @@
 <p>To finally test our deployed functions, we had to invoke them by creating events from a <code>source</code>. We leveraged a container image for that, which was created by Michael Gasch and which includes the vCenter Simulator <code>vcsim</code> as well as the binaries for the  <code>govc</code> CLI to execute the relevant commands.</p>
 <p><strong>Watch it here:</strong></p>
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube-nocookie.com/embed/LfceWRNNoCM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div></div><div class="post-footer" id="post-footer">
+
+    
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/LfceWRNNoCM?autoplay=0&controls=1&end=0&loop=0&mute=0&start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"
+      ></iframe>
+    </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -1104,7 +1118,7 @@
                             <a class="link-to-markdown" href="/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-via="vmw_rguske" data-hashtags="VMware,VEBA,Kubernetes,KinD,FaaS,Fusion,Workstation,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-via="RobertGuske" data-hashtags="VMware,VEBA,Kubernetes,KinD,FaaS,Fusion,Workstation,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="http://localhost:1313/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -1119,12 +1133,10 @@
     <div class="post-nav"><a href="/post/a-closer-look-at-vmwares-project-nautilus/" class="prev" rel="prev" title="A closer look at VMware&#39;s Project Nautilus"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>A closer look at VMware's Project Nautilus</a>
             <a href="/post/vsphere-with-tanzu-troubleshooting-haproxy/" class="next" rel="next" title="vSphere with Tanzu - Troubleshooting HAProxy deployment">vSphere with Tanzu - Troubleshooting HAProxy deployment<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
@@ -1133,8 +1145,5 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js" integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

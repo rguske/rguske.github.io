@@ -153,7 +153,7 @@ And in case you are already a *vR Ops-Ninja* and you are not on this list https:
 
 <center> {{< tweet user="johndias" id="1068561326216228865" >}} </center>
 
-{{< image src="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" caption="Figure XIV: vROps Ninja" src-s="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" class="center" width="400" >}}
+{{< image src="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" src-s="/img/posts/201811_post_monitoring/CapturFiles-20190117_085401.jpg" class="center" width="500" >}}
 
 ## Resources
 

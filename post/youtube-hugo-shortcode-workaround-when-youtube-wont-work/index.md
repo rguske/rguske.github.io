@@ -11,12 +11,12 @@ See how Michael fixed the normal behavior for the Twitter Shortcode `{{</* tweet
 
 ...and add it to your Shortcode folder to make advantages from.
 
-## *When `{{</* youtube */>}}` won´t work for your theme*
+## *When `{{</* youtube xxxxxxx */>}}` won´t work for your theme*
 
 {{< admonition warning "Attention" true >}}
 *This applies only to the `singleViewStyle = "casper"` configuration in your config.toml.*
 
-*With `singleViewStyle = "caspertwo"` the shortcode `{{</* youtube */>}}` works.*
+*With `singleViewStyle = "caspertwo"` the shortcode `{{</* youtube xxxxxx */>}}` works.*
 {{< /admonition >}}
 
 Besides embedding a tweet into your post e.g. to give a statement more expression/ more emphasis, or to comment a topic related tweet, or simply because it´s pretty cool, a Youtube-Video is also a good alternative.

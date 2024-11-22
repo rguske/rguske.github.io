@@ -14,23 +14,20 @@
 - vExpert: [#3288](https://vexpert.vmware.com/directory/3288)
 
 ```yaml
-apiVersion: profile/v1
+apiVersion: profile/v2
 kind: About
 metadata:
   name: Robert Guske
   region: EMEA
   country: Germany
-  company: coming soon
-  businessUnit: coming soon
+  company: Red Hat, Inc.
+  businessUnit: OpenShift
 replicas: 2
 ---
-apiVersion: profile/v1
+apiVersion: profile/v2
 kind: Role
 metadata:
-  name: coming soon
-  programs:
-    tbd/internally: 
-    vmware/externally: vExpert
+  name: Senior Specialist Solution Architect, OpenShift
 subject:
   - kind: Experise
     args:
@@ -45,28 +42,25 @@ subject:
 
 ## Professional Information
 
-Robert is an accomplished, hands-on, & well informed IT professional with 20+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. He's a tech enthusiast who's actively engaged in shaping the future of cloud-native tech through his commitment and passion for the principles of collaboration and innovation.
+I'm an accomplished, hands-on, & well informed IT professional with 20+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. I'm a tech enthusiast and actively engaged in shaping the future of cloud-native tech through my commitment and passion for the principles of collaboration and innovation.
 
-In his current role as a Lead Emergings Solution Engineer within VMware by Broadcom, he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+In my current role as a Senior Specialist Solution Architect for [Red Hat](https://en.wikipedia.org/wiki/Red_Hat)'s enterprise leading hybrid cloud application platform [OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift), I'm supporting internal teams as well as customers running challenging workshops as well as Proof-of-Concepts (PoC). Besides this solution specific responsibility, I'm always eager to encourage and support clients and organizations to adopt new technologies to accomplish their business goals and IT objectives. These technologies are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
 
-Robert was also part of VMware's former [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program. Members are involved in advocating VMware's technological innovations, assisting with customer engagements, and contributing to the company's strategic technological direction. Furthermore, ensuring an active collaboration between VMware's R&D, field organizations as well as customers across the globe is also an important part of the program.
+I'm also a proud ex-[VMware](https://en.wikipedia.org/wiki/VMware) employee. During my time at VMware, I served customers and partners in different roles. Roles like in post-sales as a Staff Technical Account Manager or in pre-sales as a Lead Emerging Solutions Engineer.
 
-## Open-Source Contributions
+### Achievements
 
-He's very keen on cloud native technologies and an active team-member and contributor of the open source project VMware Event Broker Appliance (https://vmweventbroker.io). This project has the intention to reveal the hidden potential of events in VMware's SDDC by providing event-driven interactions with VMware solutions like e.g. vSphere.
+Becoming a VMware Office of the CTO Ambassador counts to my greatest achievements. Members are involved in advocating VMware's technological innovations, assisting with customer engagements, and contributing to the company's strategic technological direction. Furthermore, ensuring an active collaboration between VMware's R&D, field organizations as well as customers across the globe is also an important part of the program.
 
-<center> {{< image src="/img/about/veba_logo_stacked.png" src-s="/img/about/veba_logo_stacked.png" caption="Official VEBA Logo" >}} </center>
+In addition to the achievement of becoming a CTO Ambassador, I was part of the initial team which created and maintained the official VMware open-source project [VMware Event Broker Appliance](https://vmweventbroker.io). The experience each individual of the team has gained and the successes the team has achieved are among the most valuable in my professional career.
 
 - Homepage: https://vmweventbroker.io
 - <i class='fab fa-github fa-fw'></i> Repository: https://github.com/vmware-samples/vcenter-event-broker-appliance/
 - VEBA related articles written by Robert: https://rguske.github.io/tags/veba/
-- VEBA related articles written by William Lam:  https://williamlam.com/?s=veba
-
-## Achievements
-
-Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/) profile.
 
 ### Certifications
+
+More details on [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/).
 
 {{< image src="/img/about/cka-certified-kubernetes-administrator.png" src-s="/img/about/cka-certified-kubernetes-administrator.png" height="220" width="220" >}}
 
