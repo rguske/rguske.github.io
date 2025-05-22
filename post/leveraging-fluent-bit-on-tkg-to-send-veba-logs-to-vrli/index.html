@@ -26,8 +26,9 @@
   <meta name="twitter:description" content="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight.">
       <meta name="twitter:site" content="@RobertGuske">
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="next" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="next" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="stylesheet" href="/css/style.min.4c1ecc7bc2165a735631d9feeb3c06ed426d68f1fc2a5913154a628b199027f8.css" integrity="sha256-TB7Me8IWWnNWMdn+6zwG7UJtaPH8KlkTFUpiixmQJ/g="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -37,7 +38,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/"
-        },"genre": "posts","keywords": "Logging, Kubernetes, VEBA, Serverless, OpenSource","wordcount":  2092 ,
+        },"genre": "posts","keywords": "Logging, Kubernetes, VEBA, Serverless, OpenSource","wordcount":  2022 ,
         "url": "https:\/\/rguske.github.io\/post\/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli\/","datePublished": "2021-01-13T11:50:23+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -46,7 +47,7 @@
             },"description": "A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -111,7 +112,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2092 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-01-13">2021-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2022 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -298,45 +299,24 @@
 </li>
 </ul>
 <p><code>filter-record.conf: |</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[FILTER]
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[FILTER]
 </span></span><span class="line"><span class="cl">    Name                record_modifier
 </span></span><span class="line"><span class="cl">    Match               *
 </span></span><span class="line"><span class="cl">    Record tkg_instance tkg-veba
-</span></span><span class="line"><span class="cl">    Record tkg_cluster  tkg-veba
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Enter your Log Insight server hostname in the <code>output-syslog.conf</code> section:</p>
+</span></span><span class="line"><span class="cl">    Record tkg_cluster  tkg-veba</span></span></code></pre></div></div>
+<p>Enter your Log Insight server hostname in the <code>output-syslog.conf</code> section:</p>
 <p><code>output-syslog.conf: |</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[OUTPUT]
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[OUTPUT]
 </span></span><span class="line"><span class="cl">    Name                 syslog
 </span></span><span class="line"><span class="cl">    Match                *
 </span></span><span class="line"><span class="cl">    Host                 vrli.jarvis.lab
@@ -351,10 +331,8 @@
 </span></span><span class="line"><span class="cl">    Syslog_SD_key        k8s
 </span></span><span class="line"><span class="cl">    Syslog_SD_key        labels
 </span></span><span class="line"><span class="cl">    Syslog_SD_key        annotations
-</span></span><span class="line"><span class="cl">    Syslog_SD_key        tkg
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="fluent-bit-daemonset">Fluent Bit DaemonSet</h4>
+</span></span><span class="line"><span class="cl">    Syslog_SD_key        tkg</span></span></code></pre></div></div>
+<h4 id="fluent-bit-daemonset">Fluent Bit DaemonSet</h4>
 <p>Basically, it&rsquo;s not necessary to change the image for Fluent Bit but you could replace it with the one of your choice. I used the official Fluent Bit image which is at the time of writing this post version 1.6.9 -  <code>fluent/fluent-bit:1.6.9</code>. You could also use e.g. the VMware Fluent Bit Image in version 1.5.3: <code>registry.tkg.vmware.run/fluent-bit:v1.5.3_vmware.1</code>. I&rsquo;ve validated the functionality of both images during my tests.</p>
 <p>More images:</p>
 <ul>
@@ -366,84 +344,53 @@
 <ul>
 <li>Make your edits at the <code>spec</code> section for the container:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">fluent-bit</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">fluent/fluent-bit:1.6.9</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="deploy-fluent-bit-on-kubernetes">Deploy Fluent Bit on Kubernetes</h2>
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span></span></span></code></pre></div></div>
+<h2 id="deploy-fluent-bit-on-kubernetes">Deploy Fluent Bit on Kubernetes</h2>
 <ol start="3">
 <li>Start with applying the <code>1-tkg-fluent-bit-preps.yaml</code> file to have the prerequisites (<code>Namespace</code>, <code>ServiceAccount</code>, etc.) done:</li>
 </ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f 1-tkg-fluent-bit-preps.yaml
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f 1-tkg-fluent-bit-preps.yaml
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">namespace/fluent-bit created
 </span></span><span class="line"><span class="cl">serviceaccount/fluent-bit created
 </span></span><span class="line"><span class="cl">clusterrole.rbac.authorization.k8s.io/fluent-bit-read created
-</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol start="4">
+</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created</span></span></code></pre></div></div>
+<ol start="4">
 <li>Next is to apply the configmap - <code>2-tkg-fluent-bit-configmap-cri.yaml</code> - for Fluent Bit:</li>
 </ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 2-tkg-fluent-bit-configmap-cri.yaml
-</span></span><span class="line"><span class="cl">configmap/fluent-bit-config created
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ol>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 2-tkg-fluent-bit-configmap-cri.yaml
+</span></span><span class="line"><span class="cl">configmap/fluent-bit-config created</span></span></code></pre></div></div>
+<ol>
 <li>As mentioned in the Prerequisites section before, Fluent Bit will be deployed as a DaemonSet by using the <code>3-tkg-fluent-bit-ds.yaml</code> file:</li>
 </ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 3-tkg-fluent-bit-ds.yaml <span class="o">&amp;&amp;</span> kubectl <span class="nb">wait</span> pod --timeout<span class="o">=</span>-1s --for<span class="o">=</span><span class="nv">condition</span><span class="o">=</span>Ready -l <span class="s1">&#39;!job-name&#39;</span> -n fluent-bit
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create -f 3-tkg-fluent-bit-ds.yaml <span class="o">&amp;&amp;</span> kubectl <span class="nb">wait</span> pod --timeout<span class="o">=</span>-1s --for<span class="o">=</span><span class="nv">condition</span><span class="o">=</span>Ready -l <span class="s1">&#39;!job-name&#39;</span> -n fluent-bit
 </span></span><span class="line"><span class="cl">daemonset.apps/fluent-bit created
 </span></span><span class="line"><span class="cl">pod/fluent-bit-dd4ql condition met
 </span></span><span class="line"><span class="cl">
@@ -455,35 +402,14 @@
 </span></span><span class="line"><span class="cl">kubectl get pods -n fluent-bit
 </span></span><span class="line"><span class="cl">NAME               READY   STATUS    RESTARTS   AGE
 </span></span><span class="line"><span class="cl">fluent-bit-9m7qq   1/1     Running   <span class="m">0</span>          108s
-</span></span><span class="line"><span class="cl">fluent-bit-dd4ql   1/1     Running   <span class="m">0</span>          108s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>More information about the successful deployment and as a first indication that everything is working fine can be grabbed from the logs of one of the pods.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl logs -n fluent-bit fluent-bit-dd4ql
+</span></span><span class="line"><span class="cl">fluent-bit-dd4ql   1/1     Running   <span class="m">0</span>          108s</span></span></code></pre></div></div>
+<p>More information about the successful deployment and as a first indication that everything is working fine can be grabbed from the logs of one of the pods.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl logs -n fluent-bit fluent-bit-dd4ql
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Fluent Bit v1.6.9
 </span></span><span class="line"><span class="cl">* Copyright (C) 2019-2020 The Fluent Bit Authors
@@ -502,10 +428,8 @@
 </span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [filter:kubernetes:kubernetes.0] API server connectivity OK
 </span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [output:syslog:syslog.0] setup done for vrli.jarvis.lab:514
 </span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [http_server] listen iface=0.0.0.0 tcp_port=2020
-</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [sp] stream processor started
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="what-vrealize-log-insight-shows">What vRealize Log Insight shows</h2>
+</span></span><span class="line"><span class="cl">[2021/01/12 14:05:11] [ info] [sp] stream processor started</span></span></code></pre></div></div>
+<h2 id="what-vrealize-log-insight-shows">What vRealize Log Insight shows</h2>
 <p>The log output from the Fluent Bit pods itself looks promising. Now let&rsquo;s check what vRLI has to offer. Login and check the <code>Hosts</code> section under <code>Administration</code>:</p>
 <figure><a class="lightgallery" href="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_115153.jpg" title="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_115153.jpg" data-thumbnail="/img/posts/202101_veba_fluentbit_vrli/CapturFiles-20210111_115153.jpg" data-sub-html="<h2>Figure II: TKG cluster is listed in vRLI</h2>">
         <img
@@ -632,7 +556,7 @@
                             <a class="link-to-markdown" href="/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-via="RobertGuske" data-hashtags="Logging,Kubernetes,VEBA,Serverless,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-via="RobertGuske" data-hashtags="Logging,Kubernetes,VEBA,Serverless,OpenSource"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" data-title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight" data-description="A guide how to leverage the open source project FluentBit to forward logs from a Tanzu Kubernetes Cluster to vRealize Log Insight."><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=https%3a%2f%2frguske.github.io%2fpost%2fleveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli%2f&amp;text=Leveraging%20Fluent%20Bit%20on%20Tanzu%20Kubernetes%20Grid%20to%20send%20VEBA%20logs%20to%20vRealize%20Log%20Insight" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -651,18 +575,18 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    L[ Source]\n    subgraph Inputs\n    A[ Standard Input ]\n    B[ Systemd ]\n    C[ Tail ]\n    D[ ... ]\n    end\n    E[ Fluent Bit ]\n    subgraph Outputs\n    F[ Standard Output ]\n    G[ Syslog ]\n    H[ Kafka ]\n    J[ ... ]\n    end\n    A \u0026 B \u0026 C --- E\n    E --- F \u0026 G \u0026 H\n    K[ Destination]\n    F \u0026 G \u0026 H --\u003e K\n    L --- A \u0026 B \u0026 C","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js" integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script>window.config={"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    L[ Source]\n    subgraph Inputs\n    A[ Standard Input ]\n    B[ Systemd ]\n    C[ Tail ]\n    D[ ... ]\n    end\n    E[ Fluent Bit ]\n    subgraph Outputs\n    F[ Standard Output ]\n    G[ Syslog ]\n    H[ Kafka ]\n    J[ ... ]\n    end\n    A \u0026 B \u0026 C --- E\n    E --- F \u0026 G \u0026 H\n    K[ Destination]\n    F \u0026 G \u0026 H --\u003e K\n    L --- A \u0026 B \u0026 C","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script src="/js/theme.min.67c28326f8888864ac082b008da85cd7a6da15b4a7690f3ad8b4731f946675a0.js" integrity="sha256-Z8KDJviIiGSsCCsAjahc16baFbSnaQ862LRzH5RmdaA="></script></body>
 </html>

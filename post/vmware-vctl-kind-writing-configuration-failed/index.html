@@ -27,8 +27,9 @@
   <meta name="twitter:description" content="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post.">
       <meta name="twitter:site" content="@RobertGuske">
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="prev" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="next" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" /><link rel="prev" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="next" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="stylesheet" href="/css/style.min.4c1ecc7bc2165a735631d9feeb3c06ed426d68f1fc2a5913154a628b199027f8.css" integrity="sha256-TB7Me8IWWnNWMdn+6zwG7UJtaPH8KlkTFUpiixmQJ/g="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -38,7 +39,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vmware-vctl-kind-writing-configuration-failed\/"
-        },"genre": "posts","keywords": "VMware, Fusion, Workstation, Kubernetes, KinD, Hack","wordcount":  1581 ,
+        },"genre": "posts","keywords": "VMware, Fusion, Workstation, Kubernetes, KinD, Hack","wordcount":  1486 ,
         "url": "https:\/\/rguske.github.io\/post\/vmware-vctl-kind-writing-configuration-failed\/","datePublished": "2021-03-02T10:50:00+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -47,7 +48,7 @@
             },"description": "VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I'm explaining in this post."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -112,8 +113,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">VMware vctl KinD - Writing configuration failed</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/end-user-computing/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>End User Computing</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-03-02">2021-03-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1581 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-03-02">2021-03-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1486 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -162,22 +163,12 @@
 <h2 id="adjusting-the-crx-vm-with-appropriate-resources">Adjusting the CRX VM with appropriate resources</h2>
 <p>By default <code>vctl</code> assigns 2 GB of memory and 2 CPU cores for the CRX VM that hosts the Kubernetes node container. For my Harbor 1-node deployment I sticked to the minimum requirements<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup> (2 CPUs, 4 GB Mem) for the Kubernetes node but also decided to give the CRX VM a little bit more, to keep the option open to run a Multo-Node deployment as well. Therefore, I  applied the following configuration:</p>
 <p><code>vctl system config --vm-cpus 4 --vm-mem 8192 --k8s-cpus 2 --k8s-mem 4096</code> which will adjust the <code>config.yaml</code> in <code>~/.vctl/</code> accordingly.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">cache-location</span><span class="p">:</span><span class="w"> </span><span class="l">/Users/rguske/.vctl</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">cache-location</span><span class="p">:</span><span class="w"> </span><span class="l">/Users/rguske/.vctl</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">k8s-cpus</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">k8s-mem</span><span class="p">:</span><span class="w"> </span><span class="m">4096</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">log-level</span><span class="p">:</span><span class="w"> </span><span class="l">info</span><span class="w">
@@ -187,10 +178,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">128g</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">vm-cpus</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">vm-mem</span><span class="p">:</span><span class="w"> </span><span class="m">8192</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">vmnet</span><span class="p">:</span><span class="w"> </span><span class="l">vmnet8</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="kind---writing-configuration-failed">KinD - Writing configuration failed</h2>
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">vmnet</span><span class="p">:</span><span class="w"> </span><span class="l">vmnet8</span></span></span></code></pre></div></div>
+<h2 id="kind---writing-configuration-failed">KinD - Writing configuration failed</h2>
 <p>Moving forward to the KinD cluster creation itself. I first looked up for the <code>latest</code> <a href="https://hub.docker.com/r/kindest/node/tags?page=1&amp;ordering=last_updated" target="_blank" rel="noopener noreffer ">kindest/node</a> image version I can choose.</p>
 <figure><a class="lightgallery" href="/img/posts/202102_vctlkindissue/CapturFiles-20210227_035317.jpg" title="/img/posts/202102_vctlkindissue/CapturFiles-20210227_035317.jpg" data-thumbnail="/img/posts/202102_vctlkindissue/CapturFiles-20210227_035317.jpg" data-sub-html="<h2>Figure I: kindest/node available images</h2>">
         <img
@@ -204,57 +193,25 @@
     </figure>
 <p>You can see at <em>Figure I</em> that <strong>v1.19.7</strong> is at the top (sort by: <em>Newest</em>) and so my choice was taken.</p>
 <p><code>kind create cluster --image kindest/node:v1.19.7 --name harbor</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.19.7<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✓ Preparing nodes 📦
 </span></span><span class="line"><span class="cl"> ✗ Writing configuration 📜
 </span></span><span class="line"><span class="cl">ERROR: failed to create cluster: failed to generate kubeadm config content: failed to get kubernetes version from node: failed to get file: <span class="nb">command</span> <span class="s2">&#34;docker exec --privileged harbor-control-plane cat /kind/version&#34;</span> failed with error: <span class="nb">exit</span> status <span class="m">1</span>
-</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \&#34;read init-p: connection reset by peer\&#34;: unknown&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>What is this <code>error msg</code> telling us? Let&rsquo;s activate <code>debug</code> mode by adding option <code>-v 1</code> to the command.</p>
+</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \&#34;read init-p: connection reset by peer\&#34;: unknown&#34;</span></span></span></code></pre></div></div>
+<p>What is this <code>error msg</code> telling us? Let&rsquo;s activate <code>debug</code> mode by adding option <code>-v 1</code> to the command.</p>
 <p><code>kind create cluster --image kindest/node:v1.19.7 --name harbor -v 1</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl">DEBUG: docker/images.go:58<span class="o">]</span> Image: kindest/node:v1.19.7 present locally
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.19.7<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✓ Preparing nodes 📦
@@ -279,10 +236,8 @@
 </span></span><span class="line"><span class="cl">sigs.k8s.io/kind/pkg/errors.UntilErrorConcurrent.func1
 </span></span><span class="line"><span class="cl">        sigs.k8s.io/kind/pkg/errors/concurrent.go:30
 </span></span><span class="line"><span class="cl">runtime.goexit
-</span></span><span class="line"><span class="cl">        runtime/asm_amd64.s:1374
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>I have to admit that I couldn&rsquo;t really use the output for further debugging and also searching the web helped me neither. Consequently, I reached out internally and got the hint that <strong>v1.20.0</strong> should work.</p>
+</span></span><span class="line"><span class="cl">        runtime/asm_amd64.s:1374</span></span></code></pre></div></div>
+<p>I have to admit that I couldn&rsquo;t really use the output for further debugging and also searching the web helped me neither. Consequently, I reached out internally and got the hint that <strong>v1.20.0</strong> should work.</p>
 <p><strong>v1.20.0</strong> &#x2753; &#x2757; I haven&rsquo;t seen this version on the list of available images (<em>Figure I</em>) and so I went back to Docker Hub and searched for this particular version.</p>
 <p>Okay, it exists and besides it a <strong>v1.20.2</strong>. as well. I learned <em>Newest</em> isn&rsquo;t related to Tags, what IMO would make sense, but it&rsquo;s related to <em>last pushed</em>.</p>
 <figure><a class="lightgallery" href="/img/posts/202102_vctlkindissue/Screenshot2021-03-01.jpg" title="/img/posts/202102_vctlkindissue/Screenshot2021-03-01.jpg" data-thumbnail="/img/posts/202102_vctlkindissue/Screenshot2021-03-01.jpg" data-sub-html="<h2>Figure II: hidden kindest image version 1.20.0</h2>">
@@ -297,24 +252,12 @@
     </figure>
 <p>Give it a another try and this time with v1.20.0.</p>
 <p><code>kind create cluster --image kindest/node:v1.20.0 --name harbor</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.20.0<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✓ Preparing nodes 📦
 </span></span><span class="line"><span class="cl"> ✓ Writing configuration 📜
@@ -326,43 +269,30 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">kubectl cluster-info --context kind-harbor
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Not sure what to <span class="k">do</span> next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get nodes -o wide
+</span></span><span class="line"><span class="cl">Not sure what to <span class="k">do</span> next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get nodes -o wide
 </span></span><span class="line"><span class="cl">NAME                   STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
-</span></span><span class="line"><span class="cl">harbor-control-plane   Ready    control-plane,master   48s   v1.20.0   192.168.43.2   &lt;none&gt;        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Created.</strong> On the one hand that&rsquo;s a satisfying result but on the other hand of course not, because we want to have the flexibilty to create a KinD cluster with every available Kubernetes (<code>kindest/node</code>) version.</p>
+</span></span><span class="line"><span class="cl">harbor-control-plane   Ready    control-plane,master   48s   v1.20.0   192.168.43.2   &lt;none&gt;        Ubuntu Groovy Gorilla (development branch)   4.19.138-7.ph3-esx   containerd://1.4.0</span></span></code></pre></div></div>
+<p><strong>Created.</strong> On the one hand that&rsquo;s a satisfying result but on the other hand of course not, because we want to have the flexibilty to create a KinD cluster with every available Kubernetes (<code>kindest/node</code>) version.</p>
 <p>If prior 1.20.0 won&rsquo;t work, will the next above work?</p>
 <p><code>kind create cluster --image kindest/node:v1.20.2 --name harbor</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.19.7<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✓ Preparing nodes 📦
 </span></span><span class="line"><span class="cl"> ✗ Writing configuration 📜
 </span></span><span class="line"><span class="cl">ERROR: failed to create cluster: failed to generate kubeadm config content: failed to get kubernetes version from node: failed to get file: <span class="nb">command</span> <span class="s2">&#34;docker exec --privileged harbor-control-plane cat /kind/version&#34;</span> failed with error: <span class="nb">exit</span> status <span class="m">1</span>
-</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \&#34;read init-p: connection reset by peer\&#34;: unknown&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&#x1f633; <strong>Failed</strong></p>
+</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Error starting process: container = harbor-control-plane, command = [cat /kind/version] env = [PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin container=docker TERM=xterm] error = container_linux.go:345: starting container process caused \&#34;read init-p: connection reset by peer\&#34;: unknown&#34;</span></span></span></code></pre></div></div>
+<p>&#x1f633; <strong>Failed</strong></p>
 <p>I repeated it with a couple of other versions and created the following table with my observations:</p>
 <h3 id="my-test-results">My Test Results</h3>
 <table>
@@ -436,44 +366,30 @@
 <p>Just create a file in a directory of your choice and add the following description to it:</p>
 <p><strong>Example:</strong></p>
 <p><code>vim ~/.kube/kind_worker</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># two node (one ctrl plane &amp; one worker node) cluster config
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># two node (one ctrl plane &amp; one worker node) cluster config
 </span></span><span class="line"><span class="cl">kind: Cluster
 </span></span><span class="line"><span class="cl">apiVersion: kind.x-k8s.io/v1alpha4
 </span></span><span class="line"><span class="cl">nodes:
 </span></span><span class="line"><span class="cl">- role: control-plane
 </span></span><span class="line"><span class="cl">- role: worker
-</span></span><span class="line"><span class="cl">- role: worker
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><code>kind create cluster --image kindest/node:v1.20.0 --name kind-cluster-harbor --config ~/.kube/kind_worker</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;kind-cluster-harbor&#34;</span> ...
+</span></span><span class="line"><span class="cl">- role: worker</span></span></code></pre></div></div>
+<p><code>kind create cluster --image kindest/node:v1.20.0 --name kind-cluster-harbor --config ~/.kube/kind_worker</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;kind-cluster-harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.20.0<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✗ Preparing nodes 📦 📦 
 </span></span><span class="line"><span class="cl">ERROR: failed to create cluster: docker run error: <span class="nb">command</span> <span class="s2">&#34;docker run --hostname kind-cluster-harbor-control-plane --name kind-cluster-harbor-control-plane --label io.x-k8s.kind.role=control-plane --privileged --security-opt seccomp=unconfined --security-opt apparmor=unconfined --tmpfs /tmp --tmpfs /run --volume /var --volume /lib/modules:/lib/modules:ro --detach --tty --label io.x-k8s.kind.cluster=kind-cluster-harbor --net kind --restart=on-failure:1 --publish=127.0.0.1:61721:6443/TCP kindest/node:v1.20.0&#34;</span> failed with error: <span class="nb">exit</span> status <span class="m">1</span>
-</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;failed to create container: container name (kind-cluster-harbor-control-plane) length is greater than the maximum allowed length (30)&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="details admonition failure open">
+</span></span><span class="line"><span class="cl">Command Output: <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;failed to create container: container name (kind-cluster-harbor-control-plane) length is greater than the maximum allowed length (30)&#34;</span></span></span></code></pre></div></div>
+<div class="details admonition failure open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>container name length exeeded<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
@@ -483,25 +399,12 @@
     </div>
 <p>Ooookay &#x1f644; the given cluster name is too long. Shortened:</p>
 <p><code>kind create cluster --image kindest/node:v1.20.0 --name kind-harbor --config ~/.kube/kind_worker</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;kind-harbor&#34;</span> ...
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Creating cluster <span class="s2">&#34;kind-harbor&#34;</span> ...
 </span></span><span class="line"><span class="cl"> ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.20.0<span class="o">)</span> 🖼
 </span></span><span class="line"><span class="cl"> ✓ Preparing nodes 📦 📦 📦
 </span></span><span class="line"><span class="cl"> ✓ Writing configuration 📜
@@ -514,25 +417,18 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">kubectl cluster-info --context kind-kind-harbor
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Thanks <span class="k">for</span> using kind! 😊
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><code>kubectl get nodes -o wide</code></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                        STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
+</span></span><span class="line"><span class="cl">Thanks <span class="k">for</span> using kind! 😊</span></span></code></pre></div></div>
+<p><code>kubectl get nodes -o wide</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                        STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
 </span></span><span class="line"><span class="cl">kind-harbor-control-plane   Ready    control-plane,master   67s   v1.20.0   192.168.43.6   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0
 </span></span><span class="line"><span class="cl">kind-harbor-worker          Ready    &lt;none&gt;                 39s   v1.20.0   192.168.43.5   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0
-</span></span><span class="line"><span class="cl">kind-harbor-worker2         Ready    &lt;none&gt;                 39s   v1.20.0   192.168.43.7   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Wohoo, a multi-node Kubernetes cluster running locally on my desktop.</p>
+</span></span><span class="line"><span class="cl">kind-harbor-worker2         Ready    &lt;none&gt;                 39s   v1.20.0   192.168.43.7   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0</span></span></code></pre></div></div>
+<p>Wohoo, a multi-node Kubernetes cluster running locally on my desktop.</p>
 <h2 id="commands-i-used">Commands I used</h2>
 <p>These are the commands I used in this post:</p>
 <ul>
@@ -580,7 +476,7 @@
                             <a class="link-to-markdown" href="/post/vmware-vctl-kind-writing-configuration-failed/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-via="RobertGuske" data-hashtags="VMware,Fusion,Workstation,Kubernetes,KinD,Hack"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-via="RobertGuske" data-hashtags="VMware,Fusion,Workstation,Kubernetes,KinD,Hack"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" data-title="VMware vctl KinD - Writing configuration failed" data-description="VMware Fusion can instantiate KinD clusters locally on your desktop (project Nautilus) but recently I discovered some restrictions which I&#39;m explaining in this post."><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=https%3a%2f%2frguske.github.io%2fpost%2fvmware-vctl-kind-writing-configuration-failed%2f&amp;text=VMware%20vctl%20KinD%20-%20Writing%20configuration%20failed" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -599,18 +495,18 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js" integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script>window.config={"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script src="/js/theme.min.67c28326f8888864ac082b008da85cd7a6da15b4a7690f3ad8b4731f946675a0.js" integrity="sha256-Z8KDJviIiGSsCCsAjahc16baFbSnaQ862LRzH5RmdaA="></script></body>
 </html>

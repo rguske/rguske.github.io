@@ -27,8 +27,9 @@
   <meta name="twitter:description" content="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes.">
       <meta name="twitter:site" content="@RobertGuske">
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-automation-with-project-harbor-and-knative/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="stylesheet" href="/css/style.min.4c1ecc7bc2165a735631d9feeb3c06ed426d68f1fc2a5913154a628b199027f8.css" integrity="sha256-TB7Me8IWWnNWMdn+6zwG7UJtaPH8KlkTFUpiixmQJ/g="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -38,7 +39,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/using-windows-smb-shares-in-kubernetes\/"
-        },"genre": "posts","keywords": "VMware, Kubernetes, Storage, CSI, SMB, Windows","wordcount":  2830 ,
+        },"genre": "posts","keywords": "VMware, Kubernetes, Storage, CSI, SMB, Windows","wordcount":  2350 ,
         "url": "https:\/\/rguske.github.io\/post\/using-windows-smb-shares-in-kubernetes\/","datePublished": "2022-09-25T11:21:00+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -47,7 +48,7 @@
             },"description": "Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -112,8 +113,8 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Using Windows SMB Shares in Kubernetes</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/storage/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Storage</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-25">2022-09-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2830 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-25">2022-09-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2350 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;12 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -193,52 +194,32 @@
 <h3 id="1-namespace">1. Namespace</h3>
 <p>By default every resource will be installed in namespace <code>kube-system</code>. Personally, I don&rsquo;t like installations in such Kubernetes system namespaces when I&rsquo;m validating new implementations in my k8s environments. Therefore, I&rsquo;m going to use a new namespace named <code>csi-smb-provisioner</code>.</p>
 <p>Just replace the name below and <code>export</code> it as an environment variable. I&rsquo;ll use <code>$NAMESPACE</code> for the next provided steps of the installation.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NAMESPACE</span><span class="o">=</span>csi-smb-provisioner
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Create the new namespace (copy/paste):</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NAMESPACE</span><span class="o">=</span>csi-smb-provisioner</span></span></code></pre></div></div>
+<p>Create the new namespace (copy/paste):</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">${NAMESPACE}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Validate the creation.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get ns
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Validate the creation.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get ns
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                           STATUS   AGE
 </span></span><span class="line"><span class="cl">csi-smb-provisioner            Active   4m14s
@@ -248,73 +229,15 @@
 </span></span><span class="line"><span class="cl">kube-system                    Active   2d21h
 </span></span><span class="line"><span class="cl">vmware-system-auth             Active   2d21h
 </span></span><span class="line"><span class="cl">vmware-system-cloud-provider   Active   2d21h
-</span></span><span class="line"><span class="cl">vmware-system-csi              Active   2d21h
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="2-rbac-resources">2. RBAC Resources</h3>
+</span></span><span class="line"><span class="cl">vmware-system-csi              Active   2d21h</span></span></code></pre></div></div>
+<h3 id="2-rbac-resources">2. RBAC Resources</h3>
 <p>In order to allow the <code>csi-smb-driver</code> interactions with other Kubernetes resources, like e.g. <code>PersistentVolumes</code>, <code>PersistentVolumeClaims</code> or <code>Nodes</code>, the appropriate RBAC resources have to be created. By executing the next manifest, a <code>ServiceAccount</code>, a <code>ClusterRole</code> as well as a <code>ClusterRoleBinding</code> will be created.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceAccount</span><span class="w">
@@ -370,43 +293,27 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">smb-external-provisioner-role</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>As a result you should see&hellip;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">serviceaccount/csi-smb-controller-sa created
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>As a result you should see&hellip;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">serviceaccount/csi-smb-controller-sa created
 </span></span><span class="line"><span class="cl">serviceaccount/csi-smb-node-sa created
 </span></span><span class="line"><span class="cl">clusterroles.rbac.authorization.k8s.io/smb-external-provisioner-role
-</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/smb-csi-provisioner-binding created
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;as output on your terminal.</p>
+</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/smb-csi-provisioner-binding created</span></span></code></pre></div></div>
+<p>&hellip;as output on your terminal.</p>
 <h3 id="3-csi-smb-driver-installation">3. CSI-SMB-Driver Installation</h3>
 <p>Next up is the installation of the CSI-SMB driver itself. This won&rsquo;t be installed in the newly created namespace (<code>$NAMESPACE</code>).</p>
 <p>Execute:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">storage.k8s.io/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CSIDriver</span><span class="w">
@@ -415,27 +322,19 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">attachRequired</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podInfoOnMount</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Validation can be done by running:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get csidrivers.storage.k8s.io
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Validation can be done by running:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get csidrivers.storage.k8s.io
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                     ATTACHREQUIRED   PODINFOONMOUNT   STORAGECAPACITY   TOKENREQUESTS   REQUIRESREPUBLISH   MODES        AGE
 </span></span><span class="line"><span class="cl">csi.vsphere.vmware.com   <span class="nb">true</span>             <span class="nb">false</span>            <span class="nb">false</span>             &lt;unset&gt;         <span class="nb">false</span>               Persistent   2d22h
-</span></span><span class="line"><span class="cl">smb.csi.k8s.io           <span class="nb">false</span>            <span class="nb">true</span>             <span class="nb">false</span>             &lt;unset&gt;         <span class="nb">false</span>               Persistent   21s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="installation-from-a-private-registry">Installation from a Private Registry</h3>
+</span></span><span class="line"><span class="cl">smb.csi.k8s.io           <span class="nb">false</span>            <span class="nb">true</span>             <span class="nb">false</span>             &lt;unset&gt;         <span class="nb">false</span>               Persistent   21s</span></span></code></pre></div></div>
+<h3 id="installation-from-a-private-registry">Installation from a Private Registry</h3>
 <p>When you often have to deal with fully internet-restricted environments (air-gapped) like me, it&rsquo;s important to be well prepared for such offline-installations. One preperation for instance is to make the appropriate container-images offline available first. For the CSI-SMB-Driver it&rsquo;s the images for the:</p>
 <p>CSI-SMB-Controller (<code>deployment</code>)</p>
 <ul>
@@ -455,151 +354,35 @@
 <li><a href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" target="_blank" rel="noopener noreffer ">Sharing Container Images using the Docker CLI or Carvel&rsquo;s imgpkg</a>.</li>
 </ul>
 <p>Once the images are available offline, you have to create an <code>imagePullSecret</code> in Kubernetes which has to be referenced accordingly in the manifest files.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$NAMESPACE</span> create secret docker-registry harbor-creds <span class="se">\
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$NAMESPACE</span> create secret docker-registry harbor-creds <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-server<span class="o">=</span><span class="s1">&#39;harbor.jarvis.tanzu&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-username<span class="o">=</span><span class="s1">&#39;admin&#39;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-password<span class="o">=</span><span class="s1">&#39;$PASSWORD&#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>To be referenced in <code>csi-smb-controller.yaml</code> and <code>csi-smb-node.yaml</code>.</p>
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--docker-password<span class="o">=</span><span class="s1">&#39;$PASSWORD&#39;</span></span></span></code></pre></div></div>
+<p>To be referenced in <code>csi-smb-controller.yaml</code> and <code>csi-smb-node.yaml</code>.</p>
 <p><strong>Snipped:</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">imagePullSecrets</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">harbor-creds</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>I&rsquo;m not going to install it from a private-registry and therefore I stick with the public image-references.</p>
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span></span></span></code></pre></div></div>
+<p>I&rsquo;m not going to install it from a private-registry and therefore I stick with the public image-references.</p>
 <h3 id="4-deployment---csi-smb-controller">4. Deployment - CSI-SMB-Controller</h3>
 <p>The next step is the installation of the <code>csi-smb-controller</code> which will run as a Kubernetes deployment on your cluster. Create a new <code>.yaml</code> file, name it e.g. <code>csi-smb-controller.yaml</code>, and paste in the following specifications:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">csi-smb-controller</span><span class="w">
@@ -705,34 +488,21 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">20Mi</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">socket-dir</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Install the csi-smb-controller using the newly created manifest file.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$NAMESPACE</span> apply -f csi-smb-controller.yaml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Validation:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n csi-smb-provisioner get deploy,po,rs -o wide
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}</span></span></code></pre></div></div>
+<p>Install the csi-smb-controller using the newly created manifest file.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$NAMESPACE</span> apply -f csi-smb-controller.yaml</span></span></code></pre></div></div>
+<p>Validation:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n csi-smb-provisioner get deploy,po,rs -o wide
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS                           IMAGES                                                                                                                                             SELECTOR
 </span></span><span class="line"><span class="cl">deployment.apps/csi-smb-controller   1/1     <span class="m">1</span>            <span class="m">1</span>           16d   csi-provisioner,liveness-probe,smb   registry.k8s.io/sig-storage/csi-provisioner:v3.2.0,registry.k8s.io/sig-storage/livenessprobe:v2.7.0,registry.k8s.io/sig-storage/smbplugin:v1.9.0   <span class="nv">app</span><span class="o">=</span>csi-smb-controller
@@ -741,144 +511,16 @@
 </span></span><span class="line"><span class="cl">pod/csi-smb-controller-7b9cd56676-kg8nl   3/3     Running   <span class="m">0</span>          11d   172.20.6.38    mark50-tkc-1-node-ckr5w-5976457f9c-sx95v   &lt;none&gt;           &lt;none&gt;
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                                            DESIRED   CURRENT   READY   AGE   CONTAINERS                           IMAGES                                                                                                                                             SELECTOR
-</span></span><span class="line"><span class="cl">replicaset.apps/csi-smb-controller-7b9cd56676   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       16d   csi-provisioner,liveness-probe,smb   registry.k8s.io/sig-storage/csi-provisioner:v3.2.0,registry.k8s.io/sig-storage/livenessprobe:v2.7.0,registry.k8s.io/sig-storage/smbplugin:v1.9.0   <span class="nv">app</span><span class="o">=</span>csi-smb-controller,pod-template-hash<span class="o">=</span>7b9cd56676
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="6-daemonset---csi-smb-node">6. DaemonSet - CSI-SMB-Node</h3>
+</span></span><span class="line"><span class="cl">replicaset.apps/csi-smb-controller-7b9cd56676   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       16d   csi-provisioner,liveness-probe,smb   registry.k8s.io/sig-storage/csi-provisioner:v3.2.0,registry.k8s.io/sig-storage/livenessprobe:v2.7.0,registry.k8s.io/sig-storage/smbplugin:v1.9.0   <span class="nv">app</span><span class="o">=</span>csi-smb-controller,pod-template-hash<span class="o">=</span>7b9cd56676</span></span></code></pre></div></div>
+<h3 id="6-daemonset---csi-smb-node">6. DaemonSet - CSI-SMB-Node</h3>
 <p>Create another file for the DaemonSet <code>csi-smb-node</code>.</p>
 <p>E.g. <code>csi-smb-node.yaml</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span><span class="lnt">108
-</span><span class="lnt">109
-</span><span class="lnt">110
-</span><span class="lnt">111
-</span><span class="lnt">112
-</span><span class="lnt">113
-</span><span class="lnt">114
-</span><span class="lnt">115
-</span><span class="lnt">116
-</span><span class="lnt">117
-</span><span class="lnt">118
-</span><span class="lnt">119
-</span><span class="lnt">120
-</span><span class="lnt">121
-</span><span class="lnt">122
-</span><span class="lnt">123
-</span><span class="lnt">124
-</span><span class="lnt">125
-</span><span class="lnt">126
-</span><span class="lnt">127
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">csi-smb-node</span><span class="w">
@@ -1004,28 +646,15 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">hostPath</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/kubelet/plugins_registry/</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">DirectoryOrCreate</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">registration-dir</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Deploy the <code>DaemonSet</code> to Kubernetes: <code>kubectl -n $NAMESPACE apply -f csi-smb-node.yaml</code></p>
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">registration-dir</span></span></span></code></pre></div></div>
+<p>Deploy the <code>DaemonSet</code> to Kubernetes: <code>kubectl -n $NAMESPACE apply -f csi-smb-node.yaml</code></p>
 <p>Validation:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n csi-smb-provisioner get ds,po -o wide
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n csi-smb-provisioner get ds,po -o wide
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE   CONTAINERS                                 IMAGES                                                                                                                                                       SELECTOR
 </span></span><span class="line"><span class="cl">daemonset.apps/csi-smb-node   <span class="m">5</span>         <span class="m">5</span>         <span class="m">5</span>       <span class="m">5</span>            <span class="m">5</span>           kubernetes.io/os<span class="o">=</span>linux   16d   liveness-probe,node-driver-registrar,smb   registry.k8s.io/sig-storage/livenessprobe:v2.7.0,registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.1,registry.k8s.io/sig-storage/smbplugin:v1.9.0   <span class="nv">app</span><span class="o">=</span>csi-smb-node
@@ -1036,75 +665,54 @@
 </span></span><span class="line"><span class="cl">pod/csi-smb-node-jlsbk                    3/3     Running   <span class="m">0</span>          11d   10.197.96.63   mark50-tkc-1-control-plane-6q6x8           &lt;none&gt;           &lt;none&gt;
 </span></span><span class="line"><span class="cl">pod/csi-smb-node-s9ww5                    3/3     Running   <span class="m">0</span>          11d   10.197.96.69   mark50-tkc-1-node-ckr5w-5976457f9c-2t9hx   &lt;none&gt;           &lt;none&gt;
 </span></span><span class="line"><span class="cl">pod/csi-smb-node-v87dv                    3/3     Running   <span class="m">0</span>          11d   10.197.96.65   mark50-tkc-1-control-plane-hb5b9           &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">pod/csi-smb-node-w9tnk                    3/3     Running   <span class="m">0</span>          11d   10.197.96.68   mark50-tkc-1-node-ckr5w-5976457f9c-sx95v   &lt;none&gt;           &lt;none&gt;
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="testing">Testing</h2>
+</span></span><span class="line"><span class="cl">pod/csi-smb-node-w9tnk                    3/3     Running   <span class="m">0</span>          11d   10.197.96.68   mark50-tkc-1-node-ckr5w-5976457f9c-sx95v   &lt;none&gt;           &lt;none&gt;</span></span></code></pre></div></div>
+<h2 id="testing">Testing</h2>
 <p>Since all our validations have the desired conditions, we&rsquo;ll finish the installation with a simple test example. In this test, we are going to write from a pod to a SMB share which is accessible through a mounted Persistent Volume.</p>
 <p>Test namespace first!</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TESTNS</span><span class="o">=</span>smb-test
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns <span class="nv">$TESTNS</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="1-create-smb-access-secret">1. Create SMB Access Secret</h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TESTNS</span><span class="o">=</span>smb-test</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns <span class="nv">$TESTNS</span></span></span></code></pre></div></div>
+<h3 id="1-create-smb-access-secret">1. Create SMB Access Secret</h3>
 <p>A <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-authentication" target="_blank" rel="noopener noreffer ">user-level authentication</a> is required to access the share. This will be done by referencing a Kubernetes <code>secret</code> in the Persistent Volume resource creation.</p>
 <p><strong>PV Snipped:</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">nodeStageSecretRef</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">smb-creds</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">smb-test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Create the <code>secret</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">USER</span><span class="o">=</span><span class="s1">&#39;testuser&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span></span></span></code></pre></div></div>
+<p>Create the <code>secret</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">USER</span><span class="o">=</span><span class="s1">&#39;testuser&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">PASSWORD</span><span class="o">=</span><span class="s1">&#39;VMware1!&#39;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">DOMAIN</span><span class="o">=</span><span class="s1">&#39;jarvis.tanzu&#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> create secret generic smb-creds <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">DOMAIN</span><span class="o">=</span><span class="s1">&#39;jarvis.tanzu&#39;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> create secret generic smb-creds <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">username</span><span class="o">=</span><span class="nv">$USER</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">domain</span><span class="o">=</span><span class="nv">$DOMAIN</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">password</span><span class="o">=</span><span class="nv">$PASSWORD</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><blockquote>
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal <span class="nv">password</span><span class="o">=</span><span class="nv">$PASSWORD</span></span></span></code></pre></div></div>
+<blockquote>
 <p><strong>IMPORTANT!</strong> Securing your Kubernetes Secrets is recommended when using sensible data like your Active Directory credentials in production. Solutions like e.g. <a href="https://bitnami.com/stack/sealed-secrets" target="_blank" rel="noopener noreffer ">Sealed Secrets by Bitnami</a> or <a href="https://www.vaultproject.io/" target="_blank" rel="noopener noreffer ">Vault by HashiCorp</a> should be considered being used.</p>
 </blockquote>
 <h3 id="2-create-persistentvolume">2. Create PersistentVolume</h3>
@@ -1113,49 +721,19 @@
 <blockquote>
 <p>Pay attention to the <code>spec</code> for <code>volumeHandle</code> and <code>source</code>!</p>
 </blockquote>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VOLUMEID</span><span class="o">=</span><span class="s1">&#39;smb-vol-1&#39;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">SOURCE</span><span class="o">=</span><span class="s1">&#39;//dc.jarvis.tanzu/data&#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt; EOF</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VOLUMEID</span><span class="o">=</span><span class="s1">&#39;smb-vol-1&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="nb">export</span> <span class="nv">SOURCE</span><span class="o">=</span><span class="s1">&#39;//dc.jarvis.tanzu/data&#39;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt; EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolume</span><span class="w">
@@ -1182,46 +760,24 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">nodeStageSecretRef</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">smb-creds</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">smb-test</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Validation:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n smb-test get pv
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Validation:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n smb-test get pv
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                                   STORAGECLASS   REASON   AGE
-</span></span><span class="line"><span class="cl">pv-smb                                     50Gi       RWX            Retain           Available                                                                                   46m
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Continue with the <code>PersitstentVolumeClaim</code> to bound the volume.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
+</span></span><span class="line"><span class="cl">pv-smb                                     50Gi       RWX            Retain           Available                                                                                   46m</span></span></code></pre></div></div>
+<p>Continue with the <code>PersitstentVolumeClaim</code> to bound the volume.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
@@ -1236,75 +792,28 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">10Gi</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">volumeName</span><span class="p">:</span><span class="w"> </span><span class="l">pv-smb</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Validate that the <code>STATUS</code> is in state <code>Bound</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl  -n smb-test get pv,pvc
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Validate that the <code>STATUS</code> is in state <code>Bound</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl  -n smb-test get pv,pvc
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
 </span></span><span class="line"><span class="cl">persistentvolume/pv-smb    50Gi       RWX            Retain           Bound    smb-test/pvc-smb                          49m
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                            STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-</span></span><span class="line"><span class="cl">persistentvolumeclaim/pvc-smb   Bound    pv-smb   50Gi       RWX                           13s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="3-validating-write-access">3. Validating Write-Access</h3>
+</span></span><span class="line"><span class="cl">persistentvolumeclaim/pvc-smb   Bound    pv-smb   50Gi       RWX                           13s</span></span></code></pre></div></div>
+<h3 id="3-validating-write-access">3. Validating Write-Access</h3>
 <p>In order to validate that we have access to the provided share on a Windows Fileserver, we&rsquo;ll create a simple <code>deployment</code> using the following nginx image <code>mcr.microsoft.com/oss/nginx/nginx:1.19.5</code> and write a file named <code>outfile</code> to the mounted share.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n $TESTNS create -f - &lt;&lt;EOF</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n $TESTNS create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
@@ -1341,48 +850,33 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">smb</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">pvc-smb</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>The successful write can be validated by executing <code>ls -rtl</code> from within the pod:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> <span class="nb">exec</span> -it deploy-smb-pod-8569fdd89c-dmlzh -- ls -rtl /mnt/smb
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>The successful write can be validated by executing <code>ls -rtl</code> from within the pod:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> <span class="nb">exec</span> -it deploy-smb-pod-8569fdd89c-dmlzh -- ls -rtl /mnt/smb
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">total <span class="m">28</span>
-</span></span><span class="line"><span class="cl">-rwxrwxrwx <span class="m">1</span> root root <span class="m">26280</span> Sep <span class="m">25</span> 17:53 outfile
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Also, creating a new file using <code>kubectl exec</code> is very easy:</p>
+</span></span><span class="line"><span class="cl">-rwxrwxrwx <span class="m">1</span> root root <span class="m">26280</span> Sep <span class="m">25</span> 17:53 outfile</span></span></code></pre></div></div>
+<p>Also, creating a new file using <code>kubectl exec</code> is very easy:</p>
 <p><code>kubectl -n $TESTNS exec -it deploy-smb-pod-8569fdd89c-dmlzh -- touch /mnt/smb/test.txt</code></p>
 <p>Show the folder content:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> <span class="nb">exec</span> -it deploy-smb-pod-8569fdd89c-dmlzh -- ls -la /mnt/smb
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n <span class="nv">$TESTNS</span> <span class="nb">exec</span> -it deploy-smb-pod-8569fdd89c-dmlzh -- ls -la /mnt/smb
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">total <span class="m">48</span>
 </span></span><span class="line"><span class="cl">drwxrwxrwx <span class="m">2</span> root root     <span class="m">0</span> Sep <span class="m">25</span> 18:02 .
 </span></span><span class="line"><span class="cl">drwxr-xr-x <span class="m">1</span> root root  <span class="m">4096</span> Sep <span class="m">25</span> 17:51 ..
 </span></span><span class="line"><span class="cl">-rwxrwxrwx <span class="m">1</span> root root <span class="m">43800</span> Sep <span class="m">25</span> 18:03 outfile
-</span></span><span class="line"><span class="cl">-rwxrwxrwx <span class="m">1</span> root root     <span class="m">0</span> Sep <span class="m">25</span> 18:15 test.txt
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Here we go!</p>
+</span></span><span class="line"><span class="cl">-rwxrwxrwx <span class="m">1</span> root root     <span class="m">0</span> Sep <span class="m">25</span> 18:15 test.txt</span></span></code></pre></div></div>
+<p>Here we go!</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" title="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" data-thumbnail="/img/posts/202209_smb_kubernetes/rguske-post-smb-kubernetes-1.png" data-sub-html="<h2>Figure I: Windows Fileserver File Creation</h2>">
         <img
             class="lazyload"
@@ -1422,7 +916,7 @@
                             <a class="link-to-markdown" href="/post/using-windows-smb-shares-in-kubernetes/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-via="RobertGuske" data-hashtags="VMware,Kubernetes,Storage,CSI,SMB,Windows"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-via="RobertGuske" data-hashtags="VMware,Kubernetes,Storage,CSI,SMB,Windows"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" data-title="Using Windows SMB Shares in Kubernetes" data-description="Using Windows Fileserver shares in Kubernetes? This post introduce how this can be achieved by installing and using the SMB CSI driver for Kubernetes."><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=https%3a%2f%2frguske.github.io%2fpost%2fusing-windows-smb-shares-in-kubernetes%2f&amp;text=Using%20Windows%20SMB%20Shares%20in%20Kubernetes" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -1441,18 +935,18 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js" integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script>window.config={"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script src="/js/theme.min.67c28326f8888864ac082b008da85cd7a6da15b4a7690f3ad8b4731f946675a0.js" integrity="sha256-Z8KDJviIiGSsCCsAjahc16baFbSnaQ862LRzH5RmdaA="></script></body>
 </html>

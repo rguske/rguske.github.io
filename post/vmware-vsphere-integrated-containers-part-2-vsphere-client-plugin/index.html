@@ -24,8 +24,9 @@
   <meta name="twitter:description" content="In this section, I´d like to give you a walkthrough on how to install the VIC vSphere Client Plug-In for the vCenter Server Appliance. I´m already using the vCenter Server Appliance aka vCSA in Version 6.7.0.">
       <meta name="twitter:site" content="@RobertGuske">
 <meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-3-deployment-of-a-virtual-container-host/" /><link rel="stylesheet" href="/css/style.min.4c1ecc7bc2165a735631d9feeb3c06ed426d68f1fc2a5913154a628b199027f8.css" integrity="sha256-TB7Me8IWWnNWMdn+6zwG7UJtaPH8KlkTFUpiixmQJ/g="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
@@ -35,7 +36,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Docker","wordcount":  566 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Docker","wordcount":  554 ,
         "url": "https:\/\/rguske.github.io\/post\/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin\/","datePublished": "2018-07-13T13:17:23+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": "Robert Guske"},"author": {
@@ -44,7 +45,7 @@
             },"description": ""
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -109,7 +110,7 @@
             <div class="toc-content always-active" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere Integrated Containers Part II: vSphere Client Plug-In</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-07-13">2018-07-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;566 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-07-13">2018-07-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;554 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
@@ -162,47 +163,36 @@ The first step from the installation of the vSphere Client Plug-In is to downloa
             alt="/img/posts/201807_vic_getting_started/CapturFiles-20180616_095438.jpg" width="800" />
     </a>
 <p>Now let&rsquo;s establish a ssh-connection to the vCSA.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh root@192.168.100.72
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Write and execute:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">shell
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>After the login we now want to download and unpack the vic-bundle tar-file from the VIC Appliance to start the installation of the VIC vSphere Client Plug-In. You should just change my IP-Address to yours in the following lines.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VIC_ADDRESS</span><span class="o">=</span>192.168.100.160
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh root@192.168.100.72</span></span></code></pre></div></div>
+<p>Write and execute:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">shell</span></span></code></pre></div></div>
+<p>After the login we now want to download and unpack the vic-bundle tar-file from the VIC Appliance to start the installation of the VIC vSphere Client Plug-In. You should just change my IP-Address to yours in the following lines.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VIC_ADDRESS</span><span class="o">=</span>192.168.100.160
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VIC_BUNDLE</span><span class="o">=</span>vic_v1.4.0.tar.gz
-</span></span><span class="line"><span class="cl">curl -kL https://<span class="si">${</span><span class="nv">VIC_ADDRESS</span><span class="si">}</span>:9443/files/<span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tar -zxf <span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> vic/ui/VCSA
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>By using the Linux command <code>ls</code> (list)<code>-ltr</code> (sort by change date) you should see the downloaded file.
+</span></span><span class="line"><span class="cl">curl -kL https://<span class="si">${</span><span class="nv">VIC_ADDRESS</span><span class="si">}</span>:9443/files/<span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tar -zxf <span class="si">${</span><span class="nv">VIC_BUNDLE</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> vic/ui/VCSA</span></span></code></pre></div></div>
+<p>By using the Linux command <code>ls</code> (list)<code>-ltr</code> (sort by change date) you should see the downloaded file.
 The next and final step before the installation of the vCenter plug-in can begin, is the execution of the installation script.</p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_094828.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_094828.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_094828.jpg">
         <img
@@ -214,15 +204,13 @@ The next and final step before the installation of the vCenter plug-in can begin
             alt="/img/posts/201807_vic_getting_started/CapturFiles-20180616_094828.jpg" width="800" />
     </a>
 <p>Execute the install.sh script by entering:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./install.sh
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;and provide the requested data (vCSA FQDN as well as vCenter Server Administrator Credentials). By the end it should look like this:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./install.sh</span></span></code></pre></div></div>
+<p>&hellip;and provide the requested data (vCSA FQDN as well as vCenter Server Administrator Credentials). By the end it should look like this:</p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_095702.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_095702.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_095702.jpg">
         <img
             class="lazyload"
@@ -244,17 +232,14 @@ The next and final step before the installation of the vCenter plug-in can begin
     </a>
 <p>Voila!
 Okay, now we are close to make use of the vic plug-in capabilities in our vSphere-WebClient but before we can go ahead, we need to restart the H5-Client as well as the Flex-based vSphere Web Client by running the following commands:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service-control --stop vsphere-ui <span class="o">&amp;&amp;</span> service-control --start vsphere-ui
-</span></span><span class="line"><span class="cl">service-control --stop vsphere-client <span class="o">&amp;&amp;</span> service-control --start vsphere-client
-</span></span></code></pre></td></tr></table>
-</div>
-</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service-control --stop vsphere-ui <span class="o">&amp;&amp;</span> service-control --start vsphere-ui
+</span></span><span class="line"><span class="cl">service-control --stop vsphere-client <span class="o">&amp;&amp;</span> service-control --start vsphere-client</span></span></code></pre></div></div>
+<a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -264,17 +249,14 @@ Okay, now we are close to make use of the vic plug-in capabilities in our vSpher
             alt="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" width="800" />
     </a>
 <p>Because we want to hold our vCSA as clean as a Appliance should be, we have to get rid of our tracks by starting the cleaning process through the deletion of the unpacked tar-file.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rm *.tar.gz
-</span></span><span class="line"><span class="cl">rm -R vic
-</span></span></code></pre></td></tr></table>
-</div>
-</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rm *.tar.gz
+</span></span><span class="line"><span class="cl">rm -R vic</span></span></code></pre></div></div>
+<a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100743.jpg">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -323,7 +305,7 @@ Okay, now we are close to make use of the vic plug-in capabilities in our vSpher
                             <a class="link-to-markdown" href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-via="RobertGuske" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-description=""><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-description=""><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-via="RobertGuske" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-description=""><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-description=""><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" data-title="vSphere Integrated Containers Part II: vSphere Client Plug-In" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=https%3a%2f%2frguske.github.io%2fpost%2fvmware-vsphere-integrated-containers-part-2-vsphere-client-plugin%2f&amp;text=vSphere%20Integrated%20Containers%20Part%20II%3a%20vSphere%20Client%20Plug-In" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
@@ -342,18 +324,18 @@ Okay, now we are close to make use of the vic plug-in capabilities in our vSpher
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.135.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js" integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script>window.config={"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script src="/js/theme.min.67c28326f8888864ac082b008da85cd7a6da15b4a7690f3ad8b4731f946675a0.js" integrity="sha256-Z8KDJviIiGSsCCsAjahc16baFbSnaQ862LRzH5RmdaA="></script></body>
 </html>

@@ -84,9 +84,11 @@ More details on [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linked
 
 ### VMware vExpert Program (inactive 2025)
 
-{{< image src="/img/about/vmware-vexpert.png" src-s="/img/about/vmware-vexpert.png" >}}
+⭐⭐⭐⭐⭐
 
-**Status**: Active 2019 - 2024
+**Status**: Inactive 2019 - 2024
+
+{{< image src="/img/about/vexpert_modernapps.png" src-s="/img/about/vexpert_modernapps.png" height="100" width="200" >}}
 
 **vExpert Directory**: [#3288](https://vexpert.vmware.com/directory/3288)
 
@@ -95,8 +97,6 @@ Acknowledgement by sharing passion and gained experience with the community.
 {{< admonition info "About the program" true >}}
 The annual VMware vExpert title is given to individuals who have significantly contributed to the community of VMware users over the past year. The title is awarded to individuals (not employers) for their commitment to sharing their knowledge and passion for VMware technology above and beyond their job requirements.
 {{< /admonition >}}
-
-<img src="https://vexpert.vmware.com/directory/3288/vexpert-badge-stars.png" width="300" alt="vExpert Badge" title="vExpert Badge"/>
 
 ### vExpert Subprograms
 
