@@ -9,9 +9,8 @@
 
 - <i class="far fa-envelope fa-fw"></i> [Mail](mailto:robert.guske@gmail.com)
 - <i class="fab fa-linkedin fa-fw"></i><a href="https://www.linkedin.com/in/robert-guske-830853111/" target="_blank"> Robert Guske</a>
-- <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/RobertGuske" target="_blank"> @RobertGuske</a>
 - <i class='fab fa-github fa-fw'></i><a href="https://github.com/rguske" target="_blank"> rguske</a>
-- vExpert: [#3288](https://vexpert.vmware.com/directory/3288)
+- 🦋 [robertguske](https://bsky.app/profile/robertguske.bsky.social)
 
 ```yaml
 apiVersion: profile/v2
@@ -44,18 +43,24 @@ subject:
 
 I'm an accomplished, hands-on, & well informed IT professional with 20+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. I'm a tech enthusiast and actively engaged in shaping the future of cloud-native tech through my commitment and passion for the principles of collaboration and innovation.
 
-In my current role as a Senior Specialist Solution Architect for [Red Hat](https://en.wikipedia.org/wiki/Red_Hat)'s enterprise leading hybrid cloud application platform [OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift), I'm supporting internal teams as well as customers running challenging workshops as well as Proof-of-Concepts (PoC). Besides this solution specific responsibility, I'm always eager to encourage and support clients and organizations to adopt new technologies to accomplish their business goals and IT objectives. These technologies are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+In my current role as a Senior Specialist Solution Architect for [Red Hat](https://en.wikipedia.org/wiki/Red_Hat)'s leading enterprise hybrid cloud application platform [OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift), I'm supporting internal teams as well as customers running challenging workshops as well as Proof-of-Concepts (PoC). Besides this solution specific responsibility, I'm always eager to encourage and support clients and organizations to adopt new technologies to accomplish their business goals and IT objectives. These technologies are mainly oriented towards application modernization as well as on the platforms to run such modern applications.
 
-I'm also a proud ex-[VMware](https://en.wikipedia.org/wiki/VMware) employee. During my time at VMware, I served customers and partners in different roles. Roles like in post-sales as a Staff Technical Account Manager or in pre-sales as a Lead Emerging Solutions Engineer.
+I'm also a proud ex-[VMware](https://en.wikipedia.org/wiki/VMware) employee. During my time at VMware, I served customers and partners in post-sales as a Staff Technical Account Manager and later in pre-sales as a Lead Emerging Solutions Engineer in the EMEA region for VMware's application modernization solution portfolio Tanzu.
 
 ### Achievements
+
+Achievements are always a definition of your own success criterias. If a contribution of mine helped someone to achieve his/her goal, it is an achievement for myself as well.
+"You never walk alone" - Leading customers to their individual success always counts to my biggest achievements.
+
+Same applies to the companies I'm serving!
+
+Presenting on several industry events is always a pleasure and an achievement too. #DistingushedSpeakeratVMware
 
 Becoming a VMware Office of the CTO Ambassador counts to my greatest achievements. Members are involved in advocating VMware's technological innovations, assisting with customer engagements, and contributing to the company's strategic technological direction. Furthermore, ensuring an active collaboration between VMware's R&D, field organizations as well as customers across the globe is also an important part of the program.
 
 In addition to the achievement of becoming a CTO Ambassador, I was part of the initial team which created and maintained the official VMware open-source project [VMware Event Broker Appliance](https://vmweventbroker.io). The experience each individual of the team has gained and the successes the team has achieved are among the most valuable in my professional career.
 
-- Homepage: https://vmweventbroker.io
-- <i class='fab fa-github fa-fw'></i> Repository: https://github.com/vmware-samples/vcenter-event-broker-appliance/
+- <i class='fab fa-github fa-fw'></i> Repository (archived in 2025): https://github.com/vmware-samples/vcenter-event-broker-appliance/
 - VEBA related articles written by Robert: https://rguske.github.io/tags/veba/
 
 ### Certifications
@@ -77,7 +82,7 @@ More details on [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linked
 
 {{< image src="/img/about/VMware_cert_dcv_2021.png" src-s="/img/about/VMware_cert_dcv_2021.png" height="200" width="200" >}}
 
-### VMware vExpert Program
+### VMware vExpert Program (inactive 2025)
 
 {{< image src="/img/about/vmware-vexpert.png" src-s="/img/about/vmware-vexpert.png" >}}
 
@@ -123,7 +128,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **MAPB1264BCN** | *Get Started with Containers, Kubernetes and VMware Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1684138787121001fwFz&videoId=6340723571112) |
+| **MAPB1264BCN** | *Get Started with Containers, Kubernetes and VMware Tanzu*. | [Explore Video Library - Offline](https://github.com/lamw/vmware-explore-2023-session-urls/blob/master/vmware-explore-emea.md) |
 
 <center> {{< tweet user="vmw_rguske" id="1724112422066176159" >}} </center>
 
@@ -150,8 +155,8 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
-| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112) |
+| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [Explore Video Library - Offline](https://github.com/lamw/vmware-explore-2022-session-urls/blob/master/vmware-explore-emea.md) |
+| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [Explore Video Library - Offline](https://github.com/lamw/vmware-explore-2022-session-urls/blob/master/vmware-explore-emea.md) |
 
 <center> {{< tweet user="vmw_rguske" id="1592138082618609664" >}} </center>
 
