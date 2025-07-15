@@ -4,22 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg - Robert Guske</title><meta name="Description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."><meta property="og:title" content="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" />
-<meta property="og:description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-04-07T16:20:24+02:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg - Blog Robert Guske</title><meta name="Description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."><meta property="og:url" content="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg">
+  <meta property="og:description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-04-07T16:20:24+02:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="Carvel">
+    <meta property="article:tag" content="Tools">
+    <meta property="article:tag" content="OpenSource">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"/>
-<meta name="twitter:description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" /><link rel="prev" href="https://rguske.github.io/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="next" href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg">
+  <meta name="twitter:description" content="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" /><link rel="prev" href="https://rguske.github.io/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="next" href="https://rguske.github.io/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +36,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/"
-        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel, Tools, OpenSource","wordcount":  1191 ,
+        },"genre": "posts","keywords": "Kubernetes, Docker, Carvel, Tools, OpenSource","wordcount":  1102 ,
         "url": "https:\/\/rguske.github.io\/post\/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg\/","datePublished": "2022-04-07T16:20:24+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-6" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-6" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +80,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-7" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-7" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +109,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +120,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Sharing Container Images using the Docker CLI or Carvel's imgpkg</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-04-07">2022-04-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1191 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/sharing-container-images-cover.jpeg"
         data-srcset="/img/sharing-container-images-cover.jpeg, /img/sharing-container-images-cover.jpeg 1.5x, /img/sharing-container-images-cover.jpeg 2x"
         data-sizes="auto"
         alt="/img/sharing-container-images-cover.jpeg"
-        title="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Sharing Container Images using the Docker CLI or Carvel's imgpkg</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2022-04-07">2022-04-07</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1102 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>6 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#using-docker">Using Docker</a>
       <ul>
@@ -135,9 +161,9 @@
     <li><a href="#resources">Resources</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>One thing I really appreciate in my current role at VMware, is being involved in great and often challenging customer engagements. <strong>Challenging is good!</strong> Because it often includes the opportunity to learn something new, based on the challenge you are facing. During my recent engagements with customers, I had to deal a lot with fully air-gapped environments, where even the jumphost we used had no internet connection.</p>
+                </div><div class="content" id="content"><p>One thing I really appreciate in my current role at VMware, is being involved in great and often challenging customer engagements. <strong>Challenging is good!</strong> Because it often includes the opportunity to learn something new, based on the challenge you are facing. During my recent engagements with customers, I had to deal a lot with fully air-gapped environments, where even the jumphost we used had no internet connection.</p>
 <p>In terms of Kubernetes (K8s) based deployments, where all the container image specifications are referencing to public repositories, you consequently have to make the necessary images offline, in a private registry, available before handing them over to K8s.</p>
-<p>I&rsquo;ve scratched this topic already in my recent post <a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" target="_blank" rel="noopener noreffer "><em>Deploy VMware Tanzu Packages from a private Container Registry</em></a>, where I used the <a href="https://carvel.dev" target="_blank" rel="noopener noreffer ">Carvel</a> tool <code>imgpkg</code> to download image bundles from a public registry, pack those into a tarball and to ultimately upload it to a private registry.</p>
+<p>I&rsquo;ve scratched this topic already in my recent post <a href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" target="_blank" rel="noopener noreferrer "><em>Deploy VMware Tanzu Packages from a private Container Registry</em></a>, where I used the <a href="https://carvel.dev" target="_blank" rel="noopener noreferrer ">Carvel</a> tool <code>imgpkg</code> to download image bundles from a public registry, pack those into a tarball and to ultimately upload it to a private registry.</p>
 <p>I also just learned (never had to use it before), that the <code>docker</code> cli supports a similar method to <code>save</code> one or more images into a tarball and to <code>load</code> the tarball as a docker image locally again. Even though, <code>imgpkg</code> supports a couple of more useful commands and options to handle image sharing and image relocating.</p>
 <p>I&rsquo;d like to cover both ways briefly in this post. I think it&rsquo;s good to know these functionalities and have them in your re­per­toire.</p>
 <p>I&rsquo;ll start with the Docker CLI commands <code>save</code> and <code>load</code> first and will end this post with the <code>imgpkg</code> tool.</p>
@@ -146,61 +172,38 @@
 <p>A Docker image, which is built from a <code>Dockerfile</code>, is like a template which includes the specifications for layers to build and run your application. Docker <code>save</code> and <code>load</code> only works with Docker images, while <code>docker export</code> and <code>docker import</code> will only be used to e.g. export a snapshot of the container&rsquo;s filesystem.</p>
 <h3 id="docker-save"><code>docker save</code></h3>
 <p>The Docker CLI is giving you the following information when you &ldquo;ask&rdquo; for <code>--help</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker save --help
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker save --help
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Usage:  docker save <span class="o">[</span>OPTIONS<span class="o">]</span> IMAGE <span class="o">[</span>IMAGE...<span class="o">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Save one or more images to a tar archive <span class="o">(</span>streamed to STDOUT by default<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Options:
-</span></span><span class="line"><span class="cl">  -o, --output string   Write to a file, instead of STDOUT
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>There&rsquo;s no real explanation necessary. You only have to specify the output file name and extension (<code>.tar</code>) using the option <code>-o</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Download image</span>
+</span></span><span class="line"><span class="cl">  -o, --output string   Write to a file, instead of STDOUT</span></span></code></pre></div></div>
+<p>There&rsquo;s no real explanation necessary. You only have to specify the output file name and extension (<code>.tar</code>) using the option <code>-o</code>.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Download image</span>
 </span></span><span class="line"><span class="cl">docker pull k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Save the image</span>
-</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v222.tar
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="docker-load"><code>docker load</code></h3>
+</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 -o csi-provisioner-v222.tar</span></span></code></pre></div></div>
+<h3 id="docker-load"><code>docker load</code></h3>
 <p>Now that the image is available in a shareable format, share it, so it can be loaded on the appropriate location using <code>docker load</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker load --help
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker load --help
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Usage:  docker load <span class="o">[</span>OPTIONS<span class="o">]</span>
 </span></span><span class="line"><span class="cl">
@@ -208,48 +211,32 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Options:
 </span></span><span class="line"><span class="cl">  -i, --input string   Read from tar archive file, instead of STDIN
-</span></span><span class="line"><span class="cl">  -q, --quiet          Suppress the load output
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The following output is only to proof that no images were locally available on my 💻 when I was working on this example 😉</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># No existing images locally</span>
+</span></span><span class="line"><span class="cl">  -q, --quiet          Suppress the load output</span></span></code></pre></div></div>
+<p>The following output is only to proof that no images were locally available on my &#x1f4bb; when I was working on this example &#x1f609;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># No existing images locally</span>
 </span></span><span class="line"><span class="cl">$ docker images
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Having that proofed, let&rsquo;s load the packed image using the option <code>-i</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Load the image</span>
+</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID   CREATED   SIZE</span></span></code></pre></div></div>
+<p>Having that proofed, let&rsquo;s load the packed image using the option <code>-i</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Load the image</span>
 </span></span><span class="line"><span class="cl">docker load -i csi-provisioner-v222.tar
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Check the availability of the image</span>
 </span></span><span class="line"><span class="cl">docker images
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">REPOSITORY                                 TAG       IMAGE ID       CREATED        SIZE
-</span></span><span class="line"><span class="cl">k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class="m">9</span> months ago   56.4MB
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="details admonition info open">
+</span></span><span class="line"><span class="cl">k8s.gcr.io/sig-storage/csi-provisioner     v2.2.2    e18077242e6d   <span class="m">9</span> months ago   56.4MB</span></span></code></pre></div></div>
+<div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
@@ -258,34 +245,25 @@
         </div>
     </div>
 <p>Example:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Using the greater-than operator &#39;&gt;&#39; to send to a file</span>
-</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v222.tar
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Making it locally available is obvisouly just the step before finally pushing it to a private registry, to ultimately have it accessible for others as well.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Tag the image accordingly</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Using the greater-than operator &#39;&gt;&#39; to send to a file</span>
+</span></span><span class="line"><span class="cl">docker save k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 &gt; csi-provisioner-v222.tar</span></span></code></pre></div></div>
+<p>Making it locally available is obvisouly just the step before finally pushing it to a private registry, to ultimately have it accessible for others as well.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Tag the image accordingly</span>
 </span></span><span class="line"><span class="cl">docker tag e18077242e6d harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Push the image to your private registry</span>
-</span></span><span class="line"><span class="cl">docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>And there we have it.</p>
+</span></span><span class="line"><span class="cl">docker push harbor.jarvis.tanzu/csi-smb/csi-provisioner:v2.2.2</span></span></code></pre></div></div>
+<p>And there we have it.</p>
 <figure><a class="lightgallery" href="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" title="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-thumbnail="/img/posts/202204_sharing_images/rguske-image-sharing-post-harbor.png" data-sub-html="<h2>Figure I: Loaded and pushed image available in your private registry</h2>">
         <img
             class="lazyload"
@@ -303,30 +281,12 @@
 <h2 id="using-imgpkg">Using imgpkg</h2>
 <p>Out of the great Carvel toolbox, which tools supports you in making your life easier in terms of application building, configurations and deployments to Kubernetes, <code>imgpkg</code> offers some pretty neat commands to handle packaging, distributing, and relocating OCI images.</p>
 <p>For now, we&rsquo;re just taking a closer look on the <code>imgpkg copy</code> command.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --help
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --help
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Copy a bundle from one location to another
 </span></span><span class="line"><span class="cl">
@@ -344,28 +304,16 @@
 </span></span><span class="line"><span class="cl">    <span class="c1"># Copy image dkalinin/app1-image to another registry (or repository)</span>
 </span></span><span class="line"><span class="cl">    imgpkg copy -i dkalinin/app1-image --to-repo internal-registry/app1-image
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="imgpkg-copy---to-tar"><code>imgpkg copy --to-tar</code></h3>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span></span></span></code></pre></div></div>
+<h3 id="imgpkg-copy---to-tar"><code>imgpkg copy --to-tar</code></h3>
 <p>Even if the two tools cannot be compared in detail with each other, they serve the same purpose for our intention. Even though, keep in mind that <code>imgpkg</code> in contrast to the <code>docker</code> CLI commands was build for such purposes and therefore it provides comprehensive capabilities and a really comfortable way of copying/relocating images.</p>
 <p>The command <code>imgpkg copy -i</code> downloads the desired container image from a registry and copies it to a local tarball.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-tar csi-provisioner-v222.tar
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-tar csi-provisioner-v222.tar
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> exporting <span class="m">1</span> images...
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
@@ -375,50 +323,30 @@
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-5dea5ec2316d4a067b946b15c3c4f140b4f2ad607e73e9bc41b673ee5ebb99a3.tar.gz&#39;</span> <span class="o">(</span>147.490976ms<span class="o">)</span>
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span>: file <span class="s1">&#39;sha256-e22751dfa03a88e8756eb5921a8dfcd93c2364dd04aeb6a394bea7bc2011d327.tar.gz&#39;</span> <span class="o">(</span>395.995432ms<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>This file can now be uploaded to e.g. a private registry using the option <code>--to-repo</code>. If your repository is configured as private, so that authentication is required, the <code>copy</code> command offers various options to support this case too.</p>
+</span></span><span class="line"><span class="cl">Succeeded</span></span></code></pre></div></div>
+<p>This file can now be uploaded to e.g. a private registry using the option <code>--to-repo</code>. If your repository is configured as private, so that authentication is required, the <code>copy</code> command offers various options to support this case too.</p>
 <p>Options are e.g. <code>--registry-ca-cert-path</code>, <code>--registry-username</code> and <code>--registry-password</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --tar csi-provisioner-v222.tar --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy --tar csi-provisioner-v222.tar --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> importing <span class="m">1</span> images...
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"> 21.56 MiB / 21.57 MiB <span class="o">[=====================================================================================================================================]</span>  99.98% 10.73 MiB/s 2s
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span> uploading images
-</span></span><span class="line"><span class="cl">Succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></h3>
+</span></span><span class="line"><span class="cl">Succeeded</span></span></code></pre></div></div>
+<h3 id="imgpkg-copy---to-repo"><code>imgpkg copy --to-repo</code></h3>
 <p>The example above demonstrates how to copy an image, packed as a tarball, to a private repository using the option <code>--to-tar</code>. You could also use the option <code>--to-repo</code> which makes it even easier to relocate images from e.g. a public registry to a private one.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">imgpkg copy -i k8s.gcr.io/sig-storage/csi-provisioner:v2.2.2 --to-repo harbor.jarvis.tanzu/xyz/csi-smb --registry-ca-cert-path<span class="o">=</span>ca.crt
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> exporting <span class="m">1</span> images...
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> will <span class="nb">export</span> k8s.gcr.io/sig-storage/csi-provisioner@sha256:74ed98f7cb6dfc67b9ad7d8a65c331dd16d676335ad9f69c3c4337cc50f44703
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> exported <span class="m">1</span> images
@@ -427,10 +355,8 @@
 </span></span><span class="line"><span class="cl"> 21.57 MiB / 21.57 MiB <span class="o">[======================================================================================================================================]</span>  99.99% 8.99 MiB/s 2s
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">copy <span class="p">|</span> <span class="k">done</span> uploading images
-</span></span><span class="line"><span class="cl">Succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>That&rsquo;s awesome!</p>
+</span></span><span class="line"><span class="cl">Succeeded</span></span></code></pre></div></div>
+<p>That&rsquo;s awesome!</p>
 <h3 id="flowchart-imgpkg">Flowchart imgpkg</h3>
 <p>Summarizing the steps using <code>imgpkg</code>.</p>
 <center>With saving the image locally first</center>
@@ -438,18 +364,18 @@
 <div class="mermaid" id="id-4"></div>
 <center>Without saving the image locally first</center>
 <div class="mermaid" id="id-5"></div>
-<p>That simple! 😄</p>
+<p>That simple! &#x1f604;</p>
 <h2 id="resources">Resources</h2>
 <ul>
-<li>Carvel Docs - <a href="https://carvel.dev/imgpkg/" target="_blank" rel="noopener noreffer ">imgpkg</a></li>
-<li>Docker Docs - <a href="https://docs.docker.com/engine/reference/commandline/save/" target="_blank" rel="noopener noreffer ">docker save</a></li>
+<li>Carvel Docs - <a href="https://carvel.dev/imgpkg/" target="_blank" rel="noopener noreferrer ">imgpkg</a></li>
+<li>Docker Docs - <a href="https://docs.docker.com/engine/reference/commandline/save/" target="_blank" rel="noopener noreferrer ">docker save</a></li>
 </ul>
 <hr>
-<p>Blogpost cover by <a href="https://pixabay.com/photos/container-ship-container-transport-6631117/" target="_blank" rel="noopener noreffer ">pixabay</a></p></div><div class="post-footer" id="post-footer">
+<p>Blogpost cover by <a href="https://pixabay.com/photos/container-ship-container-transport-6631117/" target="_blank" rel="noopener noreferrer ">pixabay</a></p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -457,14 +383,14 @@
                             <a class="link-to-markdown" href="/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" data-via="vmw_rguske" data-hashtags="Kubernetes,Docker,Carvel,Tools,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" data-description="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" data-description="Learn how to make container images available in a shareable format, to support e.g. air-gapped deployments, using the Docker CLI or imgpkg by Carvel."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg" data-hashtags="Kubernetes,Docker,Carvel,Tools,OpenSource"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-hashtag="Kubernetes"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/sharing-container-images-using-the-docker-cli-or-carvels-imgpkg/" data-title="Sharing Container Images using the Docker CLI or Carvel&#39;s imgpkg"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/carvel/">Carvel</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/opensource/">OpenSource</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/docker/">Docker</a>, <a href="/tags/carvel/">Carvel</a>, <a href="/tags/tools/">Tools</a>, <a href="/tags/opensource/">OpenSource</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -472,22 +398,20 @@
     <div class="post-nav"><a href="/post/building-a-vmware-photonos-based-kubernetes-appliance/" class="prev" rel="prev" title="Building a VMware PhotonOS based Kubernetes Appliance for vSphere"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Building a VMware PhotonOS based Kubernetes Appliance for vSphere</a>
             <a href="/post/demoing-knative-serving-and-eventing-using-demo-magic-scripts/" class="next" rel="next" title="Demoing Knative Serving and Eventing using Demo-Magic-Scripts">Demoing Knative Serving and Eventing using Demo-Magic-Scripts<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( You ) ---| 1. docker pull image | B( Locally )\n    A ---| 2. docker save image -o image.tar | B\n    A --\u003e| 3. Share the image | C( Customer )","id-2":"graph LR;\n    A( Customer ) ---| 4. docker load -i image.tar | B( Locally )\n    A ---| 5. docker tag image | B\n    A --\u003e| 6. docker push image | C( Registry )","id-3":"graph LR;\n    A( You ) ---| 1. imgpkg copy -i image --to-tar | B( Locally )\n    A ---| 2. Share the image | C( Customer )","id-4":"graph LR;\n    A( Customer ) ---| 3. imgpkg copy --tar image.tar --to-repo | B( Registry )","id-5":"graph LR;\n    A( Customer ) ---| 1. imgpkg copy -i image-url --to-repo | B( Registry )","id-6":"Robert Guske","id-7":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-6":["id-6"],"id-7":["id-7"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/mermaid/mermaid.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    A( You ) ---| 1. docker pull image | B( Locally )\n    A ---| 2. docker save image -o image.tar | B\n    A --\u003e| 3. Share the image | C( Customer )","id-2":"graph LR;\n    A( Customer ) ---| 4. docker load -i image.tar | B( Locally )\n    A ---| 5. docker tag image | B\n    A --\u003e| 6. docker push image | C( Registry )","id-3":"graph LR;\n    A( You ) ---| 1. imgpkg copy -i image --to-tar | B( Locally )\n    A ---| 2. Share the image | C( Customer )","id-4":"graph LR;\n    A( Customer ) ---| 3. imgpkg copy --tar image.tar --to-repo | B( Registry )","id-5":"graph LR;\n    A( Customer ) ---| 1. imgpkg copy -i image-url --to-repo | B( Registry )","id-6":"  Robert Guske's Blog","id-7":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-6":["id-6"],"id-7":["id-7"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

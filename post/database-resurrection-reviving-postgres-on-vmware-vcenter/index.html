@@ -4,22 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Database Resurrection - Reviving vPostgres DB on VMware vCenter Server - Robert Guske</title><meta name="Description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><meta property="og:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" />
-<meta property="og:description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2024-02-07T23:44:08+01:00" />
-<meta property="article:modified_time" content="2024-03-01T10:41:14+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Database Resurrection - Reviving vPostgres DB on VMware vCenter Server - Blog Robert Guske</title><meta name="Description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><meta property="og:url" content="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server">
+  <meta property="og:description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-02-07T23:44:08+01:00">
+    <meta property="article:modified_time" content="2024-03-01T10:41:14+01:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VSphere">
+    <meta property="article:tag" content="Tools">
+    <meta property="article:tag" content="Hack">
+    <meta property="article:tag" content="Troubleshooting">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"/>
-<meta name="twitter:description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" /><link rel="prev" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="next" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server">
+  <meta name="twitter:description" content="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" /><link rel="prev" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="next" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +36,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/database-resurrection-reviving-postgres-on-vmware-vcenter\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Tools, Hack, Troubleshooting","wordcount":  1370 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Tools, Hack, Troubleshooting","wordcount":  1279 ,
         "url": "https:\/\/rguske.github.io\/post\/database-resurrection-reviving-postgres-on-vmware-vcenter\/","datePublished": "2024-02-07T23:44:08+01:00","dateModified": "2024-03-01T10:41:14+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +80,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +109,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +120,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-07">2024-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1370 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vcsa_vpostgres_trouble_cover.png"
         data-srcset="/img/vcsa_vpostgres_trouble_cover.png, /img/vcsa_vpostgres_trouble_cover.png 1.5x, /img/vcsa_vpostgres_trouble_cover.png 2x"
         data-sizes="auto"
         alt="/img/vcsa_vpostgres_trouble_cover.png"
-        title="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2024-02-07">2024-02-07</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1279 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>7 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#power-failure-causes-problems-again">Power Failure causes Problems again</a></li>
     <li><a href="#vmware-vpostgres-service-wont-start-anymore">VMware-vPostgres Service won&rsquo;t start anymore</a></li>
@@ -128,52 +154,21 @@
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="power-failure-causes-problems-again">Power Failure causes Problems again</h2>
+                </div><div class="content" id="content"><h2 id="power-failure-causes-problems-again">Power Failure causes Problems again</h2>
 <p>Once in a while power failures happen and can (mostly will!) cause troubles for small homelabs like mine. I&rsquo;m running a two-node vSAN cluster on two Supermicro SYS-E200-8D servers. My vSAN Witness Appliance is running on a small Intel NUC, which is perfectly suited for this use case. The vCenter Server is still running on the vSAN cluster but only compute-wise. I have a Synology NAS running as well which is providing an additional NFS datastore in order to have at least the VCSA (VM) storage outsourced from the cluster.</p>
-<p>However, if a power outage happen nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn&rsquo;t write articles like this one, and <a href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" target="_blank" rel="noopener noreffer ">this</a> one and <a href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" target="_blank" rel="noopener noreffer ">this</a> one 😄</p>
+<p>However, if a power outage happen nothing will protect my lab from falling down hard. So, I definitely need a proper UPS battery soon if I decide to keep continuing running my lab. But! If I had already one, I couldn&rsquo;t write articles like this one, and <a href="https://rguske.github.io/post/vmware-vctl-kind-writing-configuration-failed/" target="_blank" rel="noopener noreferrer ">this</a> one and <a href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" target="_blank" rel="noopener noreferrer ">this</a> one &#x1f604;</p>
 <h2 id="vmware-vpostgres-service-wont-start-anymore">VMware-vPostgres Service won&rsquo;t start anymore</h2>
 <p>After checking the cause of the outage and making sure it won&rsquo;t happen again, I brought everything back in running state. I logged into the vSphere Client and immediately faced the consequences. <code>The vSphere inventory objects can't be displayed</code>.</p>
-<p>My first instinct was checking the state of all vCenter services via the vCenter Appliance Management Interface (VAMI). And here we go 😨</p>
+<p>My first instinct was checking the state of all vCenter services via the vCenter Appliance Management Interface (VAMI). And here we go &#x1f628;</p>
 <p>Most of the services kept staying in <code>stopped</code> state. I roughly knew the right start-order, or dependency-order of the affected services and checked them. One of the first services I tried starting was the <code>VMware Postgres</code> service. It almost immediately failed with a not really informative error. <code>Operation failed!...</code></p>
 <p>Consequently, I <code>ssh</code>ed into my VCSA and continued troubleshooting from there.</p>
 <p>Same try, different approach. I tried starting the service using the <code>service-control</code> CLI.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">service-control</span> <span class="err">--start</span> <span class="err">vpostgres</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">service-control</span> <span class="err">--start</span> <span class="err">vpostgres</span>
 </span></span><span class="line"><span class="cl"><span class="err">Operation</span> <span class="err">not</span> <span class="err">cancellable.</span> <span class="err">Please</span> <span class="err">wait</span> <span class="err">for</span> <span class="err">it</span> <span class="err">to</span> <span class="err">finish...</span>
 </span></span><span class="line"><span class="cl"><span class="err">Performing</span> <span class="err">start</span> <span class="err">operation</span> <span class="err">on</span> <span class="err">service</span> <span class="err">vmware-vpostgres...</span>
 </span></span><span class="line"><span class="cl"><span class="err">Error</span> <span class="err">executing</span> <span class="err">start</span> <span class="err">on</span> <span class="err">service</span> <span class="err">vmware-vpostgres.</span> <span class="err">Details</span> <span class="p">{</span>
@@ -204,59 +199,35 @@
 </span></span><span class="line"><span class="cl">            <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;install.ciscommon.service.failstart&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">            <span class="nt">&#34;localized&#34;</span><span class="p">:</span> <span class="s2">&#34;An error occurred while starting service &#39;vmware-vpostgres&#39;&#34;</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Before I executed the <code>service-control</code> command, I started a second connection to my VCSA (I&rsquo;m a fan of using the window-multiplexer <a href="https://github.com/tmux/tmux/wiki" target="_blank" rel="noopener noreffer ">tmux</a>) and ran a <code>tail -f</code> on the vCenter service <code>vpxd</code> log. Here&rsquo;s a snipped from the log:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[...]
+</span></span><span class="line"><span class="cl">    <span class="p">]</span></span></span></code></pre></div></div>
+<p>Before I executed the <code>service-control</code> command, I started a second connection to my VCSA (I&rsquo;m a fan of using the window-multiplexer <a href="https://github.com/tmux/tmux/wiki" target="_blank" rel="noopener noreferrer ">tmux</a>) and ran a <code>tail -f</code> on the vCenter service <code>vpxd</code> log. Here&rsquo;s a snipped from the log:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="p">[</span><span class="o">...</span><span class="p">]</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.441Z error vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &#34;/var/run/vpostgres/.s.PGSQL.5432&#34; failed: No such file or directory
-</span></span><span class="line"><span class="cl">--&gt;     Is the server running locally and accepting connections on that socket?
-</span></span><span class="line"><span class="cl">--&gt; .  Retry attempt: 479617 ...
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.451Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.454Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.456Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.459Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.463Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.466Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.469Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.472Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.476Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.479Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.481Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.483Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.486Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.488Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">2024-01-29T08:12:39.491Z info vpxd[04641] [Originator@6876 sub=vpxdVdb] [VpxdVdb::SetDBType] Logging in to DSN: VMware VirtualCenter with username vpxd
-</span></span><span class="line"><span class="cl">^C
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>It don&rsquo;t need a PHD to get a clue that the error <code>Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &quot;/var/run/vpostgres/.s.PGSQL.5432&quot; failed: No such file or directory</code> isn&rsquo;t good at all.</p>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.441</span><span class="n">Z</span> <span class="n">error</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="n">database</span><span class="p">:</span> <span class="n">ODBC</span> <span class="n">error</span><span class="p">:</span> <span class="p">(</span><span class="mi">08001</span><span class="p">)</span> <span class="o">-</span> <span class="p">[</span><span class="n">unixODBC</span><span class="p">]</span><span class="n">connection</span> <span class="n">to</span> <span class="n">server</span> <span class="n">on</span> <span class="n">socket</span> <span class="s2">&#34;/var/run/vpostgres/.s.PGSQL.5432&#34;</span> <span class="n">failed</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
+</span></span><span class="line"><span class="cl"><span class="o">--&gt;</span>     <span class="n">Is</span> <span class="n">the</span> <span class="n">server</span> <span class="n">running</span> <span class="n">locally</span> <span class="ow">and</span> <span class="n">accepting</span> <span class="n">connections</span> <span class="n">on</span> <span class="n">that</span> <span class="n">socket</span><span class="err">?</span>
+</span></span><span class="line"><span class="cl"><span class="o">--&gt;</span> <span class="o">.</span>  <span class="n">Retry</span> <span class="n">attempt</span><span class="p">:</span> <span class="mi">479617</span> <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.451</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.454</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.456</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.459</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.463</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.466</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.469</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.472</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.476</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.479</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.481</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.483</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.486</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.488</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">29</span><span class="n">T08</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">39.491</span><span class="n">Z</span> <span class="n">info</span> <span class="n">vpxd</span><span class="p">[</span><span class="mi">04641</span><span class="p">]</span> <span class="p">[</span><span class="n">Originator</span><span class="err">@</span><span class="mi">6876</span> <span class="n">sub</span><span class="o">=</span><span class="n">vpxdVdb</span><span class="p">]</span> <span class="p">[</span><span class="n">VpxdVdb</span><span class="p">::</span><span class="n">SetDBType</span><span class="p">]</span> <span class="n">Logging</span> <span class="ow">in</span> <span class="n">to</span> <span class="n">DSN</span><span class="p">:</span> <span class="n">VMware</span> <span class="n">VirtualCenter</span> <span class="n">with</span> <span class="n">username</span> <span class="n">vpxd</span>
+</span></span><span class="line"><span class="cl"><span class="o">^</span><span class="n">C</span></span></span></code></pre></div></div>
+<p>It don&rsquo;t need a PHD to get a clue that the error <code>Failed to connect to database: ODBC error: (08001) - [unixODBC]connection to server on socket &quot;/var/run/vpostgres/.s.PGSQL.5432&quot; failed: No such file or directory</code> isn&rsquo;t good at all.</p>
 <p>Okay, my vPostgres instance got affected badly by the &ldquo;unplanned shutdown&rdquo;.</p>
 <h2 id="reset-to-the-last-known-working-checkpoint">Reset to the last known working Checkpoint</h2>
 <div class="details admonition warning open">
@@ -268,21 +239,16 @@
         </div>
     </div>
 <p>I started searching on the internet for appropriate tips and tricks but only found a couple of mainly outdated hints. Better than nothing, right?! My first attempt consisted of checking if I still can connect to the VCSA vPostgres instance using the postgres <code>psql</code> CLI.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> /opt/vmware/vpostgres/current/bin/psql -U postgres -d VCDB
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">psql.bin: error: connection to server on socket <span class="s2">&#34;/var/run/vpostgres/.s.PGSQL.5432&#34;</span> failed: No such file or directory
-</span></span><span class="line"><span class="cl">        Is the server running locally and accepting connections on that socket?
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Well, it&rsquo;s not getting better. One would say, it&rsquo;s getting worse! I kept on searching but this time more Postgres related topics like &ldquo;cannot connect postgres&rdquo;, &ldquo;connection to server on socket&hellip;&rdquo; or simply for &ldquo;Postgres health check&rdquo;.</p>
+</span></span><span class="line"><span class="cl">        Is the server running locally and accepting connections on that socket?</span></span></code></pre></div></div>
+<p>Well, it&rsquo;s not getting better. One would say, it&rsquo;s getting worse! I kept on searching but this time more Postgres related topics like &ldquo;cannot connect postgres&rdquo;, &ldquo;connection to server on socket&hellip;&rdquo; or simply for &ldquo;Postgres health check&rdquo;.</p>
 <p>Luckily, I found out about the write-ahead log (WAL). I made myself familiar with it and decided to reset the <code>WAL</code> to the last working checkpoint.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
@@ -294,108 +260,69 @@
     </div>
 <h3 id="1st-attempt-pg_resetxlog">1st attempt pg_resetxlog</h3>
 <p>I started with:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
-</span></span><span class="line"><span class="cl">Cannot execute /opt/vmware/vpostgres/current/bin/pg_resetxlog
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Okay, this kind of message was unexpected but I quickly found out, that the command <code>pg_resetxlog</code> is for Postgres versions prior 10. It got <a href="https://www.postgresql.org/docs/12/app-pgresetxlog.html" target="_blank" rel="noopener noreffer ">renamed</a> in v10 to <code>pg_resetwal</code>.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /opt/vmware/vpostgres/current/bin/pg_resetxlog /storage/db/vpostgres
+</span></span><span class="line"><span class="cl">Cannot execute /opt/vmware/vpostgres/current/bin/pg_resetxlog</span></span></code></pre></div></div>
+<p>Okay, this kind of message was unexpected but I quickly found out, that the command <code>pg_resetxlog</code> is for Postgres versions prior 10. It got <a href="https://www.postgresql.org/docs/12/app-pgresetxlog.html" target="_blank" rel="noopener noreferrer ">renamed</a> in v10 to <code>pg_resetwal</code>.</p>
 <p>I&rsquo;m already running vSphere 8 Update 2 and the used Postgres version here is 14.</p>
 <h3 id="2nd-attempt-pg_resetwal">2nd attempt pg_resetwal</h3>
 <p>Now, let&rsquo;s give the right command for the right version a try.</p>
 <p>Start a <code>sh</code>ell session:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /bin/sh
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Change into the dir where the binary is located:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ <span class="nb">cd</span> /opt/vmware/vpostgres/14/bin/
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Unleash the process:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> su vpostgres -s /bin/sh</span></span></code></pre></div></div>
+<p>Change into the dir where the binary is located:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ <span class="nb">cd</span> /opt/vmware/vpostgres/14/bin/</span></span></code></pre></div></div>
+<p>Unleash the process:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres
 </span></span><span class="line"><span class="cl">The database server was not shut down cleanly.
 </span></span><span class="line"><span class="cl">Resetting the write-ahead log might cause data to be lost.
-</span></span><span class="line"><span class="cl">If you want to proceed anyway, use -f to force reset.
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>May the <code>force</code> be with you:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres -f
+</span></span><span class="line"><span class="cl">If you want to proceed anyway, use -f to force reset.</span></span></code></pre></div></div>
+<p>May the <code>force</code> be with you:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sh-5.0$ ./pg_resetwal /storage/db/vpostgres -f
 </span></span><span class="line"><span class="cl">Write-ahead log reset
 </span></span><span class="line"><span class="cl">sh-5.0$ <span class="nb">exit</span>
-</span></span><span class="line"><span class="cl"><span class="nb">exit</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Done! Check starting the <code>vmware-vpostgres</code> once again.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start vmware-vpostgres
+</span></span><span class="line"><span class="cl">exit</span></span></code></pre></div></div>
+<p>Done! Check starting the <code>vmware-vpostgres</code> once again.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start vmware-vpostgres
 </span></span><span class="line"><span class="cl">Operation not cancellable. Please <span class="nb">wait</span> <span class="k">for</span> it to finish...
 </span></span><span class="line"><span class="cl">Performing start operation on service vmware-vpostgres...
-</span></span><span class="line"><span class="cl">Successfully started service vmware-vpostgres
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><code>Successfully started service vmware-vpostgres</code> - hell yea!</p>
+</span></span><span class="line"><span class="cl">Successfully started service vmware-vpostgres</span></span></code></pre></div></div>
+<p><code>Successfully started service vmware-vpostgres</code> - hell yea!</p>
 <p>Consequently, the rest of the services have to follow accordingly:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start --all
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span> service-control --start --all
 </span></span><span class="line"><span class="cl">Operation not cancellable. Please <span class="nb">wait</span> <span class="k">for</span> it to finish...
 </span></span><span class="line"><span class="cl">Performing start operation on service lwsmd...
 </span></span><span class="line"><span class="cl">Successfully started service lwsmd
@@ -412,15 +339,13 @@
 </span></span><span class="line"><span class="cl">Performing start operation on service vmware-vdtc...
 </span></span><span class="line"><span class="cl">Successfully started service vmware-vdtc
 </span></span><span class="line"><span class="cl">Performing start operation on service vmware-pod...
-</span></span><span class="line"><span class="cl">Successfully started service vmware-pod
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>vSphere back up and running 🥳</p>
+</span></span><span class="line"><span class="cl">Successfully started service vmware-pod</span></span></code></pre></div></div>
+<p>vSphere back up and running 🥳</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2024-03-01&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/22131e401d610a56f347b7368ba5cb0f922c2127" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 22131e401d610a56f347b7368ba5cb0f922c2127: fixed description issues in md files">
+                <span>Updated on 2024-03-01&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/22131e401d610a56f347b7368ba5cb0f922c2127" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 22131e401d610a56f347b7368ba5cb0f922c2127: fixed description issues in md files">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>22131e4</a></span>
             </div></div>
         <div class="post-info-line">
@@ -428,14 +353,14 @@
                             <a class="link-to-markdown" href="/post/database-resurrection-reviving-postgres-on-vmware-vcenter/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Tools,Hack,Troubleshooting"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-description="The VCSA vPostgres service fails starting. In this post I describe how I was able to revive my Postgres instance with the help of the Postgres Write-Ahead log (WAL). The Postgres Write-Ahead Log contains enough data for Postgres to restore its state to the last committed transaction. Nevertheless, this action should be done with care."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server" data-hashtags="VMware,vSphere,Tools,Hack,Troubleshooting"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" data-title="Database Resurrection - Reviving vPostgres DB on VMware vCenter Server"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/hack/">Hack</a>,&nbsp;<a href="/tags/troubleshooting/">Troubleshooting</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/tools/">Tools</a>, <a href="/tags/hack/">Hack</a>, <a href="/tags/troubleshooting/">Troubleshooting</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -443,22 +368,20 @@
     <div class="post-nav"><a href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" class="prev" rel="prev" title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative</a>
             <a href="/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" class="next" rel="next" title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot">Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

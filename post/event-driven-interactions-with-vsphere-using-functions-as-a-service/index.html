@@ -4,22 +4,31 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Event-driven interactions with vSphere using Functions as a Service - Robert Guske</title><meta name="Description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."><meta property="og:title" content="Event-driven interactions with vSphere using Functions as a Service" />
-<meta property="og:description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-02-14T17:40:38+01:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Event-driven interactions with vSphere using Functions as a Service - Blog Robert Guske</title><meta name="Description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."><meta property="og:url" content="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Event-driven interactions with vSphere using Functions as a Service">
+  <meta property="og:description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-02-14T17:40:38+01:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VSphere">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="FaaS">
+    <meta property="article:tag" content="EventDriven">
+    <meta property="article:tag" content="OpenSource">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Event-driven interactions with vSphere using Functions as a Service"/>
-<meta name="twitter:description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="prev" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" /><link rel="next" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Event-driven interactions with vSphere using Functions as a Service">
+  <meta name="twitter:description" content="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="prev" href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" /><link rel="next" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +37,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/event-driven-interactions-with-vsphere-using-functions-as-a-service\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Kubernetes, FaaS, EventDriven, OpenSource","wordcount":  1132 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Kubernetes, FaaS, EventDriven, OpenSource","wordcount":  1055 ,
         "url": "https:\/\/rguske.github.io\/post\/event-driven-interactions-with-vsphere-using-functions-as-a-service\/","datePublished": "2019-02-14T17:40:38+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +81,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +110,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +121,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Event-driven interactions with vSphere using Functions as a Service</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-02-14">2019-02-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1132 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vspheretagfn_cover.jpg"
         data-srcset="/img/vspheretagfn_cover.jpg, /img/vspheretagfn_cover.jpg 1.5x, /img/vspheretagfn_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vspheretagfn_cover.jpg"
-        title="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Event-driven interactions with vSphere using Functions as a Service</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2019-02-14">2019-02-14</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1055 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>5 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#tagging-vsphere-objects-by-using-a-ƒx">Tagging vSphere objects by using a ƒ(x)</a></li>
     <li><a href="#the-recording">The recording</a></li>
@@ -125,23 +152,20 @@
     <li><a href="#resources">Resources</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><div class="details admonition note open">
+                </div><div class="content" id="content"><div class="details admonition note open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Note<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>I am very happy to inform you that the below described idea has become a VMware Fling (completely OpenSource).</p>
-<p>Official website of VMware Event Broker Appliance: <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer ">https://vmweventbroker.io/</a></p>
+<p>Official website of VMware Event Broker Appliance: <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreferrer ">https://vmweventbroker.io/</a></p>
 </div>
         </div>
     </div>
 <p>When was the last time that you were so much taken by a topic or better by a combination of several, that just by thinking about it your face is filled with enthusiasm?</p>
 <p>For me, it&rsquo;s only been a few days ago and it was in one of these afterwork-calls with my well appreciated colleague and friend <a href="https://mgasch.com" target="_blank">Michael Gasch</a> where we talked about things we were working on. I had just published my recent post on <a href="https://rguske.github.io/post/monitoring-container-vms-with-vrealize-operations-manager/" target="_blank"><em>&ldquo;Monitoring Container VMs with vRealize Operations Manager&rdquo;</em></a> were I described how I built a dashboard for &amp; with vRealize Operations Manager to monitor the utilization and performance for two of the major objects from vSphere Integrated Containers, the Virtual Container Host (VCH) and the Container-VMs (cVM).</p>
 <p>Michael told me that he had spent some time in digging deeper and deeper into the topic <strong>Functions as a Service</strong>&hellip;</p>
-<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">knative might be the future of multi-cloud FaaS abstraction. Right now I still prefer OpenFaaS for it&#39;s simplicity (in the context of my work at VMware). It just works...</p>&mdash; Michael Gasch 🇩🇪🇺🇦 (@embano1) <a href="https://twitter.com/embano1/status/1055452330064334848?ref_src=twsrc%5Etfw">October 25, 2018</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
- </center>
+<center>  </center>
 <p>which was far away from being experienced by myself, but he got me right away from the very beginning of his telling. For those of you who want to know more about the topic but haven&rsquo;t put your nose into it yet, like me before, you´ll find some links at the <em>Resources section</em> at the buttom.</p>
 <p>I´m not going to explain what a Function/ FaaS is all about, instead of it Michael and I thought that this post should serve as an introduction of a project Michael is working on as well as to demonstrate how &ldquo;just&rdquo; two components are turning your vSphere environment into a <em>Event-driven construct</em> based on your <em>annotations</em>.</p>
 <p>Before I´m going to start with the details and what should already be up and running, I`d like to quote the following description to explain what it means when it comes to the topic <em>&ldquo;Functions vs. Containers&rdquo;</em>.</p>
@@ -167,7 +191,7 @@
         </div>
         <div class="details-content">
             <div class="admonition-content">A Feature-Request for using the <code>vic-machine</code> utility to assign a vSphere-Tag during the VCH deployment is already open on Github:
-<a href="https://github.com/vmware/vic/issues/8446" target="_blank" rel="noopener noreffer ">https://github.com/vmware/vic/issues/8446</a></div>
+<a href="https://github.com/vmware/vic/issues/8446" target="_blank" rel="noopener noreferrer ">https://github.com/vmware/vic/issues/8446</a></div>
         </div>
     </div>
 <p>The following flowchart will give you a high-level overview what it´s all about and what Michael and I will demo you in the Video below.</p>
@@ -199,17 +223,13 @@
 </li>
 </ol>
 <h2 id="the-recording">The recording</h2>
-
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube-nocookie.com/embed/X3usMlmyEoA" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/X3usMlmyEoA?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div>
 
 <h2 id="what-you-need--pre-reqs">What you need | Pre-reqs</h2>
 <p>All you need is <a href="https://www.openfaas.com/" target="_blank">OpenFaaS</a> running in Kubernetes. As shown in the flowchart as well as having been mentioned in the recording, I´m running VMware´s Enterprise-grade Kubernetes solution <a href="https://cloud.vmware.com/vmware-pks" target="_blank"><strong>VMware PKS</strong></a> in my <a href="https://twitter.com/search?q=%23homelab&src=typd" target="_blank">#Homelab</a> in order to make all necessary pieces available.</p>
-<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Say &quot;Hello&quot; to the newest member in my <a href="https://twitter.com/hashtag/Homelab?src=hash&amp;ref_src=twsrc%5Etfw">#Homelab</a>: <a href="https://twitter.com/hashtag/VMware?src=hash&amp;ref_src=twsrc%5Etfw">#VMware</a> <a href="https://twitter.com/hashtag/PKS?src=hash&amp;ref_src=twsrc%5Etfw">#PKS</a> 😎 Next step for tonight: Registry replication between my <a href="https://twitter.com/project_harbor?ref_src=twsrc%5Etfw">@project_harbor</a> instance, which is running within <a href="https://twitter.com/hashtag/vSphereIntegratedContainers?src=hash&amp;ref_src=twsrc%5Etfw">#vSphereIntegratedContainers</a> and PKS. <a href="https://twitter.com/hashtag/Kubernetes?src=hash&amp;ref_src=twsrc%5Etfw">#Kubernetes</a> <a href="https://twitter.com/hashtag/containers?src=hash&amp;ref_src=twsrc%5Etfw">#containers</a> <a href="https://t.co/VW2abqBHSN">pic.twitter.com/VW2abqBHSN</a></p>&mdash; Robert Guske @rguske@vmst.io (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1089501596042649600?ref_src=twsrc%5Etfw">January 27, 2019</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
- </center>
+<center>  </center>
 <p>Another pretty cool alternative way to run OpenFaaS on k8s is <a href="https://github.com/kubernetes-sigs/kind" target="_blank">KinD</a> which is a new tool from the Kubernetes community named <strong>Kubernetes in Docker</strong>.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/201902_vspheretagfn/CapturFiles-20190228_092541.jpg" title="/img/posts/201902_vspheretagfn/CapturFiles-20190228_092541.jpg" data-thumbnail="/img/posts/201902_vspheretagfn/CapturFiles-20190228_092541.jpg" data-sub-html="<h2>Figure II: kind logo</h2>">
         <img
@@ -261,7 +281,7 @@ client (<code>helm</code>) and the Helm server (Tiller - running in the namespac
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>As of writing this post:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">The demo is based on a pending pull request (PR) in the vcenter-connector Github repository, which is currently under review. The PR, including all the details and files changed, can be found here: <a href="https://github.com/openfaas-incubator/vcenter-connector/pull/11" target="_blank" rel="noopener noreffer ">https://github.com/openfaas-incubator/vcenter-connector/pull/11</a></div>
+            <div class="admonition-content">The demo is based on a pending pull request (PR) in the vcenter-connector Github repository, which is currently under review. The PR, including all the details and files changed, can be found here: <a href="https://github.com/openfaas-incubator/vcenter-connector/pull/11" target="_blank" rel="noopener noreferrer ">https://github.com/openfaas-incubator/vcenter-connector/pull/11</a></div>
         </div>
     </div>
 <ol start="5">
@@ -269,80 +289,82 @@ client (<code>helm</code>) and the Helm server (Tiller - running in the namespac
 </ol>
 <p>I hope you enjoyed reading and liked the recording.</p>
 <h2 id="resources">Resources</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left"><strong>Article</strong></th>
-<th style="text-align:center"><strong>Link</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">[@openfaaS] <strong>Deployment guide for Kubernetes</strong></td>
-<td style="text-align:center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer ">https://docs.openfaas.com/deployment/kubernetes/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@github/openfaas-incubator] <strong>Github repo vcenter-connector</strong></td>
-<td style="text-align:center"><a href="https://github.com/openfaas-incubator/vcenter-connector" target="_blank" rel="noopener noreffer ">https://github.com/openfaas-incubator/vcenter-connector</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[github/embano1] <strong>Github repo pytagfn</strong></td>
-<td style="text-align:center"><a href="https://github.com/embano1/pytagfn" target="_blank" rel="noopener noreffer ">https://github.com/embano1/pytagfn</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[github/embano1] <strong>Github repo gotagfn</strong></td>
-<td style="text-align:center"><a href="https://github.com/embano1/pytagfn" target="_blank" rel="noopener noreffer ">https://github.com/embano1/pytagfn</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@blog.alexellis.io] <strong>Get started with OpenFaaS and KinD</strong></td>
-<td style="text-align:center"><a href="https://blog.alexellis.io/get-started-with-openfaas-and-kind/" target="_blank" rel="noopener noreffer ">https://blog.alexellis.io/get-started-with-openfaas-and-kind/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@mgasch.com] <strong>Events, the DNA of Kubernetes</strong></td>
-<td style="text-align:center"><a href="https://www.mgasch.com/post/k8sevents/" target="_blank" rel="noopener noreffer ">https://www.mgasch.com/post/k8sevents/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@virtuallyghetto.com] <strong>Getting started with VMware Pivotal Container Service (PKS) Part 1: Overview</strong></td>
-<td style="text-align:center"><a href="https://www.virtuallyghetto.com/2018/03/getting-started-with-vmware-pivotal-container-service-pks-part-1-overview.html" target="_blank" rel="noopener noreffer ">https://www.virtuallyghetto.com/2018/03/getting-started-with-vmware-pivotal-container-service-pks-part-1-overview.html</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@keithlee.ie] <strong>PKS NSX-T Home Lab – Part 10: Install Ops Man and BOSH</strong></td>
-<td style="text-align:center"><a href="http://keithlee.ie/2018/12/09/pks-nsx-t-home-lab-part-10-install-ops-man-and-bosh/" target="_blank" rel="noopener noreffer ">http://keithlee.ie/2018/12/09/pks-nsx-t-home-lab-part-10-install-ops-man-and-bosh/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@beyondelastic.com] <strong>VMware PKS 1.3 What’s New</strong></td>
-<td style="text-align:center"><a href="https://beyondelastic.com/2019/01/24/vmware-pks-1-3-whats-new/" target="_blank" rel="noopener noreffer ">https://beyondelastic.com/2019/01/24/vmware-pks-1-3-whats-new/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@blogs.vmware.com] <strong>Dispatch to support Knative and Joins Cloud-Native Apps BU</strong></td>
-<td style="text-align:center"><a href="https://blogs.vmware.com/cloudnative/2018/10/25/dispatch-team-joins-cloud-native-apps-bu/" target="_blank" rel="noopener noreffer ">https://blogs.vmware.com/cloudnative/2018/10/25/dispatch-team-joins-cloud-native-apps-bu/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@thehumblelab.com] <strong>Getting Started with VMware Dispatch on Kubernetes</strong></td>
-<td style="text-align:center"><a href="https://www.thehumblelab.com/getting-started-with-vmware-dispatch-on-kubernetes/" target="_blank" rel="noopener noreffer ">https://www.thehumblelab.com/getting-started-with-vmware-dispatch-on-kubernetes/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@serverless.com] <strong>Serverless (FaaS) vs. Containers</strong></td>
-<td style="text-align:center"><a href="https://serverless.com/blog/serverless-faas-vs-containers/" target="_blank" rel="noopener noreffer ">https://serverless.com/blog/serverless-faas-vs-containers/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@medium.com] <strong>Search query &ldquo;Functions as a Service&rdquo;</strong></td>
-<td style="text-align:center"><a href="https://medium.com/search?q=functions%20as%20a%20service" target="_blank" rel="noopener noreffer ">https://medium.com/search?q=functions%20as%20a%20service</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@cloud.vmware.com] <strong>VMware PKS Landing Page</strong></td>
-<td style="text-align:center"><a href="https://cloud.vmware.com/vmware-pks" target="_blank" rel="noopener noreffer ">https://cloud.vmware.com/vmware-pks</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@pivotal.io] <strong>Pivotal PKS Landing Page</strong></td>
-<td style="text-align:center"><a href="https://pivotal.io/platform/pivotal-container-service" target="_blank" rel="noopener noreffer ">https://pivotal.io/platform/pivotal-container-service</a></td>
-</tr>
-</tbody>
-</table></div><div class="post-footer" id="post-footer">
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: left"><strong>Article</strong></th>
+            <th style="text-align: center"><strong>Link</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: left">[@openfaaS] <strong>Deployment guide for Kubernetes</strong></td>
+            <td style="text-align: center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreferrer ">https://docs.openfaas.com/deployment/kubernetes/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@github/openfaas-incubator] <strong>Github repo vcenter-connector</strong></td>
+            <td style="text-align: center"><a href="https://github.com/openfaas-incubator/vcenter-connector" target="_blank" rel="noopener noreferrer ">https://github.com/openfaas-incubator/vcenter-connector</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[github/embano1] <strong>Github repo pytagfn</strong></td>
+            <td style="text-align: center"><a href="https://github.com/embano1/pytagfn" target="_blank" rel="noopener noreferrer ">https://github.com/embano1/pytagfn</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[github/embano1] <strong>Github repo gotagfn</strong></td>
+            <td style="text-align: center"><a href="https://github.com/embano1/pytagfn" target="_blank" rel="noopener noreferrer ">https://github.com/embano1/pytagfn</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@blog.alexellis.io] <strong>Get started with OpenFaaS and KinD</strong></td>
+            <td style="text-align: center"><a href="https://blog.alexellis.io/get-started-with-openfaas-and-kind/" target="_blank" rel="noopener noreferrer ">https://blog.alexellis.io/get-started-with-openfaas-and-kind/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@mgasch.com] <strong>Events, the DNA of Kubernetes</strong></td>
+            <td style="text-align: center"><a href="https://www.mgasch.com/post/k8sevents/" target="_blank" rel="noopener noreferrer ">https://www.mgasch.com/post/k8sevents/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@virtuallyghetto.com] <strong>Getting started with VMware Pivotal Container Service (PKS) Part 1: Overview</strong></td>
+            <td style="text-align: center"><a href="https://www.virtuallyghetto.com/2018/03/getting-started-with-vmware-pivotal-container-service-pks-part-1-overview.html" target="_blank" rel="noopener noreferrer ">https://www.virtuallyghetto.com/2018/03/getting-started-with-vmware-pivotal-container-service-pks-part-1-overview.html</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@keithlee.ie] <strong>PKS NSX-T Home Lab – Part 10: Install Ops Man and BOSH</strong></td>
+            <td style="text-align: center"><a href="http://keithlee.ie/2018/12/09/pks-nsx-t-home-lab-part-10-install-ops-man-and-bosh/" target="_blank" rel="noopener noreferrer ">http://keithlee.ie/2018/12/09/pks-nsx-t-home-lab-part-10-install-ops-man-and-bosh/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@beyondelastic.com] <strong>VMware PKS 1.3 What’s New</strong></td>
+            <td style="text-align: center"><a href="https://beyondelastic.com/2019/01/24/vmware-pks-1-3-whats-new/" target="_blank" rel="noopener noreferrer ">https://beyondelastic.com/2019/01/24/vmware-pks-1-3-whats-new/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@blogs.vmware.com] <strong>Dispatch to support Knative and Joins Cloud-Native Apps BU</strong></td>
+            <td style="text-align: center"><a href="https://blogs.vmware.com/cloudnative/2018/10/25/dispatch-team-joins-cloud-native-apps-bu/" target="_blank" rel="noopener noreferrer ">https://blogs.vmware.com/cloudnative/2018/10/25/dispatch-team-joins-cloud-native-apps-bu/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@thehumblelab.com] <strong>Getting Started with VMware Dispatch on Kubernetes</strong></td>
+            <td style="text-align: center"><a href="https://www.thehumblelab.com/getting-started-with-vmware-dispatch-on-kubernetes/" target="_blank" rel="noopener noreferrer ">https://www.thehumblelab.com/getting-started-with-vmware-dispatch-on-kubernetes/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@serverless.com] <strong>Serverless (FaaS) vs. Containers</strong></td>
+            <td style="text-align: center"><a href="https://serverless.com/blog/serverless-faas-vs-containers/" target="_blank" rel="noopener noreferrer ">https://serverless.com/blog/serverless-faas-vs-containers/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@medium.com] <strong>Search query &ldquo;Functions as a Service&rdquo;</strong></td>
+            <td style="text-align: center"><a href="https://medium.com/search?q=functions%20as%20a%20service" target="_blank" rel="noopener noreferrer ">https://medium.com/search?q=functions%20as%20a%20service</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@cloud.vmware.com] <strong>VMware PKS Landing Page</strong></td>
+            <td style="text-align: center"><a href="https://cloud.vmware.com/vmware-pks" target="_blank" rel="noopener noreferrer ">https://cloud.vmware.com/vmware-pks</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@pivotal.io] <strong>Pivotal PKS Landing Page</strong></td>
+            <td style="text-align: center"><a href="https://pivotal.io/platform/pivotal-container-service" target="_blank" rel="noopener noreferrer ">https://pivotal.io/platform/pivotal-container-service</a></td>
+        </tr>
+    </tbody>
+  </table>
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -350,14 +372,14 @@ client (<code>helm</code>) and the Helm server (Tiller - running in the namespac
                             <a class="link-to-markdown" href="/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Kubernetes,FaaS,EventDriven,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service" data-description="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service" data-description="This post is basically covering the origin of the VMware Open-Source project VMware Event Broker Appliance."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service" data-hashtags="VMware,vSphere,Kubernetes,FaaS,EventDriven,OpenSource"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" data-title="Event-driven interactions with vSphere using Functions as a Service"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/faas/">FaaS</a>,&nbsp;<a href="/tags/eventdriven/">EventDriven</a>,&nbsp;<a href="/tags/opensource/">OpenSource</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/faas/">FaaS</a>, <a href="/tags/eventdriven/">EventDriven</a>, <a href="/tags/opensource/">OpenSource</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -365,22 +387,20 @@ client (<code>helm</code>) and the Helm server (Tiller - running in the namespac
     <div class="post-nav"><a href="/post/monitoring-container-vms-with-vrealize-operations-manager/" class="prev" rel="prev" title="Monitoring Container VMs with vRealize Operations Manager"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Monitoring Container VMs with vRealize Operations Manager</a>
             <a href="/post/docker-run-vic-machine/" class="next" rel="next" title="docker run vic-machine">docker run vic-machine<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

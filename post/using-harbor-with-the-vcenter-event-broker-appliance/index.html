@@ -4,22 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Using Harbor with the VMware Event Broker Appliance - Robert Guske</title><meta name="Description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time."><meta property="og:title" content="Using Harbor with the VMware Event Broker Appliance" />
-<meta property="og:description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-03-23T22:00:36+01:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Using Harbor with the VMware Event Broker Appliance - Blog Robert Guske</title><meta name="Description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time."><meta property="og:url" content="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Using Harbor with the VMware Event Broker Appliance">
+  <meta property="og:description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-03-23T22:00:36+01:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VEBA">
+    <meta property="article:tag" content="Harbor">
+    <meta property="article:tag" content="Serverless">
+    <meta property="article:tag" content="Docker">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Using Harbor with the VMware Event Broker Appliance"/>
-<meta name="twitter:description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" /><link rel="prev" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-i-horizon/" /><link rel="next" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Using Harbor with the VMware Event Broker Appliance">
+  <meta name="twitter:description" content="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" /><link rel="prev" href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-i-horizon/" /><link rel="next" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +36,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/"
-        },"genre": "posts","keywords": "VMware, VEBA, Harbor, Serverless, Docker","wordcount":  1261 ,
+        },"genre": "posts","keywords": "VMware, VEBA, Harbor, Serverless, Docker","wordcount":  1215 ,
         "url": "https:\/\/rguske.github.io\/post\/using-harbor-with-the-vcenter-event-broker-appliance\/","datePublished": "2020-03-23T22:00:36+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "Instead of pulling function images from Docker Hub, I'm going to explorer the use of the enterprise container image registry Harbor this time."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +80,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +109,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +120,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Using Harbor with the VMware Event Broker Appliance</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-03-23">2020-03-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1261 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/veba_harbor_cover.jpg"
         data-srcset="/img/veba_harbor_cover.jpg, /img/veba_harbor_cover.jpg 1.5x, /img/veba_harbor_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/veba_harbor_cover.jpg"
-        title="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Using Harbor with the VMware Event Broker Appliance</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2020-03-23">2020-03-23</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1215 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>6 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#pulling-images-from-harbor-fails">Pulling images from Harbor fails</a></li>
     <li><a href="#create-a-project-in-harbor">Create a project in Harbor</a></li>
@@ -131,7 +157,7 @@
     <li><a href="#the-script">The script</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance" target="_blank">vCenter Event Broker Appliance (VEBA)</a> is still one of my favorite open source projects these days and it is evolving rapidly and continuously through the great work of the two main contributors <a href="https://twitter.com/embano1" target="_blank">Michael Gasch</a> and <a href="https://twitter.com/lamw" target="_blank">William Lam</a> as well as through the valuable <em><strong>feedback</strong></em> from the community. I´m very proud to be part of the &ldquo;inner circle&rdquo; of folks who meet on a regular basis to discuss everything <a href="https://twitter.com/search?q=%23vcenter-event-broker-appliance&src=typed_query" target="_blank">#VEBA</a> and the keyword here is also <em><strong>feedback</strong></em>.</p>
+                </div><div class="content" id="content"><p>The <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance" target="_blank">vCenter Event Broker Appliance (VEBA)</a> is still one of my favorite open source projects these days and it is evolving rapidly and continuously through the great work of the two main contributors <a href="https://twitter.com/embano1" target="_blank">Michael Gasch</a> and <a href="https://twitter.com/lamw" target="_blank">William Lam</a> as well as through the valuable <em><strong>feedback</strong></em> from the community. I´m very proud to be part of the &ldquo;inner circle&rdquo; of folks who meet on a regular basis to discuss everything <a href="https://twitter.com/search?q=%23vcenter-event-broker-appliance&src=typed_query" target="_blank">#VEBA</a> and the keyword here is also <em><strong>feedback</strong></em>.</p>
 <p>Version 0.3 was recently with big updates announced which can be viewed via the following link: <a href="https://www.virtuallyghetto.com/2020/03/big-updates-to-the-vcenter-event-broker-appliance-veba-fling.html" target="_blank">Big updates to the vCenter Event Broker Appliance (VEBA) Fling</a></p>
 <p>Just to name a few updates:</p>
 <ul>
@@ -232,73 +258,53 @@
 <p>We can build, tag and push the image in two ways:</p>
 <h3 id="the-docker-way---docker-cli">The Docker way - docker cli</h3>
 <p>Change into the directory were the <code>Dockerfile</code> is located, create a fresh new image out of it and directly assign it with a tag subsequently:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl"><span class="nb">cd</span> ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl"><span class="nb">cd</span> ~/vcenter-event-broker-appliance/examples/powercli/tagging/template/powercli/
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">docker build -t harbor.jarvis.lab/veba/veba-powercli-tagging:latest .
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">docker images
 </span></span><span class="line"><span class="cl">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
-</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326        <span class="m">15</span> seconds ago      368MB
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Login into Harbor with an assigned user or a user of an assigned group:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker login -u rguske harbor.jarvis.lab/veba
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>After a successful login, push the image to your project:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="the-openfaas-way---faas-cli">The OpenFaaS way - faas-cli</h3>
+</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              ab7d0277d326        <span class="m">15</span> seconds ago      368MB</span></span></code></pre></div></div>
+<p>Login into Harbor with an assigned user or a user of an assigned group:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker login -u rguske harbor.jarvis.lab/veba</span></span></code></pre></div></div>
+<p>After a successful login, push the image to your project:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest</span></span></code></pre></div></div>
+<h3 id="the-openfaas-way---faas-cli">The OpenFaaS way - faas-cli</h3>
 <p>The use of the <a href="https://docs.openfaas.com/cli/install/" target="_blank">faas-cli</a> makes the above described steps a little bit more comfortable and by the end, the <code>faas-cli</code> is using the native <code>docker</code> commands as well. To build as well as to tag the image, we just need to execute <code>faas-cli build -f stack.yml</code>. This command will pick the image specification from the <code>stack.yml</code> and will hand it over automatically.</p>
 <p>Same result here:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
-</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              3520bc9c8b85        <span class="m">32</span> seconds ago      368MB
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>You still need to login to Harbor if you want to execute the <code>push</code> command, otherwise you will receive the following error:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">denied: requested access to the resource is denied
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
+</span></span><span class="line"><span class="cl">harbor.jarvis.lab/veba/veba-powercli-tagging   latest              3520bc9c8b85        <span class="m">32</span> seconds ago      368MB</span></span></code></pre></div></div>
+<p>You still need to login to Harbor if you want to execute the <code>push</code> command, otherwise you will receive the following error:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">denied: requested access to the resource is denied
 </span></span><span class="line"><span class="cl">unauthorized: authentication required
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">2020/03/23 17:48:45 ERROR - Could not execute command: <span class="o">[</span>docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest<span class="o">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Login and execute <code>faas-cli push -f stack.yml</code>. The image will be pushed into your project.</p>
+</span></span><span class="line"><span class="cl">2020/03/23 17:48:45 ERROR - Could not execute command: <span class="o">[</span>docker push harbor.jarvis.lab/veba/veba-powercli-tagging:latest<span class="o">]</span></span></span></code></pre></div></div>
+<p>Login and execute <code>faas-cli push -f stack.yml</code>. The image will be pushed into your project.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" title="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" data-thumbnail="/img/posts/202003_veba_harbor/CapturFiles-20200323_031023.jpg" data-sub-html="<h2>Figure VIII: Pushed image to the new project</h2>">
         <img
             class="lazyload"
@@ -310,36 +316,27 @@
     </a><figcaption class="image-caption">Figure VIII: Pushed image to the new project</figcaption>
     </figure>
 <h2 id="deploy-a-function-to-veba">Deploy a function to VEBA</h2>
-<p>I don´t need to stress this topic in detail here because everything you need to be <em><strong>ready for take off</strong></em> 🚀 with VEBA is well documented on the Github page and if you miss something or need a more comprehensive insight on VEBA, visit this <a href="http://www.patrickkremer.com/veba/" target="_blank">blog series</a> by <a href="https://twitter.com/KremerPatrick" target="_blank">Patrick Kraemer</a>. Assuming the corresponding image is available in Harbor and the <code>stack.yml</code> is adapted accordingly (see <em>Figure II</em>), you can proceed with the steps provided on Github (<a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/tagging" target="_blank">LINK</a>). Update the <code>stack.yml</code> and the <code>vc-tag-config.json</code> with your environment information.</p>
+<p>I don´t need to stress this topic in detail here because everything you need to be <em><strong>ready for take off</strong></em> &#x1f680; with VEBA is well documented on the Github page and if you miss something or need a more comprehensive insight on VEBA, visit this <a href="http://www.patrickkremer.com/veba/" target="_blank">blog series</a> by <a href="https://twitter.com/KremerPatrick" target="_blank">Patrick Kraemer</a>. Assuming the corresponding image is available in Harbor and the <code>stack.yml</code> is adapted accordingly (see <em>Figure II</em>), you can proceed with the steps provided on Github (<a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/examples/powercli/tagging" target="_blank">LINK</a>). Update the <code>stack.yml</code> and the <code>vc-tag-config.json</code> with your environment information.</p>
 <p>I´m curious and therefore I established a <code>ssh</code> connection to my VEBA appliance. By executing <code>kubectl -n openfaas-fn get pods</code>, I can see how the deployment of the pod runs and the following is not what we want to see as a result:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                            READY   STATUS             RESTARTS   AGE
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                            READY   STATUS             RESTARTS   AGE
 </span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-6g92k   0/1     ImagePullBackOff   <span class="m">0</span>          28s
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                            READY   STATUS         RESTARTS   AGE
-</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-6g92k   0/1     ErrImagePull   <span class="m">0</span>          64s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>I validated this behavior by executing <code>docker images</code> and observed that no image has been downloaded from Harbor. Troubleshooting often means, if an automatic process fails, go the manual way step by step. Consequently, the next step is to download the image manually.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull harbor.jarvis.lab/veba/veba-powercli-tagging:latest
-</span></span><span class="line"><span class="cl">Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate signed by unknown authority
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Interesting!</strong></p>
+</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-6g92k   0/1     ErrImagePull   <span class="m">0</span>          64s</span></span></code></pre></div></div>
+<p>I validated this behavior by executing <code>docker images</code> and observed that no image has been downloaded from Harbor. Troubleshooting often means, if an automatic process fails, go the manual way step by step. Consequently, the next step is to download the image manually.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull harbor.jarvis.lab/veba/veba-powercli-tagging:latest
+</span></span><span class="line"><span class="cl">Error response from daemon: Get https://harbor.jarvis.lab/v2/: x509: certificate signed by unknown authority</span></span></code></pre></div></div>
+<p><strong>Interesting!</strong></p>
 <div class="details admonition failure open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>Failure<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -351,56 +348,34 @@
 <p>This is not based on the fact that I have not done a <code>docker login</code> before, as this is not necessary since we have made our project publicly available.</p>
 <p>Following the official Docker documentation, this behavior is expected: <a href="https://docs.docker.com/engine/security/certificates/" target="_blank">Verify repository client with certificates</a></p>
 <p>In order to retrieve the needed certificate information you can simply run the following <code>openssl</code> command:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">REGISTRY</span><span class="o">=</span>harbor.jarvis.tanzu
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="p">|</span> openssl s_client -connect <span class="nv">$REGISTRY</span>:443 -showcerts
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>I´ve also created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.</p>
-<p>You can download the script <a href="https://github.com/rguske/download-harbor-cert-script" target="_blank" rel="noopener noreffer ">HERE</a> and copy it via <code>scp</code> into your VEBA appliance.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp ~/Downloads/docker_harbor_cert.sh root@veba030:/
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Make it executable with <code>chmod +x docker_harbor_cert.sh</code> and run it. The other option without using <code>scp</code> is, to establish a <code>ssh</code> connection and to copy and execute the neccessary lines directly.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">REGISTRY</span><span class="o">=</span>harbor.jarvis.tanzu</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="p">|</span> openssl s_client -connect <span class="nv">$REGISTRY</span>:443 -showcerts</span></span></code></pre></div></div>
+<p>I´ve also created a little script which downloads the root certificate from Harbor, creates the relevant directories, puts the certificate into them and restarts the docker service.</p>
+<p>You can download the script <a href="https://github.com/rguske/download-harbor-cert-script" target="_blank" rel="noopener noreferrer ">HERE</a> and copy it via <code>scp</code> into your VEBA appliance.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp ~/Downloads/docker_harbor_cert.sh root@veba030:/</span></span></code></pre></div></div>
+<p>Make it executable with <code>chmod +x docker_harbor_cert.sh</code> and run it. The other option without using <code>scp</code> is, to establish a <code>ssh</code> connection and to copy and execute the neccessary lines directly.</p>
 <h2 id="the-script">The script</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#! /bin/bash
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#! /bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl"><span class="nb">set</span> -euo pipefail
 </span></span><span class="line"><span class="cl">
@@ -416,29 +391,22 @@
 </span></span><span class="line"><span class="cl">wget -O /etc/docker/certs.d/<span class="nv">$REGISTRY</span>/ca.crt https://<span class="nv">$REGISTRY</span>/api/v2.0/systeminfo/getcert --no-check-certificate
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Restart Docker service</span>
-</span></span><span class="line"><span class="cl">systemctl restart docker
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>VEBA is now able to <code>pull</code> and run the image from Harbor.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n openfaas-fn get pods
+</span></span><span class="line"><span class="cl">systemctl restart docker</span></span></code></pre></div></div>
+<p>VEBA is now able to <code>pull</code> and run the image from Harbor.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n openfaas-fn get pods
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                            READY   STATUS    RESTARTS   AGE
-</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-wqqqf   1/1     Running   <span class="m">0</span>          84s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong><center>Thanks for reading.</center></strong></p></div><div class="post-footer" id="post-footer">
+</span></span><span class="line"><span class="cl">powercli-tag-5ff88775fb-wqqqf   1/1     Running   <span class="m">0</span>          84s</span></span></code></pre></div></div>
+<p><strong><center>Thanks for reading.</center></strong></p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -446,14 +414,14 @@
                             <a class="link-to-markdown" href="/post/using-harbor-with-the-vcenter-event-broker-appliance/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance" data-via="vmw_rguske" data-hashtags="VMware,VEBA,Harbor,Serverless,Docker"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance" data-description="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance" data-description="Instead of pulling function images from Docker Hub, I&#39;m going to explorer the use of the enterprise container image registry Harbor this time."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance" data-hashtags="VMware,VEBA,Harbor,Serverless,Docker"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" data-title="Using Harbor with the VMware Event Broker Appliance"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/serverless/">Serverless</a>,&nbsp;<a href="/tags/docker/">Docker</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/veba/">VEBA</a>, <a href="/tags/harbor/">Harbor</a>, <a href="/tags/serverless/">Serverless</a>, <a href="/tags/docker/">Docker</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -461,22 +429,20 @@
     <div class="post-nav"><a href="/post/a-linux-development-desktop-with-vmware-horizon-part-i-horizon/" class="prev" rel="prev" title="A Linux Development Desktop with VMware Horizon - Part I: Horizon"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>A Linux Development Desktop with VMware Horizon - Part I: Horizon</a>
             <a href="/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" class="next" rel="next" title="VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition">VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

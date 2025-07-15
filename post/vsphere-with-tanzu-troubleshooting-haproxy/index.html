@@ -4,22 +4,31 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>vSphere with Tanzu - Troubleshooting HAProxy deployment - Robert Guske</title><meta name="Description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."><meta property="og:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment" />
-<meta property="og:description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-11-23T10:00:14+01:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>vSphere with Tanzu - Troubleshooting HAProxy deployment - Blog Robert Guske</title><meta name="Description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."><meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment">
+  <meta property="og:description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-11-23T10:00:14+01:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VSphere">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="HAProxy">
+    <meta property="article:tag" content="Troubleshooting">
+    <meta property="article:tag" content="Hack">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment"/>
-<meta name="twitter:description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="prev" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="next" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="vSphere with Tanzu - Troubleshooting HAProxy deployment">
+  <meta name="twitter:description" content="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="prev" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="next" href="https://rguske.github.io/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +37,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Kubernetes, HAProxy, Troubleshooting, Hack","wordcount":  1541 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Kubernetes, HAProxy, Troubleshooting, Hack","wordcount":  1488 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-troubleshooting-haproxy\/","datePublished": "2020-11-23T10:00:14+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "What I've learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +81,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-3" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-3" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +110,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +121,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu - Troubleshooting HAProxy deployment</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-11-23">2020-11-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1541 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/haproxytroubleshooting_cover.jpg"
         data-srcset="/img/haproxytroubleshooting_cover.jpg, /img/haproxytroubleshooting_cover.jpg 1.5x, /img/haproxytroubleshooting_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/haproxytroubleshooting_cover.jpg"
-        title="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu - Troubleshooting HAProxy deployment</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2020-11-23">2020-11-23</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1488 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>7 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#preperations">Preperations</a>
@@ -140,19 +167,19 @@
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
-<p>You may have already heard and read about our latest changes regarding our Kubernetes offering(s) <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C163490C-BE03-4DFE-8A03-5316D3245765.html" target="_blank" rel="noopener noreffer ">vSphere with Tanzu</a> also former known as <em>vSphere with Kubernetes</em>. Personally, I was totally excited and full of anticipation to make my first hands-on experience with this new deployment option &ndash;&gt; <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C3048E95-6E9D-4AC3-BE96-44446D288A7D.html" target="_blank" rel="noopener noreffer ">vSphere Networking</a> as an alternative to <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-B1388E77-2EEC-41E2-8681-5AE549D50C77.html" target="_blank" rel="noopener noreffer ">NSX-T</a> and how HAProxy is doing it&rsquo;s job within this construct. I don&rsquo;t know how you are dealing with installations of the &ldquo;NEW&rdquo; but I always read the documentation first&hellip; &hellip; not &hellip; 🙊 &hellip; but I should!</p>
+                </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>You may have already heard and read about our latest changes regarding our Kubernetes offering(s) <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C163490C-BE03-4DFE-8A03-5316D3245765.html" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu</a> also former known as <em>vSphere with Kubernetes</em>. Personally, I was totally excited and full of anticipation to make my first hands-on experience with this new deployment option &ndash;&gt; <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C3048E95-6E9D-4AC3-BE96-44446D288A7D.html" target="_blank" rel="noopener noreferrer ">vSphere Networking</a> as an alternative to <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-B1388E77-2EEC-41E2-8681-5AE549D50C77.html" target="_blank" rel="noopener noreferrer ">NSX-T</a> and how HAProxy is doing it&rsquo;s job within this construct. I don&rsquo;t know how you are dealing with installations of the &ldquo;NEW&rdquo; but I always read the documentation first&hellip; &hellip; not &hellip; &#x1f64a; &hellip; but I should!</p>
 <p>Honestly! Doesn&rsquo;t matter of which kind of implementation we are talking, is it a Homelab (test environment), a Proof of Concept implementation or in production, our final goal is a working solution and this is why we should be prepared best. Through this article, I will even more stress this point because I did a mistake which did cost me time in troubleshooting the failure I&rsquo;ve received. On the other hand and &ldquo;<em>as always</em>&rdquo;, it enlightened me and enriched my wealth of experience.</p>
 <div class="details admonition success open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-check-circle fa-fw" aria-hidden="true"></i>Thank You<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">I want to give <a href="https://twitter.com/0x86DD" target="_blank" rel="noopener noreffer ">James Lepthien</a> a big thanks for all of his help and guidance. He&rsquo;s my first go-to person when it comes to <strong>all</strong> networking related topics.</div>
+            <div class="admonition-content">I want to give <a href="https://twitter.com/0x86DD" target="_blank" rel="noopener noreferrer ">James Lepthien</a> a big thanks for all of his help and guidance. He&rsquo;s my first go-to person when it comes to <strong>all</strong> networking related topics.</div>
         </div>
     </div>
 <h2 id="preperations">Preperations</h2>
-<p>This article will not describe the vSphere with Tanzu installation itself. For this kind of details, I would like to point you to VMware&rsquo;s official documentation or to this <a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531" target="_blank" rel="noopener noreffer ">vSphere with Tanzu Quick Start Guide V1a</a> (<strong>for evaluation purposes</strong>) which VMware is maintaining on the <a href="https://core.vmware.com/" target="_blank" rel="noopener noreffer ">Cloud Platform Tech Zone</a>.</p>
+<p>This article will not describe the vSphere with Tanzu installation itself. For this kind of details, I would like to point you to VMware&rsquo;s official documentation or to this <a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu Quick Start Guide V1a</a> (<strong>for evaluation purposes</strong>) which VMware is maintaining on the <a href="https://core.vmware.com/" target="_blank" rel="noopener noreferrer ">Cloud Platform Tech Zone</a>.</p>
 <p>Also! For being prepared better as well as for documentation purposes, we are providing a checklist-file which can be downloaded through the <code>Workload Management</code> section in the vSphere Client and then shared or forwarded to the networking engineer of your confidence (<em>Figure I</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201117_105840.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201117_105840.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201117_105840.jpg" data-sub-html="<h2>Figure I: Network Stack Checklist</h2>">
         <img
@@ -166,21 +193,21 @@
     </figure>
 <h3 id="resources">Resources</h3>
 <ul>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C163490C-BE03-4DFE-8A03-5316D3245765.html" target="_blank" rel="noopener noreffer ">VMware Docs - vSphere with Tanzu Basics</a></li>
-<li><a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531" target="_blank" rel="noopener noreffer ">VMware Cloud Platform Tech Zone - vSphere with Tanzu Quick Start Guide V1a</a></li>
-<li><i class='fab fa-github fa-fw'></i> - <a href="https://cdn.haproxy.com/download/haproxy/vsphere/ova/vmware-haproxy-v0.1.8.ova" target="_blank" rel="noopener noreffer ">HAProxy Direct Download Link</a></li>
-<li><i class='fab fa-github fa-fw'></i> - <a href="https://github.com/vsphere-tmm/QSG-Setup-Deploy" target="_blank" rel="noopener noreffer ">HAProxy Powershell/PowerCLI Deployment Script</a></li>
-<li><i class='fab fa-github fa-fw'></i> - <a href="https://github.com/haproxytech/vmware-haproxy" target="_blank" rel="noopener noreffer ">HAProxy Build the Appliance from scratch</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-C163490C-BE03-4DFE-8A03-5316D3245765.html" target="_blank" rel="noopener noreferrer ">VMware Docs - vSphere with Tanzu Basics</a></li>
+<li><a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677531" target="_blank" rel="noopener noreferrer ">VMware Cloud Platform Tech Zone - vSphere with Tanzu Quick Start Guide V1a</a></li>
+<li><i class='fab fa-github fa-fw'></i> - <a href="https://cdn.haproxy.com/download/haproxy/vsphere/ova/vmware-haproxy-v0.1.8.ova" target="_blank" rel="noopener noreferrer ">HAProxy Direct Download Link</a></li>
+<li><i class='fab fa-github fa-fw'></i> - <a href="https://github.com/vsphere-tmm/QSG-Setup-Deploy" target="_blank" rel="noopener noreferrer ">HAProxy Powershell/PowerCLI Deployment Script</a></li>
+<li><i class='fab fa-github fa-fw'></i> - <a href="https://github.com/haproxytech/vmware-haproxy" target="_blank" rel="noopener noreferrer ">HAProxy Build the Appliance from scratch</a></li>
 <li>Blogs:
 <ul>
-<li><a href="https://cormachogan.com/2020/09/25/deploy-ha-proxy-for-vsphere-with-tanzu/" target="_blank" rel="noopener noreffer ">Cormac Hogan - Deploy HA-Proxy for vSphere with Tanzu</a></li>
-<li><a href="https://cormachogan.com/2020/09/28/enabling-vsphere-with-tanzu-using-ha-proxy/" target="_blank" rel="noopener noreffer ">Cormac Hogan - Enabling vSphere with Tanzu using HA-Proxy</a></li>
-<li><a href="https://frankdenneman.nl/2020/11/06/vsphere-with-tanzu-vcenter-server-network-configuration-overview/" target="_blank" rel="noopener noreffer ">Frank Denneman - vSphere with Tanzu vCenter Server Network Configuration Overview</a></li>
+<li><a href="https://cormachogan.com/2020/09/25/deploy-ha-proxy-for-vsphere-with-tanzu/" target="_blank" rel="noopener noreferrer ">Cormac Hogan - Deploy HA-Proxy for vSphere with Tanzu</a></li>
+<li><a href="https://cormachogan.com/2020/09/28/enabling-vsphere-with-tanzu-using-ha-proxy/" target="_blank" rel="noopener noreferrer ">Cormac Hogan - Enabling vSphere with Tanzu using HA-Proxy</a></li>
+<li><a href="https://frankdenneman.nl/2020/11/06/vsphere-with-tanzu-vcenter-server-network-configuration-overview/" target="_blank" rel="noopener noreferrer ">Frank Denneman - vSphere with Tanzu vCenter Server Network Configuration Overview</a></li>
 </ul>
 </li>
 </ul>
 <h2 id="the-frontend-network">The Frontend Network</h2>
-<p><a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677551" target="_blank" rel="noopener noreffer ">Step 6</a> in the Quick Start Guide describes the deployment of the HAProxy Virtual Appliance on vSphere. OVA deployment step 7 gives us the ability to deploy HAProxy with an additional network interface to seperate the Kubernetes nodes of our clusters from the network used by clients or services to access these clusters (<em>Figure II</em>).</p>
+<p><a href="https://core.vmware.com/resource/vsphere-tanzu-quick-start-guide-v1a#_Toc53677551" target="_blank" rel="noopener noreferrer ">Step 6</a> in the Quick Start Guide describes the deployment of the HAProxy Virtual Appliance on vSphere. OVA deployment step 7 gives us the ability to deploy HAProxy with an additional network interface to seperate the Kubernetes nodes of our clusters from the network used by clients or services to access these clusters (<em>Figure II</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201117_094920.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201117_094920.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201117_094920.jpg" data-sub-html="<h2>Figure II: Option to choose Frontend Network</h2>">
         <img
             class="lazyload"
@@ -216,37 +243,39 @@ Deploy the Appliance with 3 nics: a Management network (Supervisor -&gt; HAProxy
             alt="/img/posts/202011_haproxytrouble/CapturFiles-20201117_104643.jpg" />
     </a><figcaption class="image-caption">Figure III: Wrong configuration</figcaption>
     </figure>
-<p>At this point, I&rsquo;d like to make a little excursion in networking 101 to make sure you also see my mistake which I&rsquo;ve made through this misinterpretation. I entered <code>10.10.18.18/28</code> as an IP range which isn&rsquo;t a valid <a href="https://en.wikipedia.org/wiki/Subnetwork" target="_blank" rel="noopener noreffer ">Subnetwork</a>. A valid subnetwork configuration for my evaluation deployment should have looked like:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Description</th>
-<th style="text-align:center">Address</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Network ID</td>
-<td style="text-align:center">10.10.18.16</td>
-</tr>
-<tr>
-<td style="text-align:center">Broadcast</td>
-<td style="text-align:center">10.10.18.31</td>
-</tr>
-<tr>
-<td style="text-align:center">Netmask</td>
-<td style="text-align:center">255.255.255.240</td>
-</tr>
-<tr>
-<td style="text-align:center">Host IP starts with</td>
-<td style="text-align:center">10.10.18.17</td>
-</tr>
-<tr>
-<td style="text-align:center">Host IP ends with</td>
-<td style="text-align:center">10.10.18.30</td>
-</tr>
-</tbody>
-</table>
+<p>At this point, I&rsquo;d like to make a little excursion in networking 101 to make sure you also see my mistake which I&rsquo;ve made through this misinterpretation. I entered <code>10.10.18.18/28</code> as an IP range which isn&rsquo;t a valid <a href="https://en.wikipedia.org/wiki/Subnetwork" target="_blank" rel="noopener noreferrer ">Subnetwork</a>. A valid subnetwork configuration for my evaluation deployment should have looked like:</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center">Description</th>
+            <th style="text-align: center">Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">Network ID</td>
+            <td style="text-align: center">10.10.18.16</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Broadcast</td>
+            <td style="text-align: center">10.10.18.31</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Netmask</td>
+            <td style="text-align: center">255.255.255.240</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Host IP starts with</td>
+            <td style="text-align: center">10.10.18.17</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Host IP ends with</td>
+            <td style="text-align: center">10.10.18.30</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <p><code>10.10.18.16/28</code> is valid and because I decided to use a <code>/28</code> network, the available IPs for the virtual server range, which you have to provide in Step 5 in the <code>Workload Management</code> configuration (<em>Figure IV</em>) later on, starts with <code>.17</code> and ends with <code>.30</code>.</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201117_112102.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201117_112102.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201117_112102.jpg" data-sub-html="<h2>Figure IV: Load Balancer Configuration Workload Management Wizard</h2>">
         <img
@@ -259,30 +288,32 @@ Deploy the Appliance with 3 nics: a Management network (Supervisor -&gt; HAProxy
     </a><figcaption class="image-caption">Figure IV: Load Balancer Configuration Workload Management Wizard</figcaption>
     </figure>
 <p>The following table gives you a quick overview of available Host IPs for a specific subnetwork.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Subnet Mask</th>
-<th style="text-align:center">/29</th>
-<th style="text-align:center">/28</th>
-<th style="text-align:center">/27</th>
-<th style="text-align:center">/26</th>
-<th style="text-align:center">/25</th>
-<th style="text-align:center">/24</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Host IPs</td>
-<td style="text-align:center">6</td>
-<td style="text-align:center">14</td>
-<td style="text-align:center">30</td>
-<td style="text-align:center">62</td>
-<td style="text-align:center">162</td>
-<td style="text-align:center">254</td>
-</tr>
-</tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center">Subnet Mask</th>
+            <th style="text-align: center">/29</th>
+            <th style="text-align: center">/28</th>
+            <th style="text-align: center">/27</th>
+            <th style="text-align: center">/26</th>
+            <th style="text-align: center">/25</th>
+            <th style="text-align: center">/24</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">Host IPs</td>
+            <td style="text-align: center">6</td>
+            <td style="text-align: center">14</td>
+            <td style="text-align: center">30</td>
+            <td style="text-align: center">62</td>
+            <td style="text-align: center">162</td>
+            <td style="text-align: center">254</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <p><em>* I excluded Network-ID and Broadcast-ID</em></p>
 <hr>
 <h4 id="dont-be-confused">Don&rsquo;t be confused</h4>
@@ -311,7 +342,7 @@ Deploy the Appliance with 3 nics: a Management network (Supervisor -&gt; HAProxy
             alt="/img/posts/202011_haproxytrouble/CapturFiles-20201117_092255.jpg" />
     </a><figcaption class="image-caption">Figure VI: Workload Management Status</figcaption>
     </figure>
-<p>But appearances are deceptive! I created a vSphere Namespace to deploy a <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">Tanzu Kubernetes Cluster</a> (Guest Cluster) and clicked on the <strong>OPEN</strong> button/ link to the CLI tools (<em>Figure VII</em>) to check the reachability of my Supervisor Cluster and got an <code>ERR_ADDRESS_UNREACHABLE</code> back.</p>
+<p>But appearances are deceptive! I created a vSphere Namespace to deploy a <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreferrer ">Tanzu Kubernetes Cluster</a> (Guest Cluster) and clicked on the <strong>OPEN</strong> button/ link to the CLI tools (<em>Figure VII</em>) to check the reachability of my Supervisor Cluster and got an <code>ERR_ADDRESS_UNREACHABLE</code> back.</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201120_040144.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201120_040144.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201120_040144.jpg" data-sub-html="<h2>Figure VII: Link to CLI Tools</h2>">
         <img
             class="lazyload"
@@ -336,116 +367,72 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
         </div>
     </div>
 <h3 id="haproxy-frontend-vip-bind-service">HAProxy Frontend VIP bind service</h3>
-<p>Having a look at <a href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/#the-frontend-network" target="_blank" rel="noopener noreffer ">my above drawing</a> it shows us that our incoming request tries to reach the Frontend VIP <code>10.10.18.19</code> trough HAProxy. Because HAProxy is providing those VIP&rsquo;s, it&rsquo;s logical to start troubleshooting the HAProxy appliance first. SSH is enabled by default.</p>
+<p>Having a look at <a href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/#the-frontend-network" target="_blank" rel="noopener noreferrer ">my above drawing</a> it shows us that our incoming request tries to reach the Frontend VIP <code>10.10.18.19</code> trough HAProxy. Because HAProxy is providing those VIP&rsquo;s, it&rsquo;s logical to start troubleshooting the HAProxy appliance first. SSH is enabled by default.</p>
 <p>I started with a simple status check of all services by executing <code>systemctl status</code>. The output was surprisingly <strong><code>degraded</code></strong>.</p>
 <p>Let`s narrow it down!</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ / ]# systemctl list-units --state=failed
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">root</span><span class="err">@</span><span class="n">haproxy</span> <span class="p">[</span> <span class="o">/</span> <span class="p">]</span><span class="c1"># systemctl list-units --state=failed</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  UNIT                 LOAD   ACTIVE SUB    DESCRIPTION
-</span></span><span class="line"><span class="cl">● anyip-routes.service loaded failed failed anyip-routes.service
+</span></span><span class="line"><span class="cl">  <span class="n">UNIT</span>                 <span class="n">LOAD</span>   <span class="n">ACTIVE</span> <span class="n">SUB</span>    <span class="n">DESCRIPTION</span>
+</span></span><span class="line"><span class="cl"><span class="err">●</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span> <span class="n">loaded</span> <span class="n">failed</span> <span class="n">failed</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">● haproxy.service      loaded failed failed HAProxy Load Balancer
+</span></span><span class="line"><span class="cl"><span class="err">●</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">service</span>      <span class="n">loaded</span> <span class="n">failed</span> <span class="n">failed</span> <span class="n">HAProxy</span> <span class="n">Load</span> <span class="n">Balancer</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">● route-tables.service loaded failed failed route-tables.service
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Three services have failed to start. I&rsquo;m starting from the top with verifying the <code>anyip-routes.service</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ / ]# systemctl status anyip-routes.service
+</span></span><span class="line"><span class="cl"><span class="err">●</span> <span class="n">route</span><span class="o">-</span><span class="n">tables</span><span class="o">.</span><span class="n">service</span> <span class="n">loaded</span> <span class="n">failed</span> <span class="n">failed</span> <span class="n">route</span><span class="o">-</span><span class="n">tables</span><span class="o">.</span><span class="n">service</span></span></span></code></pre></div></div>
+<p>Three services have failed to start. I&rsquo;m starting from the top with verifying the <code>anyip-routes.service</code>.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">root</span><span class="err">@</span><span class="n">haproxy</span> <span class="p">[</span> <span class="o">/</span> <span class="p">]</span><span class="c1"># systemctl status anyip-routes.service</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">● anyip-routes.service
-</span></span><span class="line"><span class="cl">   Loaded: loaded (/etc/systemd/system/anyip-routes.service; enabled; vendor preset: enabled)
-</span></span><span class="line"><span class="cl">   Active: failed (Result: exit-code) since Fri 2020-11-20 15:30:07 UTC; 3min 5s ago
-</span></span><span class="line"><span class="cl">  Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)
-</span></span><span class="line"><span class="cl">  Process: 777 ExecStartPre=/var/lib/vmware/anyiproutectl.sh up (code=exited, status=2)
-</span></span><span class="line"><span class="cl">  Process: 776 ExecStartPre=/bin/mkdir -p /var/log/vmware (code=exited, status=0/SUCCESS)
+</span></span><span class="line"><span class="cl"><span class="err">●</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Loaded</span><span class="p">:</span> <span class="n">loaded</span> <span class="p">(</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span><span class="p">;</span> <span class="n">enabled</span><span class="p">;</span> <span class="n">vendor</span> <span class="n">preset</span><span class="p">:</span> <span class="n">enabled</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Active</span><span class="p">:</span> <span class="n">failed</span> <span class="p">(</span><span class="n">Result</span><span class="p">:</span> <span class="n">exit</span><span class="o">-</span><span class="n">code</span><span class="p">)</span> <span class="n">since</span> <span class="n">Fri</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">UTC</span><span class="p">;</span> <span class="mi">3</span><span class="nb">min</span> <span class="mi">5</span><span class="n">s</span> <span class="n">ago</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Process</span><span class="p">:</span> <span class="mi">783</span> <span class="n">ExecStopPost</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">vmware</span><span class="o">/</span><span class="n">anyiproutectl</span><span class="o">.</span><span class="n">sh</span> <span class="n">down</span> <span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">exited</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">0</span><span class="o">/</span><span class="n">SUCCESS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Process</span><span class="p">:</span> <span class="mi">777</span> <span class="n">ExecStartPre</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">vmware</span><span class="o">/</span><span class="n">anyiproutectl</span><span class="o">.</span><span class="n">sh</span> <span class="n">up</span> <span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">exited</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Process</span><span class="p">:</span> <span class="mi">776</span> <span class="n">ExecStartPre</span><span class="o">=/</span><span class="n">bin</span><span class="o">/</span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">vmware</span> <span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">exited</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">0</span><span class="o">/</span><span class="n">SUCCESS</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Starting anyip-routes.service...
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: adding route for 10.10.18.18/28
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab anyiproutectl.sh[777]: RTNETLINK answers: Invalid argument
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Control process exited, code=exited status=2
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: anyip-routes.service: Failed with result &#39;exit-code&#39;.
-</span></span><span class="line"><span class="cl">Nov 20 15:30:07 haproxy.jarvis.lab systemd[1]: Failed to start anyip-routes.service.
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The mentioned script in this line <code>Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)</code> seems to do something and by reviewing it, I found the following hint to the configuration file location for the broken service.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Starting</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span><span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">anyiproutectl</span><span class="o">.</span><span class="n">sh</span><span class="p">[</span><span class="mi">777</span><span class="p">]:</span> <span class="n">adding</span> <span class="n">route</span> <span class="k">for</span> <span class="mf">10.10</span><span class="o">.</span><span class="mf">18.18</span><span class="o">/</span><span class="mi">28</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">anyiproutectl</span><span class="o">.</span><span class="n">sh</span><span class="p">[</span><span class="mi">777</span><span class="p">]:</span> <span class="n">RTNETLINK</span> <span class="n">answers</span><span class="p">:</span> <span class="n">Invalid</span> <span class="n">argument</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span><span class="p">:</span> <span class="ne">Control</span> <span class="n">process</span> <span class="n">exited</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">exited</span> <span class="n">status</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span><span class="p">:</span> <span class="n">Failed</span> <span class="n">with</span> <span class="n">result</span> <span class="s1">&#39;exit-code&#39;</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">Nov</span> <span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">07</span> <span class="n">haproxy</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">start</span> <span class="n">anyip</span><span class="o">-</span><span class="n">routes</span><span class="o">.</span><span class="n">service</span><span class="o">.</span></span></span></code></pre></div></div>
+<p>The mentioned script in this line <code>Process: 783 ExecStopPost=/var/lib/vmware/anyiproutectl.sh down (code=exited, status=0/SUCCESS)</code> seems to do something and by reviewing it, I found the following hint to the configuration file location for the broken service.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># The path to the config file used by this program.</span>
 </span></span><span class="line"><span class="cl"><span class="nv">CONFIG_FILE</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CONFIG_FILE</span><span class="k">:-</span><span class="p">/etc/vmware/anyip-routes.cfg</span><span class="si">}</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@haproxy [ /etc/vmware ]# cat anyip-routes.cfg
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">root</span><span class="err">@</span><span class="n">haproxy</span> <span class="p">[</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">vmware</span> <span class="p">]</span><span class="c1"># cat anyip-routes.cfg</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#
-</span></span><span class="line"><span class="cl"># Configuration file that contains a line-delimited list of CIDR values
-</span></span><span class="line"><span class="cl"># that define the network ranges used to bind the load balancer&#39;s frontends
-</span></span><span class="line"><span class="cl"># to virtual IP addresses.
-</span></span><span class="line"><span class="cl">#
-</span></span><span class="line"><span class="cl"># * Lines beginning with a comment character, #, are ignored
-</span></span><span class="line"><span class="cl"># * This file is used by the anyip-routes service
-</span></span><span class="line"><span class="cl">#
-</span></span><span class="line"><span class="cl">10.10.18.18/28
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Verifying the file and thus my made configuration finally brought me enlightenment. I changed it consequently from <code>10.10.18.18/28</code> to a valid Subnetwork range, which is the already mentioned <code>10.10.18.16/28</code> and rebooted the HAProxy appliance (<code>reboot</code>). Just restarting the service with <code>systemctl restart anyip-routes.service</code> does not apply all necessary changes.</p>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Configuration file that contains a line-delimited list of CIDR values</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># that define the network ranges used to bind the load balancer&#39;s frontends</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># to virtual IP addresses.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># * Lines beginning with a comment character, #, are ignored</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># * This file is used by the anyip-routes service</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="mf">10.10</span><span class="o">.</span><span class="mf">18.18</span><span class="o">/</span><span class="mi">28</span></span></span></code></pre></div></div>
+<p>Verifying the file and thus my made configuration finally brought me enlightenment. I changed it consequently from <code>10.10.18.18/28</code> to a valid Subnetwork range, which is the already mentioned <code>10.10.18.16/28</code> and rebooted the HAProxy appliance (<code>reboot</code>). Just restarting the service with <code>systemctl restart anyip-routes.service</code> does not apply all necessary changes.</p>
 <figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201122_090840.jpg" data-sub-html="<h2>Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP</h2>">
         <img
             class="lazyload"
@@ -457,39 +444,25 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
     </a><figcaption class="image-caption">Figure VIII: Adjusted anyip-routes.cfg file | reboot appliance | ping Supervisor VIP</figcaption>
     </figure>
 <p>Finally, the validation of the restored functionality:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@jarvis.lab --server=10.10.18.19
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">kubectl</span> <span class="n">vsphere</span> <span class="n">login</span> <span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">skip</span><span class="o">-</span><span class="n">tls</span><span class="o">-</span><span class="n">verify</span> <span class="o">--</span><span class="n">vsphere</span><span class="o">-</span><span class="n">username</span> <span class="n">administrator</span><span class="err">@</span><span class="n">jarvis</span><span class="o">.</span><span class="n">lab</span> <span class="o">--</span><span class="n">server</span><span class="o">=</span><span class="mf">10.10</span><span class="o">.</span><span class="mf">18.19</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Password:
-</span></span><span class="line"><span class="cl">Logged in successfully.
+</span></span><span class="line"><span class="cl"><span class="n">Password</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">Logged</span> <span class="ow">in</span> <span class="n">successfully</span><span class="o">.</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">You have access to the following contexts:
-</span></span><span class="line"><span class="cl">   10.10.18.19
-</span></span><span class="line"><span class="cl">   tkg-app
+</span></span><span class="line"><span class="cl"><span class="n">You</span> <span class="n">have</span> <span class="n">access</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span> <span class="n">contexts</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">   <span class="mf">10.10</span><span class="o">.</span><span class="mf">18.19</span>
+</span></span><span class="line"><span class="cl">   <span class="n">tkg</span><span class="o">-</span><span class="n">app</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">If the context you wish to use is not in this list, you may need to try
-</span></span><span class="line"><span class="cl">logging in again later, or contact your cluster administrator.
+</span></span><span class="line"><span class="cl"><span class="n">If</span> <span class="n">the</span> <span class="n">context</span> <span class="n">you</span> <span class="n">wish</span> <span class="n">to</span> <span class="n">use</span> <span class="n">is</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">list</span><span class="p">,</span> <span class="n">you</span> <span class="n">may</span> <span class="n">need</span> <span class="n">to</span> <span class="n">try</span>
+</span></span><span class="line"><span class="cl"><span class="n">logging</span> <span class="ow">in</span> <span class="n">again</span> <span class="n">later</span><span class="p">,</span> <span class="ow">or</span> <span class="n">contact</span> <span class="n">your</span> <span class="n">cluster</span> <span class="n">administrator</span><span class="o">.</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">To change context, use `kubectl config use-context &lt;workload name&gt;
-</span></span></code></pre></td></tr></table>
-</div>
-</div><figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-sub-html="<h2>Figure IX: Validating Supervisor VIP reachability</h2>">
+</span></span><span class="line"><span class="cl"><span class="n">To</span> <span class="n">change</span> <span class="n">context</span><span class="p">,</span> <span class="n">use</span> <span class="err">`</span><span class="n">kubectl</span> <span class="n">config</span> <span class="n">use</span><span class="o">-</span><span class="n">context</span> <span class="o">&lt;</span><span class="n">workload</span> <span class="n">name</span><span class="o">&gt;</span></span></span></code></pre></div></div>
+<figure><a class="lightgallery" href="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" title="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-thumbnail="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" data-sub-html="<h2>Figure IX: Validating Supervisor VIP reachability</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -499,11 +472,11 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
             alt="/img/posts/202011_haproxytrouble/CapturFiles-20201124_084200.jpg" />
     </a><figcaption class="image-caption">Figure IX: Validating Supervisor VIP reachability</figcaption>
     </figure>
-<center> Done ✅ </center></div><div class="post-footer" id="post-footer">
+<center> Done :white_check_mark: </center></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -511,14 +484,14 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
                             <a class="link-to-markdown" href="/post/vsphere-with-tanzu-troubleshooting-haproxy/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Kubernetes,HAProxy,Troubleshooting,Hack"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment" data-description="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment" data-description="What I&#39;ve learned from troubleshooting a failed vSphere with Tanzu HAProxy deployment."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment" data-hashtags="VMware,vSphere,Kubernetes,HAProxy,Troubleshooting,Hack"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" data-title="vSphere with Tanzu - Troubleshooting HAProxy deployment"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/haproxy/">HAProxy</a>,&nbsp;<a href="/tags/troubleshooting/">Troubleshooting</a>,&nbsp;<a href="/tags/hack/">Hack</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/haproxy/">HAProxy</a>, <a href="/tags/troubleshooting/">Troubleshooting</a>, <a href="/tags/hack/">Hack</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -526,22 +499,20 @@ Please check the server URL and try again.FATA[0005] Error while connecting to h
     <div class="post-nav"><a href="/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" class="prev" rel="prev" title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>A practitioner's guide - Spin up a local VEBA environment with KinD and vCenter simulator</a>
             <a href="/post/leveraging-fluent-bit-on-tkg-to-send-veba-logs-to-vrli/" class="next" rel="next" title="Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight">Leveraging Fluent Bit on Tanzu Kubernetes Grid to send VEBA logs to vRealize Log Insight<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    subgraph HAProxy Appliance\n    A[ Management ]\n    B[ Workload ]\n    C[ Frontend / VIPs ]\n    end\n    subgraph Traffic from\n    G( Client / Service )\n    end\n    subgraph Load Balancer VIPs\n    E[ Supervisor Cluster VMs ]\n    F[ Guest Cluster VMs ]\n    end\n    A \u0026 B \u0026 C --- E\n    B \u0026 C --- F\n    G -.- C -.-\u003e F \u0026 E","id-2":"Robert Guske","id-3":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/mermaid/mermaid.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"graph LR;\n    subgraph HAProxy Appliance\n    A[ Management ]\n    B[ Workload ]\n    C[ Frontend / VIPs ]\n    end\n    subgraph Traffic from\n    G( Client / Service )\n    end\n    subgraph Load Balancer VIPs\n    E[ Supervisor Cluster VMs ]\n    F[ Guest Cluster VMs ]\n    end\n    A \u0026 B \u0026 C --- E\n    B \u0026 C --- F\n    G -.- C -.-\u003e F \u0026 E","id-2":"  Robert Guske's Blog","id-3":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

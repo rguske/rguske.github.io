@@ -4,22 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Deploy VMware Tanzu Packages from a private Container Registry - Robert Guske</title><meta name="Description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><meta property="og:title" content="Deploy VMware Tanzu Packages from a private Container Registry" />
-<meta property="og:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-02-09T12:00:40+01:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Deploy VMware Tanzu Packages from a private Container Registry - Blog Robert Guske</title><meta name="Description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><meta property="og:url" content="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Deploy VMware Tanzu Packages from a private Container Registry">
+  <meta property="og:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-02-09T12:00:40+01:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="Extensibility">
+    <meta property="article:tag" content="CloudNative">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Harbor">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Deploy VMware Tanzu Packages from a private Container Registry"/>
-<meta name="twitter:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" /><link rel="prev" href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><link rel="next" href="https://rguske.github.io/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Deploy VMware Tanzu Packages from a private Container Registry">
+  <meta name="twitter:description" content="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" /><link rel="prev" href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" /><link rel="next" href="https://rguske.github.io/post/building-a-vmware-photonos-based-kubernetes-appliance/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +36,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/deploy-tanzu-packages-from-a-private-registry\/"
-        },"genre": "posts","keywords": "VMware, Extensibility, CloudNative, Kubernetes, Harbor","wordcount":  2779 ,
+        },"genre": "posts","keywords": "VMware, Extensibility, CloudNative, Kubernetes, Harbor","wordcount":  2470 ,
         "url": "https:\/\/rguske.github.io\/post\/deploy-tanzu-packages-from-a-private-registry\/","datePublished": "2022-02-09T12:00:40+01:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +80,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +109,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +120,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Deploy VMware Tanzu Packages from a private Container Registry</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-02-09">2022-02-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2779 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/tanzu_packages_offline_cover.png"
         data-srcset="/img/tanzu_packages_offline_cover.png, /img/tanzu_packages_offline_cover.png 1.5x, /img/tanzu_packages_offline_cover.png 2x"
         data-sizes="auto"
         alt="/img/tanzu_packages_offline_cover.png"
-        title="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Deploy VMware Tanzu Packages from a private Container Registry</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2022-02-09">2022-02-09</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>2470 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>12 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#offline-requirements">Offline Requirements</a></li>
     <li><a href="#prerequisites">Prerequisites</a>
@@ -138,61 +164,63 @@
     <li><a href="#resources">Resources</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="offline-requirements">Offline Requirements</h2>
-<p>During a recent Tanzu engagement, my customer wanted to make use of the VMware <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html" target="_blank" rel="noopener noreffer ">Tanzu Packages</a> to extend the core functionalities of their existing Kubernetes clusters. As a requirement, an offline deployment of the Packages was raised, which in other words means, deployments from their own private container registry. The intention behind it is simple.</p>
-<p>All of the Tanzu Packages shown in <em>Table I</em> below are provided by VMware. VMware is ensuring that the images for the Packages are stable, secure and compliant. But in order to deploy a Package, we need unristricted internet acceess to <code>*.projects.registry.vmware.com</code>. To bypass this &ldquo;online&rdquo; requirement, deploying the Packages from a private container registry like <a href="https://goharbor.io" target="_blank" rel="noopener noreffer ">Harbor</a> for example, is a typical use case for most clients.</p>
+                </div><div class="content" id="content"><h2 id="offline-requirements">Offline Requirements</h2>
+<p>During a recent Tanzu engagement, my customer wanted to make use of the VMware <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html" target="_blank" rel="noopener noreferrer ">Tanzu Packages</a> to extend the core functionalities of their existing Kubernetes clusters. As a requirement, an offline deployment of the Packages was raised, which in other words means, deployments from their own private container registry. The intention behind it is simple.</p>
+<p>All of the Tanzu Packages shown in <em>Table I</em> below are provided by VMware. VMware is ensuring that the images for the Packages are stable, secure and compliant. But in order to deploy a Package, we need unristricted internet acceess to <code>*.projects.registry.vmware.com</code>. To bypass this &ldquo;online&rdquo; requirement, deploying the Packages from a private container registry like <a href="https://goharbor.io" target="_blank" rel="noopener noreferrer ">Harbor</a> for example, is a typical use case for most clients.</p>
 <p><em>Table I: List of User-Managed Packages</em></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Function</th>
-<th style="text-align:center">Package Package</th>
-<th style="text-align:center">Repository</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Certificate management</td>
-<td style="text-align:center">cert-manager</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Container networking</td>
-<td style="text-align:center">multus-cni</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Container registry</td>
-<td style="text-align:center">harbor</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Ingress control</td>
-<td style="text-align:center">contour</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Log forwarding</td>
-<td style="text-align:center">fluent-bit</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Monitoring</td>
-<td style="text-align:center">grafana</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Monitoring</td>
-<td style="text-align:center">prometheus</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-<tr>
-<td style="text-align:center">Service discovery</td>
-<td style="text-align:center">external-dns</td>
-<td style="text-align:center">tanzu-standard</td>
-</tr>
-</tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center">Function</th>
+            <th style="text-align: center">Package Package</th>
+            <th style="text-align: center">Repository</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">Certificate management</td>
+            <td style="text-align: center">cert-manager</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Container networking</td>
+            <td style="text-align: center">multus-cni</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Container registry</td>
+            <td style="text-align: center">harbor</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Ingress control</td>
+            <td style="text-align: center">contour</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Log forwarding</td>
+            <td style="text-align: center">fluent-bit</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Monitoring</td>
+            <td style="text-align: center">grafana</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Monitoring</td>
+            <td style="text-align: center">prometheus</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Service discovery</td>
+            <td style="text-align: center">external-dns</td>
+            <td style="text-align: center">tanzu-standard</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Repository URL<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -207,64 +235,26 @@
 <h3 id="tanzu-cli">Tanzu Cli</h3>
 <p>The <code>tanzu</code> CLI ships alongside a compatible version of the <code>kubectl</code> CLI. Download the CLI(s) from VMware&rsquo;s Customer Connect portal.</p>
 <ul>
-<li><a href="https://customerconnect.vmware.com/en/downloads/details?downloadGroup=TKG-141&amp;productId=988&amp;rPId=82536" target="_blank" rel="noopener noreffer ">Download - Tanzu CLI</a></li>
+<li><a href="https://customerconnect.vmware.com/en/downloads/details?downloadGroup=TKG-141&amp;productId=988&amp;rPId=82536" target="_blank" rel="noopener noreferrer ">Download - Tanzu CLI</a></li>
 </ul>
 <p>If you are new to the topic, check out the official documentation to get even more details.</p>
 <ul>
-<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html" target="_blank" rel="noopener noreffer ">Documentation - Tanzu CLI</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html" target="_blank" rel="noopener noreferrer ">Documentation - Tanzu CLI</a></li>
 </ul>
 <p>In short for Linux (MacOS and Windows instructions via Docs):</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpack the tar ball</span>
-</span></span><span class="line"><span class="cl">tar -xvf tanzu-cli-bundle-linux-amd64.tar
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpacked tar ball</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpack the tar ball</span>
+</span></span><span class="line"><span class="cl">tar -xvf tanzu-cli-bundle-linux-amd64.tar</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpacked tar ball</span>
 </span></span><span class="line"><span class="cl">.
 </span></span><span class="line"><span class="cl">├── cluster
 </span></span><span class="line"><span class="cl">│   ├── plugin.yaml
@@ -299,31 +289,13 @@
 </span></span><span class="line"><span class="cl">│   └── v1.4.1
 </span></span><span class="line"><span class="cl">│       └── tanzu-pinniped-auth-linux_amd64
 </span></span><span class="line"><span class="cl">├── vendir-linux-amd64-v0.21.1+vmware.1.gz
-</span></span><span class="line"><span class="cl">└── ytt-linux-amd64-v0.34.0+vmware.1.gz
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># install the tanzu cli</span>
+</span></span><span class="line"><span class="cl">└── ytt-linux-amd64-v0.34.0+vmware.1.gz</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># install the tanzu cli</span>
 </span></span><span class="line"><span class="cl">sudo install cli/core/v1.4.0/tanzu-core-linux_amd64 /usr/local/bin/tanzu
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># version check</span>
@@ -339,28 +311,16 @@
 </span></span><span class="line"><span class="cl">tanzu plugin install --local cli all
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># check plugin installation status</span>
-</span></span><span class="line"><span class="cl">tanzu plugin list
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="kubectl">kubectl</h3>
+</span></span><span class="line"><span class="cl">tanzu plugin list</span></span></code></pre></div></div>
+<h3 id="kubectl">kubectl</h3>
 <p>The compatible <code>kubectl</code> version can be downloaded via the provided link as well.</p>
 <p>Just to have it mentioned - I used the <code>alias k=kubectl</code> actually for all my <code>code</code> examples in this post.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpack the binary</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># unpack the binary</span>
 </span></span><span class="line"><span class="cl">gzip -d kubectl-linux-v1.21.2+vmware.1.gz
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># make it executable</span>
@@ -370,27 +330,15 @@
 </span></span><span class="line"><span class="cl">sudo mv kubectl-linux-v1.21.2+vmware.1 /usr/local/bin/kubectl
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># version check</span>
-</span></span><span class="line"><span class="cl">kubectl version
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="imgpkg">imgpkg</h3>
-<p>The <a href="https://carvel.dev" target="_blank" rel="noopener noreffer ">Carvel</a> tool <code>imgpkg</code>, pronounced &ldquo;image package&rdquo;, is a tool that allows you to store a set of arbitrary files as an OCI image and is also being used for e.g. deploying Tanzu Kubernetes Grid in Internet-restricted environments and when building your own machine images.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># change into the cli folder of the unpacked Tanzu cli</span>
+</span></span><span class="line"><span class="cl">kubectl version</span></span></code></pre></div></div>
+<h3 id="imgpkg">imgpkg</h3>
+<p>The <a href="https://carvel.dev" target="_blank" rel="noopener noreferrer ">Carvel</a> tool <code>imgpkg</code>, pronounced &ldquo;image package&rdquo;, is a tool that allows you to store a set of arbitrary files as an OCI image and is also being used for e.g. deploying Tanzu Kubernetes Grid in Internet-restricted environments and when building your own machine images.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># change into the cli folder of the unpacked Tanzu cli</span>
 </span></span><span class="line"><span class="cl"><span class="nb">cd</span> cli
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># unpack the Gnu zipped archive</span>
@@ -400,10 +348,8 @@
 </span></span><span class="line"><span class="cl">chmod ugo+x imgpkg-linux-amd64-v0.10.0+vmware.1
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># move the binary into /usr/local/bin</span>
-</span></span><span class="line"><span class="cl">mv ./imgpkg-linux-amd64-v0.10.0+vmware.1 /usr/local/bin/imgpkg
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="create-a-new-project-in-harbor">Create a new Project in Harbor</h3>
+</span></span><span class="line"><span class="cl">mv ./imgpkg-linux-amd64-v0.10.0+vmware.1 /usr/local/bin/imgpkg</span></span></code></pre></div></div>
+<h3 id="create-a-new-project-in-harbor">Create a new Project in Harbor</h3>
 <p>Create a new project/repository in your registry to which we can <code>push</code> (upload) the packages (images) to. I&rsquo;ve created a new one called <code>tanzu-packages</code> in my Harbor registry.</p>
 <figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_empty_harbor_repo.png" data-sub-html="<h2>Figure I: New Harbor Project</h2>">
         <img
@@ -417,52 +363,31 @@
     </figure>
 <p>I&rsquo;ve written a couple of blog posts covering e.g. the deployment using <code>helm</code> or Tanzu Mission Control Catalog as well as for configuring specific features of the Harbor container registry.</p>
 <p>Check out:</p>
-<p>📝 <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></p>
-<p>📝 <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</a></p>
-<p>📝 <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreffer ">Using Harbor with the VMware Event Broker Appliance</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreferrer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreferrer ">vSphere 7 with Kubernetes supercharged - Helm, Harbor and Tanzu Kubernetes Grid</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/using-harbor-with-the-vcenter-event-broker-appliance/" target="_blank" rel="noopener noreferrer ">Using Harbor with the VMware Event Broker Appliance</a></p>
 <h3 id="download-the-harbor-certificate">Download the Harbor Certificate</h3>
 <p>You can skip this section if you are using a different registry.</p>
 <blockquote>
-<p>Please have the certificate of your registry by hand because we&rsquo;ll need it a few times.</p>
-</blockquote>
+<p>Please have the certificate of your registry by hand because we&rsquo;ll need it a few times.</p></blockquote>
 <p>Download the Harbor certificate:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># enter the FQDN of your Harbor instance (e.g. harbor.jarvis.tanzu)</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># enter the FQDN of your Harbor instance (e.g. harbor.jarvis.tanzu)</span>
 </span></span><span class="line"><span class="cl"><span class="nb">read</span> REGISTRY
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># download the certificate</span>
-</span></span><span class="line"><span class="cl">sudo wget -O ~/Downloads/ca.crt https://<span class="nv">$REGISTRY</span>/api/v2.0/systeminfo/getcert --no-check-certificate
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Add it to your Docker config:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># create a folder named like your registry</span>
+</span></span><span class="line"><span class="cl">sudo wget -O ~/Downloads/ca.crt https://<span class="nv">$REGISTRY</span>/api/v2.0/systeminfo/getcert --no-check-certificate</span></span></code></pre></div></div>
+<p>Add it to your Docker config:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># create a folder named like your registry</span>
 </span></span><span class="line"><span class="cl">sudo mkdir -p /etc/docker/certs.d/<span class="nv">$REGISTRY</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># download the certificate</span>
@@ -476,66 +401,49 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Username: admin
 </span></span><span class="line"><span class="cl">Password:
-</span></span><span class="line"><span class="cl">Login Succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="pull-and-push-the-kapp-controller-image"><code>pull</code> and <code>push</code> the Kapp-Controller Image</h2>
-<p>The first component which we make offline (offline == private registry) available is the <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreffer ">kapp-controller</a> in VMware&rsquo;s own maintained version (<code>v0.23.0_vmware.1</code>).</p>
+</span></span><span class="line"><span class="cl">Login Succeeded</span></span></code></pre></div></div>
+<h2 id="pull-and-push-the-kapp-controller-image"><code>pull</code> and <code>push</code> the Kapp-Controller Image</h2>
+<p>The first component which we make offline (offline == private registry) available is the <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreferrer ">kapp-controller</a> in VMware&rsquo;s own maintained version (<code>v0.23.0_vmware.1</code>).</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>kapp-controller<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>kapp-controller&rsquo;s declarative APIs and layered approach enables you to build, deploy, and manage your own applications.</p>
-<p><em>Source</em>: <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreffer ">https://carvel.dev/kapp-controller/</a></p>
+<p><em>Source</em>: <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreferrer ">https://carvel.dev/kapp-controller/</a></p>
 </div>
         </div>
     </div>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># pull the kapp-controller image locally first</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># pull the kapp-controller image locally first</span>
 </span></span><span class="line"><span class="cl">docker pull projects.registry.vmware.com/tkg/kapp-controller:v0.23.0_vmware.1
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># tag the kapp-controller image to be prepared for the image push</span>
-</span></span><span class="line"><span class="cl">docker tag projects.registry.vmware.com/tkg/kapp-controller:v0.23.0_vmware.1 harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Locally it should look like the following:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker images
+</span></span><span class="line"><span class="cl">docker tag projects.registry.vmware.com/tkg/kapp-controller:v0.23.0_vmware.1 harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1</span></span></code></pre></div></div>
+<p>Locally it should look like the following:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker images
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">REPOSITORY                                           TAG                IMAGE ID       CREATED        SIZE
 </span></span><span class="line"><span class="cl">harbor.jarvis.tanzu/tanzu-packages/kapp-controller   v0.23.0_vmware.1   0076b17e8c71   <span class="m">5</span> months ago   639MB
-</span></span><span class="line"><span class="cl">projects.registry.vmware.com/tkg/kapp-controller     v0.23.0_vmware.1   0076b17e8c71   <span class="m">5</span> months ago   639MB
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Push it:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># push the image to the destination registry</span>
-</span></span><span class="line"><span class="cl">docker push harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1
-</span></span></code></pre></td></tr></table>
-</div>
-</div><figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" data-sub-html="<h2>Figure II: Pushed kapp-controller image</h2>">
+</span></span><span class="line"><span class="cl">projects.registry.vmware.com/tkg/kapp-controller     v0.23.0_vmware.1   0076b17e8c71   <span class="m">5</span> months ago   639MB</span></span></code></pre></div></div>
+<p>Push it:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># push the image to the destination registry</span>
+</span></span><span class="line"><span class="cl">docker push harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1</span></span></code></pre></div></div>
+<figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_kapp_push_harbor.png" data-sub-html="<h2>Figure II: Pushed kapp-controller image</h2>">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -546,55 +454,29 @@
     </a><figcaption class="image-caption">Figure II: Pushed kapp-controller image</figcaption>
     </figure>
 <h2 id="install-the-kapp-controller">Install the Kapp-Controller</h2>
-<p>In order to install the kapp-controller to our Kubernetes cluster, a deployment manifest file has to be created first. Create a new file called e.g. <code>kapp-controller.yaml</code> and add the provided specifications from the <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-prep-tkgs-kapp.html#kapp-controller" target="_blank" rel="noopener noreffer ">docs</a>.</p>
+<p>In order to install the kapp-controller to our Kubernetes cluster, a deployment manifest file has to be created first. Create a new file called e.g. <code>kapp-controller.yaml</code> and add the provided specifications from the <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-prep-tkgs-kapp.html#kapp-controller" target="_blank" rel="noopener noreferrer ">docs</a>.</p>
 <p>Open the file and jump to line number <code>1278</code>. By using <code>vim</code> for example, you can simply enable line numbers. Just enter <code>:set numbers</code> and jump to the line by executing <code>:1278</code>. Otherwise, simply search <code>/</code> for <code>image: projects</code>.</p>
 <p>Replace the original repository and image with yours.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># replace the old image url</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># replace the old image url</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">1278         image</span><span class="p">:</span><span class="w"> </span><span class="l">harbor.jarvis.tanzu/tanzu-packages/kapp-controller:v0.23.0_vmware.1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">1279         name</span><span class="p">:</span><span class="w"> </span><span class="l">kapp-controller</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">1280         ports</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Install the kapp-controller:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k apply -f kapp-controller.yaml
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">[</span><span class="l">...]</span></span></span></code></pre></div></div>
+<p>Install the kapp-controller:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k apply -f kapp-controller.yaml
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">namespace/tkg-system created
 </span></span><span class="line"><span class="cl">namespace/tanzu-package-repo-global created
@@ -611,33 +493,16 @@
 </span></span><span class="line"><span class="cl">clusterrole.rbac.authorization.k8s.io/kapp-controller-cluster-role created
 </span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/kapp-controller-cluster-role-binding created
 </span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/pkg-apiserver:system:auth-delegator created
-</span></span><span class="line"><span class="cl">rolebinding.rbac.authorization.k8s.io/pkgserver-auth-reader created
-</span></span></code></pre></td></tr></table>
-</div>
-</div><blockquote>
-<p>Notice: The Kubernetes namespaces <code>tkg-system</code> as well as <code>tanzu-package-repo-global</code> was created as part of the deployment. Keep them in mind!</p>
-</blockquote>
-<p>Installation successfully ✅</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># show Deployment, Pod, Configmap and Replicaset</span>
+</span></span><span class="line"><span class="cl">rolebinding.rbac.authorization.k8s.io/pkgserver-auth-reader created</span></span></code></pre></div></div>
+<blockquote>
+<p>Notice: The Kubernetes namespaces <code>tkg-system</code> as well as <code>tanzu-package-repo-global</code> was created as part of the deployment. Keep them in mind!</p></blockquote>
+<p>Installation successfully &#x2705;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># show Deployment, Pod, Configmap and Replicaset</span>
 </span></span><span class="line"><span class="cl">k -n tkg-system get deploy,po,configmap,replicasets.apps
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
@@ -651,10 +516,8 @@
 </span></span><span class="line"><span class="cl">configmap/kube-root-ca.crt         <span class="m">1</span>      22h
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                                         DESIRED   CURRENT   READY   AGE
-</span></span><span class="line"><span class="cl">replicaset.apps/kapp-controller-5fd59df9dd   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       22h
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="making-packages-offline-available">Making Packages offline available</h2>
+</span></span><span class="line"><span class="cl">replicaset.apps/kapp-controller-5fd59df9dd   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       22h</span></span></code></pre></div></div>
+<h2 id="making-packages-offline-available">Making Packages offline available</h2>
 <p>Since our goal is to deploy Tanzu Packages from our private registry, we have to make the packages (images) offline available first. Downloading, bundling and uploading the packages can easily be performed with the following two <code>imgpkg</code> commands:</p>
 <div class="details admonition warning open">
         <div class="details-summary admonition-title">
@@ -664,23 +527,17 @@
             <div class="admonition-content">The registry certificate is needed to upload the image bundle (<code>--registry-ca-cert-path=ca.crt</code>).</div>
         </div>
     </div>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># use the imgpkg copy command to download the packages and to pack them into a tarball</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># use the imgpkg copy command to download the packages and to pack them into a tarball</span>
 </span></span><span class="line"><span class="cl">imgpkg copy -b projects.registry.vmware.com/tkg/packages/standard/repo:v1.4.0 --to-tar ~/Downloads/packages/packages.tar
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># use the imgpkg copy command to `push` the content into your private container registry</span>
-</span></span><span class="line"><span class="cl">imgpkg copy --tar packages.tar --to-repo harbor.jarvis.tanzu/tanzu-packages/tanzu-packages --registry-ca-cert-path<span class="o">=</span>ca.crt --registry-username<span class="o">=</span>admin --registry-password<span class="o">=</span><span class="nv">$PASSWORD</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>🎥 Watch the thrilling and somewhat boring recording: (⏩ is your friend 😉)</p>
+</span></span><span class="line"><span class="cl">imgpkg copy --tar packages.tar --to-repo harbor.jarvis.tanzu/tanzu-packages/tanzu-packages --registry-ca-cert-path<span class="o">=</span>ca.crt --registry-username<span class="o">=</span>admin --registry-password<span class="o">=</span><span class="nv">$PASSWORD</span></span></span></code></pre></div></div>
+<p>&#x1f3a5; Watch the thrilling and somewhat boring recording: (&#x23e9; is your friend &#x1f609;)</p>
 <script id="asciicast-wKfybXtagW70j8Q62wD8D7UfV" src="https://asciinema.org/a/wKfybXtagW70j8Q62wD8D7UfV.js" async></script>
 <figure><a class="lightgallery" href="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" title="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" data-thumbnail="/img/posts/202202_tanzu_packages_offline/rguske_post_packages_bundle_uploaded.png" data-sub-html="<h2>Figure III: Pushed kapp-controller image</h2>">
         <img
@@ -695,27 +552,12 @@
 <h2 id="update-the-kapp-controller-configmap">Update the Kapp-Controller Configmap</h2>
 <p>Before we are able to announce the new repository to the kapp-controller (<code>tanzu package repository add</code>) we have to make the kapp-controller trust our private registry by providing the certificate. In order to make this happen, the kapp-controller <code>configMap</code> needs an update.</p>
 <p><strong>OTHERWISE</strong> you will quickly see this error message:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0 -n tanzu-package-repo-global
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0 -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">- Adding package repository <span class="s1">&#39;tanzu-packages-offline&#39;</span>
 </span></span><span class="line"><span class="cl">
@@ -730,10 +572,8 @@
 </span></span><span class="line"><span class="cl">. Reconcile failed: Fetching resources: Error <span class="o">(</span>see .status.usefulErrorMessage <span class="k">for</span> details<span class="o">)</span>
 </span></span><span class="line"><span class="cl">Error: <span class="nb">exit</span> status <span class="m">1</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">✖  <span class="nb">exit</span> status <span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="details admonition failure open">
+</span></span><span class="line"><span class="cl">✖  <span class="nb">exit</span> status <span class="m">1</span></span></span></code></pre></div></div>
+<div class="details admonition failure open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>Certificate Error<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
@@ -742,71 +582,33 @@
         </div>
     </div>
 <p>And by checking the reconciliation status of the repository you will see:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository list -A
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package repository list -A
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="p">|</span> Retrieving repositories...
 </span></span><span class="line"><span class="cl">  NAME                    REPOSITORY                                         TAG     STATUS                   DETAILS                  NAMESPACE
-</span></span><span class="line"><span class="cl">  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-package-repo-global
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Certificates&hellip; 🙄</p>
+</span></span><span class="line"><span class="cl">  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile failed: Fe...  Error: Syncing direc...  tanzu-package-repo-global</span></span></code></pre></div></div>
+<p>Certificates&hellip; &#x1f644;</p>
 <p>Let&rsquo;s get it done:</p>
 <p><strong>Step 1:</strong> Edit the kapp-controller <code>configMap</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># edit configMap</span>
-</span></span><span class="line"><span class="cl">k -n tkg-system edit cm kapp-controller-config
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Step 2:</strong> Add your certificate data under section <code>caCerts</code> like shown in my example below:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Please edit the object below. Lines beginning with a &#39;#&#39; will be ignored,</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># edit configMap</span>
+</span></span><span class="line"><span class="cl">k -n tkg-system edit cm kapp-controller-config</span></span></code></pre></div></div>
+<p><strong>Step 2:</strong> Add your certificate data under section <code>caCerts</code> like shown in my example below:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Please edit the object below. Lines beginning with a &#39;#&#39; will be ignored,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># and an empty file will abort the edit. If an error occurs while saving this file will be</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># reopened with the relevant failures.</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#</span><span class="w">
@@ -820,7 +622,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="sd">    Y3QgSGFyYm9yMRIwEAYDVQQDEwlIYXJib3IgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
 </span></span></span><span class="line"><span class="cl"><span class="sd">
 </span></span></span><span class="line"><span class="cl"><span class="sd">    [...]
-</span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">dangerousSkipTLSVerify</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">httpProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">httpsProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
@@ -830,110 +632,69 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kapp.k14s.io/change-group</span><span class="p">:</span><span class="w"> </span><span class="l">apps.kappctrl.k14s.io/kapp-controller-config</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubectl.kubernetes.io/last-applied-configuration</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span></span></span><span class="line"><span class="cl"><span class="sd">      </span><span class="w">      </span>{<span class="s2">&#34;apiVersion&#34;</span><span class="p">:</span><span class="s2">&#34;v1&#34;</span><span class="p">,</span><span class="s2">&#34;data&#34;</span><span class="p">:</span>{<span class="s2">&#34;caCerts&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;dangerousSkipTLSVerify&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;httpProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;httpsProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;noProxy&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span>}<span class="p">,</span><span class="s2">&#34;kind&#34;</span><span class="p">:</span><span class="s2">&#34;ConfigMap&#34;</span><span class="p">,</span><span class="s2">&#34;metadata&#34;</span><span class="p">:</span>{<span class="s2">&#34;annotations&#34;</span><span class="p">:</span>{<span class="s2">&#34;kapp.k14s.io/change-group&#34;</span><span class="p">:</span><span class="s2">&#34;apps.kappctrl.k14s.io/kapp-controller-config&#34;</span>}<span class="p">,</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;kapp-controller-config&#34;</span><span class="p">,</span><span class="s2">&#34;namespace&#34;</span><span class="p">:</span><span class="s2">&#34;tkg-system&#34;</span>}}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      {&#34;apiVersion&#34;:&#34;v1&#34;,&#34;data&#34;:{&#34;caCerts&#34;:&#34;&#34;,&#34;dangerousSkipTLSVerify&#34;:&#34;&#34;,&#34;httpProxy&#34;:&#34;&#34;,&#34;httpsProxy&#34;:&#34;&#34;,&#34;noProxy&#34;:&#34;&#34;},&#34;kind&#34;:&#34;ConfigMap&#34;,&#34;metadata&#34;:{&#34;annotations&#34;:{&#34;kapp.k14s.io/change-group&#34;:&#34;apps.kappctrl.k14s.io/kapp-controller-config&#34;},&#34;name&#34;:&#34;kapp-controller-config&#34;,&#34;namespace&#34;:&#34;tkg-system&#34;}}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2022-02-08T12:31:35Z&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">kapp-controller-config</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tkg-system</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1168617&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">73e9cc55-02d4-4790-a7ee-eaa38b15c894</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Save your adjustments <code>:wq</code>.</p>
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">73e9cc55-02d4-4790-a7ee-eaa38b15c894</span></span></span></code></pre></div></div>
+<p>Save your adjustments <code>:wq</code>.</p>
 <p><strong>Step 3:</strong> Restart/<code>delete</code> the kapp-controller pod in order to let the changes take effect:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># delete the kapp-controller pod</span>
-</span></span><span class="line"><span class="cl">k -n tkg-system delete pod kapp-controller-5fd59df9dd-xmvmj
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Step 4:</strong> Add the URL, which is pointing to your private package repository and use the namespace <code>tanzu-package-repo-global</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># add the offline package repository</span>
-</span></span><span class="line"><span class="cl">tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0 -n tanzu-package-repo-global
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="details admonition info open">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># delete the kapp-controller pod</span>
+</span></span><span class="line"><span class="cl">k -n tkg-system delete pod kapp-controller-5fd59df9dd-xmvmj</span></span></code></pre></div></div>
+<p><strong>Step 4:</strong> Add the URL, which is pointing to your private package repository and use the namespace <code>tanzu-package-repo-global</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># add the offline package repository</span>
+</span></span><span class="line"><span class="cl">tanzu package repository add tanzu-packages-offline --url harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0 -n tanzu-package-repo-global</span></span></code></pre></div></div>
+<div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Different Namespace<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>If you choose a different namespace, the Packages will only be visible and deployable in that particular namespace.</p>
-<p><em>Source:</em> beyondelastic.com - <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreffer ">Tanzu Packages Explained</a></p>
+<p><em>Source:</em> beyondelastic.com - <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreferrer ">Tanzu Packages Explained</a></p>
 </div>
         </div>
     </div>
-<p>❗ Don&rsquo;t stop here ❗ Adding the certificate to the kapp-controller <code>configMap</code> is only half the way if your repository is not configured as <strong>Public</strong> (without authentication).</p>
+<p>&#x2757; Don&rsquo;t stop here &#x2757; Adding the certificate to the kapp-controller <code>configMap</code> is only half the way if your repository is not configured as <strong>Public</strong> (without authentication).</p>
 <h2 id="create-a-secret-to-authenticate-with-your-registry">Create a Secret to Authenticate with your Registry</h2>
 <p>To let the kapp-controller authenticate with your private registry, you have to create a Kubernetes <code>secret</code> which in turn has to be referenced in the <code>PackageRepository</code> custom resource (CR).</p>
 <p><strong>Step 1:</strong> Create the Kubernetes <code>secret</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># create a k8s docker-registry secret to authenticate with your registry</span>
-</span></span><span class="line"><span class="cl">kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server<span class="o">=</span><span class="s1">&#39;harbor.jarvis.tanzu&#39;</span> --docker-username<span class="o">=</span><span class="s1">&#39;admin&#39;</span> --docker-password<span class="o">=</span><span class="s1">&#39;your-password&#39;</span> --docker-email<span class="o">=</span><span class="s1">&#39;rguske@vmware.com&#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># validate the creation of the secret</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># create a k8s docker-registry secret to authenticate with your registry</span>
+</span></span><span class="line"><span class="cl">kubectl -n tanzu-package-repo-global create secret docker-registry harbor-creds --docker-server<span class="o">=</span><span class="s1">&#39;harbor.jarvis.tanzu&#39;</span> --docker-username<span class="o">=</span><span class="s1">&#39;admin&#39;</span> --docker-password<span class="o">=</span><span class="s1">&#39;your-password&#39;</span> --docker-email<span class="o">=</span><span class="s1">&#39;rguske@vmware.com&#39;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># validate the creation of the secret</span>
 </span></span><span class="line"><span class="cl">k get secrets -n tanzu-package-repo-global      
 </span></span><span class="line"><span class="cl">NAME                                                    TYPE                                  DATA   AGE
 </span></span><span class="line"><span class="cl">cert-manager-tanzu-package-repo-global-sa-token-6n57n   kubernetes.io/service-account-token   <span class="m">3</span>      3h6m
 </span></span><span class="line"><span class="cl">default-token-wzv5l                                     kubernetes.io/service-account-token   <span class="m">3</span>      24h
-</span></span><span class="line"><span class="cl">harbor-creds 
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Step 2:</strong></p>
+</span></span><span class="line"><span class="cl">harbor-creds </span></span></code></pre></div></div>
+<p><strong>Step 2:</strong></p>
 <p>Adjust the <code>PackageRepository</code> CR accordingly to use the new <code>secret</code> and to ultimately authenticate with your registry:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tanzu-package-repo-global edit packagerepositories.packaging.carvel.dev tanzu-packages-offline 
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n tanzu-package-repo-global edit packagerepositories.packaging.carvel.dev tanzu-packages-offline 
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Please edit the object below. Lines beginning with a &#39;#&#39; will be ignored,</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># and an empty file will abort the edit. If an error occurs while saving this file will be</span>
@@ -956,48 +717,27 @@
 </span></span><span class="line"><span class="cl">      image: harbor.jarvis.tanzu/tanzu-packages/tanzu-packages:v1.4.0
 </span></span><span class="line"><span class="cl">      secretRef:
 </span></span><span class="line"><span class="cl">        name: harbor-creds
-</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Step 3:</strong></p>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span></span></span></code></pre></div></div>
+<p><strong>Step 3:</strong></p>
 <p>Validate that the changes has taken effect and that the kapp-controller can successfully <code>reconcile</code> the repository. The status for the package repository should have changed from <code>Reconcile failed:</code> to <code>Reconcile succeeded</code>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># validate the configuration of the repository</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># validate the configuration of the repository</span>
 </span></span><span class="line"><span class="cl">tanzu package repository list -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">- Retrieving repositories...
 </span></span><span class="line"><span class="cl">  NAME                    REPOSITORY                                         TAG     STATUS               DETAILS
-</span></span><span class="line"><span class="cl">  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Step 4:</strong> Also, validate the available (offline) packages:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># check package availability</span>
+</span></span><span class="line"><span class="cl">  tanzu-packages-offline  harbor.jarvis.tanzu/tanzu-packages/tanzu-packages  v1.4.0  Reconcile succeeded</span></span></code></pre></div></div>
+<p><strong>Step 4:</strong> Also, validate the available (offline) packages:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># check package availability</span>
 </span></span><span class="line"><span class="cl">tanzu package available list -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">- Retrieving available packages...
@@ -1009,104 +749,54 @@
 </span></span><span class="line"><span class="cl">  grafana.tanzu.vmware.com       grafana       Visualization and analytics software                                                                        7.5.7+vmware.1-tkg.1
 </span></span><span class="line"><span class="cl">  harbor.tanzu.vmware.com        Harbor        OCI Registry                                                                                                2.2.3+vmware.1-tkg.1
 </span></span><span class="line"><span class="cl">  multus-cni.tanzu.vmware.com    multus-cni    This package provides the ability <span class="k">for</span> enabling attaching multiple network interfaces to pods in Kubernetes  3.7.1+vmware.1-tkg.1
-</span></span><span class="line"><span class="cl">  prometheus.tanzu.vmware.com    prometheus    A <span class="nb">time</span> series database <span class="k">for</span> your metrics                                                                     2.27.0+vmware.1-tkg.1
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="deploy-the-tanzu-package-cert-manager">Deploy the Tanzu Package Cert-Manager</h2>
+</span></span><span class="line"><span class="cl">  prometheus.tanzu.vmware.com    prometheus    A <span class="nb">time</span> series database <span class="k">for</span> your metrics                                                                     2.27.0+vmware.1-tkg.1</span></span></code></pre></div></div>
+<h2 id="deploy-the-tanzu-package-cert-manager">Deploy the Tanzu Package Cert-Manager</h2>
 <p>Now that we have our private repository configured, let&rsquo;s try deploying a first Tanzu Package to our Kubernetes cluster. The cert-manager supports you to e.g. have self-signed certificates generated for further Tanzu Packages installations as well as to be kind of an issuer of your own provided certificates.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># list cert-manager package availability</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># list cert-manager package availability</span>
 </span></span><span class="line"><span class="cl">tanzu package available list cert-manager.tanzu.vmware.com -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># check a specific cert-manager version</span>
 </span></span><span class="line"><span class="cl">tanzu package available get cert-manager.tanzu.vmware.com/1.1.0+vmware.1-tkg.2 -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># install cert-manager version</span>
-</span></span><span class="line"><span class="cl">tanzu package install cert-manager -p cert-manager.tanzu.vmware.com -v 1.1.0+vmware.1-tkg.2 -n tanzu-package-repo-global
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The deployment process is going to notify you when the installation of the Tanzu Package has finished.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">tanzu package install cert-manager -p cert-manager.tanzu.vmware.com -v 1.1.0+vmware.1-tkg.2 -n tanzu-package-repo-global</span></span></code></pre></div></div>
+<p>The deployment process is going to notify you when the installation of the Tanzu Package has finished.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
 </span></span><span class="line"><span class="cl">- Waiting <span class="k">for</span> <span class="s1">&#39;PackageInstall&#39;</span> reconciliation <span class="k">for</span> <span class="s1">&#39;cert-manager&#39;</span>
 </span></span><span class="line"><span class="cl">/ <span class="s1">&#39;PackageInstall&#39;</span> resource install status: Reconciling
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"> Added installed package <span class="s1">&#39;cert-manager&#39;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>🎉 🎉 🎉</p>
+</span></span><span class="line"><span class="cl"> Added installed package <span class="s1">&#39;cert-manager&#39;</span></span></span></code></pre></div></div>
+<p>&#x1f389; &#x1f389; &#x1f389;</p>
 <p>The reconciliation status of a specific Package can be verified every time using e.g.:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package installed list -n tanzu-package-repo-global
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tanzu package installed list -n tanzu-package-repo-global
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">- Retrieving installed packages...
 </span></span><span class="line"><span class="cl">  NAME          PACKAGE-NAME                   PACKAGE-VERSION       STATUS
-</span></span><span class="line"><span class="cl">  cert-manager  cert-manager.tanzu.vmware.com  1.1.0+vmware.1-tkg.2  Reconcile succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="optional-kapp-controller-secret-vs-configmap">OPTIONAL: kapp-controller secret vs. configMap</h2>
-<p>Instead of making adjustments to the <code>configMap</code> of the kapp-controller, a creation of a Kubernetes <code>secret</code> can be used as an alternative. I validated both ways successfully. A more detailed description can be found on the official Carvel documentation here: <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreffer ">Configuring the Controller</a></p>
+</span></span><span class="line"><span class="cl">  cert-manager  cert-manager.tanzu.vmware.com  1.1.0+vmware.1-tkg.2  Reconcile succeeded</span></span></code></pre></div></div>
+<h2 id="optional-kapp-controller-secret-vs-configmap">OPTIONAL: kapp-controller secret vs. configMap</h2>
+<p>Instead of making adjustments to the <code>configMap</code> of the kapp-controller, a creation of a Kubernetes <code>secret</code> can be used as an alternative. I validated both ways successfully. A more detailed description can be found on the official Carvel documentation here: <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreferrer ">Configuring the Controller</a></p>
 <p>Here&rsquo;s my example I&rsquo;ve tested:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Secret</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># Name must be `kapp-controller-config` for kapp controller to pick it up</span><span class="w">
@@ -1121,7 +811,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="sd">    MIIDWzCCAkOgAwIBAgIRAMODWpLzIWy3JocU4JBtIrIwDQYJKoZIhvcNAQELBQAw
 </span></span></span><span class="line"><span class="cl"><span class="sd">
 </span></span></span><span class="line"><span class="cl"><span class="sd">    [...]
-</span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># The url/ip of a proxy for kapp controller to use when making network</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># requests (optional)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">httpProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
@@ -1133,25 +823,23 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">noProxy</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># A comma delimited list of domain names for which kapp controller, when</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># fetching images or imgpkgBundles, will skip TLS verification. (optional)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">dangerousSkipTLSVerify</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="resources">Resources</h2>
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">dangerousSkipTLSVerify</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span></span></span></code></pre></div></div>
+<h2 id="resources">Resources</h2>
 <ul>
-<li>VMware Docs - <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html" target="_blank" rel="noopener noreffer ">Install the Tanzu CLI and Other Tools</a></li>
-<li>VMware Docs - <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html" target="_blank" rel="noopener noreffer ">Install and Configure Packages</a></li>
-<li>beyondelastic.com - <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreffer ">Tanzu Packages Explained</a></li>
-<li>beyondelastic.com - <a href="https://beyondelastic.com/2021/06/21/configure-vsphere-with-tanzu-behind-a-proxy-plus-tkg-extensions/" target="_blank" rel="noopener noreffer ">Configure vSphere with Tanzu behind a Proxy plus TKG Extensions</a></li>
-<li>Stay here 😉 - <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreffer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></li>
-<li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreffer ">Configuring the Controller</a></li>
-<li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/private-registry-auth/" target="_blank" rel="noopener noreffer ">Authenticating to Private Registries</a></li>
-<li>Kubernetes Docs - <a href="https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/" target="_blank" rel="noopener noreffer ">Pull an Image from a Private Registry</a></li>
+<li>VMware Docs - <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html" target="_blank" rel="noopener noreferrer ">Install the Tanzu CLI and Other Tools</a></li>
+<li>VMware Docs - <a href="https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-index.html" target="_blank" rel="noopener noreferrer ">Install and Configure Packages</a></li>
+<li>beyondelastic.com - <a href="https://beyondelastic.com/2022/01/04/tanzu-packages-explained/" target="_blank" rel="noopener noreferrer ">Tanzu Packages Explained</a></li>
+<li>beyondelastic.com - <a href="https://beyondelastic.com/2021/06/21/configure-vsphere-with-tanzu-behind-a-proxy-plus-tkg-extensions/" target="_blank" rel="noopener noreferrer ">Configure vSphere with Tanzu behind a Proxy plus TKG Extensions</a></li>
+<li>Stay here &#x1f609; - <a href="https://rguske.github.io/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" target="_blank" rel="noopener noreferrer ">Deploying Tanzu Packages using Tanzu Mission Control Catalog</a></li>
+<li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/controller-config/#controller-configuration-spec" target="_blank" rel="noopener noreferrer ">Configuring the Controller</a></li>
+<li>Carvel Docs - <a href="https://carvel.dev/kapp-controller/docs/v0.32.0/private-registry-auth/" target="_blank" rel="noopener noreferrer ">Authenticating to Private Registries</a></li>
+<li>Kubernetes Docs - <a href="https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/" target="_blank" rel="noopener noreferrer ">Pull an Image from a Private Registry</a></li>
 </ul>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -1159,14 +847,14 @@
                             <a class="link-to-markdown" href="/post/deploy-tanzu-packages-from-a-private-registry/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-via="vmw_rguske" data-hashtags="VMware,Extensibility,CloudNative,Kubernetes,Harbor"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-description="This post is about the preparations which have to be made in order to deploy Tanzu Packages from your own private Container Registry."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry" data-hashtags="VMware,Extensibility,CloudNative,Kubernetes,Harbor"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/deploy-tanzu-packages-from-a-private-registry/" data-title="Deploy VMware Tanzu Packages from a private Container Registry"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/harbor/">Harbor</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/extensibility/">Extensibility</a>, <a href="/tags/cloudnative/">CloudNative</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/harbor/">Harbor</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -1174,22 +862,20 @@
     <div class="post-nav"><a href="/post/deploying-tanzu-packages-using-tanzu-mission-control-catalog/" class="prev" rel="prev" title="Deploying Tanzu Packages using Tanzu Mission Control Catalog"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Deploying Tanzu Packages using Tanzu Mission Control Catalog</a>
             <a href="/post/building-a-vmware-photonos-based-kubernetes-appliance/" class="next" rel="next" title="Building a VMware PhotonOS based Kubernetes Appliance for vSphere">Building a VMware PhotonOS based Kubernetes Appliance for vSphere<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

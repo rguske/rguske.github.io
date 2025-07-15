@@ -4,22 +4,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>docker run vic-machine - Robert Guske</title><meta name="Description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."><meta property="og:title" content="docker run vic-machine" />
-<meta property="og:description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/docker-run-vic-machine/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-07-04T22:52:18+02:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>docker run vic-machine - Blog Robert Guske</title><meta name="Description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."><meta property="og:url" content="https://rguske.github.io/post/docker-run-vic-machine/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="docker run vic-machine">
+  <meta property="og:description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-07-04T22:52:18+02:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VSphere">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="Automation">
+    <meta property="article:tag" content="Harbor">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="docker run vic-machine"/>
-<meta name="twitter:description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="next" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="docker run vic-machine">
+  <meta name="twitter:description" content="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/docker-run-vic-machine/" /><link rel="prev" href="https://rguske.github.io/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" /><link rel="next" href="https://rguske.github.io/post/vmware-microsites-you-should-bookmark/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +36,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/docker-run-vic-machine\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Docker, Automation, Harbor","wordcount":  3119 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Docker, Automation, Harbor","wordcount":  2836 ,
         "url": "https:\/\/rguske.github.io\/post\/docker-run-vic-machine\/","datePublished": "2019-07-04T22:52:18+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +80,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +109,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +120,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">docker run vic-machine</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-07-04">2019-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3119 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;15 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/dockerrunvicmachine_cover.jpg"
         data-srcset="/img/dockerrunvicmachine_cover.jpg, /img/dockerrunvicmachine_cover.jpg 1.5x, /img/dockerrunvicmachine_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/dockerrunvicmachine_cover.jpg"
-        title="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">docker run vic-machine</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2019-07-04">2019-07-04</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>2836 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>14 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#credits-goes-out-to-ben">Credits goes out to Ben</a></li>
@@ -124,7 +150,7 @@
       <ul>
         <li><a href="#11-download-or-clone-bens-github-repository-called-bensdoings">1.1 Download or Clone Bens Github repository called <em>bensdoings</em></a></li>
         <li><a href="#12-create-a-new-folder-in-which-well-subsequently-copy-all-necessary-files-into">1.2 Create a new folder in which we´ll subsequently copy all necessary files into</a></li>
-        <li><a href="#13-copy-the-files-highlighted-in-span-stylecolor32cd32greenspan-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</a></li>
+        <li><a href="#13-copy-the-files-highlighted-in-green-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</a></li>
       </ul>
     </li>
     <li><a href="#2-create-a-new-project-in-harbor">2. Create a new project in Harbor</a></li>
@@ -148,38 +174,17 @@
     <li><a href="#resources">Resources</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+                </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
 <p>The deployment of a Virtual Container Host (VCH) can be done in various ways. One easy way is to use the vSphere-Client (H5) plugin which gives you the ability to configure all necessary parameters e.g. for network, storage or deployment target through a step-by-step deployment wizard.
 The far more efficient variant in my opinion is making use of the <code>vic-machine</code> utility, a Command Line Interface which is part of the vSphere Integrated Containers Engine bundle. Why do I think it is way better? Because it´s reproducible, independent from a browser, automatable as well as better documentable.</p>
-<p>You can find some of my <code>vic-machine</code> action examples in my Github repo here: <a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreffer ">https://github.com/rguske/vic-machine</a></p>
+<p>You can find some of my <code>vic-machine</code> action examples in my Github repo here: <a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreferrer ">https://github.com/rguske/vic-machine</a></p>
 <p>I had a lot of VMware-internal and public facing presentations as well as many demos on VIC over the past months and all based, more or less, on the following <code>vic-machine</code> arguments:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ./vic-machine-darwin create <span class="se">\ </span>         <span class="c1">### vic-machine binary + action</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ./vic-machine-darwin create <span class="se">\ </span>         <span class="c1">### vic-machine binary + action</span>
 </span></span><span class="line"><span class="cl">--name vch-example <span class="se">\ </span>                                     <span class="c1">### Name of the Virtual Conatiner Host</span>
 </span></span><span class="line"><span class="cl">--syslog-address udp://10.10.10.10:514 <span class="se">\ </span>                 <span class="c1">### Syslog server</span>
 </span></span><span class="line"><span class="cl">--target vcenter.example.org/Datacenter <span class="se">\ </span>                <span class="c1">### vSphere Datacenter</span>
@@ -200,22 +205,18 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span><span class="line"><span class="cl">--thumbprint 4C:92:D7:FC:F8:8D:5A:9F:.... <span class="se">\ </span>              <span class="c1">### vCenter Server Thumbprint</span>
 </span></span><span class="line"><span class="cl">--affinity-vm-group <span class="se">\ </span>                                    <span class="c1">### Automatically creates a VM/Host Group (cVM/ VCH Group)</span>
 </span></span><span class="line"><span class="cl">--ops-user vic-devops-admin@example.org <span class="se">\ </span>                <span class="c1">### Defines the user which is used by the VCH to interact with vSphere</span>
-</span></span><span class="line"><span class="cl">--ops-grant-perms                                         <span class="c1">### Automatically grants the necessary vSphere permissions</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><blockquote>
-<p>Constantly recurring executions should be automated or at least easier to handle</p>
-</blockquote>
+</span></span><span class="line"><span class="cl">--ops-grant-perms                                         <span class="c1">### Automatically grants the necessary vSphere permissions</span></span></span></code></pre></div></div>
+<blockquote>
+<p>Constantly recurring executions should be automated or at least easier to handle</p></blockquote>
 <p>&hellip;and thus, I was looking for a way how to apply this for <code>vic-machine</code>.</p>
 <h2 id="credits-goes-out-to-ben">Credits goes out to Ben</h2>
-<p><a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with <code>vic-machine</code>, because it takes a lot of arguments for each action like <code>create</code>, <code>configure</code> or <code>debug</code> for example. He mentioned this in his video from VMworld 2017 👇</p>
-
+<p><a href="https://twitter.com/bensdoings?lang=de" target="_blank">Ben Corrie</a> - the father of project vSphere Integrated Containers Engine - developed a hack back in 2017 which was born out of his own frustrations with <code>vic-machine</code>, because it takes a lot of arguments for each action like <code>create</code>, <code>configure</code> or <code>debug</code> for example. He mentioned this in his video from VMworld 2017 &#x1f447;</p>
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube-nocookie.com/embed/AD7CD8Haqdc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/AD7CD8Haqdc?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div>
 
 <p>With this post I´d like to guide you through the various steps to consume <code>vic-machine</code> and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice.</p>
-<p>To have Harbor as a cloud native registry deeply coupled and running inside of VIC is simply great. If you haven´t heard of <span style="color:#4A01D9"> <strong>Harbor</strong> </span> yet, check it out: <a href="https://goharbor.io/" target="_blank" rel="noopener noreffer ">https://goharbor.io/</a></p>
+<p>To have Harbor as a cloud native registry deeply coupled and running inside of VIC is simply great. If you haven´t heard of <span style="color:#4A01D9"> <strong>Harbor</strong> </span> yet, check it out: <a href="https://goharbor.io/" target="_blank" rel="noopener noreferrer ">https://goharbor.io/</a></p>
 <p>A short look into the innards of the VIC appliance shows us that all components of Harbor, including <a href="https://github.com/coreos/clair" target="_blank">Clair</a> for vulnerability scanning as well as <a href="https://github.com/theupdateframework/notary" target="_blank">Notary</a> for image signing, are running as a container inside of Harbor:</p>
 <p><code>docker ps -a | grep goharbor</code></p>
 <figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190705_093341.jpg" data-sub-html="<h2>Figure I: VIC components running as containers</h2>">
@@ -234,7 +235,7 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 <p><code>git clone https://github.com/corrieb/bensdoings.git</code> (into a folder of your choice)</p>
 <h3 id="12-create-a-new-folder-in-which-well-subsequently-copy-all-necessary-files-into">1.2 Create a new folder in which we´ll subsequently copy all necessary files into</h3>
 <p><code>mkdir ~/vic-dev</code></p>
-<h3 id="13-copy-the-files-highlighted-in-span-stylecolor32cd32greenspan-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</h3>
+<h3 id="13-copy-the-files-highlighted-in-green-and-folder-1-out-of-the-downloaded-cloned-repo">1.3 Copy the files highlighted in <span style="color:#32CD32">green</span> and folder (1) out of the downloaded/-cloned repo</h3>
 <ul>
 <li>/bensdoings/vic-machine/<span style="color:#32CD32">example-complete-empty.json, example-complete.json</span> as well as <span style="color:#32CD32">example-simple.json</span></li>
 <li>/bensdoings/vic-machine/build/1.3.1/<span style="color:#32CD32">build.sh</span> and <span style="color:#32CD32">push.sh</span></li>
@@ -242,36 +243,12 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 <li>/bensdoings/vic-machine/<span style="color:#32CD32">actions</span></li>
 </ul>
 <p>&hellip;and paste them into the newly created folder <em>vic-dev</em>. It should look like the following:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev&gt; tree -L <span class="m">2</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev&gt; tree -L <span class="m">2</span>
 </span></span><span class="line"><span class="cl">.
 </span></span><span class="line"><span class="cl">├── Dockerfile
 </span></span><span class="line"><span class="cl">├── actions
@@ -295,11 +272,9 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span><span class="line"><span class="cl">├── example-complete.json
 </span></span><span class="line"><span class="cl">├── example-simple.json
 </span></span><span class="line"><span class="cl">├── push.sh
-</span></span><span class="line"><span class="cl">└── vic-machine
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="2-create-a-new-project-in-harbor">2. Create a new project in Harbor</h2>
-<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab:8282" target="_blank" rel="noopener noreffer ">https://vic01.jarvis.lab:8282</a>) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
+</span></span><span class="line"><span class="cl">└── vic-machine</span></span></code></pre></div></div>
+<h2 id="2-create-a-new-project-in-harbor">2. Create a new project in Harbor</h2>
+<p>The target is to have all <code>vic-machine</code> actions available as a container-image and to <code>pull</code> as well as to <code>run</code> it from our own registry. Open the VIC Management-Portal via port 8282 (<a href="https://vic01.jarvis.lab:8282" target="_blank" rel="noopener noreferrer ">https://vic01.jarvis.lab:8282</a>) and enter your login credentials in case you weren´t automatically forwarded via Single Sign-on from an existing vSphere Web-Client session.</p>
 <p>Now let´s create a project in Harbor called e.g. <em>vic-machine</em> in which we will later push our images to.</p>
 <p>Administration &ndash;&gt; Projects &ndash;&gt; <strong>+ PROJECT</strong></p>
 <p>If you want to make all repositories (images) of that project public, select the Public check box like I did.</p>
@@ -347,22 +322,12 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 <p>To avoid typos with the URL you can simply browse to the VIC appliance page (port 9443), right click the <strong>DOWNLOAD</strong> button which can be found under the section <em>Deploy a VCH</em> and choose <em>Copy Link Address</em>.</p>
 <p>Modify the section like below:</p>
 <h3 id="31-dockerfile">3.1 Dockerfile</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> debian:jessie</span><span class="err">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-docker">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> debian:jessie</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get install -y jq ca-certificates curl tar bc<span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
@@ -372,67 +337,33 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> cp /vic/vic/*.iso /vic <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -fr /vic/vic<span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Save and close the Dockerfile.</p>
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/bin/bash&#34;</span><span class="p">]</span></span></span></code></pre></div></div>
+<p>Save and close the Dockerfile.</p>
 <h2 id="32-every-vic-machine-action-as-a-docker-image">3.2 Every <code>vic-machine</code> action as a docker image</h2>
 <p>The <strong>build.sh</strong> script will build all docker images for each <code>vic-machine</code> action for us.</p>
 <p><strong>IMPORTANT:</strong> It´s necessary to have the Dockerfile prepared before executing the build script! Because &ldquo;<span style="color:#32CD32"><code>docker build -t vic-machine-base .</code></span>&rdquo; will start the build process, which creates the docker image as well as tag (<code>-t</code>) the image as <em>vic-machine-base</em>.</p>
 <p>The image includes the <em>vic-machine binary (for Linux)</em>, the <em>bootstrap.iso</em> as well the <em>appliance.iso</em>.</p>
 <p>See also:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV&gt; docker run -it --rm vic-machine-base:latest /bin/bash
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV&gt; docker run -it --rm vic-machine-base:latest /bin/bash
 </span></span><span class="line"><span class="cl">root@5d76a7b7973f:/# <span class="nb">cd</span> /vic
 </span></span><span class="line"><span class="cl">root@5d76a7b7973f:/vic# ls -rtl
 </span></span><span class="line"><span class="cl">-rwxr-xr-x <span class="m">1</span> root root <span class="m">19623264</span> Jul <span class="m">16</span> 20:51 vic-machine-linux
 </span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">41091072</span> Jul <span class="m">16</span> 20:51 bootstrap.iso
-</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">91029504</span> Jul <span class="m">16</span> 20:51 appliance.iso
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Now moving forward to the build script itself. I´ve modified the script from the original one just a little bit for my own needs.</p>
-<p>I´d like to thank <a href="https://twitter.com/AlexanderDess" target="_blank">Alexander Dess</a> at this point who reminded me that I should simply stick to the <a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank">K.I.S.S. principle</a>. Stop making things more complicated 😉.</p>
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">91029504</span> Jul <span class="m">16</span> 20:51 appliance.iso</span></span></code></pre></div></div>
+<p>Now moving forward to the build script itself. I´ve modified the script from the original one just a little bit for my own needs.</p>
+<p>I´d like to thank <a href="https://twitter.com/AlexanderDess" target="_blank">Alexander Dess</a> at this point who reminded me that I should simply stick to the <a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank">K.I.S.S. principle</a>. Stop making things more complicated &#x1f609;.</p>
 <h3 id="33-buildsh">3.3 build.sh</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">### Harbor FQDN and project</span>
@@ -457,29 +388,14 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span><span class="line"><span class="cl">  docker build -f Dockerfile.<span class="nv">$i</span> -t <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span> .
 </span></span><span class="line"><span class="cl"><span class="k">done</span>
 </span></span><span class="line"><span class="cl"><span class="c1">### Remove all Dockerfiles</span>
-</span></span><span class="line"><span class="cl">rm Dockerfile*
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Execute <code>sh ./build.sh</code> and validate that everything went well by executing the command <code>docker images | grep vic</code>. You should see the newly created images listed:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV&gt; docker images <span class="p">|</span> grep vic
+</span></span><span class="line"><span class="cl">rm Dockerfile*</span></span></code></pre></div></div>
+<p>Execute <code>sh ./build.sh</code> and validate that everything went well by executing the command <code>docker images | grep vic</code>. You should see the newly created images listed:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV&gt; docker images <span class="p">|</span> grep vic
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-direct           1.0                 6434b9f67b34        About an hour ago   305MB
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-dumpargs         1.0                 65a84b73ea6d        About an hour ago   305MB
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-firewall-deny    1.0                 4280647bb27f        About an hour ago   305MB
@@ -492,34 +408,15 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-delete           1.0                 e24ee592ab15        About an hour ago   305MB
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-debug            1.0                 306ba819b1d4        About an hour ago   305MB
 </span></span><span class="line"><span class="cl">vic01.jarvis.lab:443/vic-machine/vic-machine-create           1.0                 e567f6eff231        About an hour ago   305MB
-</span></span><span class="line"><span class="cl">vic-machine-base                                              latest              9434fc83969b        About an hour ago   305MB
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="34-pushing-the-docker-images-to-harbor">3.4 Pushing the docker images to Harbor</h2>
+</span></span><span class="line"><span class="cl">vic-machine-base                                              latest              9434fc83969b        About an hour ago   305MB</span></span></code></pre></div></div>
+<h2 id="34-pushing-the-docker-images-to-harbor">3.4 Pushing the docker images to Harbor</h2>
 <p>The next step after creating a lot of new docker images is to have them available and well guarded in Harbor. We´ll make use of the push.sh script from our folder which will save us the work of handling each image separately. Let´s have a look into it as well.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">### !/bin/bash</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">### !/bin/bash</span>
 </span></span><span class="line"><span class="cl"><span class="nb">set</span> -e
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">### Push to our Harbor instance</span>
@@ -536,25 +433,19 @@ The far more efficient variant in my opinion is making use of the <code>vic-mach
 </span></span><span class="line"><span class="cl">   docker tag <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span> <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:latest
 </span></span><span class="line"><span class="cl">   docker push <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:<span class="nv">$VERSION</span>
 </span></span><span class="line"><span class="cl">   docker push <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$i</span>:latest
-</span></span><span class="line"><span class="cl"><span class="k">done</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Just replace the repository URL like we already did in the build script.
+</span></span><span class="line"><span class="cl"><span class="k">done</span></span></span></code></pre></div></div>
+<p>Just replace the repository URL like we already did in the build script.
 Before you execute the script, you have to login into Harbor with the user which we´ve added to the project in step 4.</p>
 <p><strong>Execute:</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">docker login vic01.jarvis.lab:443 -u admin@jarvis.lab
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sh">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">docker login vic01.jarvis.lab:443 -u admin@jarvis.lab
 </span></span><span class="line"><span class="cl">Password: ********
-</span></span><span class="line"><span class="cl">Login Succeeded
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;Login succeeded&rdquo; is always pleasing to see and since we´re done with that run <code>sh ./push.sh</code> from your shell. If you have the membership and role correctly configured, you should see under <em>Internal Repositories</em> all <code>vic-machine-(action)</code> images.</p>
+</span></span><span class="line"><span class="cl">Login Succeeded</span></span></code></pre></div></div>
+<p>&ldquo;Login succeeded&rdquo; is always pleasing to see and since we´re done with that run <code>sh ./push.sh</code> from your shell. If you have the membership and role correctly configured, you should see under <em>Internal Repositories</em> all <code>vic-machine-(action)</code> images.</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" title="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" data-thumbnail="/img/posts/201907_dockerrunvicmachine/CapturFiles-20190717_122440.jpg" data-sub-html="<h2>Figure V: vic-machine-(action) images deposited under Internal (Project) Repositories</h2>">
         <img
             class="lazyload"
@@ -568,62 +459,12 @@ Before you execute the script, you have to login into Harbor with the user which
 <h2 id="4-configure-the-configjson-file-for-the-vch-deployment">4. Configure the config.json file for the VCH deployment</h2>
 <p>Everything seems to be well prepared so far and we´re approaching the end of our efforts to deploy a VCH in a &ldquo;simplified fashion&rdquo;. The intention is to make use of the <code>vic-machine</code> script, which in turn needs a JSON manifest as input to all commands lying in a subdirectory of our <em>vic-dev</em> folder. Before turning to the <em>config.json</em> file I don&rsquo;t want to embezzle this impressive piece of work.</p>
 <p>The <code>vic-machine</code> script:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl"><span class="c1"># This script is designed to simplify vic-machine usage, but using a single JSON manifest as input to all commands</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># The expected layout is that a particular vic-machine configuration will be in a subdirectory of the current dir</span>
@@ -673,108 +514,23 @@ Before you execute the script, you have to login into Harbor with the user which
 </span></span><span class="line"><span class="cl">  <span class="nb">exit</span> <span class="m">1</span>
 </span></span><span class="line"><span class="cl"><span class="k">fi</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">sudo docker run -it --rm -v <span class="nv">$host_config_path</span>:<span class="nv">$docker_volume_path</span> <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$3</span>:<span class="nv">$1</span> <span class="p">|</span> sed <span class="s2">&#34;s|</span><span class="nv">$docker_volume_path</span><span class="s2">/|</span><span class="nv">$host_config_path</span><span class="s2">/|&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="41-preparing-the-configjson-file">4.1. Preparing the config.json file</h3>
+</span></span><span class="line"><span class="cl">sudo docker run -it --rm -v <span class="nv">$host_config_path</span>:<span class="nv">$docker_volume_path</span> <span class="nv">$REPO_NAME</span>/vic-machine-<span class="nv">$3</span>:<span class="nv">$1</span> <span class="p">|</span> sed <span class="s2">&#34;s|</span><span class="nv">$docker_volume_path</span><span class="s2">/|</span><span class="nv">$host_config_path</span><span class="s2">/|&#34;</span></span></span></code></pre></div></div>
+<h3 id="41-preparing-the-configjson-file">4.1. Preparing the config.json file</h3>
 <p>Create a new folder in your main folder (vic-dev), give it the name of your VCH for example and also create the <em>config.json</em> file.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir vch1 <span class="o">&amp;&amp;</span> <span class="nb">cd</span> vch1 <span class="o">&amp;&amp;</span> touch config.json
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Here is an example of my deployment.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir vch1 <span class="o">&amp;&amp;</span> <span class="nb">cd</span> vch1 <span class="o">&amp;&amp;</span> touch config.json</span></span></code></pre></div></div>
+<p>Here is an example of my deployment.</p>
 <p><strong>vch1/config.json</strong>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
-</span><span class="lnt">79
-</span><span class="lnt">80
-</span><span class="lnt">81
-</span><span class="lnt">82
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">   <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.2&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">   <span class="nt">&#34;vch&#34;</span><span class="p">:</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;vch1&#34;</span><span class="p">,</span>
@@ -855,10 +611,8 @@ Before you execute the script, you have to login into Harbor with the user which
 </span></span><span class="line"><span class="cl">      <span class="nt">&#34;debug&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">      <span class="nt">&#34;timeout&#34;</span><span class="p">:</span> <span class="s2">&#34;60s&#34;</span>
 </span></span><span class="line"><span class="cl">   <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="details admonition Note open">
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<div class="details admonition Note open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Important<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
@@ -866,35 +620,12 @@ Before you execute the script, you have to login into Harbor with the user which
             <div class="admonition-content">You have to define the version at the beginning which will point to the folder with the declared version number in the <em>actions</em> folder. Remember:</div>
         </div>
     </div>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev/actions&gt; tree -L <span class="m">2</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rguske@rguske-a01&gt; ~/_DEV/Lab/vic-dev/actions&gt; tree -L <span class="m">2</span>
 </span></span><span class="line"><span class="cl">.
 </span></span><span class="line"><span class="cl">├── 1.1
 </span></span><span class="line"><span class="cl">│   ├── map-create.json
@@ -917,10 +648,8 @@ Before you execute the script, you have to login into Harbor with the user which
 </span></span><span class="line"><span class="cl">│   ├── map-thumbprint.json
 </span></span><span class="line"><span class="cl">│   ├── map-upgrade.json
 </span></span><span class="line"><span class="cl">│   ├── parse.sh
-</span></span><span class="line"><span class="cl">│   └── validate.sh
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Pick two identical files e.g. <em>map-create.json</em> from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.</p>
+</span></span><span class="line"><span class="cl">│   └── validate.sh</span></span></code></pre></div></div>
+<p>Pick two identical files e.g. <em>map-create.json</em> from the folder 1.1 and 1.2 and compare them against each other to see the differences and how important it is to set the right version. The cool thing is that this also means that you can define your own JSON schema by simply modifying those files.</p>
 <p>Depending on your requirements (VCH Networking, Log aggregation, Debug-Level and so on), you can build your own <em>config.json</em> from the examples (example-simple.json, example-complete.json &amp; example-complete-empty.json) which we´ve copied in step 3.</p>
 <p>If you now execute &ldquo;<code>sh ./vic-machine 1.0 (or latest) vch1 create</code>&rdquo; and run a <code>watch</code> perhaps on container instances spinning up locally and also a <code>watch</code> on the folder <em>vch1</em> itself, you´ll see that the newly created image <em>vic-machine-create:1.0</em> will be used for having the <code>vic-machine</code> utility on board which will then receive the parsed arguments from the <em>config.json</em> and starts deploying the Virtual Container Host to your target.</p>
 <p>By using e.g my deployment-example, you´ll see that a new folder with the given name of the VCH will be created, containing the VCH certificates, which can be used to add the VCH to a project for example as well as a vic-machine and vpxd logfile, which is really nice to have.</p>
@@ -975,48 +704,50 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
     </a><figcaption class="image-caption">Figure IX: Virtual Container Host assigned to a Project</figcaption>
     </figure>
 <h2 id="resources">Resources</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left"><strong>Article</strong></th>
-<th style="text-align:right"><strong>Link</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
-<td style="text-align:right"><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine" target="_blank" rel="noopener noreffer ">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
-<td style="text-align:right"><a href="https://youtu.be/AD7CD8Haqdc" target="_blank" rel="noopener noreffer ">https://youtu.be/AD7CD8Haqdc</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
-<td style="text-align:right"><a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreffer ">https://github.com/rguske/vic-machine</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@harbor] <strong>Harbor Official Website</strong></td>
-<td style="text-align:right"><a href="https://goharbor.io/" target="_blank" rel="noopener noreffer ">https://goharbor.io/</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@github/coreos] <strong>Clair Github repo</strong></td>
-<td style="text-align:right"><a href="https://github.com/coreos/clair" target="_blank" rel="noopener noreffer ">https://github.com/coreos/clair</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@github/theupdateframework] <strong>Notary Github repo</strong></td>
-<td style="text-align:right"><a href="https://github.com/theupdateframework/notary" target="_blank" rel="noopener noreffer ">https://github.com/theupdateframework/notary</a></td>
-</tr>
-<tr>
-<td style="text-align:left">[@docker] <strong>Dockerfile reference</strong></td>
-<td style="text-align:right"><a href="https://docs.docker.com/engine/reference/builder/" target="_blank" rel="noopener noreffer ">https://docs.docker.com/engine/reference/builder/</a></td>
-</tr>
-</tbody>
-</table></div><div class="post-footer" id="post-footer">
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: left"><strong>Article</strong></th>
+            <th style="text-align: right"><strong>Link</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: left">[@github/corrieb] <strong>Bens Github repo vic-machine</strong></td>
+            <td style="text-align: right"><a href="https://github.com/corrieb/bensdoings/tree/master/vic-machine" target="_blank" rel="noopener noreferrer ">https://github.com/corrieb/bensdoings/tree/master/vic-machine</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@youtube] <strong>VMworld 2017 CNA2547BU - VIC Deep Dive</strong></td>
+            <td style="text-align: right"><a href="https://youtu.be/AD7CD8Haqdc" target="_blank" rel="noopener noreferrer ">https://youtu.be/AD7CD8Haqdc</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@github/rguske] <strong>Roberts Github repo vic-machine action examples</strong></td>
+            <td style="text-align: right"><a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreferrer ">https://github.com/rguske/vic-machine</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@harbor] <strong>Harbor Official Website</strong></td>
+            <td style="text-align: right"><a href="https://goharbor.io/" target="_blank" rel="noopener noreferrer ">https://goharbor.io/</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@github/coreos] <strong>Clair Github repo</strong></td>
+            <td style="text-align: right"><a href="https://github.com/coreos/clair" target="_blank" rel="noopener noreferrer ">https://github.com/coreos/clair</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@github/theupdateframework] <strong>Notary Github repo</strong></td>
+            <td style="text-align: right"><a href="https://github.com/theupdateframework/notary" target="_blank" rel="noopener noreferrer ">https://github.com/theupdateframework/notary</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: left">[@docker] <strong>Dockerfile reference</strong></td>
+            <td style="text-align: right"><a href="https://docs.docker.com/engine/reference/builder/" target="_blank" rel="noopener noreferrer ">https://docs.docker.com/engine/reference/builder/</a></td>
+        </tr>
+    </tbody>
+  </table>
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -1024,14 +755,14 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
                             <a class="link-to-markdown" href="/post/docker-run-vic-machine/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Docker,Automation,Harbor"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-description="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-description="A guide through the various steps to consume vic-machine and every specific action of it in a simplified fashion AND have it running in a container pulled out of Harbor or from another repository of your choice."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine" data-hashtags="VMware,vSphere,Docker,Automation,Harbor"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/docker-run-vic-machine/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/docker-run-vic-machine/" data-title="docker run vic-machine"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/docker/">Docker</a>,&nbsp;<a href="/tags/automation/">Automation</a>,&nbsp;<a href="/tags/harbor/">Harbor</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/docker/">Docker</a>, <a href="/tags/automation/">Automation</a>, <a href="/tags/harbor/">Harbor</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -1039,22 +770,20 @@ Administration &ndash;&gt; Identity Management &ndash;&gt; Credentials &ndash;&g
     <div class="post-nav"><a href="/post/event-driven-interactions-with-vsphere-using-functions-as-a-service/" class="prev" rel="prev" title="Event-driven interactions with vSphere using Functions as a Service"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Event-driven interactions with vSphere using Functions as a Service</a>
             <a href="/post/vmware-microsites-you-should-bookmark/" class="next" rel="next" title="VMware Microsites You should bookmark">VMware Microsites You should bookmark<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

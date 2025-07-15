@@ -4,22 +4,31 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator - Robert Guske</title><meta name="Description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><meta property="og:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" />
-<meta property="og:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-10-16T12:00:57+02:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator - Blog Robert Guske</title><meta name="Description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><meta property="og:url" content="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator">
+  <meta property="og:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-10-16T12:00:57+02:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VEBA">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="KinD">
+    <meta property="article:tag" content="FaaS">
+    <meta property="article:tag" content="Fusion">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"/>
-<meta name="twitter:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator">
+  <meta name="twitter:description" content="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" /><link rel="prev" href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-troubleshooting-haproxy/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +37,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/"
-        },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, KinD, FaaS, Fusion, Workstation, OpenSource","wordcount":  2591 ,
+        },"genre": "posts","keywords": "VMware, VEBA, Kubernetes, KinD, FaaS, Fusion, Workstation, OpenSource","wordcount":  2390 ,
         "url": "https:\/\/rguske.github.io\/post\/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator\/","datePublished": "2020-10-16T12:00:57+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "A practitioner's guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +81,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +110,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +121,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">A practitioner's guide - Spin up a local VEBA environment with KinD and vCenter simulator</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/end-user-computing/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>End User Computing</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-10-16">2020-10-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2591 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;13 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vebakindvcsim_cover.jpg"
         data-srcset="/img/vebakindvcsim_cover.jpg, /img/vebakindvcsim_cover.jpg 1.5x, /img/vebakindvcsim_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vebakindvcsim_cover.jpg"
-        title="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">A practitioner's guide - Spin up a local VEBA environment with KinD and vCenter simulator</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/end-user-computing/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>End User Computing</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2020-10-16">2020-10-16</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>2390 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>12 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#the-question">The question</a></li>
@@ -147,10 +174,10 @@
     <li><a href="#conclusion--recording">Conclusion (+ Recording)</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
-<p>In my previous blog post I took <em><a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" target="_blank" rel="noopener noreffer ">A closer look at VMware&rsquo;s Project Nautilus</a></em> and went through some of the implementation details (Fusion 12). I described how it provides a single development platform on the desktop by enabling you to run, build and manage <a href="https://opencontainers.org/" target="_blank" rel="noopener noreffer ">OCI</a> compliant Containers as well as how easy it is now to instantiate Kubernetes Clusters besides Virtual Machines.</p>
+                </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>In my previous blog post I took <em><a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/" target="_blank" rel="noopener noreferrer ">A closer look at VMware&rsquo;s Project Nautilus</a></em> and went through some of the implementation details (Fusion 12). I described how it provides a single development platform on the desktop by enabling you to run, build and manage <a href="https://opencontainers.org/" target="_blank" rel="noopener noreferrer ">OCI</a> compliant Containers as well as how easy it is now to instantiate Kubernetes Clusters besides Virtual Machines.</p>
 <h2 id="the-question">The question</h2>
-<p>This post is intented to answer a question which came into my mind during my work on VMware&rsquo;s Open Source project <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance (VEBA)</a> and as I&rsquo;ve heard of <a href="https://blogs.vmware.com/teamfusion/2020/01/fusion-tp20h1-introducing-nautilus.html" target="_blank" rel="noopener noreffer ">Project Nautilus</a> for the first time.</p>
+<p>This post is intented to answer a question which came into my mind during my work on VMware&rsquo;s Open Source project <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreferrer ">VMware Event Broker Appliance (VEBA)</a> and as I&rsquo;ve heard of <a href="https://blogs.vmware.com/teamfusion/2020/01/fusion-tp20h1-introducing-nautilus.html" target="_blank" rel="noopener noreferrer ">Project Nautilus</a> for the first time.</p>
 <div class="details admonition question open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-question-circle fa-fw" aria-hidden="true"></i>The Question<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -159,18 +186,18 @@
             <div class="admonition-content"><em>Given these planned innovations (Container and Kubernetes integration), could they help me and others developing new functions locally with just a minimal effort and resources?</em></div>
         </div>
     </div>
-<p>To be honest, the answer to this question was already partially answered with <strong>YES</strong> before the idea was born to leverage VMware Fusion (or Workstation) for this use case. Fortunately, now seems to be the right time to write about it. <a href="https://twitter.com/embano1" target="_blank" rel="noopener noreffer ">Michael Gasch</a>, the maintainer of the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreffer ">Event Router</a> helped me great in supporting the joint idea by not only creating a <code>vcsim</code> container image but also by making necessary code changes to the Event Router to support <code>vcsim</code> as a <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/231" target="_blank" rel="noopener noreffer ">supported Event Provider (<i class='fab fa-github fa-fw'></i> PR #231) </a>.</p>
+<p>To be honest, the answer to this question was already partially answered with <strong>YES</strong> before the idea was born to leverage VMware Fusion (or Workstation) for this use case. Fortunately, now seems to be the right time to write about it. <a href="https://twitter.com/embano1" target="_blank" rel="noopener noreferrer ">Michael Gasch</a>, the maintainer of the <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/tree/development/vmware-event-router" target="_blank" rel="noopener noreferrer ">Event Router</a> helped me great in supporting the joint idea by not only creating a <code>vcsim</code> container image but also by making necessary code changes to the Event Router to support <code>vcsim</code> as a <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/231" target="_blank" rel="noopener noreferrer ">supported Event Provider (<i class='fab fa-github fa-fw'></i> PR #231) </a>.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>UPDATE: October 19, 2020<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">The aforementioned PR #231 was merged in <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/237" target="_blank" rel="noopener noreffer "><i class='fab fa-github fa-fw'></i> PR #237</a>. <code>vcsim</code> is now supported as a <code>Event Provider</code> for the Event Router. Adjustments to this post were made accordingly.</div>
+            <div class="admonition-content">The aforementioned PR #231 was merged in <a href="https://github.com/vmware-samples/vcenter-event-broker-appliance/pull/237" target="_blank" rel="noopener noreferrer "><i class='fab fa-github fa-fw'></i> PR #237</a>. <code>vcsim</code> is now supported as a <code>Event Provider</code> for the Event Router. Adjustments to this post were made accordingly.</div>
         </div>
     </div>
 <p><strong>Thanks Michael!</strong></p>
 <h2 id="modular-architecture">Modular Architecture</h2>
-<p>A look into the inners of VEBA shows us that it is built out of several pieces (modular approach) like e.g. VMware&rsquo;s Photon OS (Operating System), Kubernetes (Orchestrator/ Runtime) and the Event-Processor (Application). The event provider part is covered by the <a href="https://vmweventbroker.io/kb/event-router" target="_blank" rel="noopener noreffer ">Event Router</a> which is responsible for connecting to event <code>stream</code> sources, such as the VMware vCenter Server and forward events to an event <code>processor</code> like e.g. <a href="https://www.openfaas.com/" target="_blank" rel="noopener noreffer ">OpenFaaS</a> or <a href="https://aws.amazon.com/eventbridge/?nc1=h_ls" target="_blank" rel="noopener noreffer ">AWS EventBridge</a>.</p>
+<p>A look into the inners of VEBA shows us that it is built out of several pieces (modular approach) like e.g. VMware&rsquo;s Photon OS (Operating System), Kubernetes (Orchestrator/ Runtime) and the Event-Processor (Application). The event provider part is covered by the <a href="https://vmweventbroker.io/kb/event-router" target="_blank" rel="noopener noreferrer ">Event Router</a> which is responsible for connecting to event <code>stream</code> sources, such as the VMware vCenter Server and forward events to an event <code>processor</code> like e.g. <a href="https://www.openfaas.com/" target="_blank" rel="noopener noreferrer ">OpenFaaS</a> or <a href="https://aws.amazon.com/eventbridge/?nc1=h_ls" target="_blank" rel="noopener noreferrer ">AWS EventBridge</a>.</p>
 <p>The following picture of the high-level architecture gives you an idea how everything is in concert.</p>
 <p><figure><a class="lightgallery" href="/img/posts/202010_vebakindvcsim/veba-architecture.png" title="/img/posts/202010_vebakindvcsim/veba-architecture.png" data-thumbnail="/img/posts/202010_vebakindvcsim/veba-architecture.png" data-sub-html="<h2>Figure I: VMware Event Broker Appliance Architecture</h2>">
         <img
@@ -182,101 +209,105 @@
             alt="/img/posts/202010_vebakindvcsim/veba-architecture.png" />
     </a><figcaption class="image-caption">Figure I: VMware Event Broker Appliance Architecture</figcaption>
     </figure>
-<em>Source: <a href="https://vmweventbroker.io/kb/architecture" target="_blank" rel="noopener noreffer ">VEBA Documentation - Architecture</a></em></p>
+<em>Source: <a href="https://vmweventbroker.io/kb/architecture" target="_blank" rel="noopener noreferrer ">VEBA Documentation - Architecture</a></em></p>
 <h2 id="heavyweight-vs-lightweight">Heavyweight vs Lightweight</h2>
 <h3 id="heavyweight">Heavyweight</h3>
 <p>Normally, you would deploy VEBA into a dedicated environment, be it a homelab, a development environment or even in production. Since we are listening to the vCenter Event stream, we also need a vCenter Server (Appliance) to which we connect VEBA to. Your developed functions would then be tested against those environments and since we are talking about <em>testing</em> or <em>prototyping</em> and given the fact that our customers are already using VEBA in production, it would be good (if not even necessary) to have a development environment as tiny and fast deployable as posibble available.</p>
 <p>With a decent desktop model, you could run VEBA as well as the vCenter Server locally but from a hardware requirement point of view this would mean that your desktop should be equipped with at least 24 GB of RAM for adequate testing. And not to forget about the ESXi host (nested) and at least one VM!</p>
 <h4 id="appliances-deployment-requirements">Appliance(s) deployment requirements</h4>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Appliance</strong></th>
-<th style="text-align:center"><strong>CPU</strong></th>
-<th style="text-align:center"><strong>Memory</strong></th>
-<th style="text-align:center"><strong>Documentation</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">vCenter Server Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">12 GB</td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreffer ">Documentation</a></td>
-</tr>
-<tr>
-<td style="text-align:center">VMware Event Broker Appliance</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">8 GB</td>
-<td style="text-align:center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreffer ">Documentation</a></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
-<td style="text-align:center"><strong>TOTAL</strong></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">4 vCPU&rsquo;s</td>
-<td style="text-align:center">20 GB Memory</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center"><strong>Appliance</strong></th>
+            <th style="text-align: center"><strong>CPU</strong></th>
+            <th style="text-align: center"><strong>Memory</strong></th>
+            <th style="text-align: center"><strong>Documentation</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">vCenter Server Appliance</td>
+            <td style="text-align: center">2</td>
+            <td style="text-align: center">12 GB</td>
+            <td style="text-align: center"><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-88571D8A-46E1-464D-A349-4DC43DCAF320.html" target="_blank" rel="noopener noreferrer ">Documentation</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: center">VMware Event Broker Appliance</td>
+            <td style="text-align: center">2</td>
+            <td style="text-align: center">8 GB</td>
+            <td style="text-align: center"><a href="https://vmweventbroker.io/kb/contribute-appliance" target="_blank" rel="noopener noreferrer ">Documentation</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: center"></td>
+            <td style="text-align: center"><strong>TOTAL</strong></td>
+            <td style="text-align: center"><strong>TOTAL</strong></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="text-align: center"></td>
+            <td style="text-align: center">4 vCPU&rsquo;s</td>
+            <td style="text-align: center">20 GB Memory</td>
+            <td></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <h3 id="lightweight">Lightweight</h3>
-<p>The lightweight alternative would be, to e.g. leverage VMware&rsquo;s <a href="https://www.vmware.com/products/fusion/faq.html" target="_blank" rel="noopener noreffer ">Fusion</a> or <a href="https://www.vmware.com/products/workstation-pro/faq.html" target="_blank" rel="noopener noreffer ">Workstation</a> to spin up a Kubernetes cluster locally and to deploy the Event Router, OpenFaaS as well as your function(s) on top of it.</p>
+<p>The lightweight alternative would be, to e.g. leverage VMware&rsquo;s <a href="https://www.vmware.com/products/fusion/faq.html" target="_blank" rel="noopener noreferrer ">Fusion</a> or <a href="https://www.vmware.com/products/workstation-pro/faq.html" target="_blank" rel="noopener noreferrer ">Workstation</a> to spin up a Kubernetes cluster locally and to deploy the Event Router, OpenFaaS as well as your function(s) on top of it.</p>
 <p>Asking yourself now: <em>And what about the vCenter Server?</em> Good question!</p>
-<p>Here comes <a href="https://github.com/vmware/govmomi/tree/master/vcsim" target="_blank" rel="noopener noreffer ">vcsim</a> into play. <code>vcsim</code> is a vSphere API mock framework which is part of the <a href="https://github.com/vmware/govmomi" target="_blank" rel="noopener noreffer ">govmomi</a> project, a Go library for interacting with VMware vSphere APIs - or in simple terms - it&rsquo;s a vCenter and ESXi API based simulator.</p>
+<p>Here comes <a href="https://github.com/vmware/govmomi/tree/master/vcsim" target="_blank" rel="noopener noreferrer ">vcsim</a> into play. <code>vcsim</code> is a vSphere API mock framework which is part of the <a href="https://github.com/vmware/govmomi" target="_blank" rel="noopener noreferrer ">govmomi</a> project, a Go library for interacting with VMware vSphere APIs - or in simple terms - it&rsquo;s a vCenter and ESXi API based simulator.</p>
 <p>The following content in the table below serves as an overview of what and how we are going to deploy in the next sections. As I have already indicated, my intention is to use Fusion (I&rsquo;m a Mac user) to instantiate the Kubernetes cluster but ultimately, you could use any tool that runs Kubernetes local on your machine.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Component</strong></th>
-<th style="text-align:center"><strong>Kind</strong></th>
-<th style="text-align:center"><strong>Installation via</strong></th>
-<th style="text-align:center">Documentation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Kubernetes</td>
-<td style="text-align:center">1 Node</td>
-<td style="text-align:center">via Fusion - <code>vctl</code> and <code>kind</code></td>
-<td style="text-align:center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreffer ">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
-</tr>
-<tr>
-<td style="text-align:center">OpenFaaS</td>
-<td style="text-align:center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreffer ">Deployment</a></td>
-<td style="text-align:center">via <code>.yaml</code> files</td>
-<td style="text-align:center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreffer ">Deployment guide for Kubernetes</a></td>
-</tr>
-<tr>
-<td style="text-align:center">vcsim</td>
-<td style="text-align:center">Binary or Container</td>
-<td style="text-align:center">via <code>kubectl</code> or <code>vctl</code></td>
-<td style="text-align:center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreffer ">govcsim Installation</a></td>
-</tr>
-<tr>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">Container</td>
-<td style="text-align:center">via <code>faas-cli</code></td>
-<td style="text-align:center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreffer ">Get started: Install the CLI</a></td>
-</tr>
-</tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center"><strong>Component</strong></th>
+            <th style="text-align: center"><strong>Kind</strong></th>
+            <th style="text-align: center"><strong>Installation via</strong></th>
+            <th style="text-align: center">Documentation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">Kubernetes</td>
+            <td style="text-align: center">1 Node</td>
+            <td style="text-align: center">via Fusion - <code>vctl</code> and <code>kind</code></td>
+            <td style="text-align: center"><a href="https://docs.vmware.com/en/VMware-Fusion/12/com.vmware.fusion.using.doc/GUID-1CA929BB-93A9-4F1C-A3A8-7A3A171FAC35.html" target="_blank" rel="noopener noreferrer ">Enabling KIND to Use vctl Container as Nodes to Run Kubernetes Clusters</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: center">OpenFaaS</td>
+            <td style="text-align: center">Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener noreferrer ">Deployment</a></td>
+            <td style="text-align: center">via <code>.yaml</code> files</td>
+            <td style="text-align: center"><a href="https://docs.openfaas.com/deployment/kubernetes/" target="_blank" rel="noopener noreferrer ">Deployment guide for Kubernetes</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: center">vcsim</td>
+            <td style="text-align: center">Binary or Container</td>
+            <td style="text-align: center">via <code>kubectl</code> or <code>vctl</code></td>
+            <td style="text-align: center"><a href="https://github.com/vmware/govmomi/tree/master/vcsim#installation" target="_blank" rel="noopener noreferrer ">govcsim Installation</a></td>
+        </tr>
+        <tr>
+            <td style="text-align: center">Function</td>
+            <td style="text-align: center">Container</td>
+            <td style="text-align: center">via <code>faas-cli</code></td>
+            <td style="text-align: center"><a href="https://github.com/openfaas/faas-cli#get-started-install-the-cli" target="_blank" rel="noopener noreferrer ">Get started: Install the CLI</a></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <p><strong>CLI&rsquo;s we are going to use:</strong></p>
 <ul>
-<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener noreffer ">kubectl</a> - except you are using Fusion or Workstation: <a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/#new-versions-bring-a-kind-way-to-deploy-kubernetes-clusters" target="_blank" rel="noopener noreffer ">LINK</a></li>
-<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreffer ">git</a></li>
-<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://docs.openfaas.com/cli/install/" target="_blank" rel="noopener noreffer ">faas-cli</a></li>
+<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener noreferrer ">kubectl</a> - except you are using Fusion or Workstation: <a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/#new-versions-bring-a-kind-way-to-deploy-kubernetes-clusters" target="_blank" rel="noopener noreferrer ">LINK</a></li>
+<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer ">git</a></li>
+<li><i class="far fa-check-square fa-fw" aria-hidden="true"></i> <a href="https://docs.openfaas.com/cli/install/" target="_blank" rel="noopener noreferrer ">faas-cli</a></li>
 </ul>
 <div class="details admonition tip open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Tip<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content"><em>Using a &ldquo;pimped&rdquo; terminal is really helpful, efficient and FUN. Have a look at my blog post about the <a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" target="_blank" rel="noopener noreffer ">&ldquo;High Way to Shell&rdquo;</a> to arm yourself accordingly.</em> 😁</div>
+            <div class="admonition-content"><em>Using a &ldquo;pimped&rdquo; terminal is really helpful, efficient and FUN. Have a look at my blog post about the <a href="https://rguske.github.io/post/a-linux-development-desktop-with-vmware-horizon-part-iii-shell/" target="_blank" rel="noopener noreferrer ">&ldquo;High Way to Shell&rdquo;</a> to arm yourself accordingly.</em> &#x1f601;</div>
         </div>
     </div>
 <p>Just to give you an idea&hellip;</p>
@@ -290,21 +321,19 @@
             alt="/img/posts/202010_vebakindvcsim/CapturFiles-20201015_105135.jpg" />
     </a><figcaption class="image-caption">Figure II: Pimped Terminal</figcaption>
     </figure>
-<p>Want to see it in action? I&rsquo;ve putted a short recording in the <a href="http://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/#conclusion" target="_blank" rel="noopener noreffer ">Conclusion</a> section at the end of this post.</p>
+<p>Want to see it in action? I&rsquo;ve putted a short recording in the <a href="http://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/#conclusion" target="_blank" rel="noopener noreferrer ">Conclusion</a> section at the end of this post.</p>
 <h2 id="lets-get-started">Let&rsquo;s get started</h2>
 <h3 id="1-create-the-kubernetes-cluster-node">1. Create the Kubernetes cluster node</h3>
 <ul>
 <li>Start with the deployment of the CRX VM that hosts the Kubernetes node container by executing (skip this if you aren&rsquo;t using Fusion):</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">vctl system start
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">vctl system start</span></span></code></pre></div></div>
+<ul>
 <li><code>vctl</code> assigns 2 GB of memory and 2 CPU cores by default for the CRX VM</li>
 <li>Depending on your needs, you can adjust the configuration by using e.g. <code>vctl system config --k8s-cpus 4 --k8s-mem 8192</code> to have more CPUs and Memory assigned</li>
 <li>The next step is the Kubenretes cluster creation itself by leveraging <code>KinD</code> which will be available after executing <code>vctl kind</code>
@@ -313,88 +342,66 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>More details here: <a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/#kind-create-cluster" target="_blank" rel="noopener noreffer ">rguske - KinD create Cluster</a></li>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kind create cluster --image kindest/node:v1.19.1 --name kind-1.19.1</span></span></code></pre></div></div>
+<ul>
+<li>More details here: <a href="https://rguske.github.io/post/a-closer-look-at-vmwares-project-nautilus/#kind-create-cluster" target="_blank" rel="noopener noreferrer ">rguske - KinD create Cluster</a></li>
 <li>Validate the creation of your Kubernetes cluster by executing:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes -o wide
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes -o wide
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                        STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                     KERNEL-VERSION       CONTAINER-RUNTIME
-</span></span><span class="line"><span class="cl">kind-1.19.1-control-plane   Ready    master   96s   v1.19.1   192.168.43.153   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Off to Step 2!</strong></p>
+</span></span><span class="line"><span class="cl">kind-1.19.1-control-plane   Ready    master   96s   v1.19.1   192.168.43.153   &lt;none&gt;        Ubuntu Groovy Gorilla <span class="o">(</span>development branch<span class="o">)</span>   4.19.138-7.ph3-esx   containerd://1.4.0</span></span></code></pre></div></div>
+<p><strong>Off to Step 2!</strong></p>
 <h3 id="2-installing-openfaas-event-processor">2. Installing OpenFaaS® (<code>event processor</code>)</h3>
-<p>Installing OpenFaaS® as the <code>event processor</code> on Kubernetes is pretty easy, straight forward and well documented. The following guidance is based on the <a href="https://docs.openfaas.com/deployment/kubernetes/#pick-arkade-helm-or-plain-yaml-files" target="_blank" rel="noopener noreffer ">official documentation</a>. I&rsquo;m reusing what already exists just to avoid forcing you to switch back and forth the browser tabs. I am going to cover the deployment by using plain yaml files. You could also use <code>arkade</code> or a <code>helm</code> chart for the installation.</p>
+<p>Installing OpenFaaS® as the <code>event processor</code> on Kubernetes is pretty easy, straight forward and well documented. The following guidance is based on the <a href="https://docs.openfaas.com/deployment/kubernetes/#pick-arkade-helm-or-plain-yaml-files" target="_blank" rel="noopener noreferrer ">official documentation</a>. I&rsquo;m reusing what already exists just to avoid forcing you to switch back and forth the browser tabs. I am going to cover the deployment by using plain yaml files. You could also use <code>arkade</code> or a <code>helm</code> chart for the installation.</p>
 <h4 id="kubectl-and-plain-yaml"><code>kubectl</code> and plain YAML</h4>
 <ul>
 <li>Clone the official repository from Github and switch into the faas-netes folder:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone https://github.com/openfaas/faas-netes <span class="o">&amp;&amp;</span> <span class="nb">cd</span> faas-netes
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone https://github.com/openfaas/faas-netes <span class="o">&amp;&amp;</span> <span class="nb">cd</span> faas-netes</span></span></code></pre></div></div>
+<ul>
 <li>Validate that you are using the right Kubernetes Context:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl config current-context
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl config current-context</span></span></code></pre></div></div>
+<ul>
 <li>Your context should start with <code>kind-</code> like e.g. mine: <code>kind-kind-1.19.1</code></li>
 <li>Create the necessary Kubernetes Namespaces for OpenFaaS® by applying the <code>namespaces.yml</code> file:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f namespaces.yml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f namespaces.yml</span></span></code></pre></div></div>
+<ul>
 <li>Validate that the namespaces <code>openfaas</code> and <code>openfaas-fn</code> were created:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get ns
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get ns
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                 STATUS   AGE
 </span></span><span class="line"><span class="cl">default              Active   18m
@@ -403,75 +410,44 @@
 </span></span><span class="line"><span class="cl">kube-system          Active   18m
 </span></span><span class="line"><span class="cl">local-path-storage   Active   17m
 </span></span><span class="line"><span class="cl">openfaas             Active   55s
-</span></span><span class="line"><span class="cl">openfaas-fn          Active   55s
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The next step is to create a password to access the OpenFaaS® Gateway with the user <code>admin</code>:</p>
+</span></span><span class="line"><span class="cl">openfaas-fn          Active   55s</span></span></code></pre></div></div>
+<p>The next step is to create a password to access the OpenFaaS® Gateway with the user <code>admin</code>:</p>
 <ul>
 <li>Generate a random password:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">PASSWORD</span><span class="o">=</span><span class="k">$(</span>head -c <span class="m">12</span> /dev/urandom <span class="p">|</span> shasum<span class="p">|</span> cut -d<span class="s1">&#39; &#39;</span> -f1<span class="k">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">PASSWORD</span><span class="o">=</span><span class="k">$(</span>head -c <span class="m">12</span> /dev/urandom <span class="p">|</span> shasum<span class="p">|</span> cut -d<span class="s1">&#39; &#39;</span> -f1<span class="k">)</span></span></span></code></pre></div></div>
+<ul>
 <li>Use your own:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">PASSWORD</span><span class="o">=</span>VMware1!
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">PASSWORD</span><span class="o">=</span>VMware1!</span></span></code></pre></div></div>
+<ul>
 <li>Create the Kubernetes Secret for OpenFaaS®:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n openfaas create secret generic basic-auth <span class="se">\
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n openfaas create secret generic basic-auth <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal<span class="o">=</span>basic-auth-user<span class="o">=</span>admin <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal<span class="o">=</span>basic-auth-password<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$PASSWORD</span><span class="s2">&#34;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The basis is settled and now off to the main deployment. Every component of OpenFaaS® is described in a yaml file which is stored in the according <code>/yaml</code> directory:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tree -L <span class="m">2</span> yaml
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--from-literal<span class="o">=</span>basic-auth-password<span class="o">=</span><span class="s2">&#34;</span><span class="nv">$PASSWORD</span><span class="s2">&#34;</span></span></span></code></pre></div></div>
+<p>The basis is settled and now off to the main deployment. Every component of OpenFaaS® is described in a yaml file which is stored in the according <code>/yaml</code> directory:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tree -L <span class="m">2</span> yaml
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">yaml
 </span></span><span class="line"><span class="cl">├── README.md
@@ -492,67 +468,48 @@
 </span></span><span class="line"><span class="cl">├── prometheus-dep.yml
 </span></span><span class="line"><span class="cl">├── prometheus-rbac.yml
 </span></span><span class="line"><span class="cl">├── prometheus-svc.yml
-</span></span><span class="line"><span class="cl">└── queueworker-dep.yml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl">└── queueworker-dep.yml</span></span></code></pre></div></div>
+<ul>
 <li>Deploy all the listed components now to your cluster by executing:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f yaml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f yaml</span></span></code></pre></div></div>
+<ul>
 <li>Validate the deployment by checking if the pods are in state <code>running</code>:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get pods -n openfaas
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                                 READY   STATUS    RESTARTS   AGE
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get pods -n openfaas</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                                 READY   STATUS    RESTARTS   AGE
 </span></span><span class="line"><span class="cl">alertmanager-68bf7d4b6f-kxhw8        1/1     Running   <span class="m">0</span>          39m
 </span></span><span class="line"><span class="cl">basic-auth-plugin-5b89b8c4c9-dkfmv   1/1     Running   <span class="m">0</span>          39m
 </span></span><span class="line"><span class="cl">faas-idler-97694ffb4-hhwv7           1/1     Running   <span class="m">2</span>          39m
 </span></span><span class="line"><span class="cl">gateway-fc64ff4f6-d9bgt              2/2     Running   <span class="m">1</span>          39m
 </span></span><span class="line"><span class="cl">nats-7d86c64647-vl764                1/1     Running   <span class="m">0</span>          39m
 </span></span><span class="line"><span class="cl">prometheus-84dcddb5c8-h2dvt          1/1     Running   <span class="m">0</span>          39m
-</span></span><span class="line"><span class="cl">queue-worker-77f4446d48-jflvj        1/1     Running   <span class="m">0</span>          39m
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Desired state fulfilled! To access the OpenFaaS® Gateway UI, we need the according IP address of it. Copy the name of the OpenFaaS Gateway pod and replace it in the following command:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get pods/gateway-fc64ff4f6-d9bgt -n openfaas -o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.hostIP}&#39;</span>
+</span></span><span class="line"><span class="cl">queue-worker-77f4446d48-jflvj        1/1     Running   <span class="m">0</span>          39m</span></span></code></pre></div></div>
+<p>Desired state fulfilled! To access the OpenFaaS® Gateway UI, we need the according IP address of it. Copy the name of the OpenFaaS Gateway pod and replace it in the following command:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get pods/gateway-fc64ff4f6-d9bgt -n openfaas -o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.hostIP}&#39;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">192.168.43.153
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>And now by using the port <code>:31112</code> the portal will show up in your browser tab:</p>
+</span></span><span class="line"><span class="cl">192.168.43.153</span></span></code></pre></div></div>
+<p>And now by using the port <code>:31112</code> the portal will show up in your browser tab:</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202010_vebakindvcsim/CapturFiles-20201015_102629.jpg" title="/img/posts/202010_vebakindvcsim/CapturFiles-20201015_102629.jpg" data-thumbnail="/img/posts/202010_vebakindvcsim/CapturFiles-20201015_102629.jpg" data-sub-html="<h2>Figure III: OpenFaaS® Portal accessible via port forwarding</h2>">
         <img
             class="lazyload"
@@ -564,9 +521,9 @@
     </a><figcaption class="image-caption">Figure III: OpenFaaS® Portal accessible via port forwarding</figcaption>
     </figure>
 <h3 id="3-vcsim---run-the-vsphere-api-simulator">3. <code>vcsim</code> - run the vSphere API Simulator</h3>
-<p>Before our function(s) can be invoked based on a vSphere event, we need a <code>stream</code> of such coming from a <code>source</code> to which the VMware Event Router is listening to. Like aforementioned, <code>vcsim</code> will help us out here. Interestingly, <code>vcsim</code> is not new and <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreffer ">William Lam</a> already wrote about it in <strong>2017(!)</strong>: <a href="https://www.virtuallyghetto.com/2017/04/govcsim-neat-incubation-project-vcenter-server-esxi-api-based-simulator.html" target="_blank" rel="noopener noreffer ">govcsim – Neat incubation project (vCenter Server &amp; ESXi API based simulator)</a>.</p>
+<p>Before our function(s) can be invoked based on a vSphere event, we need a <code>stream</code> of such coming from a <code>source</code> to which the VMware Event Router is listening to. Like aforementioned, <code>vcsim</code> will help us out here. Interestingly, <code>vcsim</code> is not new and <a href="https://twitter.com/lamw" target="_blank" rel="noopener noreferrer ">William Lam</a> already wrote about it in <strong>2017(!)</strong>: <a href="https://www.virtuallyghetto.com/2017/04/govcsim-neat-incubation-project-vcenter-server-esxi-api-based-simulator.html" target="_blank" rel="noopener noreferrer ">govcsim – Neat incubation project (vCenter Server &amp; ESXi API based simulator)</a>.</p>
 <p>For our purposes, Michael prepared a Docker image which we are going to deploy as a Kubernetes pod and in which <code>vcsim</code> is running as our simulated vSphere endpoint. Furthermore, the necessary <code>govc</code> CLI binaries are also available via the container.</p>
-<p>The image is available <a href="https://hub.docker.com/r/embano1/vcsim/tags" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
+<p>The image is available <a href="https://hub.docker.com/r/embano1/vcsim/tags" target="_blank" rel="noopener noreferrer ">HERE</a>.</p>
 <ul>
 <li>We will deploy <code>vcsim</code> as well as the <code>Event Router</code> in a dedicated <code>namespace</code> called <code>vmware</code>:
 <ul>
@@ -574,169 +531,124 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns vmware
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns vmware</span></span></code></pre></div></div>
+<ul>
 <li>Start deploying and running <code>vcsim</code> in Kubernetes:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl run vcsim --image<span class="o">=</span>embano1/vcsim:0.24.0 --port<span class="o">=</span><span class="m">8989</span> --image-pull-policy<span class="o">=</span>Always -n vmware
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl run vcsim --image<span class="o">=</span>embano1/vcsim:0.24.0 --port<span class="o">=</span><span class="m">8989</span> --image-pull-policy<span class="o">=</span>Always -n vmware</span></span></code></pre></div></div>
+<ul>
 <li>Inspect the logs of the Pod to get to know the username and password which we are going to use for the Event Router configuration later on:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl logs -f -n vmware vcsim
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl logs -f -n vmware vcsim
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_URL</span><span class="o">=</span>https://administrator:REPLACEME@10.244.0.17:8989/sdk <span class="nv">GOVC_SIM_PID</span><span class="o">=</span><span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_URL</span><span class="o">=</span>https://administrator:REPLACEME@10.244.0.17:8989/sdk <span class="nv">GOVC_SIM_PID</span><span class="o">=</span><span class="m">1</span></span></span></code></pre></div></div>
+<ul>
 <li>Expose vcsim as a service to receive traffic:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl expose pod vcsim -n vmware
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl expose pod vcsim -n vmware</span></span></code></pre></div></div>
+<ul>
 <li>Connect to the deployed pod and verify that <code>vcsim</code> is ready for use:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -i -t vcsim -n vmware bash
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -i -t vcsim -n vmware bash</span></span></code></pre></div></div>
+<ul>
 <li>Set the necessary environment variables for <code>GOVC_URL</code> and <code>GOVC_INSECURE</code>:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_URL</span><span class="o">=</span>https://administrator:REPLACEME@vcsim:8989/sdk
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_URL</span><span class="o">=</span>https://administrator:REPLACEME@vcsim:8989/sdk</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_INSECURE</span><span class="o">=</span><span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOVC_INSECURE</span><span class="o">=</span><span class="m">1</span></span></span></code></pre></div></div>
+<ul>
 <li>Check if your simulated vSphere Endpoint is working properly:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$ govc ls
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$ govc ls
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">/DC0/vm
 </span></span><span class="line"><span class="cl">/DC0/host
 </span></span><span class="line"><span class="cl">/DC0/datastore
-</span></span><span class="line"><span class="cl">/DC0/network
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl">/DC0/network</span></span></code></pre></div></div>
+<ul>
 <li>List all available Virtual Machines:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$ govc ls <span class="s2">&#34;/DC0/vm/*&#34;</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vcsim@vcsim:~$ govc ls <span class="s2">&#34;/DC0/vm/*&#34;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">/DC0/vm/DC0_H0_VM0
 </span></span><span class="line"><span class="cl">/DC0/vm/DC0_H0_VM1
 </span></span><span class="line"><span class="cl">/DC0/vm/DC0_C0_RP0_VM0
-</span></span><span class="line"><span class="cl">/DC0/vm/DC0_C0_RP0_VM1
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl">/DC0/vm/DC0_C0_RP0_VM1</span></span></code></pre></div></div>
+<ul>
 <li>Power Off and On a Virtual Machine:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># By default, the VMs are in Powered On state</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># By default, the VMs are in Powered On state</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Trying to power on a powered on VM would throw a &#34;govc: *types.InvalidPowerState&#34; error </span>
 </span></span><span class="line"><span class="cl">vcsim@vcsim:~$ govc vm.power -off /DC0/vm/DC0_H0_VM0
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Powering off VirtualMachine:vm-57... OK
 </span></span><span class="line"><span class="cl">vcsim@vcsim:~$ govc vm.power -on /DC0/vm/DC0_H0_VM0
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Powering on VirtualMachine:vm-57... OK
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Awesome!</strong></p>
+</span></span><span class="line"><span class="cl">Powering on VirtualMachine:vm-57... OK</span></span></code></pre></div></div>
+<p><strong>Awesome!</strong></p>
 <h3 id="4-deploy-the-event-router">4. Deploy the Event Router</h3>
-<p>During my work on this post, Michael and I discussed various aspects of the overall deployment of a development environment and especially the usability and simplicity was a main focus for us. Long story short - it ended up with the decision to include <code>vcsim</code> as a supported <code>Event Provider</code> for the Event Router 😁 👏.</p>
+<p>During my work on this post, Michael and I discussed various aspects of the overall deployment of a development environment and especially the usability and simplicity was a main focus for us. Long story short - it ended up with the decision to include <code>vcsim</code> as a supported <code>Event Provider</code> for the Event Router &#x1f601; &#x1f44f;.</p>
 <p>Before we can deploy the Router into our recently created namespace <code>vmware</code>, we need to create the <code>event-router-config.yaml</code> file from which we will create our Kubernetes Secret in a bit. If VSCode (<code>code</code>) isn&rsquo;t your default editor adjust it accordingly.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">code event-router-config.yaml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">code event-router-config.yaml</span></span></code></pre></div></div>
+<ul>
 <li>You can copy the complete provided code and paste into your empty <code>event-router-config.yaml</code> file:</li>
 </ul>
 <div class="details admonition warning open">
@@ -747,44 +659,12 @@
             <div class="admonition-content">This configuration is only valid if you followed my example. Otherwise adapt it accordingly.</div>
         </div>
     </div>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">event-router.vmware.com/v1alpha1</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">event-router.vmware.com/v1alpha1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">RouterConfig</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">router-config-1</span><span class="w">
@@ -816,87 +696,35 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">veba-demo-metrics</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">bindAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.0.0.0:8082&#34;</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">bindAddress</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.0.0.0:8082&#34;</span></span></span></code></pre></div></div>
+<ul>
 <li>Create the Kubernetes Secret:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n vmware create secret generic event-router-config --from-file<span class="o">=</span>event-router-config.yaml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n vmware create secret generic event-router-config --from-file<span class="o">=</span>event-router-config.yaml</span></span></code></pre></div></div>
+<ul>
 <li>Download the Event Router deployment specification locally and change the image version from <code>latest</code> to <code>development</code>:
 <ul>
-<li>Available Images on <a href="https://hub.docker.com/r/vmware/veba-event-router/tags" target="_blank" rel="noopener noreffer ">Dockerhub</a></li>
+<li>Available Images on <a href="https://hub.docker.com/r/vmware/veba-event-router/tags" target="_blank" rel="noopener noreferrer ">Dockerhub</a></li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">wget https://raw.githubusercontent.com/vmware-samples/vcenter-event-broker-appliance/development/vmware-event-router/deploy/event-router-k8s.yaml <span class="o">&amp;&amp;</span> code event-router-k8s.yaml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">wget https://raw.githubusercontent.com/vmware-samples/vcenter-event-broker-appliance/development/vmware-event-router/deploy/event-router-k8s.yaml <span class="o">&amp;&amp;</span> code event-router-k8s.yaml</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
@@ -942,77 +770,54 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">vmware-event-router</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">sessionAffinity</span><span class="p">:</span><span class="w"> </span><span class="l">None</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">sessionAffinity</span><span class="p">:</span><span class="w"> </span><span class="l">None</span></span></span></code></pre></div></div>
+<ul>
 <li>Deploy the Event Router:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f event-router-k8s.yaml -n vmware
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl apply -f event-router-k8s.yaml -n vmware</span></span></code></pre></div></div>
+<ul>
 <li>Check the logs to see if everything works as desired (replace the pod name with yours):</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl logs -f -n vmware vmware-event-router-7bb7fd8577-jhlg9
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Finally, we&rsquo;ve reached the last step - The deployment of an example function.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl logs -f -n vmware vmware-event-router-7bb7fd8577-jhlg9</span></span></code></pre></div></div>
+<p>Finally, we&rsquo;ve reached the last step - The deployment of an example function.</p>
 <h3 id="5-test-with-an-example-function">5. Test with an example function</h3>
 <ul>
 <li>Clone the VEBA repository locally and directly change into the echo function folder:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone https://github.com/vmware-samples/vcenter-event-broker-appliance.git <span class="o">&amp;&amp;</span> <span class="nb">cd</span> vcenter-event-broker-appliance/examples/python/echo
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git clone https://github.com/vmware-samples/vcenter-event-broker-appliance.git <span class="o">&amp;&amp;</span> <span class="nb">cd</span> vcenter-event-broker-appliance/examples/python/echo</span></span></code></pre></div></div>
+<ul>
 <li>Edit the <code>stack.yml</code></li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">code stack.yml
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">code stack.yml</span></span></code></pre></div></div>
+<ul>
 <li>For <code>gateway:</code> add your noted IP (OpenFaaS® Gateway)</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-yml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.0</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">provider</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">openfaas</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">gateway</span><span class="p">:</span><span class="w"> </span><span class="l">http://192.168.43.153:31112</span><span class="w">
@@ -1025,79 +830,64 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">write_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">read_debug</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VmPoweredOnEvent,VmPoweredOffEvent&#34;</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">topic</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;VmPoweredOnEvent,VmPoweredOffEvent&#34;</span></span></span></code></pre></div></div>
+<ul>
 <li>Login with <code>faas-cli login</code> and by using the option <code>-g</code>, which obvisouly stands for Gateway:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">faas-cli login --username admin --password <span class="s1">&#39;VMware1!&#39;</span> --tls-no-verify -g http://192.168.43.153:31112
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">faas-cli login --username admin --password <span class="s1">&#39;VMware1!&#39;</span> --tls-no-verify -g http://192.168.43.153:31112</span></span></code></pre></div></div>
+<ul>
 <li>Deploy the <code>veba-echo</code> function:</li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">faas-cli deploy -f stack.yml --tls-no-verify
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">faas-cli deploy -f stack.yml --tls-no-verify</span></span></code></pre></div></div>
+<ul>
 <li>Double check that the function is in state <code>running</code>:
 <ul>
 <li>via <code>faas-cli list -g http://192.168.43.153:31112 --verbose</code></li>
 </ul>
 </li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Function                        Image                                           Invocations     Replicas
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Function                        Image                                           Invocations     Replicas
 </span></span><span class="line"><span class="cl">powercli-tag                    vmware/veba-powercli-tagging:latest             <span class="m">0</span>               <span class="m">1</span>
-</span></span><span class="line"><span class="cl">veba-echo                       vmware/veba-python-echo:latest                  <span class="m">0</span>               <span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
+</span></span><span class="line"><span class="cl">veba-echo                       vmware/veba-python-echo:latest                  <span class="m">0</span>               <span class="m">1</span></span></span></code></pre></div></div>
+<ul>
 <li>And by using <code>kubectl get pods -n openfaas-fn -o wide</code></li>
 </ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                            READY   STATUS    RESTARTS   AGE   IP            NODE                        NOMINATED NODE   READINESS GATES
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">NAME                            READY   STATUS    RESTARTS   AGE   IP            NODE                        NOMINATED NODE   READINESS GATES
 </span></span><span class="line"><span class="cl">powercli-tag-58466957cc-vrfqp   1/1     Running   <span class="m">0</span>          8h    10.244.0.27   kind-1.19.1-control-plane   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">veba-echo-69cd854b7c-btjhn      1/1     Running   <span class="m">0</span>          9h    10.244.0.26   kind-1.19.1-control-plane   &lt;none&gt;           &lt;none&gt;
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>I have also deployed the <code>powercli-tag</code> function for my tests and you can watch the result via the recording below.</p>
+</span></span><span class="line"><span class="cl">veba-echo-69cd854b7c-btjhn      1/1     Running   <span class="m">0</span>          9h    10.244.0.26   kind-1.19.1-control-plane   &lt;none&gt;           &lt;none&gt;</span></span></code></pre></div></div>
+<p>I have also deployed the <code>powercli-tag</code> function for my tests and you can watch the result via the recording below.</p>
 <h2 id="conclusion--recording">Conclusion (+ Recording)</h2>
 <p>With the ability to leverage VMware Fusion or Workstation to quickly create a KinD Kubernetes cluster, leads you really to this at the beginning mentioned <em><strong>&ldquo;single development platform on the desktop&rdquo;</strong></em> experience. Of course, every tool which makes it easy to run Kubernetes locally is great and useable.</p>
 <p>We&rsquo;ve deployed the necessary components like e.g. OpenFaaS®, the VMware Event Router, the vCenter Simulator <code>vcsim</code> as well as example functions onto the local running (KinD) Kubernetes cluster.</p>
 <p>To finally test our deployed functions, we had to invoke them by creating events from a <code>source</code>. We leveraged a container image for that, which was created by Michael Gasch and which includes the vCenter Simulator <code>vcsim</code> as well as the binaries for the  <code>govc</code> CLI to execute the relevant commands.</p>
 <p><strong>Watch it here:</strong></p>
-
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube-nocookie.com/embed/LfceWRNNoCM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div></div><div class="post-footer" id="post-footer">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/LfceWRNNoCM?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -1105,14 +895,14 @@
                             <a class="link-to-markdown" href="/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-via="vmw_rguske" data-hashtags="VMware,VEBA,Kubernetes,KinD,FaaS,Fusion,Workstation,OpenSource"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-description="A practitioner&#39;s guide to spin up a local VMware Event Broker Appliance (VEBA) environment by using KinD and the vCenter simulator."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator" data-hashtags="VMware,VEBA,Kubernetes,KinD,FaaS,Fusion,Workstation,OpenSource"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/spin-up-a-local-veba-environment-with-kind-and-vcenter-simulator/" data-title="A practitioner&#39;s guide - Spin up a local VEBA environment with KinD and vCenter simulator"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/kind/">KinD</a>,&nbsp;<a href="/tags/faas/">FaaS</a>,&nbsp;<a href="/tags/fusion/">Fusion</a>,&nbsp;<a href="/tags/workstation/">Workstation</a>,&nbsp;<a href="/tags/opensource/">OpenSource</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/veba/">VEBA</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/kind/">KinD</a>, <a href="/tags/faas/">FaaS</a>, <a href="/tags/fusion/">Fusion</a>, <a href="/tags/workstation/">Workstation</a>, <a href="/tags/opensource/">OpenSource</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -1120,22 +910,20 @@
     <div class="post-nav"><a href="/post/a-closer-look-at-vmwares-project-nautilus/" class="prev" rel="prev" title="A closer look at VMware&#39;s Project Nautilus"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>A closer look at VMware's Project Nautilus</a>
             <a href="/post/vsphere-with-tanzu-troubleshooting-haproxy/" class="next" rel="next" title="vSphere with Tanzu - Troubleshooting HAProxy deployment">vSphere with Tanzu - Troubleshooting HAProxy deployment<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

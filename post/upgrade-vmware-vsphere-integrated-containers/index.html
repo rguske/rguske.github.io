@@ -4,22 +4,28 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>Upgrade vSphere Integrated Containers - Robert Guske</title><meta name="Description" content="A how-to guide to upgrade VIC from one major version to another."><meta property="og:title" content="Upgrade vSphere Integrated Containers" />
-<meta property="og:description" content="A how-to guide to upgrade VIC from one major version to another." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2018-10-19T00:11:11+02:00" />
-<meta property="article:modified_time" content="2022-09-27T17:34:06+02:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>Upgrade vSphere Integrated Containers - Blog Robert Guske</title><meta name="Description" content="A how-to guide to upgrade VIC from one major version to another."><meta property="og:url" content="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Upgrade vSphere Integrated Containers">
+  <meta property="og:description" content="A how-to guide to upgrade VIC from one major version to another.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2018-10-19T00:11:11+02:00">
+    <meta property="article:modified_time" content="2022-09-27T17:34:06+02:00">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="VSphere">
+    <meta property="article:tag" content="Docker">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="Upgrade vSphere Integrated Containers"/>
-<meta name="twitter:description" content="A how-to guide to upgrade VIC from one major version to another."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" /><link rel="next" href="https://rguske.github.io/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Upgrade vSphere Integrated Containers">
+  <meta name="twitter:description" content="A how-to guide to upgrade VIC from one major version to another.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" /><link rel="next" href="https://rguske.github.io/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +34,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/upgrade-vmware-vsphere-integrated-containers\/"
-        },"genre": "posts","keywords": "VMware, vSphere, Docker","wordcount":  4545 ,
+        },"genre": "posts","keywords": "VMware, vSphere, Docker","wordcount":  4068 ,
         "url": "https:\/\/rguske.github.io\/post\/upgrade-vmware-vsphere-integrated-containers\/","datePublished": "2018-10-19T00:11:11+02:00","dateModified": "2022-09-27T17:34:06+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "A how-to guide to upgrade VIC from one major version to another."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +78,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +107,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +118,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Upgrade vSphere Integrated Containers</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-10-19">2018-10-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4545 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;22 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vic_upgrade_post_cover.jpg"
         data-srcset="/img/vic_upgrade_post_cover.jpg, /img/vic_upgrade_post_cover.jpg 1.5x, /img/vic_upgrade_post_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vic_upgrade_post_cover.jpg"
-        title="A how-to guide to upgrade VIC from one major version to another." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="A how-to guide to upgrade VIC from one major version to another." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Upgrade vSphere Integrated Containers</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2018-10-19">2018-10-19</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>4068 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>20 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#phase-i">Phase I</a>
       <ul>
@@ -142,7 +166,7 @@
     <li><a href="#conclusion">Conclusion</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues.
+                </div><div class="content" id="content"><p>I like upgrades! Because mostly they bring cool new features with them or eliminate disturbing issues.
 In this post I´d like to guide you through the upgrade process of <a href="/post/vmware-vsphere-integrated-containers-introduction/">VMware vSphere Integrated Containers </a> from version v1.3.1 to v1.4.1 which is a major upgrade and also to v1.4.3 which is a minor upgrade.</p>
 <p>Thanks <a href="https://twitter.com/tom_schwaller" target="_blank">Tom Schwaller</a> for reviewing this article.</p>
 <p>First of all and this applies to all upgrades, we have to check the compatibility and dependencys with our infrastructure components. This is for instance our vCenter Server where we have dependencies through the <a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/">VIC vSphere Client Plug-In</a>!</p>
@@ -189,45 +213,12 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 <p>Next, we´ll check the version of our running Virtual Container Host(s) by using the command <code>docker info</code>.</p>
 <p>As described in my previous post <a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/"> vSphere Integrated Containers Part IV: docker run a Container-VM </a> we can export our VCH through it´s IP-Address and port via <code>export DOCKER_HOST=192.168.100.220:2376</code>.</p>
 <p>After we´ve exported it we´ll fire up <code>docker --tls info</code> what will show us the following output:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Containers: <span class="m">7</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Containers: <span class="m">7</span>
 </span></span><span class="line"><span class="cl"> Running: <span class="m">7</span>
 </span></span><span class="line"><span class="cl"> Paused: <span class="m">0</span>
 </span></span><span class="line"><span class="cl"> Stopped: <span class="m">0</span>
@@ -260,105 +251,69 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">Debug Mode <span class="o">(</span>server<span class="o">)</span>: <span class="nb">false</span>
 </span></span><span class="line"><span class="cl">Registry: registry.hub.docker.com
 </span></span><span class="line"><span class="cl">Experimental: <span class="nb">false</span>
-</span></span><span class="line"><span class="cl">Live Restore Enabled: <span class="nb">false</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The server version which is running within our VCH is v1.3.1-16055-afdab46.</p>
+</span></span><span class="line"><span class="cl">Live Restore Enabled: false</span></span></code></pre></div></div>
+<p>The server version which is running within our VCH is v1.3.1-16055-afdab46.</p>
 <p>Another way to get the desired info is to make use of the <code>vic-machine</code> command line utility with the option <code>inspect</code>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin inspect <span class="se">\
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin inspect <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-South <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name vch-elk
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The output will also show us the VCH version and the Installer version from which the VCH got deployed as well&hellip;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">INFO[0000] vSphere password for adm.jarvis@LAB.JARVIS.LOCAL:
-</span></span><span class="line"><span class="cl">INFO[0004] ### Inspecting VCH ####
-</span></span><span class="line"><span class="cl">INFO[0005] Validating target
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH ID: VirtualMachine:vm-1190
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Installer version: v1.3.1-16055-afdab46
-</span></span><span class="line"><span class="cl">INFO[0005] VCH version: v1.3.1-16055-afdab46
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH upgrade status:
-</span></span><span class="line"><span class="cl">INFO[0005] Installer has same version as VCH
-</span></span><span class="line"><span class="cl">INFO[0005] No upgrade available with this installer version
-</span></span><span class="line"><span class="cl">WARN[0005] Unable to identify address acceptable to host certificate
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH Admin Portal:
-</span></span><span class="line"><span class="cl">INFO[0005] https://192.168.100.220:2378
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Published ports can be reached at:
-</span></span><span class="line"><span class="cl">INFO[0005] 192.168.100.220
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Docker environment variables:
-</span></span><span class="line"><span class="cl">INFO[0005] DOCKER_HOST=192.168.100.220:2376
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Connect to docker:
-</span></span><span class="line"><span class="cl">INFO[0005] docker -H 192.168.100.220:2376 --tls info
-</span></span><span class="line"><span class="cl">INFO[0005] Completed successfully
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;and a hint regarding the <em>VCH Upgrade Status</em>:</p>
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name vch-elk</span></span></code></pre></div></div>
+<p>The output will also show us the VCH version and the Installer version from which the VCH got deployed as well&hellip;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0000</span><span class="p">]</span> <span class="n">vSphere</span> <span class="n">password</span> <span class="k">for</span> <span class="n">adm</span><span class="o">.</span><span class="n">jarvis</span><span class="err">@</span><span class="n">LAB</span><span class="o">.</span><span class="n">JARVIS</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="c1">### Inspecting VCH ####</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Validating</span> <span class="n">target</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">ID</span><span class="p">:</span> <span class="n">VirtualMachine</span><span class="p">:</span><span class="n">vm</span><span class="o">-</span><span class="mi">1190</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Installer</span> <span class="n">version</span><span class="p">:</span> <span class="n">v1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">-</span><span class="mi">16055</span><span class="o">-</span><span class="n">afdab46</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">version</span><span class="p">:</span> <span class="n">v1</span><span class="o">.</span><span class="mf">3.1</span><span class="o">-</span><span class="mi">16055</span><span class="o">-</span><span class="n">afdab46</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">upgrade</span> <span class="n">status</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Installer</span> <span class="n">has</span> <span class="n">same</span> <span class="n">version</span> <span class="n">as</span> <span class="n">VCH</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">No</span> <span class="n">upgrade</span> <span class="n">available</span> <span class="n">with</span> <span class="n">this</span> <span class="n">installer</span> <span class="n">version</span>
+</span></span><span class="line"><span class="cl"><span class="n">WARN</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">identify</span> <span class="n">address</span> <span class="n">acceptable</span> <span class="n">to</span> <span class="n">host</span> <span class="n">certificate</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">Admin</span> <span class="ne">Portal</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2378</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Published</span> <span class="n">ports</span> <span class="n">can</span> <span class="n">be</span> <span class="n">reached</span> <span class="n">at</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Docker</span> <span class="n">environment</span> <span class="n">variables</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">DOCKER_HOST</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2376</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Connect</span> <span class="n">to</span> <span class="n">docker</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">docker</span> <span class="o">-</span><span class="n">H</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2376</span> <span class="o">--</span><span class="n">tls</span> <span class="n">info</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Completed</span> <span class="n">successfully</span></span></span></code></pre></div></div>
+<p>&hellip;and a hint regarding the <em>VCH Upgrade Status</em>:</p>
 <blockquote>
 <p>INFO[0005] VCH upgrade status:</p>
 <p>INFO[0005] Installer has same version as VCH</p>
-<p>INFO[0005] No upgrade available with this installer version</p>
-</blockquote>
+<p>INFO[0005] No upgrade available with this installer version</p></blockquote>
 <p>If we run <code>vic-machine inspect</code> executed from a newer VIC-Bundle like 1.4.x for example we´ll see that the installer version differs from the VCH version. But more about this later on.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
-            <div class="admonition-content">By the way! I´ve documented a few examples of <code>vic-machine</code> options on my Github-Repo <a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreffer ">https://github.com/rguske/vic-machine</a></div>
+            <div class="admonition-content">By the way! I´ve documented a few examples of <code>vic-machine</code> options on my Github-Repo <a href="https://github.com/rguske/vic-machine" target="_blank" rel="noopener noreferrer ">https://github.com/rguske/vic-machine</a></div>
         </div>
     </div>
 <h2 id="phase-i">Phase I</h2>
 <h3 id="vic-appliance-upgrade-v131-to-141">VIC Appliance Upgrade v1.3.1 to 1.4.1</h3>
 <p>I suppose that you are familiar with the VIC Appliance deployment because this post described the upgrade of an already deployed VIC appliance but in case not, you can go <a href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" target="_blank"> here</a> first.</p>
-<p><strong>Download</strong> the latest bits through this link: <a href="https://www.vmware.com/go/download-vic" target="_blank"><a href="https://www.vmware.com/go/download-vic" target="_blank" rel="noopener noreffer ">www.vmware.com/go/download-vic</a></a>.</p>
+<p><strong>Download</strong> the latest bits through this link: <a href="https://www.vmware.com/go/download-vic" target="_blank"><a href="https://www.vmware.com/go/download-vic" target="_blank" rel="noopener noreferrer ">www.vmware.com/go/download-vic</a></a>.</p>
 <p>Start the deployment and be aware of the fact, that <em>this is NOT an Inplace-Upgrade</em> and therefore we have to enter a new IP address as well as FQDN.</p>
 <a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20180918_082532.jpg">
         <img
@@ -395,77 +350,44 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
         </div>
     </div>
 <p>After the deployment of the new VIC Appliance we´ll establish a <code>ssh</code> connection to it.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh root@192.168.100.161
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">The authenticity of host &#39;192.168.100.161 (192.168.100.161)&#39; can&#39;t be established.
-</span></span><span class="line"><span class="cl">ECDSA key fingerprint is SHA256:iVIdb5Sv1pxUsiqelop7DVubJcvjuHHbPSJWBg3No1g.
-</span></span><span class="line"><span class="cl">Are you sure you want to continue connecting (yes/no)? yes
-</span></span><span class="line"><span class="cl">Warning: Permanently added &#39;192.168.100.161&#39; (ECDSA) to the list of known hosts.
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh root@192.168.100.161</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">The</span> <span class="n">authenticity</span> <span class="n">of</span> <span class="n">host</span> <span class="s1">&#39;192.168.100.161 (192.168.100.161)&#39;</span> <span class="n">can</span><span class="s1">&#39;t be established.</span>
+</span></span><span class="line"><span class="cl"><span class="n">ECDSA</span> <span class="n">key</span> <span class="n">fingerprint</span> <span class="n">is</span> <span class="n">SHA256</span><span class="p">:</span><span class="n">iVIdb5Sv1pxUsiqelop7DVubJcvjuHHbPSJWBg3No1g</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">Are</span> <span class="n">you</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="k">continue</span> <span class="n">connecting</span> <span class="p">(</span><span class="n">yes</span><span class="o">/</span><span class="n">no</span><span class="p">)</span><span class="err">?</span> <span class="n">yes</span>
+</span></span><span class="line"><span class="cl"><span class="n">Warning</span><span class="p">:</span> <span class="n">Permanently</span> <span class="n">added</span> <span class="s1">&#39;192.168.100.161&#39;</span> <span class="p">(</span><span class="n">ECDSA</span><span class="p">)</span> <span class="n">to</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">known</span> <span class="n">hosts</span><span class="o">.</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">##########################################################################
-</span></span><span class="line"><span class="cl">##  SSH access to the vSphere Integrated Containers Appliance can be    ##
-</span></span><span class="line"><span class="cl">##  used in exceptional cases that cannot be handled through standard   ##
-</span></span><span class="line"><span class="cl">##  remote management or CLI tools. This is primarily intended for use  ##
-</span></span><span class="line"><span class="cl">##  in break-fix scenarios, under the guidance of VMware GSS.           ##
-</span></span><span class="line"><span class="cl">##########################################################################
+</span></span><span class="line"><span class="cl"><span class="c1">##########################################################################</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  SSH access to the vSphere Integrated Containers Appliance can be    ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  used in exceptional cases that cannot be handled through standard   ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  remote management or CLI tools. This is primarily intended for use  ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  in break-fix scenarios, under the guidance of VMware GSS.           ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##########################################################################</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl"><span class="n">Password</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">##########################################################################
-</span></span><span class="line"><span class="cl">##  SSH access to the vSphere Integrated Containers Appliance can be    ##
-</span></span><span class="line"><span class="cl">##  used in exceptional cases that cannot be handled through standard   ##
-</span></span><span class="line"><span class="cl">##  remote management or CLI tools. This is primarily intended for use  ##
-</span></span><span class="line"><span class="cl">##  in break-fix scenarios, under the guidance of VMware GSS.           ##
-</span></span><span class="line"><span class="cl">##########################################################################
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Use <code>cd /etc/vmware/upgrade</code> to go into the directory which contains the <code>./upgrade.sh</code> script and execute it. You´ll be promped to enter the neccassary information. As an alternative you can also specify the neccassary arguments upfront like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./upgrade.sh --target 192.168.178.72 <span class="se">\ </span>       <span class="c1">### vCenter Server</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##########################################################################</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  SSH access to the vSphere Integrated Containers Appliance can be    ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  used in exceptional cases that cannot be handled through standard   ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  remote management or CLI tools. This is primarily intended for use  ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##  in break-fix scenarios, under the guidance of VMware GSS.           ##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##########################################################################</span></span></span></code></pre></div></div>
+<p>Use <code>cd /etc/vmware/upgrade</code> to go into the directory which contains the <code>./upgrade.sh</code> script and execute it. You´ll be promped to enter the neccassary information. As an alternative you can also specify the neccassary arguments upfront like this:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./upgrade.sh --target 192.168.178.72 <span class="se">\ </span>       <span class="c1">### vCenter Server</span>
 </span></span><span class="line"><span class="cl">--username <span class="s1">&#39;administrator@jarvis.local&#39;</span> <span class="se">\ </span>    <span class="c1">### User with appropriate permissions</span>
 </span></span><span class="line"><span class="cl">--password <span class="s1">&#39;*********&#39;</span>   <span class="se">\ </span>                   <span class="c1">### Password</span>
 </span></span><span class="line"><span class="cl">--fingerprint <span class="s1">&#39;192.168.178.72 4F:D3:9B...&#39;</span> <span class="se">\ </span> <span class="c1">### vCenter Server Fingerprint</span>
@@ -475,137 +397,45 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">--appliance-username root <span class="se">\ </span>                  <span class="c1">### VIC Appliance root user</span>
 </span></span><span class="line"><span class="cl">--appliance-password VMware1234!?! <span class="se">\ </span>         <span class="c1">### root user password</span>
 </span></span><span class="line"><span class="cl">--appliance-version v1.3.1 <span class="se">\ </span>                 <span class="c1">### VIC Appliance version where we come from</span>
-</span></span><span class="line"><span class="cl">--destroy                                     <span class="c1">### Destroy the the old appliance after the upgrade is finished.</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>See: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrade_appliance.html#upgradeoptions" target="_blank"> Specify Command Line Options During Appliance Upgrade </a></p>
+</span></span><span class="line"><span class="cl">--destroy                                     <span class="c1">### Destroy the the old appliance after the upgrade is finished.</span></span></span></code></pre></div></div>
+<p>See: <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/upgrade_appliance.html#upgradeoptions" target="_blank"> Specify Command Line Options During Appliance Upgrade </a></p>
 <p>The first time I ran the upgrade it ended up in an error which was related to the &ldquo;<strong>? letter</strong>&rdquo; which I´ve used in my password.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vic02 [ /etc/vmware/upgrade ]# ./upgrade.sh
-</span></span><span class="line"><span class="cl">-------------------------------
-</span></span><span class="line"><span class="cl">VIC Appliance Upgrade to v1.4.1
-</span></span><span class="line"><span class="cl">-------------------------------
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">root</span><span class="err">@</span><span class="n">vic02</span> <span class="p">[</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">vmware</span><span class="o">/</span><span class="n">upgrade</span> <span class="p">]</span><span class="c1"># ./upgrade.sh</span>
+</span></span><span class="line"><span class="cl"><span class="o">-------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="n">VIC</span> <span class="n">Appliance</span> <span class="n">Upgrade</span> <span class="n">to</span> <span class="n">v1</span><span class="o">.</span><span class="mf">4.1</span>
+</span></span><span class="line"><span class="cl"><span class="o">-------------------------------</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">[=] Values containing $ (dollar sign), ` (backquote), \&#39; (single quote), &#34; (double quote), and \ (backslash) will not be substituted properly.
-</span></span><span class="line"><span class="cl">[=] Change any input (passwords) containing these values before running this script.
-</span></span><span class="line"><span class="cl">Enter vCenter Server FQDN or IP: lab-vcsa67-001.lab.jarvis.local
-</span></span><span class="line"><span class="cl">Enter vCenter Administrator Username: administrator@jarvis.local
-</span></span><span class="line"><span class="cl">Enter vCenter Administrator Password:
-</span></span><span class="line"><span class="cl">If using an external PSC, enter the FQDN of the PSC instance (leave blank otherwise):
-</span></span><span class="line"><span class="cl">If using an external PSC, enter the PSC Admin Domain (leave blank otherwise):
-</span></span><span class="line"><span class="cl">govc: dial tcp: address tcp/VMware1234!: unknown port
-</span></span><span class="line"><span class="cl">[=]
-</span></span><span class="line"><span class="cl">[=] -------------------------
-</span></span><span class="line"><span class="cl">[=] Upgrade failed.
-</span></span><span class="line"><span class="cl">[=] Please save /var/log/vmware/upgrade.log and contact VMware support.
-</span></span><span class="line"><span class="cl">[=] -------------------------
-</span></span><span class="line"><span class="cl">[=]
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The output <code>govc: dial tcp: address tcp/VMware1234!: unknown port</code> gives us first indications that it might be closely connected with the letters in my password. There are two ways to bypass this.</p>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="n">Values</span> <span class="n">containing</span> <span class="o">$</span> <span class="p">(</span><span class="n">dollar</span> <span class="nb">sign</span><span class="p">),</span> <span class="err">`</span> <span class="p">(</span><span class="n">backquote</span><span class="p">),</span> \<span class="s1">&#39; (single quote), &#34; (double quote), and \ (backslash) will not be substituted properly.</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="n">Change</span> <span class="n">any</span> <span class="n">input</span> <span class="p">(</span><span class="n">passwords</span><span class="p">)</span> <span class="n">containing</span> <span class="n">these</span> <span class="n">values</span> <span class="n">before</span> <span class="n">running</span> <span class="n">this</span> <span class="n">script</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">Enter</span> <span class="n">vCenter</span> <span class="n">Server</span> <span class="n">FQDN</span> <span class="ow">or</span> <span class="ne">IP</span><span class="p">:</span> <span class="n">lab</span><span class="o">-</span><span class="n">vcsa67</span><span class="o">-</span><span class="mf">001.</span><span class="n">lab</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="n">Enter</span> <span class="n">vCenter</span> <span class="n">Administrator</span> <span class="n">Username</span><span class="p">:</span> <span class="n">administrator</span><span class="err">@</span><span class="n">jarvis</span><span class="o">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="n">Enter</span> <span class="n">vCenter</span> <span class="n">Administrator</span> <span class="n">Password</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">If</span> <span class="n">using</span> <span class="n">an</span> <span class="n">external</span> <span class="n">PSC</span><span class="p">,</span> <span class="n">enter</span> <span class="n">the</span> <span class="n">FQDN</span> <span class="n">of</span> <span class="n">the</span> <span class="n">PSC</span> <span class="n">instance</span> <span class="p">(</span><span class="n">leave</span> <span class="n">blank</span> <span class="n">otherwise</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"><span class="n">If</span> <span class="n">using</span> <span class="n">an</span> <span class="n">external</span> <span class="n">PSC</span><span class="p">,</span> <span class="n">enter</span> <span class="n">the</span> <span class="n">PSC</span> <span class="n">Admin</span> <span class="n">Domain</span> <span class="p">(</span><span class="n">leave</span> <span class="n">blank</span> <span class="n">otherwise</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"><span class="n">govc</span><span class="p">:</span> <span class="n">dial</span> <span class="n">tcp</span><span class="p">:</span> <span class="n">address</span> <span class="n">tcp</span><span class="o">/</span><span class="n">VMware1234</span><span class="o">!</span><span class="p">:</span> <span class="n">unknown</span> <span class="n">port</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="o">-------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="n">Upgrade</span> <span class="n">failed</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="n">Please</span> <span class="n">save</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">vmware</span><span class="o">/</span><span class="n">upgrade</span><span class="o">.</span><span class="n">log</span> <span class="ow">and</span> <span class="n">contact</span> <span class="n">VMware</span> <span class="n">support</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="o">-------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">=</span><span class="p">]</span></span></span></code></pre></div></div>
+<p>The output <code>govc: dial tcp: address tcp/VMware1234!: unknown port</code> gives us first indications that it might be closely connected with the letters in my password. There are two ways to bypass this.</p>
 <ol>
 <li><strong>[The easy way]</strong> Use another user with the needed permissions (see <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.security.doc/GUID-21EF0E93-0003-4D41-AA11-A73824E1A88C.html" target="_blank"> <em>vSphere Extension Privileges</em>)</a> and without including an <strong>?</strong> in the password.</li>
 <li><strong>[The <a href="https://github.com/vmware/govmomi" target="_blank"> govmomi </a> way]</strong> Use the workaround described here: <a href="https://github.com/vmware/govmomi/issues/1203" target="_blank"> github.com/vmware/govmomi/issues/1203 </a></li>
 </ol>
 <p>I´ve chosen the easy way ;-) and this is how it looks when the upgrade to <strong>v1.4.1</strong> went well:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vic02 [ /etc/vmware/upgrade ]# ./upgrade.sh
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vic02 [ /etc/vmware/upgrade ]# ./upgrade.sh
 </span></span><span class="line"><span class="cl">-------------------------------
 </span></span><span class="line"><span class="cl">VIC Appliance Upgrade to v1.4.1
 </span></span><span class="line"><span class="cl">-------------------------------
@@ -675,10 +505,8 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">2018-08-16 21:25:33 [=]
 </span></span><span class="line"><span class="cl">2018-08-16 21:25:33 [=] -------------------------
 </span></span><span class="line"><span class="cl">2018-08-16 21:25:33 [=] Upgrade completed successfully. Exiting.
-</span></span><span class="line"><span class="cl">2018-08-16 21:25:33 [=] -------------------------
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>All neccessary information about the upgrade are also available in the <strong>upgrade.log</strong> which is deposited under <code>/var/log/vmware</code> on the VIC appliance.</p>
+</span></span><span class="line"><span class="cl">2018-08-16 21:25:33 [=] -------------------------</span></span></code></pre></div></div>
+<p>All neccessary information about the upgrade are also available in the <strong>upgrade.log</strong> which is deposited under <code>/var/log/vmware</code> on the VIC appliance.</p>
 <h2 id="phase-ii">Phase II</h2>
 <h3 id="download-of-the-newest-vic-engine-bundle-vic-machine">Download of the newest VIC Engine Bundle (<code>vic-machine</code>)</h3>
 <p>In phase two we´ll download the VIC Engine Bundle which includes the following:</p>
@@ -719,75 +547,25 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
         </div>
     </div>
 <p>Use a terminal and you´ll find the script deposited in the path <strong>/vic141/ui/vcsa</strong> on your local computer or remote execution host (wherever you´ve downloaded it).</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">total <span class="m">72</span>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">total <span class="m">72</span>
 </span></span><span class="line"><span class="cl">drwxr-xr-x@ <span class="m">6</span> rguske  staff    <span class="m">192</span> Aug <span class="m">16</span> 23:22 .
 </span></span><span class="line"><span class="cl">drwxr-xr-x@ <span class="m">8</span> rguske  staff    <span class="m">256</span> Jul  <span class="m">3</span> 17:37 ..
 </span></span><span class="line"><span class="cl">-rw-r--r--@ <span class="m">1</span> rguske  staff    <span class="m">937</span> Aug <span class="m">16</span> 23:22 configs
 </span></span><span class="line"><span class="cl">-rwxr-xr-x@ <span class="m">1</span> rguske  staff  <span class="m">10364</span> Jun <span class="m">22</span> 22:28 install.sh
 </span></span><span class="line"><span class="cl">-rwxr-xr-x@ <span class="m">1</span> rguske  staff   <span class="m">6002</span> Jun <span class="m">22</span> 22:28 uninstall.sh
-</span></span><span class="line"><span class="cl">-rwxr-xr-x@ <span class="m">1</span> rguske  staff  <span class="m">12059</span> Jun <span class="m">22</span> 22:28 upgrade.sh
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Execute <code>./upgrade.sh</code> so that the script starts prompting you after neccessary information regarding the vCenter Server target and user credentials. This is how it will look like:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-------------------------------------------------------------
+</span></span><span class="line"><span class="cl">-rwxr-xr-x@ <span class="m">1</span> rguske  staff  <span class="m">12059</span> Jun <span class="m">22</span> 22:28 upgrade.sh</span></span></code></pre></div></div>
+<p>Execute <code>./upgrade.sh</code> so that the script starts prompting you after neccessary information regarding the vCenter Server target and user credentials. This is how it will look like:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-------------------------------------------------------------
 </span></span><span class="line"><span class="cl">This script will upgrade vSphere Integrated Containers plugin
 </span></span><span class="line"><span class="cl">for vSphere Client (HTML) and vSphere Web Client (Flex).
 </span></span><span class="line"><span class="cl">
@@ -829,34 +607,25 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">Aug 29 2018 23:12:09.230+02:00 WARN  ignoring potential product VM vm-321: not powered on
 </span></span><span class="line"><span class="cl">Aug 29 2018 23:12:09.237+02:00 INFO  Found 1 VM(s) tagged as OVA
 </span></span><span class="line"><span class="cl">Aug 29 2018 23:12:09.247+02:00 INFO  Attempting to configure ManagedByInfo
-</span></span><span class="line"><span class="cl">Aug 29 2018 23:12:09.485+02:00 INFO  Successfully configured ManagedByInfo
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>If all the entered information were correct and most of the time it depends on the correct user privileges, it will output&hellip;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">--------------------------------------------------------------
+</span></span><span class="line"><span class="cl">Aug 29 2018 23:12:09.485+02:00 INFO  Successfully configured ManagedByInfo</span></span></code></pre></div></div>
+<p>If all the entered information were correct and most of the time it depends on the correct user privileges, it will output&hellip;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">--------------------------------------------------------------
 </span></span><span class="line"><span class="cl">Upgrade successful. Restart the vSphere Client services. All vSphere Client users must log out and log back in again to see the vSphere Integrated Containersplug-in.
-</span></span><span class="line"><span class="cl">Exited successfully
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Finally and as requested in the last lines of the above output, restart the vSphere Client services on your vCenter Server Appliance.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service-control --stop vsphere-ui <span class="o">&amp;&amp;</span> service-control --start vsphere-ui
-</span></span><span class="line"><span class="cl">service-control --stop vsphere-client <span class="o">&amp;&amp;</span> service-control --start vsphere-client
-</span></span></code></pre></td></tr></table>
-</div>
-</div><a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg">
+</span></span><span class="line"><span class="cl">Exited successfully</span></span></code></pre></div></div>
+<p>Finally and as requested in the last lines of the above output, restart the vSphere Client services on your vCenter Server Appliance.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service-control --stop vsphere-ui <span class="o">&amp;&amp;</span> service-control --start vsphere-ui
+</span></span><span class="line"><span class="cl">service-control --stop vsphere-client <span class="o">&amp;&amp;</span> service-control --start vsphere-client</span></span></code></pre></div></div>
+<a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180616_100412.jpg">
         <img
             class="lazyload"
             src="/svg/loading.min.svg"
@@ -869,93 +638,12 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 <h2 id="upgrading-v141-to-v143">Upgrading v1.4.1 to v1.4.3</h2>
 <p>This phase (II) of the VIC Upgrade-process is now obsolete with version 1.4.3. The upgrade of the vSphere (H5) Plug-In is now integrated into the whole process. As you can see through the following output, the question after the <em>VIC UI Plugin</em> upgrade appeared when you start the VIC Appliance upgrade:</p>
 <p><code>Upgrade VIC UI Plugin? (y/n):</code> and of course I answered it with <code>y</code> (=yes)&hellip;what else?!</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
-</span><span class="lnt">79
-</span><span class="lnt">80
-</span><span class="lnt">81
-</span><span class="lnt">82
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vic01 [ /etc/vmware/upgrade ]# ./upgrade.sh
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@vic01 [ /etc/vmware/upgrade ]# ./upgrade.sh
 </span></span><span class="line"><span class="cl">-------------------------------
 </span></span><span class="line"><span class="cl">VIC Appliance Upgrade to v1.4.3
 </span></span><span class="line"><span class="cl">-------------------------------
@@ -1036,10 +724,8 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">2018-10-09 21:48:30 [=] -------------------------
 </span></span><span class="line"><span class="cl">2018-10-09 21:48:30 [=] Upgrade completed successfully. Exiting. All vSphere Client users must log out and log back in again twice to see the vSphere Integrated Containers plug-in.
 </span></span><span class="line"><span class="cl">2018-10-09 21:48:30 [=] -------------------------
-</span></span><span class="line"><span class="cl">2018-10-09 21:48:30 [=]
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>In the vSphere Client you´ll see an information that plug-ins have been updated and they´ll be ready for use next time you log into vSphere Client.</p>
+</span></span><span class="line"><span class="cl">2018-10-09 21:48:30 [=]</span></span></code></pre></div></div>
+<p>In the vSphere Client you´ll see an information that plug-ins have been updated and they´ll be ready for use next time you log into vSphere Client.</p>
 <a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181009_115056.jpg">
         <img
             class="lazyload"
@@ -1064,29 +750,12 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 <p>Last but not least we´ll upgrade our Virtual Container Host(s). This will also be done by using the <code>vic-machine</code> utility with the option <code>upgrade</code>. Before I begin, I´ll check all current versions of my running VCH´s.</p>
 <p>Use <code>docker --tls version</code> to get the desired information.</p>
 <p>For my VCH based and deployed on version 1.3.1 the output looks like:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
 </span></span><span class="line"><span class="cl"> Version:           18.06.1-ce
 </span></span><span class="line"><span class="cl"> API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
 </span></span><span class="line"><span class="cl"> Go version:        go1.10.3
@@ -1103,33 +772,14 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">  Git commit:       afdab46
 </span></span><span class="line"><span class="cl">  Built:            Mon Feb  <span class="m">5</span> 15:35:58 <span class="m">2018</span>
 </span></span><span class="line"><span class="cl">  OS/Arch:          linux/amd64
-</span></span><span class="line"><span class="cl">  Experimental:     <span class="nb">true</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;and for my VCH based on version 1.4.1 it looks like this:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
+</span></span><span class="line"><span class="cl">  Experimental:     true</span></span></code></pre></div></div>
+<p>&hellip;and for my VCH based on version 1.4.1 it looks like this:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
 </span></span><span class="line"><span class="cl"> Version:           18.06.1-ce
 </span></span><span class="line"><span class="cl"> API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
 </span></span><span class="line"><span class="cl"> Go version:        go1.10.3
@@ -1146,188 +796,104 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">  Git commit:       b3a6192
 </span></span><span class="line"><span class="cl">  Built:            Tue Jul  <span class="m">3</span> 15:05:57 <span class="m">2018</span>
 </span></span><span class="line"><span class="cl">  OS/Arch:          linux/amd64
-</span></span><span class="line"><span class="cl">  Experimental:     <span class="nb">true</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Now let´s upgrade our VCH from version 1.4.1 to our latest version:</p>
-<center> <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/vSphereIntegratedContainers?src=hash&amp;ref_src=twsrc%5Etfw">#vSphereIntegratedContainers</a> 1.4.3 is available with cool new enhancements like shell auto-complete function or vic-machine create --no-proxy option to skip proxying for certain URLs or domains. Read more about the new release here: <a href="https://t.co/f21abf64TQ">https://t.co/f21abf64TQ</a> <a href="https://twitter.com/hashtag/VIC?src=hash&amp;ref_src=twsrc%5Etfw">#VIC</a></p>&mdash; Robert Guske @rguske@vmst.io (@vmw_rguske) <a href="https://twitter.com/vmw_rguske/status/1041955154910740480?ref_src=twsrc%5Etfw">September 18, 2018</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
- </center>
+</span></span><span class="line"><span class="cl">  Experimental:     true</span></span></code></pre></div></div>
+<p>Now let´s upgrade our VCH from version 1.4.1 to our latest version:</p>
+<center>  </center>
 <p>The <code>upgrade</code> option from <code>vic-machine</code> requires the VM-ID from our VCH and we can get this ID by using <code>vic-machine inspect</code>.</p>
 <p>That´s the point were you´ll hopefully say to yourself &ldquo;<em>AH! We´ve already made use of this option to get the VCH version displayed</em>&rdquo; and you`re right &ldquo;<em>Watson</em>&rdquo; ;-)!</p>
 <p>And I´ve also mentioned that I´ll come back to this point. Because we now will fire up this command from the new VIC Engine Bundle&hellip;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin inspect <span class="se">\
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin inspect <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-North <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--user adm.jarvis@LAB.JARVIS.LOCAL <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--thumbprint 4F:D3:9B:50:00:31:D9:84:9D:DA:CF:57:21:D6:0D:11:89:78:97:26 <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name vch-elk
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;and the output will show us this time the following:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">INFO[0000] vSphere password for adm.jarvis@LAB.JARVIS.LOCAL:
-</span></span><span class="line"><span class="cl">INFO[0004] ### Inspecting VCH ####
-</span></span><span class="line"><span class="cl">INFO[0004] Validating target
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Installer version: v1.4.3-20031-fa9732d
-</span></span><span class="line"><span class="cl">INFO[0005] VCH version: v1.4.1-19562-b3a6192
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH upgrade status:
-</span></span><span class="line"><span class="cl">INFO[0005] Upgrade available
-</span></span><span class="line"><span class="cl">WARN[0005] Unable to identify address acceptable to host certificate, using assigned client IP as host address.
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH ID: vm-1190
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] VCH Admin Portal:
-</span></span><span class="line"><span class="cl">INFO[0005] https://192.168.100.220:2378
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Published ports can be reached at:
-</span></span><span class="line"><span class="cl">INFO[0005] 192.168.100.22
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Management traffic will use:
-</span></span><span class="line"><span class="cl">INFO[0005] 192.168.100.220
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Docker environment variables:
-</span></span><span class="line"><span class="cl">INFO[0005] DOCKER_HOST=192.168.100.220:2376
-</span></span><span class="line"><span class="cl">INFO[0005]
-</span></span><span class="line"><span class="cl">INFO[0005] Connect to docker:
-</span></span><span class="line"><span class="cl">INFO[0005] docker -H 192.168.100.220:2376 --tls info
-</span></span><span class="line"><span class="cl">INFO[0005] Completed successfully
-</span></span></code></pre></td></tr></table>
-</div>
-</div><blockquote>
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name vch-elk</span></span></code></pre></div></div>
+<p>&hellip;and the output will show us this time the following:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0000</span><span class="p">]</span> <span class="n">vSphere</span> <span class="n">password</span> <span class="k">for</span> <span class="n">adm</span><span class="o">.</span><span class="n">jarvis</span><span class="err">@</span><span class="n">LAB</span><span class="o">.</span><span class="n">JARVIS</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="c1">### Inspecting VCH ####</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="n">Validating</span> <span class="n">target</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Installer</span> <span class="n">version</span><span class="p">:</span> <span class="n">v1</span><span class="o">.</span><span class="mf">4.3</span><span class="o">-</span><span class="mi">20031</span><span class="o">-</span><span class="n">fa9732d</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">version</span><span class="p">:</span> <span class="n">v1</span><span class="o">.</span><span class="mf">4.1</span><span class="o">-</span><span class="mi">19562</span><span class="o">-</span><span class="n">b3a6192</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">upgrade</span> <span class="n">status</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Upgrade</span> <span class="n">available</span>
+</span></span><span class="line"><span class="cl"><span class="n">WARN</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">identify</span> <span class="n">address</span> <span class="n">acceptable</span> <span class="n">to</span> <span class="n">host</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">using</span> <span class="n">assigned</span> <span class="n">client</span> <span class="ne">IP</span> <span class="n">as</span> <span class="n">host</span> <span class="n">address</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">ID</span><span class="p">:</span> <span class="n">vm</span><span class="o">-</span><span class="mi">1190</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">Admin</span> <span class="ne">Portal</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2378</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Published</span> <span class="n">ports</span> <span class="n">can</span> <span class="n">be</span> <span class="n">reached</span> <span class="n">at</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.22</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Management</span> <span class="n">traffic</span> <span class="n">will</span> <span class="n">use</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Docker</span> <span class="n">environment</span> <span class="n">variables</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">DOCKER_HOST</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2376</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Connect</span> <span class="n">to</span> <span class="n">docker</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">docker</span> <span class="o">-</span><span class="n">H</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.220</span><span class="p">:</span><span class="mi">2376</span> <span class="o">--</span><span class="n">tls</span> <span class="n">info</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Completed</span> <span class="n">successfully</span></span></span></code></pre></div></div>
+<blockquote>
 <p>INFO[0005] <strong>Installer version: v1.4.3-20031-fa9732d</strong></p>
 <p>INFO[0005] <strong>VCH version: v1.4.1-19562-b3a6192</strong></p>
 <p>INFO[0005] VCH upgrade status:</p>
-<p>INFO[0005] <strong>Upgrade available</strong></p>
-</blockquote>
+<p>INFO[0005] <strong>Upgrade available</strong></p></blockquote>
 <p><em>Upgrade available</em> sounds good to me! Here we go:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin upgrade <span class="se">\
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./vic-machine-darwin upgrade <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--target lab-vcsa67-001.lab.jarvis.local/Datacenter-North <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--user administrator@jarvis.local <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>--id vm-1190 <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--force
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>&hellip;and a couple of seconds later&hellip;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">INFO[0000] vSphere password for administrator@jarvis.local:
-</span></span><span class="line"><span class="cl">INFO[0004] ### Upgrading VCH ####
-</span></span><span class="line"><span class="cl">INFO[0004] Validating target
-</span></span><span class="line"><span class="cl">INFO[0004]
-</span></span><span class="line"><span class="cl">INFO[0004] VCH ID: VirtualMachine:vm-1190
-</span></span><span class="line"><span class="cl">INFO[0005] Creating directory [lab-ds-001] vch-elk
-</span></span><span class="line"><span class="cl">INFO[0005] Datastore path is [lab-ds-001] vch-elk
-</span></span><span class="line"><span class="cl">INFO[0005] Uploading ISO images
-</span></span><span class="line"><span class="cl">INFO[0006] Uploading appliance.iso as V1.4.3-20031-FA9732D-appliance.iso
-</span></span><span class="line"><span class="cl">INFO[0016] Uploading bootstrap.iso as V1.4.3-20031-FA9732D-bootstrap.iso
-</span></span><span class="line"><span class="cl">INFO[0023] Switching appliance iso to [lab-ds-001] vch-elk/V1.4.3-20031-FA9732D-appliance.iso
-</span></span><span class="line"><span class="cl">INFO[0023] Setting VM configuration
-</span></span><span class="line"><span class="cl">WARN[0024] If ops-user (jarvis@lab) belongs to the Administrators group, permissions on some resources might have been restricted
-</span></span><span class="line"><span class="cl">INFO[0025] Waiting for IP information
-</span></span><span class="line"><span class="cl">INFO[0025] Waiting for major appliance components to launch
-</span></span><span class="line"><span class="cl">INFO[0035] Obtained IP address for client interface: &#34;192.168.100.220&#34;
-</span></span><span class="line"><span class="cl">INFO[0035] Checking VCH connectivity with vSphere target
-</span></span><span class="line"><span class="cl">INFO[0035] vSphere API Test: https://lab-vcsa67-001.lab.jarvis.local vSphere API target responds as expected
-</span></span><span class="line"><span class="cl">INFO[0121] Completed successfully
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>Version check (<code>docker --tls version</code>) again!</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--force</span></span></code></pre></div></div>
+<p>&hellip;and a couple of seconds later&hellip;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0000</span><span class="p">]</span> <span class="n">vSphere</span> <span class="n">password</span> <span class="k">for</span> <span class="n">administrator</span><span class="err">@</span><span class="n">jarvis</span><span class="o">.</span><span class="n">local</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="c1">### Upgrading VCH ####</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="n">Validating</span> <span class="n">target</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0004</span><span class="p">]</span> <span class="n">VCH</span> <span class="n">ID</span><span class="p">:</span> <span class="n">VirtualMachine</span><span class="p">:</span><span class="n">vm</span><span class="o">-</span><span class="mi">1190</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Creating</span> <span class="n">directory</span> <span class="p">[</span><span class="n">lab</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="mi">001</span><span class="p">]</span> <span class="n">vch</span><span class="o">-</span><span class="n">elk</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Datastore</span> <span class="n">path</span> <span class="n">is</span> <span class="p">[</span><span class="n">lab</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="mi">001</span><span class="p">]</span> <span class="n">vch</span><span class="o">-</span><span class="n">elk</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0005</span><span class="p">]</span> <span class="n">Uploading</span> <span class="n">ISO</span> <span class="n">images</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0006</span><span class="p">]</span> <span class="n">Uploading</span> <span class="n">appliance</span><span class="o">.</span><span class="n">iso</span> <span class="n">as</span> <span class="n">V1</span><span class="o">.</span><span class="mf">4.3</span><span class="o">-</span><span class="mi">20031</span><span class="o">-</span><span class="n">FA9732D</span><span class="o">-</span><span class="n">appliance</span><span class="o">.</span><span class="n">iso</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0016</span><span class="p">]</span> <span class="n">Uploading</span> <span class="n">bootstrap</span><span class="o">.</span><span class="n">iso</span> <span class="n">as</span> <span class="n">V1</span><span class="o">.</span><span class="mf">4.3</span><span class="o">-</span><span class="mi">20031</span><span class="o">-</span><span class="n">FA9732D</span><span class="o">-</span><span class="n">bootstrap</span><span class="o">.</span><span class="n">iso</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0023</span><span class="p">]</span> <span class="n">Switching</span> <span class="n">appliance</span> <span class="n">iso</span> <span class="n">to</span> <span class="p">[</span><span class="n">lab</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="mi">001</span><span class="p">]</span> <span class="n">vch</span><span class="o">-</span><span class="n">elk</span><span class="o">/</span><span class="n">V1</span><span class="o">.</span><span class="mf">4.3</span><span class="o">-</span><span class="mi">20031</span><span class="o">-</span><span class="n">FA9732D</span><span class="o">-</span><span class="n">appliance</span><span class="o">.</span><span class="n">iso</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0023</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">VM</span> <span class="n">configuration</span>
+</span></span><span class="line"><span class="cl"><span class="n">WARN</span><span class="p">[</span><span class="mi">0024</span><span class="p">]</span> <span class="n">If</span> <span class="n">ops</span><span class="o">-</span><span class="n">user</span> <span class="p">(</span><span class="n">jarvis</span><span class="err">@</span><span class="n">lab</span><span class="p">)</span> <span class="n">belongs</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Administrators</span> <span class="n">group</span><span class="p">,</span> <span class="n">permissions</span> <span class="n">on</span> <span class="n">some</span> <span class="n">resources</span> <span class="n">might</span> <span class="n">have</span> <span class="n">been</span> <span class="n">restricted</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0025</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="ne">IP</span> <span class="n">information</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0025</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">major</span> <span class="n">appliance</span> <span class="n">components</span> <span class="n">to</span> <span class="n">launch</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0035</span><span class="p">]</span> <span class="n">Obtained</span> <span class="ne">IP</span> <span class="n">address</span> <span class="k">for</span> <span class="n">client</span> <span class="n">interface</span><span class="p">:</span> <span class="s2">&#34;192.168.100.220&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0035</span><span class="p">]</span> <span class="n">Checking</span> <span class="n">VCH</span> <span class="n">connectivity</span> <span class="n">with</span> <span class="n">vSphere</span> <span class="n">target</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0035</span><span class="p">]</span> <span class="n">vSphere</span> <span class="n">API</span> <span class="n">Test</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">lab</span><span class="o">-</span><span class="n">vcsa67</span><span class="o">-</span><span class="mf">001.</span><span class="n">lab</span><span class="o">.</span><span class="n">jarvis</span><span class="o">.</span><span class="n">local</span> <span class="n">vSphere</span> <span class="n">API</span> <span class="n">target</span> <span class="n">responds</span> <span class="n">as</span> <span class="n">expected</span>
+</span></span><span class="line"><span class="cl"><span class="n">INFO</span><span class="p">[</span><span class="mi">0121</span><span class="p">]</span> <span class="n">Completed</span> <span class="n">successfully</span></span></span></code></pre></div></div>
+<p>Version check (<code>docker --tls version</code>) again!</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">Client:
 </span></span><span class="line"><span class="cl"> Version:           18.06.1-ce
 </span></span><span class="line"><span class="cl"> API version:       1.25 <span class="o">(</span>downgraded from 1.38<span class="o">)</span>
 </span></span><span class="line"><span class="cl"> Go version:        go1.10.3
@@ -1344,10 +910,8 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
 </span></span><span class="line"><span class="cl">  Git commit:       fa9732d
 </span></span><span class="line"><span class="cl">  Built:            Fri Sep <span class="m">14</span> 08:14:14 <span class="m">2018</span>
 </span></span><span class="line"><span class="cl">  OS/Arch:          linux/amd64
-</span></span><span class="line"><span class="cl">  Experimental:     <span class="nb">true</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="conclusion">Conclusion</h2>
+</span></span><span class="line"><span class="cl">  Experimental:     true</span></span></code></pre></div></div>
+<h2 id="conclusion">Conclusion</h2>
 <p>We´ve went through each individual phase of the upgrade-process of vSphere Integrated Containers. The upgrade to a newer version is simple and improvements were made in version 1.4.3.</p>
 <a class="lightgallery" href="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg" title="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg" data-thumbnail="/img/posts/201808_post_vic_upgrade/CapturFiles-20181014_113631.jpg">
         <img
@@ -1401,7 +965,7 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
+                <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
             </div></div>
         <div class="post-info-line">
@@ -1409,14 +973,14 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
                             <a class="link-to-markdown" href="/post/upgrade-vmware-vsphere-integrated-containers/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-via="vmw_rguske" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-description="A how-to guide to upgrade VIC from one major version to another."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-description="A how-to guide to upgrade VIC from one major version to another."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/upgrade-vmware-vsphere-integrated-containers/" data-title="Upgrade vSphere Integrated Containers"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">vSphere</a>,&nbsp;<a href="/tags/docker/">Docker</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/docker/">Docker</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -1424,22 +988,20 @@ In this post I´d like to guide you through the upgrade process of <a href="/pos
     <div class="post-nav"><a href="/post/vmware-vsphere-integrated-containers-part-4-docker-run-a-container-vm/" class="prev" rel="prev" title="vSphere Integrated Containers Part IV: docker run a Container-VM"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere Integrated Containers Part IV: docker run a Container-VM</a>
             <a href="/post/youtube-hugo-shortcode-workaround-when-youtube-wont-work/" class="next" rel="next" title="Youtube Hugo-Shortcode workaround - when {{&lt; youtube &gt;}} won´t work">Youtube Hugo-Shortcode workaround - when {{< youtube >}} won´t work<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>

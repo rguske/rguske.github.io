@@ -4,22 +4,31 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To - Robert Guske</title><meta name="Description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."><meta property="og:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" />
-<meta property="og:description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><meta property="og:image" content="https://rguske.github.io/img/avatar2.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-03-13T16:30:46+01:00" />
-<meta property="article:modified_time" content="2023-03-15T13:38:02+01:00" /><meta property="og:site_name" content="Blog Robert Guske" />
+        <title>vSphere with Tanzu Supervisor Services Part I - Introduction and How-To - Blog Robert Guske</title><meta name="Description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."><meta property="og:url" content="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To">
+  <meta property="og:description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-03-13T16:30:46+01:00">
+    <meta property="article:modified_time" content="2023-03-15T13:38:02+01:00">
+    <meta property="article:tag" content="NSX">
+    <meta property="article:tag" content="VMware">
+    <meta property="article:tag" content="Extensibility">
+    <meta property="article:tag" content="CloudNative">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Harbor">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png"/>
-
-<meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"/>
-<meta name="twitter:description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."/>
-<meta name="application-name" content="Robert Guske">
-<meta name="apple-mobile-web-app-title" content="Robert Guske"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="prev" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="stylesheet" href="/css/style.min.f2e58ad4c51b67e41b3305bc4e64cc451d24f30d945a72c3c3b54a9e2406350b.css" integrity="sha256-8uWK1MUbZ+QbMwW8TmTMRR0k8w2UWnLDw7VKniQGNQs="><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To">
+  <meta name="twitter:description" content="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" /><link rel="prev" href="https://rguske.github.io/post/using-windows-smb-shares-in-kubernetes/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -28,24 +37,31 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/"
-        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2253 ,
+        },"genre": "posts","keywords": "NSX, VMware, Extensibility, CloudNative, Kubernetes, Harbor, Contour","wordcount":  2212 ,
         "url": "https:\/\/rguske.github.io\/post\/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to\/","datePublished": "2023-03-13T16:30:46+01:00","dateModified": "2023-03-15T13:38:02+01:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
-            "name": "Robert Guske"},"author": {
+            "name": ""},"author": {
                 "@type": "Person",
                 "name": "Robert Guske"
             },"description": "The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
         <div class="header-title">
-            <a href="/" title="Robert Guske"><span id="id-1" class="typeit"></span></a>
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites"> VMware Microsites </a><a class="menu-item" href="/about/" title="The Author"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -65,7 +81,14 @@
     <div class="header-container">
         <div class="header-wrapper">
             <div class="header-title">
-                <a href="/" title="Robert Guske"><span id="id-2" class="typeit"></span></a>
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
             </div>
             <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
@@ -87,9 +110,8 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="Choose to take either the red pill or the blue pill">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/post/vmware-microsites-you-should-bookmark/" title="VMware Microsites">VMware Microsites</a><a class="menu-item" href="/about/" title="The Author">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
+                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -99,24 +121,29 @@
     </div><main class="main">
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
-            <div class="toc-content always-active" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/security/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Security</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-13">2023-03-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2253 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;11 minutes&nbsp;</div>
-        </div><div class="featured-image"><img
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/supervisor-services-1-cover.jpeg"
         data-srcset="/img/supervisor-services-1-cover.jpeg, /img/supervisor-services-1-cover.jpeg 1.5x, /img/supervisor-services-1-cover.jpeg 2x"
         data-sizes="auto"
         alt="/img/supervisor-services-1-cover.jpeg"
-        title="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster." /></div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>Contents</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part I - Introduction and How-To</h1><div class="post-meta">
+                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/security/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Security</a></span></div>
+                <div class="post-meta-line"><span class="post-publish">
+                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2023-03-13">2023-03-13</time>
+                        </span><span class="post-word-count">
+                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>2212 words
+                        </span><span class="post-reading-time">
+                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>11 minutes
+                        </span></div>
+            </div><div class="details toc" id="toc-static"  data-kept="">
+                    <div class="details-summary toc-title">
+                        <span>Contents</span>
+                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#recap---embed-containers-and-kubernetes-into-vsphere">Recap - Embed Containers and Kubernetes into vSphere</a>
       <ul>
@@ -144,11 +171,11 @@
     <li><a href="#credits">Credits</a></li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><p>To begin with, if you are familiar with vSphere Pods in general, you can skip the first chapter of this post and directly go to the chapter <a href="#supervisor-services" rel="">Supervisor Services</a>.</p>
+                </div><div class="content" id="content"><p>To begin with, if you are familiar with vSphere Pods in general, you can skip the first chapter of this post and directly go to the chapter <a href="#supervisor-services" rel="">Supervisor Services</a>.</p>
 <h2 id="recap---embed-containers-and-kubernetes-into-vsphere">Recap - Embed Containers and Kubernetes into vSphere</h2>
-<p>When VMware <a href="https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html" target="_blank" rel="noopener noreffer ">released vSphere 7 back in 2020</a>, it was announced that under the hood a lot of architectural efforts flowed into VMware&rsquo;s core platform. These <strong>efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens</strong>.</p>
-<p>If you aren&rsquo;t new to the &ldquo;Tanzu-Game&rdquo;, you know that VMware&rsquo;s Kubernetes Runtime <a href="https://tanzu.vmware.com/kubernetes-grid" target="_blank" rel="noopener noreffer ">VMware Tanzu Kubernetes Grid (TKG)</a> allows you to deploy and lifecycle Kubernetes clusters on vSphere. These functionalities aren&rsquo;t implemented in the vSphere management plane (the vCenter Server).</p>
-<p>Instead of, VMware is leveraging the concept of a Kubernetes control plane cluster which in <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer ">vSphere with Tanzu</a> aka TKGS is called a Supervisor Cluster (<em>Figure I &amp; II</em>).</p>
+<p>When VMware <a href="https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html" target="_blank" rel="noopener noreferrer ">released vSphere 7 back in 2020</a>, it was announced that under the hood a lot of architectural efforts flowed into VMware&rsquo;s core platform. These <strong>efforts had to be done in order to embed containers and Kubernetes into vSphere, to unify them with virtual machines as first class citizens</strong>.</p>
+<p>If you aren&rsquo;t new to the &ldquo;Tanzu-Game&rdquo;, you know that VMware&rsquo;s Kubernetes Runtime <a href="https://tanzu.vmware.com/kubernetes-grid" target="_blank" rel="noopener noreferrer ">VMware Tanzu Kubernetes Grid (TKG)</a> allows you to deploy and lifecycle Kubernetes clusters on vSphere. These functionalities aren&rsquo;t implemented in the vSphere management plane (the vCenter Server).</p>
+<p>Instead of, VMware is leveraging the concept of a Kubernetes control plane cluster which in <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu</a> aka TKGS is called a Supervisor Cluster (<em>Figure I &amp; II</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0.png" data-sub-html="<h2>Figure I: Supervisor Control Plane Cluster VMs</h2>">
         <img
             class="lazyload"
@@ -170,7 +197,7 @@
     </a><figcaption class="image-caption">Figure II: <em>Supervisor Overview in vSphere</em></figcaption>
     </figure>
 <h3 id="vsphere-pods">vSphere Pods</h3>
-<p>Besides these terrific new capabilities in vSphere, which is the proper coordination and management of resources such as e.g. Tanzu Kubernetes Clusters (TKC), it was also introduced to have Kubernetes Pods running natively on vSphere alongside Virtual Machines. This feature was introduced as <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreffer ">vSphere (Native) Pods</a>.</p>
+<p>Besides these terrific new capabilities in vSphere, which is the proper coordination and management of resources such as e.g. Tanzu Kubernetes Clusters (TKC), it was also introduced to have Kubernetes Pods running natively on vSphere alongside Virtual Machines. This feature was introduced as <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreferrer ">vSphere (Native) Pods</a>.</p>
 <p>In order to have Pods running natively on vSphere, it was necessary to extend the ESXi Hypervisor with Kubernetes Worker Node characteristics. This is implemented by installing an additional process via a <em>VMware Installation Bundle (VIB)</em> named the <em>Spherelet</em>.</p>
 <div class="details admonition info open">
         <div class="details-summary admonition-title">
@@ -178,7 +205,7 @@
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>It is a kubelet that is ported natively to ESXi and allows the ESXi host to become part of the Kubernetes cluster.</p>
-<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreffer ">VMware Docs - Supervisor Architecture</a></p>
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreferrer ">VMware Docs - Supervisor Architecture</a></p>
 </div>
         </div>
     </div>
@@ -189,26 +216,25 @@
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>CRX is similar to a VM from the perspective of Hostd and vCenter Server. CRX includes a paravirtualized Linux kernel that works together with the hypervisor.</p>
-<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreffer ">VMware Docs - Supervisor Architecture</a></p>
+<p><em>Source:</em> <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-3E4E6039-BD24-4C40-8575-5AA0EECBBBEC.html" target="_blank" rel="noopener noreferrer ">VMware Docs - Supervisor Architecture</a></p>
 </div>
         </div>
     </div>
-<p>Back in 2020, <a href="https://frankdenneman.nl/" target="_blank" rel="noopener noreffer ">Frank Denneman</a> has written a deep-dive post about the <a href="https://frankdenneman.nl/2020/03/06/initial-placement-of-a-vsphere-native-pod/" target="_blank" rel="noopener noreffer ">&ldquo;Initial Placement of a vSphere Pod&rdquo;</a> which introduces the overall concept quiet comprehensively.</p>
-<p>Furthermore, the following by <a href="https://vinothecloudone.medium.com/" target="_blank" rel="noopener noreffer ">Alex Vino</a> is also pretty well written. <a href="https://vinothecloudone.medium.com/vsphere-pod-deep-dive-into-use-case-patterns-part-1-84888beff301" target="_blank" rel="noopener noreffer ">vSphere Pod: Deep Dive into Use Case Patterns — Part-1</a></p>
+<p>Back in 2020, <a href="https://frankdenneman.nl/" target="_blank" rel="noopener noreferrer ">Frank Denneman</a> has written a deep-dive post about the <a href="https://frankdenneman.nl/2020/03/06/initial-placement-of-a-vsphere-native-pod/" target="_blank" rel="noopener noreferrer ">&ldquo;Initial Placement of a vSphere Pod&rdquo;</a> which introduces the overall concept quiet comprehensively.</p>
+<p>Furthermore, the following by <a href="https://vinothecloudone.medium.com/" target="_blank" rel="noopener noreferrer ">Alex Vino</a> is also pretty well written. <a href="https://vinothecloudone.medium.com/vsphere-pod-deep-dive-into-use-case-patterns-part-1-84888beff301" target="_blank" rel="noopener noreferrer ">vSphere Pod: Deep Dive into Use Case Patterns — Part-1</a></p>
 <h3 id="a-requirement-to-run-vsphere-pods">A Requirement to run vSphere Pods</h3>
 <p>There&rsquo;s one small thing that is currently (vSphere 7.0 Ux and 8.0) still a requirement for having vSphere Pods running on vSphere. vSphere Pods can only be used in combination with VMware NSX.</p>
 <blockquote>
-<p>Didn&rsquo;t he just say <em>&quot;[&hellip;] one small thing [&hellip;]&quot;</em> ?</p>
-</blockquote>
+<p>Didn&rsquo;t he just say <em>&quot;[&hellip;] one small thing [&hellip;]&quot;</em> ?</p></blockquote>
 <p>Okay, the dependency on NSX isn&rsquo;t really a small thing but please keep in mind that having NSX in place is a huge valuable addition that provides additional networking and security capabilities to vSphere environments such as e.g. Micro-Segmentation, Service-Insertion or Multi-Cloud connectivity.</p>
-<p>However, a requirement can be a <strong>subject to change</strong>, can&rsquo;t it? 😉 &hellip;</p>
+<p>However, a requirement can be a <strong>subject to change</strong>, can&rsquo;t it? &#x1f609; &hellip;</p>
 <div class="details admonition success open">
         <div class="details-summary admonition-title">
             <i class="icon fas fa-check-circle fa-fw" aria-hidden="true"></i>Update March 2023, 15th<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
         </div>
         <div class="details-content">
             <div class="admonition-content"><p>The changes on the NSX requirement were announced shortly after I published this article. Now, with vSphere 8 Update 1 the Supervisor Services can be used with the vSphere Distributed Switch.</p>
-<p><em>Source: <a href="https://core.vmware.com/resource/whats-new-vsphere-8-update-1#sec25426-sub4" target="_blank" rel="noopener noreffer ">What&rsquo;s New in vSphere 8 Update 1?</a></em></p>
+<p><em>Source: <a href="https://core.vmware.com/resource/whats-new-vsphere-8-update-1#sec25426-sub4" target="_blank" rel="noopener noreferrer ">What&rsquo;s New in vSphere 8 Update 1?</a></em></p>
 </div>
         </div>
     </div>
@@ -216,8 +242,7 @@
 <p>So, what are Supervisor Services in vSphere with Tanzu and how fits vSphere Pods into the picture?</p>
 <p>In the vSphere Client the following is stated:</p>
 <blockquote>
-<p><em>Supervisor Services is a platform for managing core infrastructure components, such as virtual machines. Application teams are able to deploy instances of Supervisor Services within their own Namespaces using industry standard tools and practices.</em></p>
-</blockquote>
+<p><em>Supervisor Services is a platform for managing core infrastructure components, such as virtual machines. Application teams are able to deploy instances of Supervisor Services within their own Namespaces using industry standard tools and practices.</em></p></blockquote>
 <p>The description is basically saying, that through the Supervisor Services, which are technically vSphere certified Kubernetes operators, it is possible to deploy resources to vSphere Namespaces using a declarative way via the exposed Kubernetes API (e.g. <code>kubectl apply -f resource.yaml</code>).</p>
 <p>Such resources are e.g. Virtual Machines or Tanzu Kubernetes Clusters. The corresponding Supervisor Services for these resources are e.g. the <strong>VM Service</strong> and the <strong>Tanzu Kubernetes Grid Service</strong>.</p>
 <p><em>Figure III</em> below shows the VM Service tile in the Workload Management section from where you can <strong>MANAGE</strong> your Virtual Machine Classes.</p>
@@ -233,7 +258,7 @@
     </figure>
 <p>Hint: These Virtual Machine Classes exists as a Custom Resource on the Supervisor Cluster. Check with e.g. <code>kubectl get virtualmachineclasses -A</code></p>
 <p>From here you can create your own Virtual Machine Classes which e.g. could be equiped with some decent Nvidia GPUs.</p>
-<p>See: <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-8E04AE02-73DA-4B8D-93FE-8019B44B9C54.html" target="_blank" rel="noopener noreffer ">Add PCI Devices to a VM Class in vSphere with Tanzu</a></p>
+<p>See: <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-8E04AE02-73DA-4B8D-93FE-8019B44B9C54.html" target="_blank" rel="noopener noreferrer ">Add PCI Devices to a VM Class in vSphere with Tanzu</a></p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0c.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0c.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_0c.png" data-sub-html="<h2>Figure IV: Create your own VM Class</h2>">
         <img
             class="lazyload"
@@ -246,7 +271,7 @@
     </figure>
 <p>But it&rsquo;s even more. Supervisor Services are also tightly-integrated Independent Software Vendor (ISV) services, which can provide essential shared-services to your workloads. Shared-services like e.g. a Container Image Registry, a Backup &amp; Recovery Service or an Object Store.</p>
 <h3 id="supervisor-services-catalog">Supervisor Services Catalog</h3>
-<p>The Services mentioned last and others are available via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md" target="_blank" rel="noopener noreffer ">Supervisor Services Catalog</a>  <i class='fab fa-github fa-fw'></i> repository.</p>
+<p>The Services mentioned last and others are available via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md" target="_blank" rel="noopener noreferrer ">Supervisor Services Catalog</a>  <i class='fab fa-github fa-fw'></i> repository.</p>
 <p>Included are (March, 10th):</p>
 <ul>
 <li>vSAN Data Persistence Platform (vDPP) Services
@@ -287,7 +312,7 @@
 <p>For the sake of this blog post, I&rsquo;m going to describe first how to deploy the <em>Ingress Controller Service Contour</em>. There are several reasons for this. One is, that this Supervisor Service is required for the <em>Cloud Native Registry Services - Harbor</em>, which is definitely worth checking out and a deployment I&rsquo;m going to describe following the Contour installation.</p>
 <p><strong>Hint:</strong> Both mentioned Supervisor Services are supported on vSphere 8.0 and later.</p>
 <p>Another reason is, that I wanted to have Contour serving as an Ingress Controller my applications which are deployed and running as vSphere Pods natively on my vSphere cluster. Part II of this blog series is covering this use case.</p>
-<p>📝 <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></p>
+<p>&#x1f4dd; <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></p>
 <h4 id="add-new-service---contour">Add New Service - Contour</h4>
 <p>In order to add a new Supervisor Service, go to the <em>Workload Management</em> section and click <strong>ADD</strong> on the <strong>Add New Service</strong> tile.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_1.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_1.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_1.png" data-sub-html="<h2>Figure V: Add a New Supervisor Service</h2>">
@@ -300,7 +325,7 @@
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_1.png" />
     </a><figcaption class="image-caption">Figure V: Add a New Supervisor Service</figcaption>
     </figure>
-<p>To register a new service, the download of the Contour Package Manifest (<code>contour.yml</code>) file is necessary. Browse to the Supervisor Catalog till <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#kubernetes-ingress-controller" target="_blank" rel="noopener noreffer ">Kubernetes Ingress Controller</a> and click on <strong>Download latest version</strong>. The download starts automatically.</p>
+<p>To register a new service, the download of the Contour Package Manifest (<code>contour.yml</code>) file is necessary. Browse to the Supervisor Catalog till <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#kubernetes-ingress-controller" target="_blank" rel="noopener noreferrer ">Kubernetes Ingress Controller</a> and click on <strong>Download latest version</strong>. The download starts automatically.</p>
 <p>Furthermore, download the <code>Contour Sample values.yaml</code> file for the desired version as well. The file contains Service/Application specific values. The data is needed for the final installation.</p>
 <p>Next, click on the <strong>UPLOAD</strong> button and select the downloaded <code>contour.yml</code>.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_2.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_2.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_2.png" data-sub-html="<h2>Figure VI: Upload Package Manifest File Contour</h2>">
@@ -349,33 +374,12 @@
     </figure>
 <p>To ultimately kick off the installation, provide the data of the <code>contour-data-values.yml</code> file by copying it and pasting it in the <strong>YAML Service Config</strong> field (<em>Figure X</em>).</p>
 <p>This is the content of the <code>contour-data-values.yaml</code> file:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">contour</span><span class="p">:</span><span class="w">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">contour</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">configFileContents</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">useProxyProtocol</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
@@ -396,10 +400,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pspNames</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">certificates</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l">8760h</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">renewBefore</span><span class="p">:</span><span class="w"> </span><span class="l">360h</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>Nothing fancy, only the basic configuration for Contour. In the <strong>Install Contour on Supervisor</strong> window, select the desired version, the Supervisor and validate the added values for the Service once again.</p>
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">renewBefore</span><span class="p">:</span><span class="w"> </span><span class="l">360h</span></span></span></code></pre></div></div>
+<p>Nothing fancy, only the basic configuration for Contour. In the <strong>Install Contour on Supervisor</strong> window, select the desired version, the Supervisor and validate the added values for the Service once again.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_6.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_6.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_6.png" data-sub-html="<h2>Figure X: Install Contour on Supervisor</h2>">
         <img
             class="lazyload"
@@ -434,28 +436,30 @@
     </a><figcaption class="image-caption">Figure XII: Assigned External IP for Envoy</figcaption>
     </figure>
 <p>This IP address will be used for creating your application DNS A-Records like e.g. shown in <em>Table I</em>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Name</th>
-<th style="text-align:center">Data</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">app1.mydomain.com</td>
-<td style="text-align:center">10.15.8.9</td>
-</tr>
-<tr>
-<td style="text-align:center">app2.mydomain.com</td>
-<td style="text-align:center">10.15.8.9</td>
-</tr>
-<tr>
-<td style="text-align:center">app3.mydomain.com</td>
-<td style="text-align:center">10.15.8.9</td>
-</tr>
-</tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+        <tr>
+            <th style="text-align: center">Name</th>
+            <th style="text-align: center">Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center">app1.mydomain.com</td>
+            <td style="text-align: center">10.15.8.9</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">app2.mydomain.com</td>
+            <td style="text-align: center">10.15.8.9</td>
+        </tr>
+        <tr>
+            <td style="text-align: center">app3.mydomain.com</td>
+            <td style="text-align: center">10.15.8.9</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 <center><i> Table I: Application DNS A-Records </i></center>
 <p>Further deployment specific information can be gathered at the vSphere Namespace as well. For example, if you need to know if any <strong>Persistent Volume Claims</strong> exists, go to the <strong>Storage</strong> section. If you need to know if <strong>Network Policies</strong> are created or which <strong>Endpoints</strong> exists, go to <strong>Network</strong>. If you are interested about <strong>vSphere Pods</strong>, <strong>Deployments</strong>, <strong>Daemon Sets</strong>, <strong>Stateful Sets</strong>, etc. go to <strong>Compute</strong> and select the specific category (<em>Figure XIII</em> &amp; <em>Figure XIV</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_part_1_9b.png" data-sub-html="<h2>Figure XIII: Application Deployment specific Information</h2>">
@@ -482,30 +486,12 @@
 <p>Login with the SSO Domain Administrator credentials using the <code>kubectl vsphere login</code> command.</p>
 <p><code>kubectl vsphere login --insecure-skip-tls-verify --vsphere-username administrator@cpod-nsxv8.az-stc.cloud-garage.net --server=sv1-az1.cpod-nsxv8.az-stc.cloud-garage.net</code></p>
 <p>Verify the deployment:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n svc-contour-domain-c8 get deploy,po,ds,svc
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n svc-contour-domain-c8 get deploy,po,ds,svc
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
 </span></span><span class="line"><span class="cl">deployment.apps/contour   2/2     <span class="m">2</span>            <span class="m">2</span>           53d
@@ -523,10 +509,8 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME              TYPE           CLUSTER-IP    EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
 </span></span><span class="line"><span class="cl">service/contour   ClusterIP      10.96.0.164   &lt;none&gt;        8001/TCP                     53d
-</span></span><span class="line"><span class="cl">service/envoy     LoadBalancer   10.96.2.14    10.15.8.9     80:30077/TCP,443:32173/TCP   53d
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on <strong>Actions</strong> (<em>Figure XV</em>).</p>
+</span></span><span class="line"><span class="cl">service/envoy     LoadBalancer   10.96.2.14    10.15.8.9     80:30077/TCP,443:32173/TCP   53d</span></span></code></pre></div></div>
+<p>The state as well as Day-2 operations of a Service, like e.g. updating or deleting a service, will be done via the Service tile by clicking on <strong>Actions</strong> (<em>Figure XV</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_9.png" data-sub-html="<h2>Figure XV: Lifecycle-Management of a Supervisor Service</h2>">
         <img
             class="lazyload"
@@ -553,7 +537,7 @@
 <h4 id="add-new-service---harbor">Add New Service - Harbor</h4>
 <p>Installing the Harbor Supervisor Service is done by exactly the same way as it is for Contour.</p>
 <p><strong>Reminder:</strong> The Supervisor Service Contour is required for the Harbor Service.</p>
-<p>Download the Package manifest file <code>harbor.yml</code> and the <code>harbor-data-values.yml</code> also via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#cloud-native-registry" target="_blank" rel="noopener noreffer ">Supervisor Catalog repository</a>. Upload the <code>harbor.yml</code> to start with the Service registration.</p>
+<p>Download the Package manifest file <code>harbor.yml</code> and the <code>harbor-data-values.yml</code> also via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md#cloud-native-registry" target="_blank" rel="noopener noreferrer ">Supervisor Catalog repository</a>. Upload the <code>harbor.yml</code> to start with the Service registration.</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_13.png" data-sub-html="<h2>Figure XVII: Upload Package Manifest File for Harbor</h2>">
         <img
             class="lazyload"
@@ -586,7 +570,7 @@
     </a><figcaption class="image-caption">Figure XIX: <em>Install Harbor on Supervisor</em></figcaption>
     </figure>
 <p>If you know both platforms well, vSphere and Kubernetes, following the deployment process and to imagine what happens under the hood is quite exiting, IMO.</p>
-<p><em>Kubernetes Pods - Virtual Machines, Persistent Volumes - VMDKs, Pod Networking - NSX, exposed Services - NSX&hellip;</em> 🤓</p>
+<p><em>Kubernetes Pods - Virtual Machines, Persistent Volumes - VMDKs, Pod Networking - NSX, exposed Services - NSX&hellip;</em> :nerd:</p>
 <figure><a class="lightgallery" href="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" title="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-thumbnail="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_16.png" data-sub-html="<h2>Figure XX: Supervisor Service Harbor Deployment</h2>">
         <img
             class="lazyload"
@@ -608,29 +592,29 @@
             alt="/img/posts/202303_supervisor_services_part_1/202303_supervisor_services_18.png" />
     </a><figcaption class="image-caption">Figure XXI: <em>Accessing the Harbor Portal</em></figcaption>
     </figure>
-<p>Ultimately, you&rsquo;d like to establish trust with the new Harbor instance in order to enable Kubernetes clusters pulling container images from Harbor. See: <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7" target="_blank" rel="noopener noreffer ">Establishing Trust with the Harbor Supervisor Service</a></p>
+<p>Ultimately, you&rsquo;d like to establish trust with the new Harbor instance in order to enable Kubernetes clusters pulling container images from Harbor. See: <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7" target="_blank" rel="noopener noreferrer ">Establishing Trust with the Harbor Supervisor Service</a></p>
 <h2 id="conclusion-supervisor-services">Conclusion Supervisor Services</h2>
 <p>In conclusion, the Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. These teams can consume these services using common tools and approaches, and deploy instances of these services in their own vSphere Namespaces.</p>
 <h2 id="resources">Resources</h2>
 <ul>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreffer ">vSphere with Tanzu</a></li>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreffer ">vSphere (Native) Pods</a></li>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreffer ">What Is a vSphere Pod?</a></li>
-<li><a href="https://frankdenneman.nl/2020/03/06/initial-placement-of-a-vsphere-native-pod/" target="_blank" rel="noopener noreffer ">INITIAL PLACEMENT OF A VSPHERE POD</a></li>
-<li><a href="https://frankdenneman.nl/2020/03/20/scheduling-vsphere-pods/" target="_blank" rel="noopener noreffer ">SCHEDULING VSPHERE PODS</a></li>
-<li><a href="https://vinothecloudone.medium.com/vsphere-pod-deep-dive-into-use-case-patterns-part-1-84888beff301" target="_blank" rel="noopener noreffer ">vSphere Pod: Deep Dive into Use Case Patterns — Part-1</a></li>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreffer ">Managing Supervisor Services with vSphere with Tanzu</a></li>
-<li><a href="https://github.com/vsphere-tmm/Supervisor-Services" target="_blank" rel="noopener noreffer ">Supervisor Services Catalog</a></li>
-<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7" target="_blank" rel="noopener noreffer ">Establishing Trust with the Harbor Supervisor Service</a></li>
-<li><a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-concepts-planning/GUID-70CAF0BB-1722-4526-9CE7-D5C92C15D7D0.html" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreferrer ">vSphere (Native) Pods</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-276F809D-2015-4FC6-92D8-8539D491815E.html#:~:text=A%20vSphere%20Pod%20is%20a,for%20the%20workload%20to%20run." target="_blank" rel="noopener noreferrer ">What Is a vSphere Pod?</a></li>
+<li><a href="https://frankdenneman.nl/2020/03/06/initial-placement-of-a-vsphere-native-pod/" target="_blank" rel="noopener noreferrer ">INITIAL PLACEMENT OF A VSPHERE POD</a></li>
+<li><a href="https://frankdenneman.nl/2020/03/20/scheduling-vsphere-pods/" target="_blank" rel="noopener noreferrer ">SCHEDULING VSPHERE PODS</a></li>
+<li><a href="https://vinothecloudone.medium.com/vsphere-pod-deep-dive-into-use-case-patterns-part-1-84888beff301" target="_blank" rel="noopener noreferrer ">vSphere Pod: Deep Dive into Use Case Patterns — Part-1</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreferrer ">Managing Supervisor Services with vSphere with Tanzu</a></li>
+<li><a href="https://github.com/vsphere-tmm/Supervisor-Services" target="_blank" rel="noopener noreferrer ">Supervisor Services Catalog</a></li>
+<li><a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-EB11DFDE-6ED4-4864-9E60-669F50D64397.html#establishing-trust-between-harbor-and-supervisor-7" target="_blank" rel="noopener noreferrer ">Establishing Trust with the Harbor Supervisor Service</a></li>
+<li><a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreferrer ">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a></li>
 </ul>
 <h2 id="credits">Credits</h2>
-<p>Big <strong>THANKS</strong> to <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> for reviewing this article 🙏</p>
+<p>Big <strong>THANKS</strong> to <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreferrer ">Andreas Marqvardsen</a> for reviewing this article &#x1f64f;</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2023-03-15&nbsp;<a class="git-hash" href="https://github.com/rguske/commit/61723518f7cad6985db47fdb55f32d79bed52779" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 61723518f7cad6985db47fdb55f32d79bed52779: supervisor part 1 additions">
+                <span>Updated on 2023-03-15&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/61723518f7cad6985db47fdb55f32d79bed52779" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 61723518f7cad6985db47fdb55f32d79bed52779: supervisor part 1 additions">
                                     <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>6172351</a></span>
             </div></div>
         <div class="post-info-line">
@@ -638,14 +622,14 @@
                             <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" data-via="vmw_rguske" data-hashtags="NSX,VMware,Extensibility,CloudNative,Kubernetes,Harbor,Contour"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" data-web><i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Blogger" data-sharer="blogger" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" data-description="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."><i class="fab fa-blogger fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-skype fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Trello" data-sharer="trello" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" data-description="The Supervisor Services in vSphere with Tanzu (TKGS) offering a multitude of benefits by e.g. providing a simple and opinionated way to deploy central services to DevOps and AppDev teams. This post introduces the Supervisor Services and the concept behind them as well as how-to install such on a Supervisor Cluster."><i class="fab fa-trello fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To" data-hashtags="NSX,VMware,Extensibility,CloudNative,Kubernetes,Harbor,Contour"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-hashtag="NSX"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" data-title="vSphere with Tanzu Supervisor Services Part I - Introduction and How-To"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/nsx/">NSX</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/contour/">Contour</a></section>
-        <section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/nsx/">NSX</a>, <a href="/tags/vmware/">VMware</a>, <a href="/tags/extensibility/">Extensibility</a>, <a href="/tags/cloudnative/">CloudNative</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/harbor/">Harbor</a>, <a href="/tags/contour/">Contour</a></section>
+        <section class="post-back">
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
@@ -653,22 +637,20 @@
     <div class="post-nav"><a href="/post/using-windows-smb-shares-in-kubernetes/" class="prev" rel="prev" title="Using Windows SMB Shares in Kubernetes"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Using Windows SMB Shares in Kubernetes</a>
             <a href="/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" class="next" rel="next" title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications">vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-<div id="comments"><div id="utterances" class="comment"></div><noscript>
-                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">utterances</a>.
-            </noscript></div></article></div>
+</div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.107.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
                 <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":80},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"","lightTheme":"github-light","repo":"rguske/my-gitalk"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"Robert Guske","id-2":"Robert Guske"},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":0,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.b0df51c2c57145081cc73960e9aa780e6f5f56d06cf4ef0f96da8ce1619d1e12.js" integrity="sha256-sN9RwsVxRQgcxzlg6ap4Dm9fVtBs9O8PltqM4WGdHhI="></script><script type="text/javascript">
-            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
-            gtag('config', 'UA-122353302-1', { 'anonymize_ip': true });
-        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-122353302-1" async></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
 </html>
