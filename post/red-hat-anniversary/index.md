@@ -15,7 +15,7 @@ By reading my anniversary email and inspecting my received virtual puck, I kept 
 
 If we know each other or in case we haven't met yet but you know my blog, you might also know my past with VMware. Leaving VMware wasn't easy at all for me. Feelings-wise, it was a heavy ride in a rollercoaster.
 
-LinkedIn post to my ["THANK YOU VMWARE"](https://www.linkedin.com/posts/robertguske_vmware-vcommunity-grateful-activity-7256685239232606211-d93Y?utm_source=share&utm_medium=member_desktop&rcm=ACoAABwRXeQB4ezoeTMEqEGTf7Rl0JjiBDivw_s).
+I shared my gratitude via this LinkedIn post. - ["THANK YOU VMWARE"](https://www.linkedin.com/posts/robertguske_vmware-vcommunity-grateful-activity-7256685239232606211-d93Y?utm_source=share&utm_medium=member_desktop&rcm=ACoAABwRXeQB4ezoeTMEqEGTf7Rl0JjiBDivw_s).
 
 Evidence of this was reflected in my extremely low level of activity on social media and unfortunately on my blog as well. The more it was important to **feel home again** and find back my motivation.
 
