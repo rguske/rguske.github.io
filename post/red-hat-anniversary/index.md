@@ -9,15 +9,15 @@ See what exciting email just recently found its way into my inbox:
 Congratulations Robert, you’ve been a Red Hatter for one year! Today, we are celebrating your service to Red Hat and dedication to our mission. Your virtual puck is attached. Thank you for contributing to our success and helping to make Red Hat the best place to make a difference together!
 {{< /admonition >}}
 
-## Me being Grateful
+## Me Being Grateful
 
-By reading my anniversary email and inspecting my received virtual puck, I kept holding myself back for a moment and started realizing what a hell of a journey my carreer in tech has been so far (in a positive way).
+By reading my anniversary email and inspecting my received virtual puck, I kept holding myself back for a moment and started realizing what an awesome adventure my carreer in tech has been so far.
 
-If we know each other or in case we haven't met yet but you know my blog, you might also know my past with VMware. Leaving VMware wasn't easy at all for me. Feelings-wise, it was a heavy ride in a rollercoaster.
+If we know each other or in case we don't but you know my blog, you might also know my past with VMware. Leaving VMware wasn't easy at all for me. Feelings-wise, it was a heavy ride in a rollercoaster.
 
 I shared my gratitude via this LinkedIn post. - ["THANK YOU VMWARE"](https://www.linkedin.com/posts/robertguske_vmware-vcommunity-grateful-activity-7256685239232606211-d93Y?utm_source=share&utm_medium=member_desktop&rcm=ACoAABwRXeQB4ezoeTMEqEGTf7Rl0JjiBDivw_s).
 
-Evidence of this was reflected in my extremely low level of activity on social media and unfortunately on my blog as well. The more it was important to **feel home again** and find back my motivation.
+Evidence of this was reflected in my extremely low level of activity on social media and unfortunately on my blog as well. The more it was important to **FEEL HOME AGAIN** and **GET BACK MY MOTIVATION**.
 
 ## Feel Home Again
 
@@ -30,7 +30,7 @@ I just joined Red Hat and my well appreciated manager [Sebastian Faulhaber](http
 
 But there was no need to worry since my dear and brilliant colleague and mentor (during my first year) [Robert Bohne](https://www.linkedin.com/in/robertbohne/) had already a plan in place. I joined the team which is responsible for the project [Cloud Native Robotz Hackathon](https://github.com/cloud-native-robotz-hackathon/) and supported the hands-on day pre Summit Connect. This project is providing a comprehensive and intense hands-on workshop experience in which our customers and the community are learning to train DIY Robotz finding a Red Hat Fedora using AI capabilities such as image recognition.
 
-{{< image src="/img/posts/202512_redhatanniversary/robotz.jpg" caption="Figure I: Red Hat Summit Connect Germany 2024" src-s="/img/posts/202512_redhatanniversary/robotz.jpg" >}}
+{{< image src="/img/posts/202512_redhatanniversary/robotz.jpg" caption="Figure I: Red Hat Summit Connect Germany 2024 - Robo Hackathon" src-s="/img/posts/202512_redhatanniversary/robotz.jpg" >}}
 
 I was very delighted to kick-off the tires quickly and to start helping and contributing to something really, really cool. There are lots of efforts put into this project and the technologies involved are pretty awesome!
 
@@ -46,9 +46,15 @@ One statement that really resonates with me is Red Hat’s belief that "[Open so
 
 Over this past year, I’ve seen how seriously the company lives that purpose. The commitment to open source clearly goes beyond technology, it shapes how teams are formed, how ideas are evaluated, and how decisions are made. There’s a genuine effort to include diverse perspectives and to treat good ideas as something that can come from anywhere, regardless of title or role.
 
-Being on the inside, you really feel that connection between upstream communities, customers, and internal teams, it’s a loop of [feedback, contribution, and collaboration](https://issues.redhat.com/secure/BrowseProjects.jspa) that keeps things honest and innovative. I’ve been encouraged to speak up, challenge assumptions, and share my ideas even when I’m the “new person in the room”. At the same time, people are incredibly generous with their knowledge. Documentation, internal discussions, and e.g. [roadmap content ("What's Next")](https://www.youtube.com/@OpenShift) are shared widely, so everyone can learn and understand the bigger picture.
+Being on the inside, you really feel that connection between upstream communities, customers, and internal teams, it’s a loop of [feedback, contribution, and collaboration](https://issues.redhat.com/secure/BrowseProjects.jspa) that keeps things honest and innovative.
 
-## Community is Key
+Product management and engineering are approachable and it indeed feels like they are just a door away. Collaboration and the desire to improve our solutions are practiced and valued by the field-teams and also by the business units. Let me provide you with an example which stood out for me specifically.
+
+Kubernetes wasn't intentionally build to run stateful legacy workload like virtual machines. The popular project [KubeVirt](https://kubevirt.io/) changed this. Red Hat itself has a long [history with virtualization](https://www.redhat.com/en/blog/red-hats-virtualization-journey-innovation-evolving-landscape) already (KVM, QEMU, RHV, OpenStack) but I think the commitment to really be a major player in the Hypervisor-game was never that strong.
+
+However, this still means a lot of work to do. There are new platform personas, new architectural and also workload (vm) specific requirements to address. Kubernetes is complex and our work is to abstract this complexity e.g. via a user-friendly and intuitive GUI, the OpenShift Web Console. A lot of this is already in place, others still needs to be figured out. What really blew me away in this context is the speed from feedback to implementation. I'm in regular contact with product management and engineering due to my  experience in this area and this collaboration just feels great.
+
+## Community Is Key
 
 I'm of the opinion that building a broad, healthy and diverse community is very important for almost every tech-company. I was always trying to fullfil the role of being an ambassador for such communities and executed this at my past employers with passion. The more it made me very happy joining the team which is responsible for the [OpenShift Anwender](https://www.openshift-anwender.de/) community here in Germany.
 
