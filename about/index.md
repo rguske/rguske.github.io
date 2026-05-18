@@ -3,25 +3,23 @@
 
 ## Welcome to Robert Guske's blog
 
-{{< image src="/img/about/rguske_2.png" src-s="/img/about/rguske_2.png" width="500" >}}
+{{< image src="/img/about/profile-pic-3.jpeg" src-s="/img/about/profile-pic-3.jpeg" width="500" >}}
 
 ## Contact
 
 - <i class="far fa-envelope fa-fw"></i> [Mail](mailto:robert.guske@gmail.com)
 - <i class="fab fa-linkedin fa-fw"></i><a href="https://www.linkedin.com/in/robert-guske-830853111/" target="_blank"> Robert Guske</a>
-- <i class="fab fa-twitter fa-fw"></i><a href="https://twitter.com/vmw_rguske" target="_blank"> @vmw_rguske</a>
 - <i class='fab fa-github fa-fw'></i><a href="https://github.com/rguske" target="_blank"> rguske</a>
-- vExpert: [#3288](https://vexpert.vmware.com/directory/3288)
 
 ```yaml
 apiVersion: v1
-kind: about
+kind: About
 metadata:
   name: Robert Guske
   region: EMEA
   country: Germany
-  company: VMware Global, Inc.
-  businessUnit: Modern Applications & Management Business Group (MAMBG)
+  company: Red Hat GmbH
+  businessUnit: OpenShift Tech Sales
 replicas: 2
 
 ---
@@ -29,15 +27,15 @@ replicas: 2
 apiVersion: v1
 kind: Role
 metadata:
-  name: Lead Tanzu Emerging Solutions Engineer
+  name: Senior Specialist Solution Architect, OpenShift - Cross Segment
   programs:
-    vmware/internally: Office of the CTO, Ambassador
-    vmware/externally: vExpert
+    redhat/externally: OpenShift Anwender (user group) - Team Member Organization
 subject:
   - kind: Experise
     args:
+      - Infrastructure
+      - Platforms
       - Cloud Native Technologies
-      - Application Platforms
       - Strategic & Technical Guidance
       - Event Speaker
       - Content Creator
@@ -45,27 +43,11 @@ subject:
 
 ## Professional Information
 
-Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. He's a tech enthusiast who's actively engaged in shaping the future of cloud-native tech through his commitment and passion for the principles of collaboration and innovation that drive the community forward.
+I'm an accomplished, hands-on, & well informed IT professional with 20+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. I'm a tech enthusiast and actively engaged in shaping the future of cloud-native tech through my commitment and passion for the principles of collaboration and innovation that drive the community forward.
 
-In his current role as a Lead Tanzu Emergings Solution Engineer within VMware’s Modern Applications & Management Business Group (MAMBG), he’s supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platforms to run such modern applications (Microservices).
+In my current role as a Senior Specialist Solution Architect for Red Hat's enterprise Kubernetes platform OpenShift, I'm supporting clients and organizations adopting new technologies to accomplish business goals and IT objectives, which are mainly oriented towards application modernization as well as on the platform to run such modern applications (Microservices).
 
-Robert is also part of VMware's [Office of the CTO Ambassador](https://octo.vmware.com/author/ctoa/) program and helps to ensure an active collaboration between VMware's R&D and field organizations as well as customers across Europe.
-
-## Open-Source Contributions
-
-He's very keen on cloud native technologies and an active team-member and contributor of the open source project VMware Event Broker Appliance (https://vmweventbroker.io). This project has the intention to reveal the hidden potential of events in VMware's SDDC by providing event-driven interactions with VMware solutions like e.g. vSphere.
-
-<center> {{< image src="/img/about/veba_logo_stacked.png" src-s="/img/about/veba_logo_stacked.png" caption="Official VEBA Logo" >}} </center>
-
-- Homepage: https://vmweventbroker.io
-- <i class='fab fa-github fa-fw'></i> Repository: https://github.com/vmware-samples/vcenter-event-broker-appliance/
-- VEBA @ vBrownBag: https://www.youtube.com/watch?v=tOjp5_qn-Fg&feature=youtu.be
-- VEBA related articles written by Robert: https://rguske.github.io/tags/veba/
-- VEBA related articles written by William Lam:  https://williamlam.com/?s=veba
-
-## Achievements
-
-Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.linkedin.com/in/robert-guske-830853111/) profile.
+I'm also part of the German core team behind Red Hat’s [OpenShift Anwender](https://www.openshift-anwender.de/) community, where I contribute to organizing impactful events and actively foster collaboration between Red Hat’s R&D and field organizations across Europe.
 
 ### Certifications
 
@@ -75,19 +57,19 @@ Details via Robert's [Linked<i class="fab fa-linkedin fa-fw"></i>](https://www.l
 
 ---
 
-{{< image src="/img/about/VMware_cert_cna_master_2022.png" src-s="/img/about/VMware_cert_cna_master_2022.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_cert_cna_master_2022.png" src-s="/img/about/VMware_cert_cna_master_2022.png" height="150" width="150" >}}
 
-{{< image src="/img/about/VMware_cert_p_AppModern_2022.png" src-s="/img/about/VMware_cert_p_AppModern_2022.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_cert_p_AppModern_2022.png" src-s="/img/about/VMware_cert_p_AppModern_2022.png" height="150" width="150" >}}
 
-{{< image src="/img/about/VMware_cert_tanzu_specialist.png" src-s="/img/about/VMware_cert_tanzu_specialist.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_cert_tanzu_specialist.png" src-s="/img/about/VMware_cert_tanzu_specialist.png" height="150" width="150" >}}
 
-{{< image src="/img/about/VMware_cert_dcv_2021.png" src-s="/img/about/VMware_cert_dcv_2021.png" height="200" width="200" >}}
+{{< image src="/img/about/VMware_cert_dcv_2021.png" src-s="/img/about/VMware_cert_dcv_2021.png" height="150" width="150" >}}
 
 ### VMware vExpert Program
 
-{{< image src="/img/about/vmware-vexpert.png" src-s="/img/about/vmware-vexpert.png" >}}
+{{< image src="/img/about/vmware-vexpert.png" src-s="/img/about/vmware-vexpert.png" height="200" width="200" >}}
 
-**Status**: Active 2019 - 2022
+**Status**: Inactive 2019 - 2022
 
 **vExpert Directory**: [#3288](https://vexpert.vmware.com/directory/3288)
 
@@ -97,19 +79,43 @@ Acknowledgement by sharing passion and gained experience with the community.
 The annual VMware vExpert title is given to individuals who have significantly contributed to the community of VMware users over the past year. The title is awarded to individuals (not employers) for their commitment to sharing their knowledge and passion for VMware technology above and beyond their job requirements.
 {{< /admonition >}}
 
-<img src="https://vexpert.vmware.com/directory/3288/vexpert-badge-stars.png" width="256" alt="vExpert Badge" title="vExpert Badge" />
-
 ### vExpert Subprograms
 
-{{< image src="/img/about/vexpert_modernapps_2022.jpg" src-s="/img/about/vexpert_modernapps_2022.jpg" height="200" width="300" >}}
+{{< image src="/img/about/vexpert_modernapps_2022.jpg" src-s="/img/about/vexpert_modernapps_2022.jpg" height="100" width="200" >}}
 
-{{< image src="/img/about/vexpert_avi_2022.png" src-s="/img/about/vexpert_avi_2022.png" height="200" width="300" >}}
+{{< image src="/img/about/vexpert_avi_2022.png" src-s="/img/about/vexpert_avi_2022.png" height="100" width="200" >}}
 
-{{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="200" width="300" >}}
+{{< image src="/img/about/vexpert_modernapps_2021.jpg" src-s="/img/about/vexpert_modernapps_2021.jpg" height="100" width="200" >}}
 
-{{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="200" width="300" >}}
+{{< image src="/img/about/vexpert_modernapps_2020.jpg" src-s="/img/about/vexpert_modernapps_2020.jpg" height="100" width="200" >}}
 
 ## Public Events - Speaking, Demoing, Staff and Initiatives
+
+## 2026
+
+### KubeCon 2026 Europe
+
+| **Activity @** | **Duty** | **Evidence** |
+|:---: | :---: | :---:|
+| **BOOTH STAFF at KubeCon 2026 Europe** | Being a representitive at the Red Hat booth to present the *Virtualization* capabilities and vision. | [LINKEDIN POST](https://www.linkedin.com/posts/robertguske_kubecon-redhat-openshift-activity-7443023291335966720-maW-?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAABwRXeQB4ezoeTMEqEGTf7Rl0JjiBDivw_s) |
+
+## 2025
+
+### vOpenShift Anwendertreffen Q4-2025
+
+| **Title** | **Link** |
+|:---: | :---: | :---:|
+| *Event Driven Automation mit Ansible oder OpenShift Serverless*. | [YOUTUBE](https://youtu.be/LiKHldfL9Ew?si=F4xyCK-DszTSKB6V) |
+
+<center> {{< youtube LiKHldfL9Ew >}} </center>
+
+### OpenShift Anwendertreffen Q3-2025
+
+| **Title** | **Link** |
+|:---: | :---: | :---:|
+| *Einführung in Red Hat OpenShift (2025)*. | [YOUTUBE](https://youtu.be/47buibRbuHs?si=8m90Be2VgjNligLb) |
+
+<center> {{< youtube 47buibRbuHs >}} </center>
 
 ## 2023
 
@@ -117,7 +123,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **MAPB1264BCN** | *Get Started with Containers, Kubernetes and VMware Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1684138787121001fwFz&videoId=6340723571112) |
+| **MAPB1264BCN** | *Get Started with Containers, Kubernetes and VMware Tanzu*. | [EXPLORE VIDOE LIBRARY](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1684138787121001fwFz&videoId=6340723571112) |
 
 <center> {{< tweet user="vmw_rguske" id="1724112422066176159" >}} </center>
 
@@ -135,8 +141,8 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
-| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [Explore Video Library](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112) |
+| **OSB2534EUR** | *Unlocking the Hidden Potential of Event-Driven Automation for VMware Partners*. | [VIDOE LIBRARY](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=16559345685980015XE7&videoId=6315208827112) |
+| **KUBT2977EUR** | *Get Started with Containers, Kubernetes, and Tanzu*. | [VIDOE LIBRARY](https://www.vmware.com/explore/video-library/video-landing.html?sessionid=1663325832688001Axf2&videoId=6315162676112) |
 
 <center> {{< tweet user="vmw_rguske" id="1592138082618609664" >}} </center>
 
@@ -144,7 +150,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **Breakout** | *VMware Tanzu for Kubernetes Operations - A DevSecOps roleplay*. | Link to the [Agenda](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
+| **Breakout** | *VMware Tanzu for Kubernetes Operations - A DevSecOps roleplay*. | Link to the [AGENDA](https://my.vmug.com/s/community-event?id=a1Y4x00000027nEEAQ#/Agenda) |
 
 <center> {{< tweet user="raimes" id="1522215713674436615" >}} </center>
 
@@ -154,7 +160,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **CODE2762** | *DIY Deployment of Event-Driven Automation in vSphere Environments* | [VMworld Video Library](https://youtu.be/ieUqfir5Oag) |
+| **CODE2762** | *DIY Deployment of Event-Driven Automation in vSphere Environments* | [VIDEO LIBRARY](https://youtu.be/ieUqfir5Oag) |
 
 <center> {{< youtube ieUqfir5Oag >}} </center>
 
@@ -170,7 +176,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **Breakout** | *Event-Diven Automation with the VMware Event Broker Appliance - Reloaded* | Link to the [Agenda](https://www.vmug.com/events/all-events/) |
+| **Breakout** | *Event-Diven Automation with the VMware Event Broker Appliance - Reloaded* | Link to the [AGENDA](https://www.vmug.com/events/all-events/) |
 
 <center> {{< tweet user="virtMark" id="1338794413103976448" >}} </center>
 
@@ -178,7 +184,7 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 | **Breakout** | **Title** | **Link** |
 |:---: | :---: | :---:|
-| **Breakout** | *Event-Driven interactions with vSphere using Functions as a Service* | Link to the [Agenda](https://www.vmug.com/events/all-events/) |
+| **Breakout** | *Event-Driven interactions with vSphere using Functions as a Service* | Link to the [AGENDA](https://www.vmug.com/events/all-events/) |
 
 <center> {{< tweet user="bbrundert" id="1131196019243442178" >}} </center>
 
@@ -224,6 +230,6 @@ Providing conference attendees a unique Hands-on Labs experience was part of his
 
 | **Activity @** | **Outcome** | **Evidence** |
 |:---: | :---: | :---:|
-| **Bechtle IT Forum Nord, Hamburg** | **SPEAKER** - The IT Forum Nord is a customer facing event hosted by the Bechtle IT Systemhaus Hamburg GmbH. Employed as a Datacenter Consultant at this time, he presented on the topic *Hyperconverged Solutions by Hewlett Packard Enterprise*. | [Link to the customer invitation ](https://bit.ly/32gBxfW) |
+| **Bechtle IT Forum Nord, Hamburg** | **SPEAKER** - The IT Forum Nord is a customer facing event hosted by the Bechtle IT Systemhaus Hamburg GmbH. Employed as a Datacenter Consultant at this time, he presented on the topic *Hyperconverged Solutions by Hewlett Packard Enterprise*. | [AGENDA](https://bit.ly/32gBxfW) |
 
 {{< image src="/img/about/bechtle_it_forum.jpg" src-s="/img/about/bechtle_it_forum.jpg" caption="Speaker - Bechtle IT Forum Nord 2016" width="550" >}}
