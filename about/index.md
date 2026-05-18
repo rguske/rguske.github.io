@@ -43,8 +43,6 @@ subject:
       - Content Creator
 ```
 
-{{< mapbox lng=9.9938316 lat=53.5396594 marked=false zoom=11 light-style="mapbox://styles/mapbox/navigation-preview-day-v4" dark-style="mapbox://styles/mapbox/navigation-preview-night-v4" >}}
-
 ## Professional Information
 
 Robert Guske is an accomplished, hands-on, & well informed IT professional with 15+ years of experience in providing strategic guidance regarding IT technology and infrastructural enhancements. He's a tech enthusiast who's actively engaged in shaping the future of cloud-native tech through his commitment and passion for the principles of collaboration and innovation that drive the community forward.
