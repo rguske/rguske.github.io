@@ -26,7 +26,8 @@
   <meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures">
   <meta name="twitter:description" content="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="next" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="next" href="https://rguske.github.io/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -46,7 +47,18 @@
             },"description": "In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -61,19 +73,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -98,20 +110,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -122,28 +135,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder" aria-hidden="true"></i>Automation</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2023-07-15">2023-07-15</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;4533 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;22 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/ova-vm-service-cover.png"
         data-srcset="/img/ova-vm-service-cover.png, /img/ova-vm-service-cover.png 1.5x, /img/ova-vm-service-cover.png 2x"
         data-sizes="auto"
         alt="/img/ova-vm-service-cover.png"
-        title="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a>&nbsp;<a href="/categories/automation/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Automation</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2023-07-15">2023-07-15</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>4533 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>22 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="In this blog post, I will dive into the Virtual Machine Service of vSphere with Tanzu, exploring its capabilities and how it could be the missing wrench in your toolbox to support the rollout of virtual machines in a DevOps fashion. Furthermore, I’ve created an example application which will run on a Tanzu Kubernetes Cluster and which will write example data into a PostgreSQL DB deployed as an appliance using the Virtual Machine Service." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#hybrid-application-architectures">Hybrid Application Architectures</a></li>
     <li><a href="#vsphere-with-tanzu-supervisor-services-throwback">vSphere with Tanzu Supervisor Services Throwback</a></li>
@@ -183,7 +191,7 @@
     </li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><h2 id="hybrid-application-architectures">Hybrid Application Architectures</h2>
+            </div><div class="content" id="content"><h2 id="hybrid-application-architectures">Hybrid Application Architectures</h2>
 <p>As technology advances at a rapid pace, the landscape of application development continues to evolve. The demand for agility, scalability, and cost-effectiveness has given rise to a new breed of architectures that seamlessly integrate modern cloud-native principles with established traditional workloads. One such paradigm that has gained significant traction is the hybrid application architecture, which combines the power of service-oriented architectures (SOA) with the reliability and versatility of virtual machines (VMs).</p>
 <p>Service-oriented architectures have revolutionized the way applications are designed and deployed. By breaking down the complexity of an application into smaller chunks, loosely coupled services, SOAs enables organizations to achieve better modularity, reusability, and interoperability. These services, often encapsulated as microservices, communicate with each other through well-defined APIs.</p>
 <p>Traditional workloads, often hosted on virtual machines (VMs) are designed to mostly function in on-premises or legacy environments. These workloads might include databases, ERP systems or similar specific applications which are not easily to containerize or to be refactored.</p>
@@ -210,49 +218,49 @@
     </a><figcaption class="image-caption">Figure I: Hybrid Application Architecture</figcaption>
     </figure>
 <h2 id="vsphere-with-tanzu-supervisor-services-throwback">vSphere with Tanzu Supervisor Services Throwback</h2>
-<p>As described in articles before like <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreferrer ">HERE</a>, <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreferrer ">HERE</a>, and <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreferrer ">HERE</a>, vSphere with Tanzu is supercharging the vSphere platform with Kubernetes power.</p>
+<p>As described in articles before like <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">HERE</a>, <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">HERE</a>, and <a href="https://rguske.github.io/post/vsphere-7-with-kubernetes-supercharged-helm-harbor-tkg/" target="_blank" rel="noopener noreffer ">HERE</a>, vSphere with Tanzu is supercharging the vSphere platform with Kubernetes power.</p>
 <p>Supervisor Services in vSphere with Tanzu enabling modern Platform/DevOps teams to deploy and manage Tanzu Kubernetes Clusters (Tanzu Kubernetes Grid Service), vSphere Pods (vSphere Pod Service - pods natively running on the ESXi) and also <strong>virtual machines</strong> (VM Service).</p>
 <p>All mentioned resources can be deployed in a declaritive way using the exposed Kubernetes API of the Supervisor Cluster.</p>
 <h2 id="virtual-machine-service-to-deploy-virtual-appliances">Virtual Machine Service to deploy Virtual Appliances</h2>
-<p>Shipping virtual machines in a ready-to-use single file fashion is done by the Open Virtual Appliance (OVA) format. Well known and adopted by customers. The purpose of an OVA is to provide a single file distribution which contains packaged files like <code>.ovf</code>, <code>.vmdk</code> or <code>.nvram</code> of which a virtual appliance is made of. A virtual appliance could be the vSphere control-plane <a href="https://www.vmware.com/products/vcenter.html" target="_blank" rel="noopener noreferrer ">vCenter Server</a> or e.g. the VMware Fling <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreferrer ">VMware Event Broker Appliance - VEBA</a>.</p>
-<p>The Virtual Machine Service was <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-vcenter-server-7-vsphere-with-tanzu-release-notes.html#wn04272021" target="_blank" rel="noopener noreferrer ">initially introduced</a> with vSphere 7 U2a. It allows users to deploy and manage virtual machines using Kubernetes standard APIs. In order to provide these functionalities, the <a href="https://github.com/vmware-tanzu/vm-operator" target="_blank" rel="noopener noreferrer ">Virtual Machine Operator</a>, open-sourced by VMware, had to be developed and integrated in vSphere.</p>
+<p>Shipping virtual machines in a ready-to-use single file fashion is done by the Open Virtual Appliance (OVA) format. Well known and adopted by customers. The purpose of an OVA is to provide a single file distribution which contains packaged files like <code>.ovf</code>, <code>.vmdk</code> or <code>.nvram</code> of which a virtual appliance is made of. A virtual appliance could be the vSphere control-plane <a href="https://www.vmware.com/products/vcenter.html" target="_blank" rel="noopener noreffer ">vCenter Server</a> or e.g. the VMware Fling <a href="https://vmweventbroker.io/" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance - VEBA</a>.</p>
+<p>The Virtual Machine Service was <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-vcenter-server-7-vsphere-with-tanzu-release-notes.html#wn04272021" target="_blank" rel="noopener noreffer ">initially introduced</a> with vSphere 7 U2a. It allows users to deploy and manage virtual machines using Kubernetes standard APIs. In order to provide these functionalities, the <a href="https://github.com/vmware-tanzu/vm-operator" target="_blank" rel="noopener noreffer ">Virtual Machine Operator</a>, open-sourced by VMware, had to be developed and integrated in vSphere.</p>
 <p>If you&rsquo;re touching this exciting technology for the first time, you might like to start reading one of the posts below, since I will focus only on the latest feature additions of the VM Service in this post.</p>
 <p>Level 100:</p>
 <ul>
-<li><a href="https://medium.com/analytics-vidhya/the-new-modern-workload-on-vsphere-fed63d57ff8d" target="_blank" rel="noopener noreferrer ">The new modern Workload on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreferrer ">Navneet Verma</a></li>
-<li><a href="https://blogs.vmware.com/vsphere/2021/04/introducing-the-vsphere-virtual-machine-service.html" target="_blank" rel="noopener noreferrer ">Introducing the vSphere Virtual Machine Service</a> by <a href="https://www.linkedin.com/in/glensimon/" target="_blank" rel="noopener noreferrer ">Glen Simon</a></li>
+<li><a href="https://medium.com/analytics-vidhya/the-new-modern-workload-on-vsphere-fed63d57ff8d" target="_blank" rel="noopener noreffer ">The new modern Workload on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreffer ">Navneet Verma</a></li>
+<li><a href="https://blogs.vmware.com/vsphere/2021/04/introducing-the-vsphere-virtual-machine-service.html" target="_blank" rel="noopener noreffer ">Introducing the vSphere Virtual Machine Service</a> by <a href="https://www.linkedin.com/in/glensimon/" target="_blank" rel="noopener noreffer ">Glen Simon</a></li>
 </ul>
 <p>Level 200/300:</p>
 <ul>
-<li><a href="https://penso.io/2021/04/26/the-future-of-vms-is-kubernetes/" target="_blank" rel="noopener noreferrer ">The future of VM’s is Kubernetes</a> by <a href="https://www.linkedin.com/in/openso/" target="_blank" rel="noopener noreferrer ">Oren Penso</a></li>
-<li><a href="https://williamlam.com/2021/05/exploring-the-new-vsphere-with-tanzu-vm-service-with-nested-esxi.html" target="_blank" rel="noopener noreferrer ">Exploring the new vSphere with Tanzu VM Service with Nested ESXi</a> by <a href="https://www.linkedin.com/in/lamwilliam/" target="_blank" rel="noopener noreferrer ">William Lam</a></li>
-<li><a href="https://medium.com/analytics-vidhya/installing-harbor-using-vm-operator-on-vsphere-7bf69036f67c" target="_blank" rel="noopener noreferrer ">Installing Harbor using VM Operator on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreferrer ">Navneet Verma</a></li>
-<li><a href="https://core.vmware.com/blog/introducing-virtual-machine-provisioning-kubernetes-vm-service" target="_blank" rel="noopener noreferrer ">Introducing Virtual Machine Provisioning, via Kubernetes with VM Service</a> by <a href="https://www.linkedin.com/in/mylesgray/" target="_blank" rel="noopener noreferrer ">Myles Gray</a>.</li>
+<li><a href="https://penso.io/2021/04/26/the-future-of-vms-is-kubernetes/" target="_blank" rel="noopener noreffer ">The future of VM’s is Kubernetes</a> by <a href="https://www.linkedin.com/in/openso/" target="_blank" rel="noopener noreffer ">Oren Penso</a></li>
+<li><a href="https://williamlam.com/2021/05/exploring-the-new-vsphere-with-tanzu-vm-service-with-nested-esxi.html" target="_blank" rel="noopener noreffer ">Exploring the new vSphere with Tanzu VM Service with Nested ESXi</a> by <a href="https://www.linkedin.com/in/lamwilliam/" target="_blank" rel="noopener noreffer ">William Lam</a></li>
+<li><a href="https://medium.com/analytics-vidhya/installing-harbor-using-vm-operator-on-vsphere-7bf69036f67c" target="_blank" rel="noopener noreffer ">Installing Harbor using VM Operator on vSphere</a> by <a href="https://www.linkedin.com/in/navneet-verma/" target="_blank" rel="noopener noreffer ">Navneet Verma</a></li>
+<li><a href="https://core.vmware.com/blog/introducing-virtual-machine-provisioning-kubernetes-vm-service" target="_blank" rel="noopener noreffer ">Introducing Virtual Machine Provisioning, via Kubernetes with VM Service</a> by <a href="https://www.linkedin.com/in/mylesgray/" target="_blank" rel="noopener noreffer ">Myles Gray</a>.</li>
 </ul>
 <h3 id="vsphere-8-update-1-puts-vm-service-on-steriods">vSphere 8 Update 1 puts VM Service on Steriods</h3>
-<p>Initially, it was only possible to use the by VMware provided virtual machine images for Ubuntu and CentOS. Both are downloadable via the VMware Marketplace <a href="https://marketplace.cloud.vmware.com/services?search=VM%20Service%20Image%20for" target="_blank" rel="noopener noreferrer ">HERE</a>. This limitation is documented on VMware Docs:</p>
+<p>Initially, it was only possible to use the by VMware provided virtual machine images for Ubuntu and CentOS. Both are downloadable via the VMware Marketplace <a href="https://marketplace.cloud.vmware.com/services?search=VM%20Service%20Image%20for" target="_blank" rel="noopener noreffer ">HERE</a>. This limitation is documented on VMware Docs:</p>
 <div class="details admonition note open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Limitations pre-vSphere 8 U1<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">VM Service supports a limited number of VM images and guest OSes. Compatible VM images appear on VMware Marketplace as OVFs​.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>Limitations pre-vSphere 8 U1<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">VM Service supports a limited number of VM images and guest OSes. Compatible VM images appear on VMware Marketplace as OVFs​.</div>
+    </div>
+</div>
 <p>vSphere 8 U1 now unleashes the full potential of Virtual Machine Service.</p>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>VM Service 2.0<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">You can now use CloudInit to <strong>customize any Linux image</strong> in OVF format conformant to the VM Service image specification (<a href="https://kb.vmware.com/s/article/88506" target="_blank" rel="noopener noreferrer ">KB88506</a>) as well as <strong>utilize OVF templating through vAppConfig</strong> to enable the deployment of legacy Linux images.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>VM Service 2.0<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">You can now use CloudInit to <strong>customize any Linux image</strong> in OVF format conformant to the VM Service image specification (<a href="https://kb.vmware.com/s/article/88506" target="_blank" rel="noopener noreffer ">KB88506</a>) as well as <strong>utilize OVF templating through vAppConfig</strong> to enable the deployment of legacy Linux images.</div>
+    </div>
+</div>
 <p>The advanced support of CloudInit to customize any Linux image is already awesome but even more exciting is the capability to now utilize OVF templating through the <code>vAppConfig</code> within the <code>VirtualMachine</code> deployment manifest &#x1f603;</p>
 <p>We will take a look at it in a bit.</p>
 <h2 id="vmware-marketplace-to-accelerate-your-business">VMware Marketplace to accelerate your Business</h2>
 <p>For the sake of this blog post, I&rsquo;ve downloaded (sign in required) the PostgreSQL OVA from the VMware Marketplace. The VMware Marketplace offers certified and validated ecosystem solutions to VMware&rsquo;s customers, community and partners. The amount of solutions which can be discovered and tested is huge. One reason for this is the addition of the extensive Bitnami (by VMware) application catalog in the VMware Marketplace.</p>
-<p>&#x2b07;&#xfe0f; <a href="https://marketplace.cloud.vmware.com/services/details/postgresql?slug=true" target="_blank" rel="noopener noreferrer ">VMware Bitnami PostgreSQL DB virtual appliance (OVA)</a></p>
+<p>&#x2b07;&#xfe0f; <a href="https://marketplace.cloud.vmware.com/services/details/postgresql?slug=true" target="_blank" rel="noopener noreffer ">VMware Bitnami PostgreSQL DB virtual appliance (OVA)</a></p>
 <figure><a class="lightgallery" href="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" title="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" data-thumbnail="/img/posts/202306_deploy_ova_vm_service/202306_deploy_ova_vm_service_14.png" data-sub-html="<h2>Figure II: Download the PostgreSQL OVA</h2>">
         <img
             class="lazyload"
@@ -304,9 +312,9 @@
 <p>&hellip;and in which my Tanzu Kubernetes Cluster is already running.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n ns-hybrid-app-1 get cluster,machinesets,vm
 </span></span><span class="line"><span class="cl">NAME                                             PHASE         AGE    VERSION
 </span></span><span class="line"><span class="cl">cluster.cluster.x-k8s.io/rguske-tkc-hybrid-app   Provisioned   5d6h   v1.24.9+vmware.1
@@ -320,9 +328,9 @@
 <p>After adding the new content library to the vSphere Namespace, it will be available on the Kubernetes layer as well:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n ns-hybrid-app-1 get contentsourcebindings.vmoperator.vmware.com
 </span></span><span class="line"><span class="cl">NAME                                   AGE
 </span></span><span class="line"><span class="cl">02f5a0ab-cd42-41b4-b107-9f479a14d2e1   6d8h
@@ -364,17 +372,17 @@
     </a><figcaption class="image-caption">Figure VII: OVA Deployment example</figcaption>
     </figure>
 <p>These configurable fields are specified in the OVF file as <code>ovf:userConfigurable=&quot;true&quot;</code> and are of high interest for the creation of a virtual machine manifest.</p>
-<p><em>Resource: VMware Docs - <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-FB31603E-EE1D-4413-8567-DD2A5834929C.html" target="_blank" rel="noopener noreferrer ">Deploy VMs with Configurable OVF Properties</a></em></p>
+<p><em>Resource: VMware Docs - <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-FB31603E-EE1D-4413-8567-DD2A5834929C.html" target="_blank" rel="noopener noreffer ">Deploy VMs with Configurable OVF Properties</a></em></p>
 <p>In the following, I will explain two ways how to get the data.</p>
 <h4 id="extract-configurable-properties-using-the-ovftool">Extract Configurable Properties using the <code>ovftool</code></h4>
 <p>Option one is admittedly associated with a little bit more overhead but in comparison to option two, it requires no access to the Supervisor cluster (high priviledged user required). Download the VMware OVF tool from VMware&rsquo;s Developer Portal .</p>
-<p>&#x2b07;&#xfe0f; <a href="https://developer.vmware.com/web/tool/4.6.0/ovf-tool" target="_blank" rel="noopener noreferrer ">Open Virtualization Format (OVF) Tool</a></p>
+<p>&#x2b07;&#xfe0f; <a href="https://developer.vmware.com/web/tool/4.6.0/ovf-tool" target="_blank" rel="noopener noreffer ">Open Virtualization Format (OVF) Tool</a></p>
 <p>The following command will extract the packaged files from the OVA.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ovftool --allowExtraConfig --skipManifestCheck <span class="s2">&#34;bitnami-postgresql-11.20.0-r1-debian-11-amd64.ova&#34;</span> <span class="s2">&#34;postgressql/bitnami-postgresql-11.20.0-r1.ovf&#34;</span>
 </span></span><span class="line"><span class="cl">Opening OVA source: bitnami-postgresql-11.20.0-r1-debian-11-amd64.ova
 </span></span><span class="line"><span class="cl">The manifest does not validate
@@ -388,9 +396,9 @@
 <p>Here&rsquo;s is my example:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-xml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">[...]
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="nt">&lt;ProductSection&gt;</span>
@@ -434,9 +442,9 @@
 <p>The output on the terminal is immediately providing the necessary <code>ovfEnv</code> keys:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-json">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="nt">&#34;hwVersion&#34;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">  <span class="nt">&#34;imageID&#34;</span><span class="p">:</span> <span class="s2">&#34;a4bcc115-f81b-427a-a2c6-dc368718abfd&#34;</span><span class="p">,</span>
@@ -503,9 +511,9 @@
 <p>This is how my PostgreSQL VM manifest looks like. I&rsquo;ve added comments (<code>#</code>) into the manifest in order to help understanding the keys.</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -552,9 +560,9 @@
 <p>With the VM configuration described in a <code>yaml</code> file, everything is settled for a deployment. The next step is similar (familiar) to any other Kubernetes deployment using <code>kubectl</code>.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n app-ns-1 apply -f bitnami-postgresql-vm.yaml
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">virtualmachine.vmoperator.vmware.com/bitnami-postgresql created
@@ -575,9 +583,9 @@
 <p>Let&rsquo;s check it out:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl vsphere -n ns-hybrid-app-1 vm web-console bitnami-postgresql
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Successfully created a new WebConsoleRequest <span class="s1">&#39;bitnami-postgresql-g8qf4&#39;</span> in namespace <span class="s1">&#39;ns-hybrid-app-1&#39;</span>
@@ -600,16 +608,16 @@
 <p>The default user for the vm on the other hand is <code>bitnami</code>. This user will be used to <code>ssh</code> into the vm.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh -i ~/.ssh/id_rsa bitnami@postgresql01.cpod-aviv8.az-wdc.cloud-garage.net</span></span></code></pre></div></div>
 <p>After <code>ssh</code>ing into the vm, I configured the listening IP address as well as the port for the PostgreSQL.</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">$ vi /opt/bitnami/postgresql/conf/postgresql.conf
 </span></span><span class="line"><span class="cl">
@@ -627,9 +635,9 @@
 <p>Add the <code>all</code> configuration to the end of the file:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi /opt/bitnami/postgresql/conf/pg_hba.conf
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="sb">```</span>shell
@@ -641,40 +649,40 @@
 <p>Finally, apply the configuration by restarting the <code>postgresql service</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ sudo /opt/bitnami/ctlscript.sh restart postgresql</span></span></code></pre></div></div>
 <p>Validate your configuration:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ netstat -aon <span class="p">|</span> grep <span class="s1">&#39;5432&#39;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">tcp        <span class="m">0</span>      <span class="m">0</span> 0.0.0.0:5432            0.0.0.0:*               LISTEN      off <span class="o">(</span>0.00/0/0<span class="o">)</span>
 </span></span><span class="line"><span class="cl">tcp6       <span class="m">0</span>      <span class="m">0</span> :::5432                 :::*                    LISTEN      off <span class="o">(</span>0.00/0/0<span class="o">)</span>
 </span></span><span class="line"><span class="cl">unix  <span class="m">2</span>      <span class="o">[</span> ACC <span class="o">]</span>     STREAM     LISTENING     <span class="m">16993</span>    /tmp/.s.PGSQL.5432</span></span></code></pre></div></div>
-<p>Well, the system settings are look promising and I tried to connect to the DB using the PostgreSQL cli <code>psql</code>. Unfortunately, it hasn&rsquo;t worked out well for me. The connection always ran into a <code>timeout</code> error. It took me some efforts and the help of my appreciated colleague <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreferrer ">Andreas Marqvardsen</a> to figure out, that <code>nftables</code> are used on the Debian system and that it&rsquo;s blocking all the incoming traffic except <code>ssh</code>.</p>
+<p>Well, the system settings are look promising and I tried to connect to the DB using the PostgreSQL cli <code>psql</code>. Unfortunately, it hasn&rsquo;t worked out well for me. The connection always ran into a <code>timeout</code> error. It took me some efforts and the help of my appreciated colleague <a href="https://blog.andreasm.io/" target="_blank" rel="noopener noreffer ">Andreas Marqvardsen</a> to figure out, that <code>nftables</code> are used on the Debian system and that it&rsquo;s blocking all the incoming traffic except <code>ssh</code>.</p>
 <p><strong>ProTip:</strong> In order to validate that incoming traffic is allowed, you can start a <code>http.server</code> using <code>Python</code>.</p>
 <p>By executing the following command <code>python3 -m http.server</code> on the shell, it&rsquo;ll start a simple http server listening on localhost port 8000. Try <code>curl</code>ing the endpoint.</p>
 <p>That really comes into handy in such troubleshooting situations.</p>
 <p>On the server:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ python3 -m http.server
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Serving HTTP on 0.0.0.0 port <span class="m">8000</span> <span class="o">(</span>http://0.0.0.0:8000/<span class="o">)</span> ...</span></span></code></pre></div></div>
 <p>On the client: <code>curl 10.105.3.50:8000</code>.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-html">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
@@ -686,9 +694,9 @@
 <p>Connection check using <code>psql</code>:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Login with user postgres</span>
 </span></span><span class="line"><span class="cl">psql -U postgres -h 10.105.3.50 -p <span class="m">5432</span> -d postgres
 </span></span><span class="line"><span class="cl">Password <span class="k">for</span> user postgres:
@@ -714,13 +722,13 @@
 </span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">3</span> rows<span class="o">)</span></span></span></code></pre></div></div>
 <p>Fabulous! We have a configured PostgreSQL DB VM up and running deployed via the Virtual Machine Service. Nevertheless, in order to really have the &ldquo;DevOps-feeling&rdquo;, the post-deployment task needs to be automated as well.</p>
 <h2 id="run-pgadmin-in-a-container">Run pgAdmin in a Container</h2>
-<p>I&rsquo;m not an expert in PostgreSQL. Therefore, I was looking for the most simple and effective way to configure and read the DB. <a href="https://www.pgadmin.org/" target="_blank" rel="noopener noreferrer ">pgAdmin</a> is the tool of the DB admin&rsquo;s choice (me guessing again) and fortunately, a container image for pgAdmin exists.</p>
+<p>I&rsquo;m not an expert in PostgreSQL. Therefore, I was looking for the most simple and effective way to configure and read the DB. <a href="https://www.pgadmin.org/" target="_blank" rel="noopener noreffer ">pgAdmin</a> is the tool of the DB admin&rsquo;s choice (me guessing again) and fortunately, a container image for pgAdmin exists.</p>
 <p>The following <code>docker</code> command will spin up a local <code>pgadmin</code> instance on your computer/jumphost:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -p 80:80 <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_EMAIL=rguske@vmware.com&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    -e <span class="s1">&#39;PGADMIN_DEFAULT_PASSWORD=*******&#39;</span> <span class="se">\
@@ -740,27 +748,27 @@
 <h2 id="example-kubernetes-application">Example Kubernetes Application</h2>
 <p>When creating this post as well as the associated demo, the overall idea which I had in mind was to create a <a href="#hybrid-application-architectures" rel="">Hybrid Application Architecture</a> using the power of the Supervisor Services of vSphere with Tanzu. A Tanzu Kubernetes Cluster will host an application which will write data into a Database instance running as a virtual machine and most important, declaratively deployed using the Virtual Machine Service. This time, I deployed everything manually but ultimately it would be part of a CI/CD pipeline.</p>
 <p>I didn&rsquo;t have an example application and I was not eager looking on Github for an example. Therefore, I decided to write my own application with the little help of a new, very chatty friend of mine &#x1f916;&hellip; &#x1f609;</p>
-<p>You can find the <code>Postgresql-Writer-k8s-Job</code> application on my <i class='fab fa-github fa-fw'></i> repository <a href="https://github.com/rguske/postgresql-writer-k8s-job/tree/main" target="_blank" rel="noopener noreferrer ">HERE</a>.</p>
+<p>You can find the <code>Postgresql-Writer-k8s-Job</code> application on my <i class='fab fa-github fa-fw'></i> repository <a href="https://github.com/rguske/postgresql-writer-k8s-job/tree/main" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
 <p>Quickly explained:</p>
-<p>The application will <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L14" target="_blank" rel="noopener noreferrer ">establish a connection to the database</a> using the by a user <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L4" target="_blank" rel="noopener noreferrer ">defined data which is stored in a Kubernetes secret</a>.</p>
-<p>After the connection has been established, the application will write <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L18" target="_blank" rel="noopener noreferrer ">example data</a> <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L25" target="_blank" rel="noopener noreferrer ">into a defined table</a>.</p>
+<p>The application will <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L14" target="_blank" rel="noopener noreffer ">establish a connection to the database</a> using the by a user <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L4" target="_blank" rel="noopener noreffer ">defined data which is stored in a Kubernetes secret</a>.</p>
+<p>After the connection has been established, the application will write <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L18" target="_blank" rel="noopener noreffer ">example data</a> <a href="https://github.com/rguske/postgresql-writer-k8s-job/blob/0c0810a8b39037f5a4844168eb124cc1ecf94a35/postgresql-app.py#L25" target="_blank" rel="noopener noreffer ">into a defined table</a>.</p>
 <p>In order to not only use <code>psql</code> or <code>pgAdmin</code> to validate the written data, I added the functionality to the application that a <code>search_query</code> will be executed and the results will be send to <code>stdout</code>. Therefore, using <code>kubectl logs</code> will give you the results as well.</p>
 <h3 id="deploy-the-application-as-a-kubernetes-job">Deploy the Application as a Kubernetes Job</h3>
 <p>Let&rsquo;s deploy the Postgres-Writer application as a Kubernetes job. Make sure being in the right Kubernetes context (<code>kubectl config use-context</code>).</p>
 <p>Create a new Kubernetes namespace:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create ns postgres-app</span></span></code></pre></div></div>
 <p>The next step must be the creation of the Kubernetes secret. Remember, the application will read sensible data from the secret.</p>
 <p>Create the secret:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl create secret generic postgres-secret <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">username</span><span class="o">=</span><span class="s1">&#39;postgres&#39;</span> <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span><span class="s1">&#39;*******&#39;</span> <span class="se">\
@@ -774,9 +782,9 @@
 <p>Ultimately, deploy the application as a Kubernetes job and validate the results after the jobs completion.</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">kubectl -n postgres-app create -f - &lt;&lt;EOF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
@@ -841,9 +849,9 @@
 <p>The job (<code>completion 1/1</code>) as well as the pod (<code>Completed</code>) got deployed and executed successfully.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n postgres-app get job,pod
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                            COMPLETIONS   DURATION   AGE
@@ -862,9 +870,9 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl -n postgres-app logs jobs/postgres-writer-job -f
 </span></span><span class="line"><span class="cl"><span class="o">(</span><span class="s1">&#39;John&#39;</span>, <span class="s1">&#39;Doe&#39;</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl"><span class="o">(</span><span class="s1">&#39;Jane&#39;</span>, <span class="s1">&#39;Smith&#39;</span><span class="o">)</span>
@@ -879,9 +887,9 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">psql -U postgres -h 10.105.3.50 -p <span class="m">5432</span> -d vmware -c <span class="s1">&#39;SELECT * FROM myappdata&#39;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Password <span class="k">for</span> user postgres:
@@ -916,24 +924,24 @@
 <h2 id="conclusion">Conclusion</h2>
 <p>As technology continues to evolve, modern hybrid application architectures providing a practical and pragmatic approach to bridge the gap between service-oriented architectures and traditional workloads hosted on virtual machines. By blending the scalability and agility of SOA with the reliability and versatility of VMs, organizations can modernize their applications while leveraging existing investments.</p>
 <p>Although challenges exist, the benefits of modern hybrid architectures make them an attractive option for businesses looking to strike a balance between legacy systems and cloud-native principles.</p>
-<p>VMware&rsquo;s comprehensive solution portfolio for application and platform modernization, <a href="https://tanzu.vmware.com/tanzu" target="_blank" rel="noopener noreferrer ">Tanzu</a>, can help enterprises to achieve the aforementioned objectives and goals.</p>
+<p>VMware&rsquo;s comprehensive solution portfolio for application and platform modernization, <a href="https://tanzu.vmware.com/tanzu" target="_blank" rel="noopener noreffer ">Tanzu</a>, can help enterprises to achieve the aforementioned objectives and goals.</p>
 <p>Thanks a lot for reading.</p>
 <h2 id="extra">Extra</h2>
-<p>I tried the deployment of other OVA&rsquo;s like the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreferrer ">VMware Event Broker Appliance</a> &#x1f60d; as well as my <a href="https://github.com/rguske/kubernetes-appliance" target="_blank" rel="noopener noreferrer ">Kubernetes Appliance OVA</a> too. Both work like a charme and I wanted to provide the manifests for both here as well.</p>
+<p>I tried the deployment of other OVA&rsquo;s like the <a href="https://flings.vmware.com/vmware-event-broker-appliance" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance</a> &#x1f60d; as well as my <a href="https://github.com/rguske/kubernetes-appliance" target="_blank" rel="noopener noreffer ">Kubernetes Appliance OVA</a> too. Both work like a charme and I wanted to provide the manifests for both here as well.</p>
 <h3 id="veba-vm-service-manifest">VEBA VM Service Manifest</h3>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n veba-ns get virtualmachineimages.vmoperator.vmware.com --field-selector metadata.name<span class="o">=</span>veba-v0.7.5
 </span></span><span class="line"><span class="cl">NAME          PROVIDER-NAME                          CONTENT-LIBRARY-NAME   IMAGE-NAME    VERSION   OS-TYPE      FORMAT   AGE
 </span></span><span class="line"><span class="cl">veba-v0.7.5   87b2c9ec-81e5-4e01-9367-be8f6d74ecf7                          veba-v0.7.5   v0.7.5    otherGuest   ovf      4d</span></span></code></pre></div></div>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -1008,9 +1016,9 @@
 <h3 id="kubernetes-appliance-vm-service-manifest">Kubernetes Appliance VM Service Manifest</h3>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">vmoperator.vmware.com/v1alpha1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -1071,42 +1079,43 @@
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2023-07-17&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/91becbdcf5f1110ec54a7b6bbfb4d587efdf4db5" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 91becbdcf5f1110ec54a7b6bbfb4d587efdf4db5: removed passwords from recent post">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>91becbd</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>91becbd</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-hashtags="VMware,VEBA,Kubernetes,CloudNative,Extensibility,Tools,vSphere"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures" data-hashtags="VMware,VEBA,Kubernetes,CloudNative,Extensibility,Tools,vSphere"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-hashtag="VMware"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" data-title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/veba/">VEBA</a>, <a href="/tags/kubernetes/">Kubernetes</a>, <a href="/tags/cloudnative/">CloudNative</a>, <a href="/tags/extensibility/">Extensibility</a>, <a href="/tags/tools/">Tools</a>, <a href="/tags/vsphere/">VSphere</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/tools/">Tools</a>,&nbsp;<a href="/tags/vsphere/">VSphere</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</a>
-            <a href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" class="next" rel="next" title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative">Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fas fa-angle-left" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</a>
+            <a href="/post/elevate-your-cloud-native-journey-knative-the-vmware-tanzu-way-part-1-streamlined-installation-of-knative/" class="next" rel="next" title="Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative">Elevate your Cloud-Native Journey: Knative the VMware Tanzu Way Part I - Streamlined Installation of Knative<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>

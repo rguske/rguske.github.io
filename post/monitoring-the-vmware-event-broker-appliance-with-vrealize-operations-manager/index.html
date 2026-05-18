@@ -25,7 +25,8 @@
   <meta name="twitter:title" content="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager">
   <meta name="twitter:description" content="This post covers how to monitor the VMware Event Broker Appliance (VM), plus it&#39;s Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" /><link rel="prev" href="https://rguske.github.io/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" /><link rel="next" href="https://rguske.github.io/post/vsphere-ha-event-notification-function/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -45,7 +46,18 @@
             },"description": "This post covers how to monitor the VMware Event Broker Appliance (VM), plus it's Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -60,19 +72,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -97,20 +109,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -121,28 +134,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder" aria-hidden="true"></i>Tools</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2020-05-12">2020-05-12</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;1750 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;9 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vrops_veba_cover.jpg"
         data-srcset="/img/vrops_veba_cover.jpg, /img/vrops_veba_cover.jpg 1.5x, /img/vrops_veba_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vrops_veba_cover.jpg"
-        title="This post covers how to monitor the VMware Event Broker Appliance (VM), plus it&#39;s Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Monitoring the VMware Event Broker Appliance with vRealize Operations Manager</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/tools/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Tools</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2020-05-12">2020-05-12</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1750 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>9 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="This post covers how to monitor the VMware Event Broker Appliance (VM), plus it&#39;s Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods by using vRealize Operations Manager." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#leveraging-google-cadvisor">Leveraging Google cAdvisor</a>
       <ul>
@@ -174,33 +182,33 @@
     </li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><p>Since the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreferrer ">VMware Event Broker Appliance (VEBA)</a> is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought &#x1f609;.</p>
+            </div><div class="content" id="content"><p>Since the <a href="https://vmweventbroker.io" target="_blank" rel="noopener noreffer ">VMware Event Broker Appliance (VEBA)</a> is reaching more and more folks out there and the interest is growing steadily, it is important to validate the integration with other solutions (preferably VMware). At least that&rsquo;s what I thought &#x1f609;.</p>
 <p>Monitoring in terms of utilization and performance captured my interest. So, how can I monitor not only the appliance (virtual machine) but also the Kubernetes components like the Control Plane (Master), the Node(s) as well as the Pods? Furthermore, not only the workload is of interest but also the dependencies of the individual components to each other are interesting. Beyond that and because I&rsquo;m just getting started, I would also like to have the ability to generate alarms if a desired state is no longer fulfilled.</p>
-<p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreferrer ">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
+<p><a href="https://www.vmware.com/products/vrealize-operations.html" target="_blank" rel="noopener noreffer ">VMware&rsquo;s vRealize Operations Manager (vROps)</a> and it&rsquo;s Management Pack for Container Monitoring helped me quickly with my needs. Let me demonstrate you how we can prepare VEBA to send the desired data (metrics) to vROPs and how we import a custom dashboard that provides you with plenty of interesting and useful information.</p>
 <h2 id="leveraging-google-cadvisor">Leveraging Google cAdvisor</h2>
-<p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreferrer ">https://github.com/google/cadvisor</a></p>
+<p><i class='fab fa-github fa-fw'></i> Repository: <a href="https://github.com/google/cadvisor" target="_blank" rel="noopener noreffer ">https://github.com/google/cadvisor</a></p>
 <p>cAdvisor (Container Advisor) will be the component which we will make use of to get resource usage and performance data provided for vROps. It is super easy to deploy and you will see first results quickly. Let me show you how.</p>
-<p>I&rsquo;m going to start an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreferrer ">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
+<p>I&rsquo;m going to start an <a href="https://hub.docker.com/r/vmwarecna/nginx/" target="_blank" rel="noopener noreffer ">nginx</a> container from which we will grab the data from after deploying cAdvisor.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run --name vmware-nginx -p 8181:80 vmwarecna/nginx</span></span></code></pre></div></div>
-<p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreferrer ">latest version</a> also as a docker container (for now).</p>
+<p>The nginx webserver container is running and listening on port 8181 for HTTP requests. Now let&rsquo;s deploy cAdvisor in it&rsquo;s <a href="https://github.com/google/cadvisor/releases" target="_blank" rel="noopener noreffer ">latest version</a> also as a docker container (for now).</p>
 <p>Export the desired version as an environment variable. We will use this variable (<code>$VERSION</code>) for the container deployment.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">VERSION</span><span class="o">=</span>v0.35.0</span></span></code></pre></div></div>
 <p>The following shows how the container deployment looks like and important for this example is the usage of the <code>docker</code> option <code>--publish=8080:8080</code> which will expose the port through which we can reach the cAdvisor website.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo docker run <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --volume<span class="o">=</span>/:/rootfs:ro <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --volume<span class="o">=</span>/var/run:/var/run:ro <span class="se">\
@@ -214,9 +222,9 @@
 <p><code>docker ps</code> will show us if both containers are up and running as well as if they are listening on the specified ports:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS                      PORTS                           NAMES
 </span></span><span class="line"><span class="cl">ff0d3fad427d        gcr.io/google-containers/cadvisor:v0.35.0   <span class="s2">&#34;/usr/bin/cadvisor -…&#34;</span>   <span class="m">3</span> minutes ago       Up <span class="m">3</span> minutes <span class="o">(</span>healthy<span class="o">)</span>      0.0.0.0:8080-&gt;8080/tcp          cadvisor
 </span></span><span class="line"><span class="cl">48da3118416f        vmwarecna/nginx                             <span class="s2">&#34;nginx -g &#39;daemon of…&#34;</span>   <span class="m">6</span> minutes ago       Up <span class="m">6</span> minutes                443/tcp, 0.0.0.0:8181-&gt;80/tcp   vmware-nginx</span></span></code></pre></div></div>
@@ -246,7 +254,7 @@
     </figure>
 <h3 id="deploy-the-cadvisor-as-a-kubernetes-daemonset">Deploy the cAdvisor as a Kubernetes DaemonSet</h3>
 <h4 id="environment-with-internet-access">Environment with internet access</h4>
-<p>Now it&rsquo;s time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreferrer ">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
+<p>Now it&rsquo;s time to deploy the cAdvisor as a Kubernetes <code>DaemonSet</code> onto VEBA. I&rsquo;ve used the yaml specifications from the cAdvisor <i class='fab fa-github fa-fw'></i> repository which are located in <code>/deploy/kubernetes/base</code> and modified them a bit for my needs. We will have three files at the end, because we are using <a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener noreffer ">kustomize</a> in order to create and deploy the namespace and the daemonset for cAdvisor.</p>
 <p>Establish a <code>ssh</code> connection to your VEBA appliance and change into the <code>/tmp</code> directory. I have set up a repository on Github where I&rsquo;ve stored the necessary files for the deployment. From here (<code>/tmp</code>) we will clone the repository and deploy the daemonset to the Kubernetes Master subsequently. Run <code>git clone https://github.com/rguske/monitoring-veba.git &amp;&amp; kubectl apply -k monitoring-veba/</code>.</p>
 <h4 id="environment-without-internet-access">Environment without internet access</h4>
 <p>For air-gapped environments, three simple steps are neccessary:</p>
@@ -257,9 +265,9 @@
 <p><code>vim kustomization.yaml</code></p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kustomize.config.k8s.io/v1beta1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Kustomization</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">vrops</span><span class="w">
@@ -271,9 +279,9 @@
 <p><code>vim namespace.yaml</code></p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -281,9 +289,9 @@
 <p><code>vim daemonset.yaml</code></p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
@@ -364,9 +372,9 @@
 <p>To ensure that our procedure was correct, we will check the deployment of the pod.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@veba040 <span class="o">[</span> /tmp/monitoring-veba <span class="o">]</span><span class="c1"># kubectl -n vrops get pods</span>
 </span></span><span class="line"><span class="cl">NAME             READY   STATUS    RESTARTS   AGE
 </span></span><span class="line"><span class="cl">cadvisor-ccgcx   1/1     Running   <span class="m">0</span>          4m</span></span></code></pre></div></div>
@@ -384,18 +392,18 @@
     </a><figcaption class="image-caption">Figure III: vROps Dashboard to monitor VEBA</figcaption>
     </figure>
 <h3 id="step-1-import-vrops-management-pack-for-container-monitoring">Step 1. Import vROps Management Pack for Container Monitoring</h3>
-<p>To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it&rsquo;s necessary to import a Management Pack for it, which is available for free at the <a href="https://marketplace.vmware.com" target="_blank" rel="noopener noreferrer ">VMware Marketplace</a>.</p>
+<p>To enable the capability to monitor Kubernetes Clusters in vRealize Operations Manager, it&rsquo;s necessary to import a Management Pack for it, which is available for free at the <a href="https://marketplace.vmware.com" target="_blank" rel="noopener noreffer ">VMware Marketplace</a>.</p>
 <ol>
-<li>Download the <a href="https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring" target="_blank" rel="noopener noreferrer ">Mangement Pack for Container Monitoring</a></li>
+<li>Download the <a href="https://marketplace.vmware.com/vsx/solutions/vrealize-operations-management-pack-for-container-monitoring" target="_blank" rel="noopener noreffer ">Mangement Pack for Container Monitoring</a></li>
 </ol>
 <div class="details admonition note open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Note:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continue to work with vRealize Operations Advanced and Enterprise editions.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>Note:<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">vRealize Operations Management Pack for Container Monitoring 1.4.2 and above will only be interoperable with vRealize Operations Enterprise edition. The older versions of Management Pack continue to work with vRealize Operations Advanced and Enterprise editions.</div>
+    </div>
+</div>
 <ol start="2">
 <li>Import the Management Pack in vROps as follows:</li>
 </ol>
@@ -409,13 +417,13 @@
 <li>Configure the Kubernetes Adapter to establish a connection to your VEBA node(s)</li>
 </ul>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>Info:<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">If you are running more than one VEBA appliance, then you have to repeat the next steps for each instance separately.</div>
+    </div>
+</div>
 <ul>
 <li>Go to <code>Other Accounts</code> and select the <code>Kubernetes Adapter</code>
 <ul>
@@ -437,9 +445,9 @@
 <p>We need to configure <code>Client Certificate Auth</code> as credential kind. To get the data for <code>Certificate Authority Data</code>, <code>Client Certificate Data</code> as well as for the <code>Client Key Data</code> we need to <code>ssh</code> again into our VEBA appliance. Execute the following to get the data:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">grep <span class="s1">&#39;client-certificate-data\|client-key-data\|certificate-authority-data&#39;</span> ~/.kube/config</span></span></code></pre></div></div>
 <p>This is how the output should look like:</p>
 <figure class="center"><a class="lightgallery" href="/img/posts/202005_vropsveba/CapturFiles-20200512_084225.jpg" title="/img/posts/202005_vropsveba/CapturFiles-20200512_084225.jpg" data-thumbnail="/img/posts/202005_vropsveba/CapturFiles-20200512_084225.jpg" data-sub-html="<h2>Figure IV: Client Certificate Auth data grep&rsquo;ed from kube config</h2>">
@@ -475,22 +483,22 @@
     </a><figcaption class="image-caption">Figure VI: Account Information for VEBA</figcaption>
     </figure>
 <div class="details admonition warning open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>Attention:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content"><strong>Please do not</strong> forget to stop <code>ssh</code> again after finishing the above steps. <code>systemctl stop sshd</code></div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>Attention:<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content"><strong>Please do not</strong> forget to stop <code>ssh</code> again after finishing the above steps. <code>systemctl stop sshd</code></div>
+    </div>
+</div>
 <h3 id="step-2-preparations-for-the-dashboard">Step 2. Preparations for the dashboard</h3>
 <p>Before we can import the dashboard and the corresponding views, we need to configure two simple steps first. The creation of a <code>Custom Metric Configuration</code> and a <code>Dynamic Custom Group</code>.</p>
 <h4 id="veba-node-utilization-metric-configuration">VEBA Node Utilization Metric Configuration</h4>
 <p>Go to <code>Administration</code> -&gt; <code>Configuration</code> -&gt; <code>Metric Configurations</code> -&gt; <code>ReskndMetric</code> and select <code>ADD</code>. Enter the name <code>veba_node_utilization</code> and paste the following configuration into the right opened field:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-xml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="nt">&lt;AdapterKinds&gt;</span>
 </span></span><span class="line"><span class="cl">    <span class="nt">&lt;AdapterKind</span> <span class="na">adapterKindKey=</span><span class="s">&#34;KubernetesAdapter&#34;</span><span class="nt">&gt;</span>
@@ -527,7 +535,7 @@
     </a><figcaption class="image-caption">Figure VIII: Dynamic Custom Group for ƒ(x) in namespace openfaas-fn</figcaption>
     </figure>
 <h3 id="step-3-import-the-dashboard-and-its-views">Step 3. Import the Dashboard and it&rsquo;s Views</h3>
-<h4 id="the-dashboard-is-available-for-download-on-vmware-code">The Dashboard is available for download on <a href="https://code.vmware.com/samples?id=7241" target="_blank" rel="noopener noreferrer ">VMware {code}</a></h4>
+<h4 id="the-dashboard-is-available-for-download-on-vmware-code">The Dashboard is available for download on <a href="https://code.vmware.com/samples?id=7241" target="_blank" rel="noopener noreffer ">VMware {code}</a></h4>
 <p>Unpack the zip file and import the views first. <code>Dashboards</code> -&gt; select any of the views, click on <code>ACTIONS</code> and select <code>Manage Views</code>. The <code>Import</code> button will appear after clicking on the three points next to the <code>ADD</code> button. Go to the folder where you&rsquo;ve unpacked the <code>dashboard.zip</code> and select the <code>views.zip</code>. This will import the Views.</p>
 <p>Similar procedure applies for the dashboard itself. <code>Dashboards</code> -&gt; <code>ACTIONS</code> -&gt; <code>Manage Dashboards</code> -&gt; three points -&gt; <code>Import</code> and this time, select the <code>dashboard.zip</code>.</p>
 <p>Here we go!</p>
@@ -547,42 +555,43 @@
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>110e3f6</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-hashtags="VMware,vSphere,VEBA,Monitoring,OpenSource"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager" data-hashtags="VMware,vSphere,VEBA,Monitoring,OpenSource"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-hashtag="VMware"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/monitoring-the-vmware-event-broker-appliance-with-vrealize-operations-manager/" data-title="Monitoring the VMware Event Broker Appliance with vRealize Operations Manager"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/veba/">VEBA</a>, <a href="/tags/monitoring/">Monitoring</a>, <a href="/tags/opensource/">OpenSource</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">VSphere</a>,&nbsp;<a href="/tags/veba/">VEBA</a>,&nbsp;<a href="/tags/monitoring/">Monitoring</a>,&nbsp;<a href="/tags/opensource/">OpenSource</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" class="prev" rel="prev" title="VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition</a>
-            <a href="/post/vsphere-ha-event-notification-function/" class="next" rel="next" title="VMware Event Broker Appliance - vSphere HA Event Notification Function">VMware Event Broker Appliance - vSphere HA Event Notification Function<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/tanzu-kubernetes-grid-integrated-edition-management-console-1-7/" class="prev" rel="prev" title="VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition"><i class="fas fa-angle-left" aria-hidden="true"></i>VMware Enterprise PKS got rebranded VMware Tanzu Kubernetes Grid Integrated Edition</a>
+            <a href="/post/vsphere-ha-event-notification-function/" class="next" rel="next" title="VMware Event Broker Appliance - vSphere HA Event Notification Function">VMware Event Broker Appliance - vSphere HA Event Notification Function<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>

@@ -23,7 +23,8 @@
   <meta name="twitter:title" content="vSphere Integrated Containers Part I: OVA Deployment">
   <meta name="twitter:description" content="I am describing the deployment pre-requisites for vSphere Integrated Containers through this post.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" /><link rel="prev" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-introduction/" /><link rel="next" href="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -43,7 +44,18 @@
             },"description": "I am describing the deployment pre-requisites for vSphere Integrated Containers through this post."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -58,19 +70,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -95,20 +107,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -119,28 +132,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere Integrated Containers Part I: OVA Deployment</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2018-07-13">2018-07-13</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;569 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/vic_part_1_cover.jpg"
         data-srcset="/img/vic_part_1_cover.jpg, /img/vic_part_1_cover.jpg 1.5x, /img/vic_part_1_cover.jpg 2x"
         data-sizes="auto"
         alt="/img/vic_part_1_cover.jpg"
-        title="I am describing the deployment pre-requisites for vSphere Integrated Containers through this post." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere Integrated Containers Part I: OVA Deployment</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2018-07-13">2018-07-13</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>569 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>3 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="I am describing the deployment pre-requisites for vSphere Integrated Containers through this post." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#environment-pre-requisites">Environment Pre-Requisites</a></li>
     <li><a href="#deploying-the-ova">Deploying the OVA</a>
@@ -158,7 +166,7 @@
     </li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><h2 id="environment-pre-requisites">Environment Pre-Requisites</h2>
+            </div><div class="content" id="content"><h2 id="environment-pre-requisites">Environment Pre-Requisites</h2>
 <ul>
 <li>vSphere Enterprise Plus license or vSphere Remote Office Branch Office (ROBO) Advanced (!)
 <ul>
@@ -177,13 +185,13 @@
 <li>If DHCP is not available on these segments, please, request a range of free IP-Addresses.</li>
 </ul>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">You´ll find all necessary pieces of information with regards to Licensing as well as Deployment Requirements on the official <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/vic_installation_prereqs.html" target="_blank">VIC Github Page</a>.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">You´ll find all necessary pieces of information with regards to Licensing as well as Deployment Requirements on the official <a href="https://vmware.github.io/vic-product/assets/files/html/1.4/vic_vsphere_admin/vic_installation_prereqs.html" target="_blank">VIC Github Page</a>.</div>
+    </div>
+</div>
 <h2 id="deploying-the-ova">Deploying the OVA</h2>
 <p>To start with, we have to download the latest bits from myvmware.com here &ndash;&gt; <a href="https://my.vmware.com/en/web/vmware/info/slug/datacenter_cloud_infrastructure/vmware_vsphere_integrated_containers/1_4" target="_blank">VIC Version 1.4.1</a>. After having downloaded the 3,12 GB ova-file we´ll start provisioning the VIC Virtual Appliance over the vSphere Web Client onto your vSphere Datacenter, Cluster or ESXi Host. I suppose that you are already familiar with these steps but if not, please go <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vm_admin.doc/GUID-17BEDA21-43F6-41F4-8FB2-E01D275FE9B4.html" target="_blank">here</a> first.</p>
 <p>If you´re already familiar with it and you´re more interested in automting an OVA deployment, I´d recommend reading this <a href="http://cloudmaniac.net/ova-ovf-deployment-using-govc-cli/" target="_blank"> Post </a> by <a href="https://twitter.com/woueb" target="_blank"> Romain Decker </a>.</p>
@@ -300,22 +308,22 @@
     </a>
 <p>Lean back and let the vCenter do its job&hellip; &hellip; &hellip;FINISHED!</p>
 <div class="details admonition tip open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>Tip<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">If you think <em>&ldquo;Hey this H5-Client Dark Theme looks very slick! Where I can toggle the switch?&rdquo;</em> unfortunately one has to name, that this is not a feature in the vSphere H5-Client, it´s a Browser-Extension by Jens L. aka BeryJu and available for Chrome and Firefox. You´ll find him on <a href="https://github.com/BeryJu" target="_blank">Github</a> as well as on his <a href="https://beryju.org/en" target="_blank">Blog</a>. Thanks, Jens for the nice work.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-lightbulb" aria-hidden="true"></i>Tip<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">If you think <em>&ldquo;Hey this H5-Client Dark Theme looks very slick! Where I can toggle the switch?&rdquo;</em> unfortunately one has to name, that this is not a feature in the vSphere H5-Client, it´s a Browser-Extension by Jens L. aka BeryJu and available for Chrome and Firefox. You´ll find him on <a href="https://github.com/BeryJu" target="_blank">Github</a> as well as on his <a href="https://beryju.org/en" target="_blank">Blog</a>. Thanks, Jens for the nice work.</div>
+    </div>
+</div>
 <div class="details admonition warning open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>Attention<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">When you add the extension, VMware will not provide support when you´re facing issues!
-And - I´d recommend using only browsers where the language is set to English! In other cases, you could hit the issue <a href="https://github.com/BeryJu/dark-vcenter/issues/36" target="_blank">Other browser language than English breaks CSS inject #36</a></div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>Attention<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">When you add the extension, VMware will not provide support when you´re facing issues!
+And - I´d recommend using only browsers where the language is set to English! In other cases, you could hit the issue <a href="https://github.com/BeryJu/dark-vcenter/issues/36" target="_blank">Other browser language than English breaks CSS inject #36</a></div>
+    </div>
+</div>
 <p><strong>Here you´ll find the extensions.</strong></p>
 <p><a href="https://chrome.google.com/webstore/search/Dark%20vCenter" target="_blank">Dark-vCenter for Google Chrome</a></p>
 <p><a href="https://addons.mozilla.org/en-US/firefox/addon/dark-vcenter/?src=search" target="_blank">Dark-vCenter for Mozilla Firefox</a></p>
@@ -329,7 +337,7 @@ And - I´d recommend using only browsers where the language is set to English! I
             data-sizes="auto"
             alt="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105035.jpg" width="800" />
     </a>
-<p>If you´ve entered your credentials correctly, you´ll be forwarded to the VIC Getting Started page which you could always open by using the IP-Address or better using the FQDN (of course the short name as well) over port 9443. In my example <a href="https://vic01.lab.jarvis.local:9443/" target="_blank" rel="noopener noreferrer ">https://vic01.lab.jarvis.local:9443/</a></p>
+<p>If you´ve entered your credentials correctly, you´ll be forwarded to the VIC Getting Started page which you could always open by using the IP-Address or better using the FQDN (of course the short name as well) over port 9443. In my example <a href="https://vic01.lab.jarvis.local:9443/" target="_blank" rel="noopener noreffer ">https://vic01.lab.jarvis.local:9443/</a></p>
 <a class="lightgallery" href="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105155.jpg" title="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105155.jpg" data-thumbnail="/img/posts/201807_vic_getting_started/CapturFiles-20180608_105155.jpg">
         <img
             class="lazyload"
@@ -348,42 +356,43 @@ And - I´d recommend using only browsers where the language is set to English! I
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2022-09-27&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/110e3f64aaa10934852a5e714b940674e0c5dda9" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 110e3f64aaa10934852a5e714b940674e0c5dda9: adjusted categories for all posts">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>110e3f6</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>110e3f6</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment" data-hashtags="VMware,vSphere,Docker"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-hashtag="VMware"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vmware-vsphere-integrated-containers-part-1-ova-deployment/" data-title="vSphere Integrated Containers Part I: OVA Deployment"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/docker/">Docker</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">VSphere</a>,&nbsp;<a href="/tags/docker/">Docker</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vmware-vsphere-integrated-containers-introduction/" class="prev" rel="prev" title="VMware vSphere Integrated Containers: Introduction"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>VMware vSphere Integrated Containers: Introduction</a>
-            <a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" class="next" rel="next" title="vSphere Integrated Containers Part II: vSphere Client Plug-In">vSphere Integrated Containers Part II: vSphere Client Plug-In<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/vmware-vsphere-integrated-containers-introduction/" class="prev" rel="prev" title="VMware vSphere Integrated Containers: Introduction"><i class="fas fa-angle-left" aria-hidden="true"></i>VMware vSphere Integrated Containers: Introduction</a>
+            <a href="/post/vmware-vsphere-integrated-containers-part-2-vsphere-client-plugin/" class="next" rel="next" title="vSphere Integrated Containers Part II: vSphere Client Plug-In">vSphere Integrated Containers Part II: vSphere Client Plug-In<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>

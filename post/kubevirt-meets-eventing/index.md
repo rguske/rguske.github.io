@@ -11,11 +11,7 @@ kind: Broker
 metadata:
   name: broker-apiserversource
 spec: {}
-EOF
-```
-
-```yaml
-oc create -f - <<EOF
+---
 apiVersion: eventing.knative.dev/v1
 kind: Broker
 metadata:
@@ -49,7 +45,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: k8s-ra-event-watcher
+  name: role-event-watcher
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -87,7 +83,7 @@ oc create -f - <<EOF
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: event-display
+  name: event-display-raw
 spec:
   template:
     metadata:
@@ -97,14 +93,14 @@ spec:
     spec:
       containerConcurrency: 0
       containers:
-      - image: quay.io/openshift-knative/showcase
+      - image: n3wscott/sockeye:v0.7.0
 ---
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   labels:
     eventing.knative.dev/broker: broker-apiserversource
-  name: trigger-event-display
+  name: trigger-event-display-raw
 spec:
   broker: broker-apiserversource
   filter: {}
@@ -112,71 +108,12 @@ spec:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: event-display
+      name: event-display-raw
 EOF
 ```
 
 ```yaml
 oc create -f - <<EOF
----
-apiVersion: pool.kubevirt.io/v1alpha1
-kind: VirtualMachinePool
-metadata:
-  name: dev-eventing-vms
-spec:
-  replicas: 0
-  selector:
-    matchLabels:
-      kubevirt.io/vmpool: dev-eventing-vms
-  virtualMachineTemplate:
-    metadata:
-      labels:
-        kubevirt.io/vmpool: dev-eventing-vms
-    spec:
-      runStrategy: Always
-      template:
-        metadata:
-          labels:
-            kubevirt.io/vmpool: dev-eventing-vms
-        spec:
-          domain:
-            cpu:
-              cores: 1
-            devices:
-              disks:
-              - disk:
-                  bus: virtio
-                name: containerdisk
-              - disk:
-                  bus: virtio
-                name: cloudinitdisk
-              interfaces:
-                - masquerade: {}
-                  model: virtio
-                  name: default
-              rng: {}
-            memory:
-              guest: 1024M
-          networks:
-            - name: default
-              pod: {}
-          volumes:
-          - containerDisk:
-              image: quay.io/containerdisks/fedora:latest
-            name: containerdisk
-          - cloudInitNoCloud:
-              userData: |-
-                #cloud-config
-                password: fedora
-                chpasswd: { expire: False }
-            name: cloudinitdisk
-EOF
-```
-
-`oc scale vmpool dev-eventing-vms --replicas 1`
-
-```yaml
-kubectl create -f - <<EOF
 apiVersion: eventing.knative.dev/v1alpha1
 kind: EventTransform
 metadata:
@@ -208,6 +145,44 @@ spec:
       }
 EOF
 ```
+
+```yaml
+oc create -f - <<EOF
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    eventing.knative.dev/broker: broker-eventtransform
+  name: event-display-transformed
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/max-scale: "1"
+        autoscaling.knative.dev/min-scale: "1"
+    spec:
+      containerConcurrency: 0
+      containers:
+      - image: n3wscott/sockeye:v0.7.0
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  labels:
+    eventing.knative.dev/broker: broker-eventtransform
+  name: trigger-event-display-transformed
+spec:
+  broker: broker-eventtransform
+  filter: {}
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: event-display-transformed
+EOF
+```
+
+
 
 ```yaml
 oc create -f - <<EOF
@@ -255,41 +230,87 @@ spec:
 EOF
 ```
 
+## Create a VirtualMachinePool
+
 ```yaml
 oc create -f - <<EOF
-apiVersion: serving.knative.dev/v1
-kind: Service
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
 metadata:
-  labels:
-    eventing.knative.dev/broker: broker-eventtransform
-  name: sockeye
+  name: dev-fedora-vms
 spec:
-  template:
+  replicas: 1
+  selector:
+    matchLabels:
+      kubevirt.io/vmpool: dev-fedora-vms
+  virtualMachineTemplate:
     metadata:
-      annotations:
-        autoscaling.knative.dev/max-scale: "1"
-        autoscaling.knative.dev/min-scale: "1"
+      labels:
+        kubevirt.io/vmpool: dev-fedora-vms
     spec:
-      containerConcurrency: 0
-      containers:
-      - image: n3wscott/sockeye:v0.7.0
----
-apiVersion: eventing.knative.dev/v1
-kind: Trigger
-metadata:
-  labels:
-    eventing.knative.dev/broker: broker-eventtransform
-  name: trigger-sockeye
-spec:
-  broker: broker-eventtransform
-  filter: {}
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: sockeye
+      dataVolumeTemplates:
+      - metadata:
+          name: fedora-dev-volume
+        spec:
+          sourceRef:
+            kind: DataSource
+            name: fedora
+            namespace: openshift-virtualization-os-images
+          storage:
+            resources:
+              requests:
+                storage: 30Gi
+            storageClassName: 'coe-netapp-san'
+      runStrategy: Always
+      template:
+        metadata:
+          labels:
+            kubevirt.io/vmpool: dev-fedora-vms
+        spec:
+          domain:
+            cpu:
+              cores: 1
+            memory:
+              guest: 1024M
+            devices:
+              interfaces:
+              - model: virtio
+                name: coe-bridge-32
+                state: up
+                bridge: {}
+          networks:
+          - name: coe-bridge-32
+            multus:
+              networkName: "coe-bridge-32"
+              disks:
+              - disk:
+                  bus: virtio
+                name: rootdisk
+              - disk:
+                  bus: virtio
+                name: cloudinitdisk
+              rng: {}
+          volumes:
+          - dataVolume:
+              name: fedora-dev-volume
+            name: rootdisk
+          - cloudInitNoCloud:
+              userData: |-
+                #cloud-config
+                users:
+                - name: rguske
+                  gecos: R. Guske
+                  groups: wheel
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+                  ssh_authorized_keys:
+                    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINGf2ipOy2h3lJHbwP3qm4yICHvEFvYjlZGHWsEEUHCl jarvishomelab@gmail.com
+            name: cloudinitdisk
 EOF
 ```
+
+`oc scale vmpool dev-eventing-vms --replicas 1`
+
 
 ## PostgreSQL DB StatefulSet
 
@@ -298,12 +319,12 @@ EOF
 
 
 ```code
-kubectl create secret generic psql-secret \
-  --from-literal=db_host="changeme" \
-  --from-literal=db_port="changeme" \
-  --from-literal=db_name="changeme" \
-  --from-literal=db_user="changeme" \
-  --from-literal=db_password="changeme"
+oc create secret generic psql-secret \
+  --from-literal=db_host="10.32.98.110" \
+  --from-literal=db_port="5432" \
+  --from-literal=db_name="vmdb" \
+  --from-literal=db_user="postgres" \
+  --from-literal=db_password="redhat"
 ```
 
 
@@ -393,6 +414,23 @@ spec:
     backoffPolicy: linear
     backoffDelay: PT5S
 EOF
+```
+
+```code
+oc -n rguske-eventing create secret generic pg-credentials \
+  --from-literal=DB_HOST=10.32.98.110 \
+  --from-literal=DB_USER=postgres \
+  --from-literal=DB_PASSWORD='redhat'
+```
+
+```code
+kn service create postgresql-read-webapp \
+  --image=quay.io/rguske/psql-read-webapp:v1.1 \
+  --env-from secret:pg-credentials \
+  --env DB_NAME=vmdb \
+  --env DB_PORT=5432 \
+  --scale-min=0 \
+  --scale-max=2
 ```
 
 

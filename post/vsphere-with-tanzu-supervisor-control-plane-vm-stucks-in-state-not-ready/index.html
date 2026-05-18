@@ -23,7 +23,8 @@
   <meta name="twitter:title" content="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady">
   <meta name="twitter:description" content="The vSphere ESX Manager manages the life-cycle of agent VIBs and VMs. This post will give you an idea how it can help if one of your Supervisor Control Plane VMs stucks in state NotReady.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" /><link rel="prev" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="next" href="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" /><link rel="prev" href="https://rguske.github.io/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" /><link rel="next" href="https://rguske.github.io/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -43,7 +44,18 @@
             },"description": "The vSphere ESX Manager manages the life-cycle of agent VIBs and VMs. This post will give you an idea how it can help if one of your Supervisor Control Plane VMs stucks in state NotReady."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -58,19 +70,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -95,20 +107,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -119,28 +132,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2021-04-25">2021-04-25</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;1178 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/v7k8s_svcp_not_ready_cover.png"
         data-srcset="/img/v7k8s_svcp_not_ready_cover.png, /img/v7k8s_svcp_not_ready_cover.png 1.5x, /img/v7k8s_svcp_not_ready_cover.png 2x"
         data-sizes="auto"
         alt="/img/v7k8s_svcp_not_ready_cover.png"
-        title="The vSphere ESX Manager manages the life-cycle of agent VIBs and VMs. This post will give you an idea how it can help if one of your Supervisor Control Plane VMs stucks in state NotReady." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2021-04-25">2021-04-25</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1178 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>6 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="The vSphere ESX Manager manages the life-cycle of agent VIBs and VMs. This post will give you an idea how it can help if one of your Supervisor Control Plane VMs stucks in state NotReady." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#failed-to-get-available-workloads-bad-gateway">Failed to get available workloads: bad gateway</a></li>
     <li><a href="#into-troubleshooting">Into troubleshooting</a>
@@ -152,14 +160,14 @@
     <li><a href="#vsphere-esxi-agent-manager">vSphere ESXi Agent Manager</a></li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><h2 id="failed-to-get-available-workloads-bad-gateway">Failed to get available workloads: bad gateway</h2>
+            </div><div class="content" id="content"><h2 id="failed-to-get-available-workloads-bad-gateway">Failed to get available workloads: bad gateway</h2>
 <p>The last couple of weeks I spent a lot of time using my Tanzu Kubernetes Cluster(s)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> to get my head around as well as my hands dirty on this awesome project Knative<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. More to come soon &#x1f609; Interacting with a healthy vSphere Supervisor Cluster<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> is necessary for e.g. the provisioning of new Tanzu Kubernetes Cluster or the instantiation of vSphere Native Pods.</p>
 <p>Unfortunately, my attempt to login into mine after a recent power outage ends quicker than expected with the error message:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl vsphere login --server<span class="o">=</span>10.10.18.10 --vsphere-username administrator@jarvis.lab --insecure-skip-tls-verify
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Password:
@@ -190,9 +198,9 @@
 <p>The <code>shell</code> output was the following:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
 </span></span><span class="line"><span class="cl">Name: wcp
 </span></span><span class="line"><span class="cl">Starttype: AUTOMATIC
@@ -218,9 +226,9 @@
 <p>Let&rsquo;s see if the <em>HealthState</em> will change after restarting the service:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --restart wcp</span>
 </span></span><span class="line"><span class="cl">Completed Restart service request.
 </span></span><span class="line"><span class="cl">root@vcsa <span class="o">[</span> ~ <span class="o">]</span><span class="c1"># vmon-cli --status wcp</span>
@@ -239,9 +247,9 @@
 <p>Having the <code>wcp</code> service back in operating state led me to start over from where I began. This time logging in to my Supervisor Cluster went well and I checked the state of the three Control Plane Nodes by executing <code>kubectl get nodes</code>.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes
 </span></span><span class="line"><span class="cl">NAME                               STATUS     ROLES    AGE     VERSION
 </span></span><span class="line"><span class="cl">42100ed03ae877fd39716f909d57822e   NotReady   master   7d19h   v1.19.1+wcp.2
@@ -266,26 +274,26 @@
 <p>Updated November, 2023</p></blockquote>
 <p>I was ask by our Global Support Services team to add the following statement to this article. Please read it carefully.</p>
 <div class="details admonition warning open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>Disclaimer - THIS IS NOT A VALID TROUBLESHOOTING METHOD FOR CUSTOMERS<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content"><p>Do not delete eam agencies without the <strong>EXPRESS</strong> permission of a VMware support engineer. Depending on versions and the existing health of the supervisor cluster it is entirely possible to render the entire cluster un-recoverable. If VMware Support finds evidence of a customer manually deleting an EAM Agency, they may mark your cluster as unsupported and require you redeploy the entire vSphere with Tanzu solution.</p>
-<p>Read VMware <a href="https://kb.vmware.com/s/article/90194?lang=en_US" target="_blank" rel="noopener noreferrer ">KB90194</a></p>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>Disclaimer - THIS IS NOT A VALID TROUBLESHOOTING METHOD FOR CUSTOMERS<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content"><p>Do not delete eam agencies without the <strong>EXPRESS</strong> permission of a VMware support engineer. Depending on versions and the existing health of the supervisor cluster it is entirely possible to render the entire cluster un-recoverable. If VMware Support finds evidence of a customer manually deleting an EAM Agency, they may mark your cluster as unsupported and require you redeploy the entire vSphere with Tanzu solution.</p>
+<p>Read VMware <a href="https://kb.vmware.com/s/article/90194?lang=en_US" target="_blank" rel="noopener noreffer ">KB90194</a></p>
 <p><strong>Proceeding from here is on your own risk.</strong></p>
 </div>
-        </div>
     </div>
+</div>
 <p>If the desired state cannot be recovered automatically again, what option remains?</p>
-<p>Well, there&rsquo;s always something to learn. My well appreciated colleague <a href="https://www.why-did-it.fail/" target="_blank" rel="noopener noreferrer ">Dominik Zorgnotti</a> was pointing me to the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.monitoring.doc/GUID-D56ABFF4-4529-409C-9AA2-8D8D4E235601.html" target="_blank" rel="noopener noreferrer ">vSphere ESXi Agent Manager (EAM)</a>, which in the end turned out to be the solution for my problem. To be honest, I never was in the situation to make use of the EAM before and therefore it wasn&rsquo;t on my radar at all but I was quite happy to get to know this component now. What it does?</p>
+<p>Well, there&rsquo;s always something to learn. My well appreciated colleague <a href="https://www.why-did-it.fail/" target="_blank" rel="noopener noreffer ">Dominik Zorgnotti</a> was pointing me to the <a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.monitoring.doc/GUID-D56ABFF4-4529-409C-9AA2-8D8D4E235601.html" target="_blank" rel="noopener noreffer ">vSphere ESXi Agent Manager (EAM)</a>, which in the end turned out to be the solution for my problem. To be honest, I never was in the situation to make use of the EAM before and therefore it wasn&rsquo;t on my radar at all but I was quite happy to get to know this component now. What it does?</p>
 <div class="details admonition quote open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-quote-right fa-fw" aria-hidden="true"></i>vSphere ESX Agent Manager<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">The vSphere ESX Agent Manager automates the process of deploying and managing ESX and ESXi agents, which extend the function of the host to provide additional services to a vSphere solution.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-quote-right" aria-hidden="true"></i>vSphere ESX Agent Manager<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">The vSphere ESX Agent Manager automates the process of deploying and managing ESX and ESXi agents, which extend the function of the host to provide additional services to a vSphere solution.</div>
+    </div>
+</div>
 <p>You will find the EAM in the vSphere Client under <em>Menu -&gt; Administration -&gt; vCenter Server Extensions -&gt; vSphere ESXi Agent Manager</em>.</p>
 <figure><a class="lightgallery" href="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" title="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" data-thumbnail="/img/posts/202104_v7k8s_supervisorvm_not_ready/CapturFiles-20210422_093111.jpg" data-sub-html="<h2>Figure IV: vSphere ESXi Agent Manager</h2>">
         <img
@@ -348,9 +356,9 @@
     </figure>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get nodes
 </span></span><span class="line"><span class="cl">NAME                               STATUS   ROLES    AGE     VERSION
 </span></span><span class="line"><span class="cl">42103deb5d43d5f75f4623a336165684   Ready    master   3m37s   v1.19.1+wcp.2
@@ -360,13 +368,13 @@
 <hr>
 <ol>
 <li id="fn:1">
-<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-DC22EA6A-E086-4CFE-A7DA-2654891F5A12.html" target="_blank" rel="noopener noreferrer ">What Is a Tanzu Kubernetes Cluster?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-DC22EA6A-E086-4CFE-A7DA-2654891F5A12.html" target="_blank" rel="noopener noreffer ">What Is a Tanzu Kubernetes Cluster?</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2">
-<p><a href="https://www.knative.dev" target="_blank" rel="noopener noreferrer ">Knative Homepage</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://www.knative.dev" target="_blank" rel="noopener noreffer ">Knative Homepage</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3">
-<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreferrer ">Configuring and Managing a Supervisor Cluster</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-21ABC792-0A23-40EF-8D37-0367B483585E.html" target="_blank" rel="noopener noreffer ">Configuring and Managing a Supervisor Cluster</a>&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </div></div><div class="post-footer" id="post-footer">
@@ -374,42 +382,43 @@
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2023-11-13&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/d76e476251383f8af4e55f67984ff4435eac7b79" target="_blank" title="commit by Robert Guske(rguske@vmware.com) d76e476251383f8af4e55f67984ff4435eac7b79: added gss disclaimer to post supervisor stuck in notready state">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d76e476</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>d76e476</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-hashtags="VMware,vSphere,Kubernetes"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady" data-hashtags="VMware,vSphere,Kubernetes"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-hashtag="VMware"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-control-plane-vm-stucks-in-state-not-ready/" data-title="vSphere with Tanzu - SupervisorControlPlaneVM stucks in state NotReady"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/vsphere/">VSphere</a>, <a href="/tags/kubernetes/">Kubernetes</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/vsphere/">VSphere</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" class="prev" rel="prev" title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround</a>
-            <a href="/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" class="next" rel="next" title="Hands-on the Avi Kubernetes Operator (AKO)">Hands-on the Avi Kubernetes Operator (AKO)<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/vmware-ovftool-installation-was-unsuccessful-on-ubuntu-20/" class="prev" rel="prev" title="VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround"><i class="fas fa-angle-left" aria-hidden="true"></i>VMware ovftool installation was unsuccessful on Ubuntu 20.04 - A workaround</a>
+            <a href="/post/hands-on-the-avi-kubernetes-operator-nsx-advanced-loadbalancer/" class="next" rel="next" title="Hands-on the Avi Kubernetes Operator (AKO)">Hands-on the Avi Kubernetes Operator (AKO)<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>

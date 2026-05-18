@@ -25,7 +25,8 @@
   <meta name="twitter:title" content="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services">
   <meta name="twitter:description" content="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" /><link rel="prev" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" /><link rel="next" href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -45,7 +46,18 @@
             },"description": "Through this part, I'd like to bring you the lifecycle of a Supervisor Service a bit closer. I'm going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -60,19 +72,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -97,20 +109,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -121,28 +134,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder" aria-hidden="true"></i>Open-Source</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-09">2023-05-09</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;1922 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/supervisor-services-3-cover.png"
         data-srcset="/img/supervisor-services-3-cover.png, /img/supervisor-services-3-cover.png 1.5x, /img/supervisor-services-3-cover.png 2x"
         data-sizes="auto"
         alt="/img/supervisor-services-3-cover.png"
-        title="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Open-Source</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2023-05-09">2023-05-09</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>1922 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>10 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="Through this part, I&#39;d like to bring you the lifecycle of a Supervisor Service a bit closer. I&#39;m going to touch on how to handle a *reconfiguration*, *a version update* and an *uninstallation* of an existing Supervisor Service." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#recap-and-intro">Recap and Intro</a></li>
     <li><a href="#lifecycle-management-operations">Lifecycle Management Operations</a>
@@ -155,32 +163,32 @@
     <li><a href="#uninstalling-a-supervisor-service">Uninstalling a Supervisor Service</a></li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><h2 id="recap-and-intro">Recap and Intro</h2>
-<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreferrer ">Part I</a> and <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreferrer ">II</a> of my blog series on the Supervisor Services in vSphere with Tanzu (TKG with Supervisor Model), I covered the topics from registering and installing a new service on a Supervisor Cluster until how to leverage a service for functionalities like e.g. hosting container images (<a href="https://github.com/vsphere-tmm/Supervisor-Services#cloud-native-registry-service" target="_blank" rel="noopener noreferrer ">Registry Service</a>) or handling incoming traffic (<a href="https://github.com/vsphere-tmm/Supervisor-Services#kubernetes-ingress-controller-service" target="_blank" rel="noopener noreferrer ">Ingress Service</a>) for vSphere Pod based applications.</p>
-<p>Through this part, I&rsquo;d like to bring you the <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreferrer ">lifecycle of a Supervisor Service</a> a bit closer. I&rsquo;m going to touch on how to handle a <em>reconfiguration</em>, <em>a version update</em> and an <em>uninstallation</em> of an existing Supervisor Service.</p>
+            </div><div class="content" id="content"><h2 id="recap-and-intro">Recap and Intro</h2>
+<p>In <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/" target="_blank" rel="noopener noreffer ">Part I</a> and <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" target="_blank" rel="noopener noreffer ">II</a> of my blog series on the Supervisor Services in vSphere with Tanzu (TKG with Supervisor Model), I covered the topics from registering and installing a new service on a Supervisor Cluster until how to leverage a service for functionalities like e.g. hosting container images (<a href="https://github.com/vsphere-tmm/Supervisor-Services#cloud-native-registry-service" target="_blank" rel="noopener noreffer ">Registry Service</a>) or handling incoming traffic (<a href="https://github.com/vsphere-tmm/Supervisor-Services#kubernetes-ingress-controller-service" target="_blank" rel="noopener noreffer ">Ingress Service</a>) for vSphere Pod based applications.</p>
+<p>Through this part, I&rsquo;d like to bring you the <a href="https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-with-tanzu-services-workloads/GUID-052CF490-4B77-4CA2-8A4C-8624718ADA4E.html" target="_blank" rel="noopener noreffer ">lifecycle of a Supervisor Service</a> a bit closer. I&rsquo;m going to touch on how to handle a <em>reconfiguration</em>, <em>a version update</em> and an <em>uninstallation</em> of an existing Supervisor Service.</p>
 <h2 id="lifecycle-management-operations">Lifecycle Management Operations</h2>
-<p>Before I start with the first topic, the <strong>reconfiguration</strong> of an already existing Supervisor Service, I will briefly touch on <strong>DON&rsquo;TS</strong> based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor" target="_blank" rel="noopener noreferrer ">HERE</a>.</p>
+<p>Before I start with the first topic, the <strong>reconfiguration</strong> of an already existing Supervisor Service, I will briefly touch on <strong>DON&rsquo;TS</strong> based on an experience I just recently made with my existing Registry Service (Harbor). Installation covered in part I <a href="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-i-introduction-and-how-to/#add-new-service---harbor" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
 <div class="details admonition note open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>Only for vSphere 8<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">The Registry Service - Harbor is only supported with vSphere 8. Check the <a href="https://github.com/vsphere-tmm/Supervisor-Services#supervisor-services-catalog" target="_blank" rel="noopener noreferrer ">compatibility matrix</a>.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>Only for vSphere 8<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">The Registry Service - Harbor is only supported with vSphere 8. Check the <a href="https://github.com/vsphere-tmm/Supervisor-Services#supervisor-services-catalog" target="_blank" rel="noopener noreffer ">compatibility matrix</a>.</div>
+    </div>
+</div>
 <h3 id="dos-and-donts">DO&rsquo;S and DON&rsquo;TS</h3>
 <p>What happened? &#x1f914; I was right in the middle of working on a new blog post series (stay tuned) and one task which had to be documented is the relocation (copying a bundle from one registry to another) of a heavy-weight image bundle.</p>
 <p>This operation failed right in the middle of the image bundle relocation with the following error:</p>
 <div class="details admonition failure open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>imgpkg: Error:<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">[&hellip;]
-imgpkg: Error: POST <a href="https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/" target="_blank" rel="noopener noreferrer ">https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/</a>:
-UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir Path:/storage/docker/registry/v2/repositories/tap/tap-packages-1.5.0/_uploads/444bc0e9-fdba-4d54-a44f-1d97e8e7dca4]]</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-circle-xmark" aria-hidden="true"></i>imgpkg: Error:<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">[&hellip;]
+imgpkg: Error: POST <a href="https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/" target="_blank" rel="noopener noreffer ">https://harbor01.cpod-nsxv8.az-stc.cloud-garage.net/v2/tap/tap-packages-1.5.0/blobs/uploads/</a>:
+UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir Path:/storage/docker/registry/v2/repositories/tap/tap-packages-1.5.0/_uploads/444bc0e9-fdba-4d54-a44f-1d97e8e7dca4]]</div>
+    </div>
+</div>
 <p>This meaningful message is indicating that there&rsquo;s no space left on my Harbor instance. Since everything is declared via the <code>harbor-data-values.yml</code> file, I thought that simply adjusting the data for the respective storage value should be fine.</p>
 <p>Unfortunately, it wasn&rsquo;t obvious to me how to reconfigure an already deployed service via the vSphere Client. I checked the possibilities at the <strong>Workload Management/Services</strong> section but none of the available actions provided me what I was looking for. Also not the <strong>Edit</strong> action.</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_1.png" data-sub-html="<h2>Figure I: Available Actions for an existing Supervisor Service</h2>">
@@ -199,9 +207,9 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 <p>Taking my full self-confidence, I connected to the Supervisor Cluster (<code>kubectl vsphere login...</code>) and <code>edit</code>ed the <code>PersistentVolumeClaim</code> for the <code>harbor-registry</code> service:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 edit pvc harbor-registry
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
@@ -218,15 +226,15 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 <p>I simply increased the capacity as it suited me (10GB &ndash;&gt; 50GB). After saving the configuration ( <code>:wq</code>) the extension of the container volume happened automagically in vSphere and voilà, I was able to relocate my heavy image bundle successfully.</p>
 <p>Of course I had to pay the bill shortly afterwards.</p>
 <p>I already had my concerns when I did the adjustment directly to the <code>pvc</code> but this self-destructive curiosity overcame me once again &#x1f913; &#x1f4bb;</p>
-<p>I knew that <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreferrer ">kapp-controller</a> is being used on the Supervisor cluster to handle such Supervisor Service (Package) installations. Consequently, a reconciliation must happen at some point in time.</p>
+<p>I knew that <a href="https://carvel.dev/kapp-controller/" target="_blank" rel="noopener noreffer ">kapp-controller</a> is being used on the Supervisor cluster to handle such Supervisor Service (Package) installations. Consequently, a reconciliation must happen at some point in time.</p>
 <div class="details admonition failure open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>ReconcileFailed<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">ReconcileFailed. kapp: Error: update statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: Updating resource statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: API server says: StatefulSet.apps &ldquo;harbor-database&rdquo; is invalid: spec: Forbidden: updates to statefulset spec for fields other than &lsquo;replicas&rsquo;, &rsquo;template&rsquo;, &lsquo;updateStrategy&rsquo;, &lsquo;persistentVolumeClaimRetentionPolicy&rsquo; and &lsquo;minReadySeconds&rsquo; are forbidden (reason: Invalid).</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-circle-xmark" aria-hidden="true"></i>ReconcileFailed<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">ReconcileFailed. kapp: Error: update statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: Updating resource statefulset/harbor-database (apps/v1) namespace: svc-harbor-domain-c8: API server says: StatefulSet.apps &ldquo;harbor-database&rdquo; is invalid: spec: Forbidden: updates to statefulset spec for fields other than &lsquo;replicas&rsquo;, &rsquo;template&rsquo;, &lsquo;updateStrategy&rsquo;, &lsquo;persistentVolumeClaimRetentionPolicy&rsquo; and &lsquo;minReadySeconds&rsquo; are forbidden (reason: Invalid).</div>
+    </div>
+</div>
 <p>Oh boy! What now? Decreasing an already increased volume (vmdk)? No chance! Validated it. Ergo&hellip;uninstalling (covered further down) and reinstalling the whole Service. &#x1f926; <strong>Think twice before you do such operations!</strong></p>
 <h2 id="reconfiguring-a-supervisor-service">Reconfiguring a Supervisor Service</h2>
 <p>Having explained the <strong>DON&rsquo;TS</strong> let me introduce the <strong>DO&rsquo;S</strong> on how to reconfigure an existing Supervisor Service.</p>
@@ -256,9 +264,9 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 <p>The <code>YAML Service Config</code> editor will open which we have to use to adjust values. As mentioned, I&rsquo;m going to increase the <code>storage</code> value to 60GB (<em>Figure IV</em>).</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">accessMode</span><span class="p">:</span><span class="w"> </span><span class="l">ReadWriteOnce</span><span class="w">
@@ -291,9 +299,9 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 <p>Events created by Kubernetes (Supervisor Cluster) can be queried as well by using <code>kubectl</code>.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 events
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">LAST SEEN              TYPE      REASON                       OBJECT                                  MESSAGE
@@ -314,25 +322,25 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
     </figure>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">k -n svc-harbor-domain-c8 get pvc <span class="p">|</span> grep <span class="s1">&#39;harbor-registry&#39;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">harbor-registry                   Bound    pvc-fecf7048-55ab-41b5-9f63-dfc8f307ff39   60Gi       RWO            ftt0-r0        31h</span></span></code></pre></div></div>
 <p>Done the right way &#x2705;</p>
 <h2 id="updating-a-supervisor-service">Updating a Supervisor Service</h2>
-<p>As of now, new versions for a Supervisor Service will be provided via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md" target="_blank" rel="noopener noreferrer ">Supervisor Services Catalog</a> on <i class='fab fa-github fa-fw'></i>. I have no information if this is going to change in the future. Drop me a comment if you think it would make sense to have the versions shared via the <a href="https://marketplace.cloud.vmware.com/services?search=Supervisor%20Service" target="_blank" rel="noopener noreferrer ">VMware Marketplace</a>.</p>
+<p>As of now, new versions for a Supervisor Service will be provided via the <a href="https://github.com/vsphere-tmm/Supervisor-Services/blob/main/README.md" target="_blank" rel="noopener noreffer ">Supervisor Services Catalog</a> on <i class='fab fa-github fa-fw'></i>. I have no information if this is going to change in the future. Drop me a comment if you think it would make sense to have the versions shared via the <a href="https://marketplace.cloud.vmware.com/services?search=Supervisor%20Service" target="_blank" rel="noopener noreffer ">VMware Marketplace</a>.</p>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">The screenshots made for this chapter are taken from an environment running on vSphere 7. They&rsquo;ll differ a little when running the operations on a vSphere 8 environment.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>Info<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
-<p>I installed version v1.2.0 of the Supervisor Service for <a href="https://github.com/vsphere-tmm/Supervisor-Services#backup--recovery-service" target="_blank" rel="noopener noreferrer ">Backup &amp; Recovery</a> on my existing Supervisor cluster, which is going to install the Velero vSphere Operator on the Supervisor Control Plane Nodes(!). I&rsquo;m explicitly mentioning this detail, because one would expect that vSphere Pods are showing up in the vSphere client when installing this service.</p>
-<p>In order to update to a newer version, you have to download the updated <code>SupervisorServiceDefinition</code> yaml file <a href="https://github.com/vsphere-tmm/Supervisor-Services#velero-versions" target="_blank" rel="noopener noreferrer ">for Velero</a> first. Go to <strong>Workload Management/Services</strong>, click on <strong>ACTIONS</strong> on the appropriate service tile and select <strong>Add New Version</strong> (<em>Figure VII</em>).</p>
+    <div class="details-content">
+        <div class="admonition-content">The screenshots made for this chapter are taken from an environment running on vSphere 7. They&rsquo;ll differ a little when running the operations on a vSphere 8 environment.</div>
+    </div>
+</div>
+<p>I installed version v1.2.0 of the Supervisor Service for <a href="https://github.com/vsphere-tmm/Supervisor-Services#backup--recovery-service" target="_blank" rel="noopener noreffer ">Backup &amp; Recovery</a> on my existing Supervisor cluster, which is going to install the Velero vSphere Operator on the Supervisor Control Plane Nodes(!). I&rsquo;m explicitly mentioning this detail, because one would expect that vSphere Pods are showing up in the vSphere client when installing this service.</p>
+<p>In order to update to a newer version, you have to download the updated <code>SupervisorServiceDefinition</code> yaml file <a href="https://github.com/vsphere-tmm/Supervisor-Services#velero-versions" target="_blank" rel="noopener noreffer ">for Velero</a> first. Go to <strong>Workload Management/Services</strong>, click on <strong>ACTIONS</strong> on the appropriate service tile and select <strong>Add New Version</strong> (<em>Figure VII</em>).</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_7.png" data-sub-html="<h2>Figure VII: Add New Supervisor Service Version</h2>">
         <img
             class="lazyload"
@@ -441,13 +449,13 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
 <h2 id="uninstalling-a-supervisor-service">Uninstalling a Supervisor Service</h2>
 <p>The complete uninstallation of a Supervisor Service is a multi-step process. Only providing a big red <strong>DELETE</strong> button (fire and forget) would be a too simplistic approach to handle this lifecycle operation. Therefore, the first step is the <code>deactivation</code> of a Service itself in case e.g. it&rsquo;s not needed/consumed anymore.</p>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Lifecycle Operations Privileges<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">In order to execute lifecycle operations on Supervisor services, you need at least the <code>Manage Supervisor Services</code> privileges in vSphere.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>Lifecycle Operations Privileges<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">In order to execute lifecycle operations on Supervisor services, you need at least the <code>Manage Supervisor Services</code> privileges in vSphere.</div>
+    </div>
+</div>
 <p>Go to the Supervisor Services section in the vSphere client and select <strong>Delete</strong> via the <strong>ACTIONS</strong> button on the respective service tile.</p>
 <figure><a class="lightgallery" href="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" title="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" data-thumbnail="/img/posts/202304_supervisor_services_part_3/202304_supervisor_services_part_3_15.png" data-sub-html="<h2>Figure XV: Supervisor Service Action - Delete</h2>">
         <img
@@ -524,42 +532,43 @@ UNKNOWN: unknown error; map[DriverName:filesystem Enclosed:map[Err:28 Op:mkdir P
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2023-05-09&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/47a6b5217302fad49bbc648c2ff3e0ca4ff47913" target="_blank" title="commit by Robert Guske(rguske@vmware.com) 47a6b5217302fad49bbc648c2ff3e0ca4ff47913: fixed typos supervisor services part 3 post">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>47a6b52</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>47a6b52</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-hashtags="Harbor,VMware,Extensibility,CloudNative,Kubernetes"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-hashtag="Harbor"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services" data-hashtags="Harbor,VMware,Extensibility,CloudNative,Kubernetes"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-hashtag="Harbor"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/vsphere-with-tanzu-supervisor-services-part-iii-lifecycle-management-of-supervisor-services/" data-title="vSphere with Tanzu Supervisor Services Part III - Lifecycle Management of Supervisor Services"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/harbor/">Harbor</a>, <a href="/tags/vmware/">VMware</a>, <a href="/tags/extensibility/">Extensibility</a>, <a href="/tags/cloudnative/">CloudNative</a>, <a href="/tags/kubernetes/">Kubernetes</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/harbor/">Harbor</a>,&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/extensibility/">Extensibility</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a>
-            <a href="/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" class="next" rel="next" title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/vsphere-with-tanzu-supervisor-services-part-ii-ingress-with-contour-for-vsphere-pod-based-applications/" class="prev" rel="prev" title="vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications"><i class="fas fa-angle-left" aria-hidden="true"></i>vSphere with Tanzu Supervisor Services Part II - Ingress with Contour for vSphere Pod based Applications</a>
+            <a href="/post/vsphere-with-tanzu-supervisor-services-part-iv-virtual-machine-service-to-support-hybrid-application-architectures/" class="next" rel="next" title="vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures">vSphere with Tanzu Supervisor Services Part IV - Virtual Machine Service to support Hybrid Application Architectures<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>

@@ -25,7 +25,8 @@
   <meta name="twitter:title" content="Rebuilding from the Break - Restoring the VMware Avi Controller">
   <meta name="twitter:description" content="This article describes my made experiences with restoring the Avi controller. It demonstrates how easy and effective a restore procedure can be. As kind of bonus material, I also added two scripts to the article which can be used to backup the configuration backup-files to a remote location as well as an explanation on how you can run the Avi shell/cli in a container from outside the controller.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
-<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" /><link rel="prev" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="next" href="https://rguske.github.io/post/red-hat-anniversary/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" /><link rel="prev" href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" /><link rel="next" href="https://rguske.github.io/post/red-hat-anniversary/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -45,7 +46,18 @@
             },"description": "This article describes my made experiences with restoring the Avi controller. It demonstrates how easy and effective a restore procedure can be. As kind of bonus material, I also added two scripts to the article which can be used to backup the configuration backup-files to a remote location as well as an explanation on how you can run the Avi shell/cli in a container from outside the controller."
     }
     </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
 
         <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
     <div class="header-wrapper">
@@ -60,19 +72,19 @@
         title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a></div>
         </div>
     </div>
@@ -97,20 +109,21 @@
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                         </span>
                     </div>
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/">Posts</a><a class="menu-item" href="/tags/">Tags</a><a class="menu-item" href="/categories/">Categories</a><a class="menu-item" href="/about/">About</a><a class="menu-item" href="/disclaimer/">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>GitHub</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>Switch Theme</a></div>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
     </div>
 </header><div class="search-dropdown desktop">
         <div id="search-dropdown-desktop"></div>
@@ -121,28 +134,23 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">Contents</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><div class="featured-image"><img
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Rebuilding from the Break - Restoring the VMware Avi Controller</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2024-03-01">2024-03-01</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;2569 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;13 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/img/recover_avi_ctrl_cover.png"
         data-srcset="/img/recover_avi_ctrl_cover.png, /img/recover_avi_ctrl_cover.png 1.5x, /img/recover_avi_ctrl_cover.png 2x"
         data-sizes="auto"
         alt="/img/recover_avi_ctrl_cover.png"
-        title="This article describes my made experiences with restoring the Avi controller. It demonstrates how easy and effective a restore procedure can be. As kind of bonus material, I also added two scripts to the article which can be used to backup the configuration backup-files to a remote location as well as an explanation on how you can run the Avi shell/cli in a container from outside the controller." /></div><div class="single-card" data-image="true"><h1 class="single-title animate__animated animate__flipInX">Rebuilding from the Break - Restoring the VMware Avi Controller</h1><div class="post-meta">
-                <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Robert Guske</a></span><span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Platforms</a></span></div>
-                <div class="post-meta-line"><span class="post-publish">
-                            <i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i><time datetime="2024-03-01">2024-03-01</time>
-                        </span><span class="post-word-count">
-                            <i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>2569 words
-                        </span><span class="post-reading-time">
-                            <i class="far fa-clock fa-fw" aria-hidden="true"></i>13 minutes
-                        </span></div>
-            </div><div class="details toc" id="toc-static"  data-kept="">
-                    <div class="details-summary toc-title">
-                        <span>Contents</span>
-                        <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                    </div>
-                    <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+        title="This article describes my made experiences with restoring the Avi controller. It demonstrates how easy and effective a restore procedure can be. As kind of bonus material, I also added two scripts to the article which can be used to backup the configuration backup-files to a remote location as well as an explanation on how you can run the Avi shell/cli in a container from outside the controller." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#avi-portal---bad-service">Avi Portal - Bad Service</a></li>
     <li><a href="#troubleshooting-the-system">Troubleshooting the System</a></li>
@@ -159,8 +167,8 @@
     <li><a href="#bonus-powershell-and-bash-scripts-to-download-avi-backup-files">Bonus: Powershell and Bash Scripts to download Avi Backup Files</a></li>
   </ul>
 </nav></div>
-                </div><div class="content" id="content"><h2 id="avi-portal---bad-service">Avi Portal - Bad Service</h2>
-<p>Oh my! I wasn&rsquo;t expecting a three-part series as an outcome of my recent homelab crash, but here we are &#x1f604; Check out my recent posts <a href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" target="_blank" rel="noopener noreferrer ">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</a> and <a href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" target="_blank" rel="noopener noreferrer ">Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a> on my made experiences with recovering the vCenter Server database.</p>
+            </div><div class="content" id="content"><h2 id="avi-portal---bad-service">Avi Portal - Bad Service</h2>
+<p>Oh my! I wasn&rsquo;t expecting a three-part series as an outcome of my recent homelab crash, but here we are &#x1f604; Check out my recent posts <a href="https://rguske.github.io/post/database-resurrection-reviving-postgres-on-vmware-vcenter/" target="_blank" rel="noopener noreffer ">Database Resurrection - Reviving vPostgres DB on VMware vCenter Server</a> and <a href="https://rguske.github.io/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" target="_blank" rel="noopener noreffer ">Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a> on my made experiences with recovering the vCenter Server database.</p>
 <p>Actually, I thought I was &ldquo;out of the woods&rdquo; with fixiing the broken but unfortunately my Avi Controller was also affected from the outage.</p>
 <p>When I tried accessing the portal, I got a <code>Bad service</code> error (see &#x1f446;).</p>
 <p>First troubleshooting actions like e.g. using a different browser, clearing the browser-cache and cookies, etc. led to nothing.</p>
@@ -169,9 +177,9 @@
 <p>Consequently, I established a connection via <code>ssh</code> to the Avi controller directly and checked its condition on the system-level.</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ssh admin@avi-ctrl.jarvis.lab
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Avi Cloud Controller
@@ -197,9 +205,9 @@
 <p>I ran <code>journalctl</code> to check the systemd journal and my terminal filled up with errors like:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ journalctl
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
@@ -214,9 +222,9 @@
 <p>Next, I checked with the system and service manager <code>systemd</code> the conditions of the units (services, etc.) which are supposed to be up and running but it was a dead-end too. Only one unit was in state <code>failed</code> but I putted it aside, since it was only the <code>motd-news.service</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl list-units --state<span class="o">=</span>failed
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  UNIT              LOAD   ACTIVE SUB    DESCRIPTION
@@ -228,12 +236,12 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="m">1</span> loaded units listed.</span></span></code></pre></div></div>
 <p>I continued digging around on the issue and read logs, checked on VMware&rsquo;s Knowledge Base (KB) and other internal resources but unfortunately in vain. I started realizing that I faced a low-level corruption of the system which can&rsquo;t be fixed in a simple fashion.</p>
-<p>My suspicion got even more supported when I tried accessing the <a href="https://avinetworks.com/docs/22.1/cli-guide/" target="_blank" rel="noopener noreferrer ">Avi Shell</a>:</p>
+<p>My suspicion got even more supported when I tried accessing the <a href="https://avinetworks.com/docs/22.1/cli-guide/" target="_blank" rel="noopener noreffer ">Avi Shell</a>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ shell --address 10.10.70.10
 </span></span><span class="line"><span class="cl">Login: admin
 </span></span><span class="line"><span class="cl">Password:
@@ -242,13 +250,13 @@
 </span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s2">&#34;error&#34;</span>: <span class="s2">&#34;Bad service&#34;</span><span class="o">}</span></span></span></code></pre></div></div>
 <hr>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>Bonus - Docker run Avi Shell<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">In section <a href="#bonus-docker-run-avi-shell" rel="">Bonus: Docker run Avi Shell</a> I&rsquo;m providing a brief guidance on how to run the Avi <code>shell</code> inside a container which you can easily start and use from basically any remote system which provides a container runtime.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>Bonus - Docker run Avi Shell<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">In section <a href="#bonus-docker-run-avi-shell" rel="">Bonus: Docker run Avi Shell</a> I&rsquo;m providing a brief guidance on how to run the Avi <code>shell</code> inside a container which you can easily start and use from basically any remote system which provides a container runtime.</div>
+    </div>
+</div>
 <hr>
 <p>Problem is, that simply deploying a new instance a starting from scratch (w/o restoring data) isn&rsquo;t really an option, because other lab (business &#x1f609;) critical systems relying on the Avi controller - on the Load Balancer service.</p>
 <p>My Supervisor cluster (vSphere with Tanzu (TKGS)) for example:</p>
@@ -278,23 +286,23 @@
     </figure>
 <p>Per default, the backup is configured to run every 10 minutes and has a retention of 4 files. Best practice is of course to additionally store (copy) the backup-files on a remote server location using either <code>SCP</code> or <code>SFTP</code>.</p>
 <p>I recommend looking up the official documentation for more options on backing up the Avi configuraiton. The documentation contains great examples on how to configure the Avi backup using e.g. the <code>avi_shell</code>, the Avi API, REST API or even via Python.</p>
-<p>&#x1f4d6; <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-0CE79F00-ECC3-49AE-B5F5-004D1A835400.html" target="_blank" rel="noopener noreferrer ">Backup and Restore of Avi Vantage Configuration</a>. Alternatively, check <code>origin</code> <a href="https://avinetworks.com/docs/22.1/backup-and-restore-of-avi-vantage-configuration/" target="_blank" rel="noopener noreferrer ">HERE</a>.</p>
+<p>&#x1f4d6; <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-0CE79F00-ECC3-49AE-B5F5-004D1A835400.html" target="_blank" rel="noopener noreffer ">Backup and Restore of Avi Vantage Configuration</a>. Alternatively, check <code>origin</code> <a href="https://avinetworks.com/docs/22.1/backup-and-restore-of-avi-vantage-configuration/" target="_blank" rel="noopener noreffer ">HERE</a>.</p>
 <h2 id="restoring-the-avi-controller">Restoring the Avi Controller</h2>
 <p>I had a plan!</p>
 <h3 id="backup-the-backup">Backup the Backup</h3>
 <p>My plan included the following:</p>
 <ol>
 <li>Copy the files to my computer to have a copy of an existing backup.</li>
-<li>Run the <code>restore_config.py</code> script with the <code>--flushdb</code> option as descriped in the docs - <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-B300E74E-F366-46D7-99C5-AB64961FCC48.html" target="_blank" rel="noopener noreferrer ">Restore the VMware NSX Advanced Load Balancer Configuration</a>.</li>
+<li>Run the <code>restore_config.py</code> script with the <code>--flushdb</code> option as descriped in the docs - <a href="https://docs.vmware.com/en/VMware-NSX-Advanced-Load-Balancer/22.1/Administration_Guide/GUID-B300E74E-F366-46D7-99C5-AB64961FCC48.html" target="_blank" rel="noopener noreffer ">Restore the VMware NSX Advanced Load Balancer Configuration</a>.</li>
 <li>Celebrating the restored instance.</li>
 </ol>
 <p><strong>Let&rsquo;s go!</strong></p>
 <p>Like I&rsquo;ve mentioned earlier, the backup-files are stored locally in <code>/var/lib/avi/backups</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ls -rtl
 </span></span><span class="line"><span class="cl">total <span class="m">10904</span>
 </span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">3040701</span> Jan <span class="m">26</span> 11:00 backup_Default-Scheduler_20240126_110041.json
@@ -305,9 +313,9 @@
 <p>I started packaging the files into a tar-ball:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo tar -czf /tmp/backup.tar *.json
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">ls -rtl /tmp/backup.tar
@@ -315,9 +323,9 @@
 <p>Next was &ldquo;downloading&rdquo; the files to my computer:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp admin@10.10.70.10:/tmp/backup.tar ~/Downloads/avibackup
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Avi Cloud Controller
@@ -331,13 +339,13 @@
 </span></span><span class="line"><span class="cl">admin@10.10.70.10<span class="err">&#39;</span>s password:
 </span></span><span class="line"><span class="cl">backup.tar                                 100%   17MB  80.6MB/s   00:00</span></span></code></pre></div></div>
 <div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw" aria-hidden="true"></i>BONUS - Powershell and Bash Scripts available<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content">I&rsquo;ve created a Powershell as well a Bash script to simplify the download of the backup-files from the Avi Controller. Both scripts can be copied from <a href="#bonus-powershell-and-bash-scripts-to-download-avi-backup-files" rel="">here</a>.</div>
-        </div>
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>BONUS - Powershell and Bash Scripts available<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
     </div>
+    <div class="details-content">
+        <div class="admonition-content">I&rsquo;ve created a Powershell as well a Bash script to simplify the download of the backup-files from the Avi Controller. Both scripts can be copied from <a href="#bonus-powershell-and-bash-scripts-to-download-avi-backup-files" rel="">here</a>.</div>
+    </div>
+</div>
 <h3 id="the-restore-process">The Restore Process</h3>
 <p>Now that I have a backup of my backup, I was brave enough to execute the <code>restore_config.py</code> script with the option <code>--flushdb</code>.</p>
 <p>BTW! If you don&rsquo;t use the option, the restore script will immediately end with the error:</p>
@@ -346,9 +354,9 @@
 <p>Executing <code>restore_config.py</code>:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo /opt/avi/scripts/restore_config.py --config /var/lib/avi/backups/backup_Default-Scheduler_20240203_110044.json --passphrase <span class="s1">&#39;VMware1!&#39;</span> --flushdb
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
@@ -369,9 +377,9 @@
 <p>I tried it with other files once again but without success. I also tried executing the <code>flush_db.py</code> script alone:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:/opt/avi/scripts$ sudo ./flushdb.sh
 </span></span><span class="line"><span class="cl">rm: cannot remove <span class="s1">&#39;/etc/luna/cert/server/*&#39;</span>: No such file or directory
 </span></span><span class="line"><span class="cl">rm: cannot remove <span class="s1">&#39;/etc/luna/cert/client/*&#39;</span>: No such file or directory
@@ -387,9 +395,9 @@
 <p>So, I deployed a new instance of the Avi controller (OVA), <code>scp</code>ed the existing backup-files to the new controller, connected via <code>ssh</code> and executed the <code>restore_config.py</code> once again.</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo /opt/avi/scripts/restore_config.py --config /tmp/backup_Default-Scheduler_20240203_110044.json --passphrase VMware1! --flushdb
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Restoring config will duplicate the environment of the config. If the environment is active elsewhere there will be conflicts.
@@ -423,9 +431,9 @@
 <p>In the <a href="#troubleshooting-the-system" rel="">first section</a> of my article, I mentioned that I wasn&rsquo;t able to open the Avi Shell from within the controller. When I entered the command <code>shell</code> in order to start it, I received the error:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ shell
 </span></span><span class="line"><span class="cl">Login: admin
 </span></span><span class="line"><span class="cl">Password:
@@ -440,9 +448,9 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo docker images
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> admin:
@@ -456,9 +464,9 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo docker save avinetworks/cli -o /tmp/avinetworks-cli.tar
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">admin@10-10-70-10:~$ ls -l /tmp/avinetworks-cli.tar
@@ -468,9 +476,9 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">admin@10-10-70-10:~$ sudo chown admin /tmp/avinetworks-cli.tar
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">admin@10-10-70-10:~/avicli-image$ ls -l
@@ -481,9 +489,9 @@
 </ul>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">scp admin@10.10.70.10:/tmp/avinetworks-cli.tar ~/Downloads/
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">Avi Cloud Controller
@@ -501,18 +509,18 @@
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker load -i avinetworks-cli.tar</span></span></code></pre></div></div>
 <ul>
 <li>Check its availability:</li>
 </ul>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker images <span class="p">|</span> grep avinetworks
 </span></span><span class="line"><span class="cl">avinetworks/cli    22.1.5.9093         8fd02452dac3   <span class="m">4</span> months ago    484MB</span></span></code></pre></div></div>
 <ul>
@@ -520,9 +528,9 @@
 </ul>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -it --rm --name avishell  avinetworks/cli:22.1.5.9093 /usr/local/bin/avi_shell --address 10.10.70.10 --user admin --password <span class="s1">&#39;VMware1!&#39;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show backup
@@ -549,13 +557,13 @@
 </span></span><span class="line"><span class="cl">+-------------------------------+----------------------------------------------------------+
 </span></span><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt;</span></span></code></pre></div></div>
 <p>The Avi <code>shell</code> can be very usefull when you&rsquo;d like to obtain specific information or if you&rsquo;d like to make adjustments on the existing configuration to the Avi controller without using the GUI.</p>
-<p>Check out the <a href="https://avinetworks.com/docs/latest/cli-top-level-commands/" target="_blank" rel="noopener noreferrer ">CLI Top-Level Commands</a>.</p>
+<p>Check out the <a href="https://avinetworks.com/docs/latest/cli-top-level-commands/" target="_blank" rel="noopener noreffer ">CLI Top-Level Commands</a>.</p>
 <p><strong>Examples</strong>:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show virtualservice
 </span></span><span class="line"><span class="cl">+--------------------------------------------------------+-------------+-------------+-----------+---------------+------------+----------------+--------+
 </span></span><span class="line"><span class="cl"><span class="p">|</span> Name                                                   <span class="p">|</span> IP Address  <span class="p">|</span> IP6 Address <span class="p">|</span> Services  <span class="p">|</span> Cloud         <span class="p">|</span> Oper State <span class="p">|</span> Type           <span class="p">|</span> Parent <span class="p">|</span>
@@ -569,9 +577,9 @@
 </span></span><span class="line"><span class="cl">+--------------------------------------------------------+-------------+-------------+-----------+---------------+------------+----------------+--------+</span></span></code></pre></div></div>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>admin:10-10-70-10<span class="o">]</span>: &gt; show placement vip detail
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
@@ -634,9 +642,9 @@
 <p>Powershell (with <code>pscp.exe</code>):</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-powershell">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># Define the variables</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$remoteServer</span> <span class="p">=</span> <span class="s2">&#34;admin@10.10.70.10&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$remotePath</span> <span class="p">=</span> <span class="s2">&#34;/var/lib/avi/backups/*&#34;</span>
@@ -672,9 +680,9 @@
 <p>Bash:</p>
 <div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-bash">
-        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
-        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
-        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -euo pipefail
 </span></span><span class="line"><span class="cl">
@@ -708,42 +716,43 @@
         <div class="post-info-line">
             <div class="post-info-mod">
                 <span>Updated on 2024-03-01&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/f47d968ac2c70a915a582a7817b1577ac5fb18a5" target="_blank" title="commit by Robert Guske(rguske@vmware.com) f47d968ac2c70a915a582a7817b1577ac5fb18a5: fixing md format for some posts">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>f47d968</a></span>
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>f47d968</a></span>
+            </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"><span>
                             <a class="link-to-markdown" href="/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/index.md" target="_blank">Read Markdown</a>
                         </span></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-hashtags="VMware,Avi,Tanzu,CloudNative,Kubernetes"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-hashtag="VMware"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-xing fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller" data-hashtags="VMware,Avi,Tanzu,CloudNative,Kubernetes"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-hashtag="VMware"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/rebuilding-from-the-break-restoring-the-vmware-avi-controller/" data-title="Rebuilding from the Break - Restoring the VMware Avi Controller"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/vmware/">VMware</a>, <a href="/tags/avi/">Avi</a>, <a href="/tags/tanzu/">Tanzu</a>, <a href="/tags/cloudnative/">CloudNative</a>, <a href="/tags/kubernetes/">Kubernetes</a></section>
-        <section class="post-back">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/vmware/">VMware</a>,&nbsp;<a href="/tags/avi/">Avi</a>,&nbsp;<a href="/tags/tanzu/">Tanzu</a>,&nbsp;<a href="/tags/cloudnative/">CloudNative</a>,&nbsp;<a href="/tags/kubernetes/">Kubernetes</a></section>
+        <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" class="prev" rel="prev" title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a>
-            <a href="/post/red-hat-anniversary/" class="next" rel="next" title="Time Flies! One Year at Red Hat">Time Flies! One Year at Red Hat<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/post/fixing-vcenter-postgres-archiver-service-dead-replication-slot/" class="prev" rel="prev" title="Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot"><i class="fas fa-angle-left" aria-hidden="true"></i>Fixing vCenter Postgres Archiver Service - Dead Postgres Replication Slot</a>
+            <a href="/post/red-hat-anniversary/" class="next" rel="next" title="Time Flies! One Year at Red Hat">Time Flies! One Year at Red Hat<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
-</div></article></div>
+</article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreferrer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
         <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
             </a>
         </div>
 
         <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+                <i class="fas fa-comment" aria-hidden="true"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.min.js"></script></body>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
 </html>
