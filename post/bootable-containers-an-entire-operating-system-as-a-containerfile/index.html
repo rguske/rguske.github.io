@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Bootable Containers - An Entire Operating System as a Containerfile - Blog Robert Guske</title><meta name="Description" content="A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps."><meta property="og:url" content="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/">
+  <meta property="og:site_name" content="Blog Robert Guske">
+  <meta property="og:title" content="Bootable Containers - An Entire Operating System as a Containerfile">
+  <meta property="og:description" content="A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-09-10T16:49:00+02:00">
+    <meta property="article:modified_time" content="2026-09-10T16:49:00+02:00">
+    <meta property="article:tag" content="RedHat">
+    <meta property="article:tag" content="OpenShift">
+    <meta property="article:tag" content="Containers">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Bootc">
+    <meta property="article:tag" content="KubeVirt">
+    <meta property="og:image" content="https://rguske.github.io/img/avatar2.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rguske.github.io/img/avatar2.png">
+  <meta name="twitter:title" content="Bootable Containers - An Entire Operating System as a Containerfile">
+  <meta name="twitter:description" content="A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps.">
+<meta name="application-name" content="Robert Guske&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" /><link rel="prev" href="https://rguske.github.io/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Bootable Containers - An Entire Operating System as a Containerfile",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rguske.github.io\/post\/bootable-containers-an-entire-operating-system-as-a-containerfile\/"
+        },"genre": "posts","keywords": "RedHat, OpenShift, Containers, Linux, bootc, KubeVirt, Automation","wordcount":  3568 ,
+        "url": "https:\/\/rguske.github.io\/post\/bootable-containers-an-entire-operating-system-as-a-containerfile\/","datePublished": "2026-09-10T16:49:00+02:00","dateModified": "2026-09-10T16:49:00+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Robert Guske"
+            },"description": "A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'auto';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/about/"> About </a><a class="menu-item" href="/disclaimer/"> Disclaimer </a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Blog Robert Guske"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/avatar2.png"
+        data-srcset="/img/avatar2.png, /img/avatar2.png 1.5x, /img/avatar2.png 2x"
+        data-sizes="auto"
+        alt="/img/avatar2.png"
+        title="/img/avatar2.png" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/about/" title="">About</a><a class="menu-item" href="/disclaimer/" title="">Disclaimer</a><a class="menu-item" href="https://github.com/rguske" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Bootable Containers - An Entire Operating System as a Containerfile</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder" aria-hidden="true"></i>Open-Source</a>&nbsp;<a href="/categories/virtualization/"><i class="far fa-folder" aria-hidden="true"></i>Virtualization</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2026-09-10">2026-09-10</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;3568 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;17 minutes&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/bootable_containers_cover2.png"
+        data-srcset="/img/bootable_containers_cover2.png, /img/bootable_containers_cover2.png 1.5x, /img/bootable_containers_cover2.png 2x"
+        data-sizes="auto"
+        alt="/img/bootable_containers_cover2.png"
+        title="A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps." /></div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#from-an-inherited-session-in-hamburg-to-this-post">From an Inherited Session in Hamburg to This Post</a></li>
+    <li><a href="#what-are-bootable-containers">What Are Bootable Containers?</a>
+      <ul>
+        <li><a href="#why-does-this-matter">Why does this matter?</a></li>
+      </ul>
+    </li>
+    <li><a href="#key-components">Key Components</a>
+      <ul>
+        <li><a href="#bootc"><code>bootc</code></a></li>
+        <li><a href="#bootc-image-builder"><code>bootc-image-builder</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#building-a-bootable-web-server">Building a Bootable Web Server</a></li>
+    <li><a href="#from-container-image-to-virtual-machine">From Container Image to Virtual Machine</a>
+      <ul>
+        <li><a href="#step-1-convert-to-qcow2">Step 1: Convert to qcow2</a></li>
+        <li><a href="#step-2-upload-the-qcow2-file-into-a-datavolume">Step 2: Upload the qcow2 file into a DataVolume</a></li>
+        <li><a href="#step-3-create-the-virtual-machine">Step 3: Create the Virtual Machine</a></li>
+        <li><a href="#step-4-exposing-the-webserver-vm">Step 4: Exposing the Webserver VM</a></li>
+        <li><a href="#alternative-step-2-package-the-disk-as-a-container-image">Alternative Step 2: Package the disk as a container image</a></li>
+        <li><a href="#alternative-step-3-from-registry-to-pvc-to-vm">Alternative Step 3: From registry to PVC to VM</a></li>
+      </ul>
+    </li>
+    <li><a href="#bootc-atomic-upgrade--rollback">Bootc Atomic Upgrade &amp; Rollback</a>
+      <ul>
+        <li><a href="#bootc-switchupgrade">bootc switch/upgrade</a></li>
+      </ul>
+    </li>
+    <li><a href="#automating-it-three-flavors-of-cicd">Automating It: Three Flavors of CI/CD</a>
+      <ul>
+        <li><a href="#github-actions">GitHub Actions</a></li>
+        <li><a href="#openshift-pipelines-tekton">OpenShift Pipelines (Tekton)</a></li>
+        <li><a href="#gitops-with-argocd">GitOps with ArgoCD</a></li>
+      </ul>
+    </li>
+    <li><a href="#battle-scars">Battle Scars</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="from-an-inherited-session-in-hamburg-to-this-post">From an Inherited Session in Hamburg to This Post</h2>
+<p>Last week I stood on stage at ContainerDays 2026 in beautiful Hamburg with a talk titled <em>&ldquo;Bootable Containers: An entire OS as a Containerfile&rdquo;</em>, a session I &ldquo;only&rdquo; inherited from my esteemed colleagues <a href="https://www.linkedin.com/in/cedricclyburn/" target="_blank" rel="noopener noreffer ">Cedric Clyburn</a> and <a href="https://www.linkedin.com/in/paulomenon/" target="_blank" rel="noopener noreffer ">Paulo Menon</a>, who unfortunately couldn&rsquo;t make it to the event. I promised them I&rsquo;d give it my very best &#x1f605;, and I shared the story <a href="https://www.linkedin.com/posts/robertguske_containerdays-cds26-hamburg-activity-7500564361191727105-8sj2" target="_blank" rel="noopener noreffer ">on LinkedIn</a> if you want the full context.</p>
+<p>The talk was recorded, so as all the others as well, and the recording will be up soon on the official <a href="https://www.youtube.com/@ContainerDays" target="_blank" rel="noopener noreffer ">Container Days YouTube</a> channel. In the meantime, this post is essentially the learning guide I built for myself while &ldquo;onboarding&rdquo; onto the topic, turned into something more permanent than just a slide deck&hellip;a hands-on walkthrough of what bootable containers actually are, how to build one, boot it as a VM, and automate the whole thing.</p>
+<p><i class='fab fa-github fa-fw'></i> repository &#x1f449; <a href="https://github.com/rguske/bootable-containers" target="_blank" rel="noopener noreffer ">rguske/bootable-containers</a></p>
+<h2 id="what-are-bootable-containers">What Are Bootable Containers?</h2>
+<div class="details admonition info open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-info" aria-hidden="true"></i>The core idea<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content"><strong>Bootable Containers</strong> (also known as <strong>Image Mode</strong> for RHEL) treat the <strong>entire operating system as a container image</strong>, instead of a pile of packages installed and configured imperatively over time.</div>
+    </div>
+</div>
+<p>If you&rsquo;ve ever built and pushed a container image with <code>podman build</code> / <code>podman push</code>, you already know 90% of the workflow. The remaining 10% is the mental shift. The <code>Containerfile</code> you write no longer just describes an application but a bootable Linux system, kernel and all.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Aspect</th>
+          <th>Package Mode</th>
+          <th>Image Mode</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>OS Content Model</strong></td>
+          <td>Individual RPM packages</td>
+          <td>Versioned OCI OS image</td>
+      </tr>
+      <tr>
+          <td><strong>Updates</strong></td>
+          <td>Package-by-package</td>
+          <td>Atomic image replacement</td>
+      </tr>
+      <tr>
+          <td><strong>Rollback</strong></td>
+          <td>Complex, often impossible</td>
+          <td>Simple, automatic</td>
+      </tr>
+      <tr>
+          <td><strong>Root Filesystem</strong></td>
+          <td>Mutable</td>
+          <td>Immutable (except <code>/etc</code>, <code>/var</code>)</td>
+      </tr>
+      <tr>
+          <td><strong>Configuration</strong></td>
+          <td>Runtime, imperative</td>
+          <td>Build time, declarative</td>
+      </tr>
+      <tr>
+          <td><strong>Consistency</strong></td>
+          <td>Drift over time</td>
+          <td>Guaranteed identical</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="why-does-this-matter">Why does this matter?</h3>
+<p>Because it solves common challenges in enterprises! Different teams, different platforms, different toolings. The fundamental enterprise problem is therefore configuration state management at scale. Traditional systems are continuously modified. Bootable Containers instead let organizations manage the OS as a versioned, tested, signed, and reproducible artifact.</p>
+<ul>
+<li><strong>Unified workflow</strong> - same tools (Podman, <code>Containerfile</code>, registries) for apps <em>and</em> operating systems.</li>
+<li><strong>Immutability</strong> - the root filesystem is read-only, which kills configuration drift dead.</li>
+<li><strong>Atomic updates</strong> - the whole OS updates as one unit, not package by package.</li>
+<li><strong>Easy rollbacks</strong> - boot into the previous image version the moment something goes sideways.</li>
+</ul>
+<h2 id="key-components">Key Components</h2>
+<p>Mentionable key components are <code>podman</code>, <code>bootc</code> as well as <code>bootc-image-builder</code> which are part of Red Hat&rsquo;s contributions to the CNCF of a comprehensive set of container tools.</p>
+<p>&#x1f4f0; <a href="https://www.redhat.com/en/blog/red-hat-contribute-comprehensive-container-tools-collection-cloud-native-computing-foundation" target="_blank" rel="noopener noreffer ">Red Hat to Contribute Comprehensive Container Tools Collection to Cloud Native Computing Foundation</a></p>
+<blockquote>
+<p>The continued importance of cloud-native applications in an AI and hybrid cloud-centric world demands an open, more accessible ecosystem of development tools. Today, we’re pleased to help drive cloud-native evolution further into the next-generation of IT with our intent to contribute a comprehensive set of container tools to the Cloud Native Computing Foundation (CNCF), including bootc, Buildah, Composefs, Podman, Podman Desktop and Skopeo.</p></blockquote>
+<h3 id="bootc"><code>bootc</code></h3>
+<p><i class='fab fa-github fa-fw'></i> repository &#x1f449; <a href="https://github.com/bootc-dev/bootc" target="_blank" rel="noopener noreffer ">bootc-dev/bootc</a></p>
+<p><code>bootc</code> is the tool that lives <em>inside</em> the running system and manages which bootable container image is currently booted.</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Check current booted image</span>
+</span></span><span class="line"><span class="cl">bootc status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Switch to a new image</span>
+</span></span><span class="line"><span class="cl">bootc switch quay.io/myorg/my-bootc:latest
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Update to the latest version of the current image</span>
+</span></span><span class="line"><span class="cl">bootc upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Rollback to the previous image</span>
+</span></span><span class="line"><span class="cl">bootc rollback</span></span></code></pre></div></div>
+<h3 id="bootc-image-builder"><code>bootc-image-builder</code></h3>
+<p><i class='fab fa-github fa-fw'></i> repository &#x1f449; <a href="https://github.com/osbuild/image-builder" target="_blank" rel="noopener noreffer ">osbuild/image-builder</a></p>
+<p>Building the container image is only half the story — at some point you need an actual bootable <em>disk</em>. <code>bootc-image-builder</code> is a containerized tool that converts a bootc container image into whichever disk format your target platform needs:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Output Type</th>
+          <th>Use Case</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>qcow2</code></td>
+          <td>KVM, OpenShift Virtualization, libvirt</td>
+      </tr>
+      <tr>
+          <td><code>vmdk</code></td>
+          <td>VMware vSphere</td>
+      </tr>
+      <tr>
+          <td><code>raw</code></td>
+          <td>Bare metal, direct disk write</td>
+      </tr>
+      <tr>
+          <td><code>iso</code></td>
+          <td>Installation media</td>
+      </tr>
+      <tr>
+          <td><code>ami</code></td>
+          <td>AWS EC2</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="building-a-bootable-web-server">Building a Bootable Web Server</h2>
+<div class="details admonition note open">
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>About the base image<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">Everything in this post uses <strong>CentOS Stream 9</strong> bootc images, so you can follow along without a Red Hat subscription. The concepts though apply 1:1 to RHEL bootc images (<code>registry.redhat.io/rhel9/rhel-bootc:9.6</code>) as well as Fedora bootc images (<code>quay.io/fedora/fedora-bootc:41</code>).</div>
+    </div>
+</div>
+<p>Let&rsquo;s build (multi-arch) the simplest possible thing: an Apache <code>httpd</code> web server, packaged as a bootable container instead of a regular one.</p>
+<p>Clone the repository <code>git clone git@github.com:rguske/bootable-containers.git</code> and change into the <code>demos/webserver</code> directory.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;</span></span></code></pre></div></div>
+<p>Replace the Container Image Registry with the one you have access to.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Create a manifest for a multi-arch image</span>
+</span></span><span class="line"><span class="cl">podman manifest create quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># build for both architectures</span>
+</span></span><span class="line"><span class="cl">podman build <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --platform linux/amd64,linux/arm64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --manifest quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0 .</span></span></code></pre></div></div>
+<p>Push the manifest to your registry:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Push the manifest</span>
+</span></span><span class="line"><span class="cl">podman manifest push --all quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0</span></span></code></pre></div></div>
+<p>Since a bootable container is designed to boot as a full system with <code>systemd</code> as PID 1, you can&rsquo;t just <code>podman run</code> it the normal way and expect the web server to answer.</p>
+<p>For a quick local sanity check, bypass <code>systemd</code> and run <code>httpd</code> directly:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">podman run <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --rm <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name webserver-test <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 8080:80 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  /usr/sbin/httpd -DFOREGROUND</span></span></code></pre></div></div>
+<p>Validate its functionality by either using <code>curl http://localhost:8080</code> or simply browsing it on your computer.</p>
+<p>If you compare a bootable container side by side with a regular container, the differences are clear:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Aspect</th>
+          <th>Regular Container</th>
+          <th>Bootable Container</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Purpose</strong></td>
+          <td>Run a single application</td>
+          <td>Run a full operating system</td>
+      </tr>
+      <tr>
+          <td><strong>Init (PID 1)</strong></td>
+          <td>Application process</td>
+          <td><code>systemd</code></td>
+      </tr>
+      <tr>
+          <td><strong>Kernel</strong></td>
+          <td>Uses host kernel</td>
+          <td>Contains its own kernel</td>
+      </tr>
+      <tr>
+          <td><strong>Size</strong></td>
+          <td>~100 MB</td>
+          <td>~1.5 GB</td>
+      </tr>
+      <tr>
+          <td><strong>Can boot as VM</strong></td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td><strong>Atomic updates</strong></td>
+          <td>No</td>
+          <td>Yes (via <code>bootc</code>)</td>
+      </tr>
+  </tbody>
+</table>
+<div class="details admonition warning open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>This only tests the web content<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">For a real test, you actually need to boot it! In a VM for example. That&rsquo;s exactly what we&rsquo;ll do next.</div>
+    </div>
+</div>
+<h2 id="from-container-image-to-virtual-machine">From Container Image to Virtual Machine</h2>
+<p>This is the part that felt like magic the first time I ran it end to end. The same container image I just pushed to my registry becomes an actual, bootable virtual machine disk and lands in OpenShift Virtualization as a PVC.</p>
+<h3 id="step-1-convert-to-qcow2">Step 1: Convert to qcow2</h3>
+<div class="details admonition warning open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>macOS users, read this first<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">Building the <code>bootc</code> container image itself works fine on macOS. Converting it to a <code>qcow2</code> disk with <code>bootc-image-builder</code> does <strong>not</strong>! It needs direct access to the host&rsquo;s container storage (<code>-v /var/lib/containers/storage:/var/lib/containers/storage</code>), which only works reliably on <strong>native Linux x86_64</strong>. I run this step on a small Linux VM.</div>
+    </div>
+</div>
+<p>In order to do the conversion <code>bootc-image-builder</code> is used. A container to create disk images from bootc container inputs.</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Pull the bootc image first (bootc-image-builder no longer pulls automatically)</span>
+</span></span><span class="line"><span class="cl">sudo podman pull quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mkdir -p output
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo podman run <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --rm -it --privileged <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --pull<span class="o">=</span>newer <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --security-opt <span class="nv">label</span><span class="o">=</span>type:unconfined_t <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v <span class="s2">&#34;</span><span class="nv">$PWD</span><span class="s2">/output&#34;</span>:/output <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /var/lib/containers/storage:/var/lib/containers/storage <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  quay.io/centos-bootc/bootc-image-builder:latest <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --type qcow2 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Result: output/qcow2/disk.qcow2</span></span></span></code></pre></div></div>
+<p>Pay attention to the <code>-v &quot;$PWD/output&quot;:/output \</code> option which <code>bootc-image-builder</code> will use to create the <code>output</code> directory and to store the <code>disk.qcow2</code> file.</p>
+<p>Example output building the disk image:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[-] Disk image building step
+</span></span><span class="line"><span class="cl">[5 / 5] Pipeline qcow2 [---------------------------------------------------------------------------------------------------------&gt;] 100.00%
+</span></span><span class="line"><span class="cl">[2 / 2] Stage org.osbuild.qemu [-------------------------------------------------------------------------------------------------&gt;] 100.00%
+</span></span><span class="line"><span class="cl">Message: Results saved in .</span></span></code></pre></div></div>
+<h3 id="step-2-upload-the-qcow2-file-into-a-datavolume">Step 2: Upload the qcow2 file into a DataVolume</h3>
+<p>OpenShift Virtualization (KubeVirt) never talks to your registry directly to boot a VM. It goes through a <code>DataVolume</code>, which is CDI&rsquo;s (Containerized Data Importer) way of saying &ldquo;materialize this content as a PVC&rdquo;. The <code>VirtualMachine</code> object then simply mounts that PVC as its boot disk.</p>
+<p>Create an OpenShift project (Kubernetes namespace) in which the VM will be created:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc new-project bootable-containers</span></span></code></pre></div></div>
+<div class="details admonition warning open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>RWX live migration needs Block volume mode<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">Wanting live migration for your VM? KubeVirt refuses to migrate a VM whose disk isn&rsquo;t backed by a <code>ReadWriteMany</code> PVC. On block storage classes, <code>ReadWriteMany</code> is <em>only</em> accepted with <code>volumeMode: Block</code> — requesting it with the default <code>Filesystem</code> mode gets rejected outright with <code>non-block volume with RWX access mode is not supported</code>. Set both <code>accessModes: [ReadWriteMany]</code> and <code>volumeMode: Block</code> together on the <code>DataVolume</code>.</div>
+    </div>
+</div>
+<p>Upload the previously created <code>qcow2</code> file into a <code>DataVolume</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Make sure replacing</span>
+</span></span><span class="line"><span class="cl">virtctl image-upload dv bootc-webserver <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --size 10Gi <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --storage-class kubevirt-odf-replica-two-block <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --access-mode ReadWriteMany <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --volume-mode block <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --image-path ~/output/qcow2/disk.qcow2 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --insecure</span></span></code></pre></div></div>
+<p>Example <code>virtctl image-upload</code> output:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PVC bootable-containers/bootc-webserver-cds not found
+</span></span><span class="line"><span class="cl">DataVolume bootable-containers/bootc-webserver-cds created
+</span></span><span class="line"><span class="cl">Waiting <span class="k">for</span> PVC bootc-webserver-cds upload pod to be ready...
+</span></span><span class="line"><span class="cl">Pod now ready
+</span></span><span class="line"><span class="cl">Uploading data to https://cdi-uploadproxy-openshift-cnv.apps.rguske-ocp42.rguske.coe.muc.redhat.com
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1.69 GiB / 1.69 GiB <span class="o">[</span>------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<span class="o">]</span> 100.00% 182.13 MiB p/s 9.7s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Uploading data completed successfully, waiting <span class="k">for</span> processing to complete, you can hit ctrl-c without interrupting the progress</span></span></code></pre></div></div>
+<p>Like I mentioned above, the job of uploading the <code>qcow2</code> image file will be done by the Containerized Data Importer in form of a pod.</p>
+<p>Check the logs of the created CDI pod:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get pod -w
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                    READY   STATUS              RESTARTS   AGE
+</span></span><span class="line"><span class="cl">cdi-upload-prime-e159413b-5485-49bc-9afe-584d347a0fc2   0/1     ContainerCreating   <span class="m">0</span>          29s
+</span></span><span class="line"><span class="cl">cdi-upload-prime-e159413b-5485-49bc-9afe-584d347a0fc2   1/1     Running             <span class="m">0</span>          29s</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc logs cdi-upload-prime-e159413b-5485-49bc-9afe-584d347a0fc2 -f</span></span></code></pre></div></div>
+<h3 id="step-3-create-the-virtual-machine">Step 3: Create the Virtual Machine</h3>
+<p>After uploading the virtual disk file into a PVC&hellip;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get dv,pvc
+</span></span><span class="line"><span class="cl">NAME                                         PHASE       PROGRESS   RESTARTS   AGE
+</span></span><span class="line"><span class="cl">datavolume.cdi.kubevirt.io/bootc-webserver   Succeeded   N/A                   7m27s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                    STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                     VOLUMEATTRIBUTESCLASS   AGE
+</span></span><span class="line"><span class="cl">persistentvolumeclaim/bootc-webserver   Bound    pvc-c15578c5-9a63-4eac-8a22-4064ac03e2bc   10Gi       RWX            kubevirt-odf-replica-two-block   &lt;unset&gt;                 7m27s</span></span></code></pre></div></div>
+<p>&hellip;the consequently next step is to create the virtual machine and boot it (based on a bootable container image &#x1f680;).</p>
+<p>Apply the following VM spec:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">oc apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kubevirt.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">VirtualMachine</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">bootable-containers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">runStrategy</span><span class="p">:</span><span class="w"> </span><span class="l">Always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">kubevirt.io/domain</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">domain</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cores</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">devices</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">disks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>- <span class="nt">disk</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">bus</span><span class="p">:</span><span class="w"> </span><span class="l">virtio</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootdisk</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">interfaces</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>- <span class="nt">masquerade</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">pod</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">dataVolume</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rootdisk</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Validate the state of the virtual machine by checking its Kubernetes objects like <code>VirtualMachine</code> and/or <code>VirtualMachineInstance</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get vm,vmi
+</span></span><span class="line"><span class="cl">NAME                                         AGE   STATUS    READY
+</span></span><span class="line"><span class="cl">virtualmachine.kubevirt.io/bootc-webserver   24m   Running   True
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                 AGE   PHASE     IP            NODENAME          READY
+</span></span><span class="line"><span class="cl">virtualmachineinstance.kubevirt.io/bootc-webserver   24m   Running   10.129.2.71   rguske-ocp42-n3   True</span></span></code></pre></div></div>
+<h3 id="step-4-exposing-the-webserver-vm">Step 4: Exposing the Webserver VM</h3>
+<p>According to the status, our vm is up and running and the webserver ready to serve. But how is the website reachable from the outside? How is ingress done? As the IP address of the <code>virtualmachineinstance</code> shows, the vm is connected to the pod network, which is an &ldquo;internal&rdquo; only network.</p>
+<p>Now, the cool thing about OpenShift Virtualization is, that of course you can just connect your virtual machine workloads directly to your data center, e.g. to VLAN baked networks. Like you would do on other Hypervisor platforms as well. But since vms are first citizens on OpenShift, you can also simply use standard Kubernetes network concepts like <code>Services</code> and <code>Ingress/Routes</code>.</p>
+<p>For my example and for the sake of the demo, I only want to expose the website itself on port <code>443</code>/<code>https</code>.</p>
+<p>Create a <code>Service</code> type <code>ClusterIP</code>:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">oc apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubevirt.io/domain</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">bootable-containers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubevirt.io/domain</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>The necessary object for Ingress communication is an OpenShift <code>Route</code>.</p>
+<p>Create the <code>route</code> accordingly:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">oc apply -f - &lt;&lt;EOF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">route.openshift.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Route</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kubevirt.io/domain</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">bootable-containers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">insecureEdgeTerminationPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Redirect</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">termination</span><span class="p">:</span><span class="w"> </span><span class="l">edge</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">wildcardPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">None</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+<p>Once the route resolves, you&rsquo;re looking at a web page served by a VM, whose entire operating system started life as a <code>Containerfile</code>.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get svc,route
+</span></span><span class="line"><span class="cl">NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>   AGE
+</span></span><span class="line"><span class="cl">service/bootc-webserver   ClusterIP   172.30.184.41   &lt;none&gt;        80/TCP    37m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                       HOST/PORT                                                                         PATH   SERVICES          PORT   TERMINATION     WILDCARD
+</span></span><span class="line"><span class="cl">route.route.openshift.io/bootc-webserver   bootc-webserver-bootable-containers.apps.rguske-ocp42.rguske.coe.muc.redhat.com          bootc-webserver   http   edge/Redirect   None</span></span></code></pre></div></div>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/webpage.png" title="/img/posts/202609_bootablecontainers/webpage.png" data-thumbnail="/img/posts/202609_bootablecontainers/webpage.png" data-sub-html="<h2>Figure I: The bootc web server, running as a VM on OpenShift Virtualization</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/webpage.png"
+            data-srcset="/img/posts/202609_bootablecontainers/webpage.png, /img/posts/202609_bootablecontainers/webpage.png 1.5x, /img/posts/202609_bootablecontainers/webpage.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/webpage.png" />
+    </a><figcaption class="image-caption">Figure I: The bootc web server, running as a VM on OpenShift Virtualization</figcaption>
+    </figure>
+<p>The VM ships with two users out of the box:</p>
+<table>
+  <thead>
+      <tr>
+          <th>User</th>
+          <th>Password</th>
+          <th>Configured via</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>bootc-user</code></td>
+          <td><code>redhat</code></td>
+          <td>Containerfile (always available)</td>
+      </tr>
+      <tr>
+          <td><code>rhel</code></td>
+          <td><code>R3dH4t1!</code></td>
+          <td>cloud-init (only if cloud-init is installed)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Before I walk you through the update process of a bootable container image based vm, I&rsquo;d like to describe an alternative method of uploading a virtual disk into the platform using <code>virttl image-upload</code>.</p>
+<h3 id="alternative-step-2-package-the-disk-as-a-container-image">Alternative Step 2: Package the disk as a container image</h3>
+<p>The trick to get a raw disk file into OpenShift Virtualization cleanly is to wrap it <em>back</em> into a container image, <code>scratch</code>-based, containing nothing but the disk:</p>
+<p>Create the following <code>Containerfile.ocpv</code> file. IMPORTANT! The <code>ADD</code> section points to the converted virtual disk file (<code>output/qcow2/disk.qcow2</code>).</p>
+<p>Ensure to correctly point to your path!</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-dockerfile">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl">cat &gt; Containerfile.ocpv &lt;&lt;EOF<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> registry.access.redhat.com/ubi9/ubi-minimal:latest AS builder</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ADD</span> --chown<span class="o">=</span>107:107 output/qcow2/disk.qcow2 /disk/<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> chmod <span class="m">0440</span> /disk/*<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> scratch</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /disk/* /disk/<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">LABEL</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;bootc-webserver-disk&#34;</span> <span class="nv">version</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>EOF</span></span></code></pre></div></div>
+<p>Build and push the new <code>-disk</code> image:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">podman build -f Containerfile.ocpv -t quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0-disk .
+</span></span><span class="line"><span class="cl">podman push quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.0-disk</span></span></code></pre></div></div>
+<h3 id="alternative-step-3-from-registry-to-pvc-to-vm">Alternative Step 3: From registry to PVC to VM</h3>
+<p>Instead of manually uploading the virtual disk to a <code>pvc</code>, you can alternatively point a <code>DataVolume</code> at your <code>-disk</code> image, and CDI pulls that container image, unpacks the <code>qcow2</code> file inside it, and writes it straight onto a freshly created <code>pvc</code>.</p>
+<p>I have an example &ldquo;ready to use&rdquo; in my <i class='fab fa-github fa-fw'></i> <a href="https://github.com/rguske/bootable-containers" target="_blank" rel="noopener noreffer ">repository</a>. If you already cloned it, change to the root of the cloned repository and adjust the files in <code>/openshift-virtualization</code> accordingly to match your environment. Steps and guidance are provided in the repo.</p>
+<p>I&rsquo;m using <code>kustomize</code> in order to roll out all the objects. Once you fire up <code>oc apply -k openshift-virtualization/</code>, everything will be created consequently:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc apply -k openshift-virtualization/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">namespace/bootable-containers-demo created
+</span></span><span class="line"><span class="cl">service/bootc-webserver created
+</span></span><span class="line"><span class="cl">datavolume.cdi.kubevirt.io/bootc-webserver-disk created
+</span></span><span class="line"><span class="cl">virtualmachine.kubevirt.io/bootc-webserver created
+</span></span><span class="line"><span class="cl">route.route.openshift.io/bootc-webserver created</span></span></code></pre></div></div>
+<p>The important part though is the <code>DataVolume</code> spec:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-yaml">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">cdi.kubevirt.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DataVolume</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver-disk</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">bootable-containers-demo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">bootc-webserver</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">source</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">registry</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;docker://quay.io/YOUR_USERNAME/bootc-webserver:v1.0-disk&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># Uncomment if using a private registry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># secretRef: quay-pull-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pvc</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">ReadWriteMany</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumeMode</span><span class="p">:</span><span class="w"> </span><span class="l">Block</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">20Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">kubevirt-ceph-rbd-virt</span></span></span></code></pre></div></div>
+<p>As you can see, <code>spec.source.registry.url</code> points to our <code>v1.0-disk</code> image which is available in my registry (<code>quay.io/rguske/bootc-webserver:v1.0-disk</code>).</p>
+<p>After creating the <code>DataVolume</code> this way, the CDI will create an <code>importer-prime</code> pod which will import the <code>disk.qcow2</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get pod
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                  READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">importer-prime-fedfa4be-5513-46be-88f2-ee7cb0b3a69e   1/1     Running   <span class="m">0</span>          2m33s</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc logs importer-prime-fedfa4be-5513-46be-88f2-ee7cb0b3a69e
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">I0909 08:11:26.549387       <span class="m">1</span> importer.go:108<span class="o">]</span> Starting importer
+</span></span><span class="line"><span class="cl">I0909 08:11:26.582453       <span class="m">1</span> importer.go:183<span class="o">]</span> begin import process
+</span></span><span class="line"><span class="cl">I0909 08:11:26.582807       <span class="m">1</span> registry-datasource.go:199<span class="o">]</span> Registry certs directory not configured
+</span></span><span class="line"><span class="cl">I0909 08:11:26.582886       <span class="m">1</span> data-processor.go:361<span class="o">]</span> Calculating available size
+</span></span><span class="line"><span class="cl">I0909 08:11:26.586002       <span class="m">1</span> data-processor.go:369<span class="o">]</span> Checking out block volume size.
+</span></span><span class="line"><span class="cl">I0909 08:11:26.586110       <span class="m">1</span> data-processor.go:386<span class="o">]</span> Target size 21474836480.
+</span></span><span class="line"><span class="cl">I0909 08:11:26.586186       <span class="m">1</span> data-processor.go:260<span class="o">]</span> New phase: TransferScratch
+</span></span><span class="line"><span class="cl">I0909 08:11:26.586346       <span class="m">1</span> registry-datasource.go:101<span class="o">]</span> Copying registry image to scratch space.
+</span></span><span class="line"><span class="cl">I0909 08:11:26.586407       <span class="m">1</span> transport.go:199<span class="o">]</span> Downloading image from <span class="s1">&#39;docker://quay.io/rguske/bootc-webserver:v1.0-disk&#39;</span>, copying file from <span class="s1">&#39;disk&#39;</span> to <span class="s1">&#39;/scratch&#39;</span>
+</span></span><span class="line"><span class="cl">I0909 08:11:27.537052       <span class="m">1</span> transport.go:231<span class="o">]</span> Processing layer <span class="o">{</span>Digest:sha256:bc0fd6090d4c5a5de6a6f478bed866e06b556d0141bc596aa54163e615b361a3 Size:1796891230 URLs:<span class="o">[]</span> Annotations:map<span class="o">[]</span> MediaType:application/vnd.oci.image.layer.v1.tar+gzip CompressionOperation:0 CompressionAlgorithm:&lt;nil&gt; CryptoOperation:0<span class="o">}</span>
+</span></span><span class="line"><span class="cl">I0909 08:11:28.282302       <span class="m">1</span> transport.go:158<span class="o">]</span> File <span class="s1">&#39;disk/disk.qcow2&#39;</span> found in the layer
+</span></span><span class="line"><span class="cl">I0909 08:11:28.285689       <span class="m">1</span> file.go:230<span class="o">]</span> copyWithSparseCheck to /scratch/disk/disk.qcow2</span></span></code></pre></div></div>
+<p>Check if all objects are deployed successfully:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc -n bootable-containers-demo get vm,vmi,dv,pvc,svc,route
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                         AGE   STATUS    READY
+</span></span><span class="line"><span class="cl">virtualmachine.kubevirt.io/bootc-webserver   76m   Running   True
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                                 AGE   PHASE     IP            NODENAME          READY
+</span></span><span class="line"><span class="cl">virtualmachineinstance.kubevirt.io/bootc-webserver   76m   Running   10.129.2.75   rguske-ocp42-n3   True
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                              PHASE       PROGRESS   RESTARTS   AGE
+</span></span><span class="line"><span class="cl">datavolume.cdi.kubevirt.io/bootc-webserver-disk   Succeeded   100.0%                76m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                     VOLUMEATTRIBUTESCLASS   AGE
+</span></span><span class="line"><span class="cl">persistentvolumeclaim/bootc-webserver-disk   Bound    pvc-852a040e-47c3-49ca-9130-927a36ff0381   20Gi       RWX            kubevirt-odf-replica-two-block   &lt;unset&gt;                 76m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>   AGE
+</span></span><span class="line"><span class="cl">service/bootc-webserver   ClusterIP   172.30.211.241   &lt;none&gt;        80/TCP    76m
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                                       HOST/PORT                                                                              PATH   SERVICES          PORT   TERMINATION     WILDCARD
+</span></span><span class="line"><span class="cl">route.route.openshift.io/bootc-webserver   bootc-webserver-bootable-containers-demo.apps.rguske-ocp42.rguske.coe.muc.redhat.com          bootc-webserver   http   edge/Redirect   None</span></span></code></pre></div></div>
+<h2 id="bootc-atomic-upgrade--rollback">Bootc Atomic Upgrade &amp; Rollback</h2>
+<p>The single best way I found to <em>feel</em> what &ldquo;atomic OS update&rdquo; actually means is to build two versions of the same image, switch between them live, and then panic-rollback &#x1f604;.</p>
+<p>Before I dig into it, I&rsquo;d like to explain the difference between <code>bootc switch</code> and <code>bootc upgrade</code>, since both change the bootc-managed OS, but they serve different purposes.</p>
+<ul>
+<li><code>bootc switch</code> changes the system to a different image reference, like <code>quay.io/rguske/bootc-webserver:v1.1</code>. This is typically used to move between channels, repositories, or explicitly selected versions.</li>
+<li><code>bootc upgrade</code> keeps the system on the same configured image reference and checks whether that reference now points to a newer image. If the system tracks <code>quay.io/acme/webserver:prod</code>, it pulls the newer image behind :prod, stages it, and the new deployment becomes active after reboot.</li>
+</ul>
+<p>A simple way to remember it:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">bootc upgrade
+</span></span><span class="line"><span class="cl">same image reference → newer content
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bootc switch
+</span></span><span class="line"><span class="cl">different image reference → different OS stream/image</span></span></code></pre></div></div>
+<div class="details admonition tip open">
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-lightbulb" aria-hidden="true"></i>Bootable Container Image Versioning<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">It is important to apply a proper image versioning scheme here. I didn&rsquo;t made a lot of research on best practices but after some very good discussion with my great colleagues <a href="https://www.linkedin.com/in/robertbohne/" target="_blank" rel="noopener noreffer ">Robert Bohne</a> and <a href="https://www.linkedin.com/in/rene-schramowski/" target="_blank" rel="noopener noreffer ">René Schramowski</a> it make sense to apply a <a href="https://semver.org/" target="_blank" rel="noopener noreffer ">Semantic Versioning Scheme</a> (major, minor, patch &ndash;&gt; v1.0.0, v1.0.1, &hellip;) and additionally with e.g. <code>dev</code>, <code>stage</code> and <code>prod</code> as a second tag. If the system tracks <code>quay.io/acme/webserver:prod</code>, it pulls the newer image behind <code>:prod</code> and stages it.</div>
+    </div>
+</div>
+<h3 id="bootc-switchupgrade">bootc switch/upgrade</h3>
+<p>In order to use <code>bootc switch</code>, we need to connect to our vm. OpenShift provides two simple way to access the vm console.</p>
+<ol>
+<li>OpenShift WebConsole <strong>Virtualization &ndash;&gt; VirtualMachine &ndash;&gt; VM &ndash;&gt; Overview &ndash;&gt; <code>Open web console</code></strong></li>
+<li><code>virtctl console &lt;vm-name&gt;</code></li>
+</ol>
+<ul>
+<li>being in your OpenShift project, simply execute:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">virtctl console bootc-webserver</span></span></code></pre></div></div>
+<ul>
+<li>Login using the configured username/password combination (<code>bootc-user/redhat</code>)</li>
+<li>Checkt the <code>booted image</code> status</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>bootc-user@bootc-webserver ~<span class="o">]</span>$ sudo bootc status
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4689.242601<span class="o">]</span> SELinux:  Context unconfined_u:object_r:invalid_bootcinstall_testlabel_t:s0 is not valid <span class="o">(</span>left unmapped<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">● Booted image: quay.io/rguske/bootc-webserver:v1.0
+</span></span><span class="line"><span class="cl">        Digest: sha256:5d100215e05a702733f7ddbcdca54f0d69e3a4437d3c5396dab368b5ca0c8c51 <span class="o">(</span>amd64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">       Version: <span class="m">9</span> <span class="o">(</span>2026-07-31T22:34:55Z<span class="o">)</span></span></span></code></pre></div></div>
+<ul>
+<li>Current image reference is <code>quay.io/rguske/bootc-webserver:v1.0</code>.</li>
+<li>For the sake of my demo, I haven&rsquo;t applied multiple tags to my image, which consequently means, I have to <code>switch</code> to my new image version instead of upgrading within the same reference.</li>
+<li>Let&rsquo;s reference to an updated version <code>v1.1</code> using <code>bootc switch</code>:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo bootc switch quay.io/<span class="si">${</span><span class="nv">USERNAME</span><span class="si">}</span>/bootc-webserver:v1.1</span></span></code></pre></div></div>
+<ul>
+<li>Example output:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">layers already present: 66; layers needed: 7 (1.1 GB)
+</span></span><span class="line"><span class="cl">Fetched layers: 1.07 GiB in 4 minutes (4.95 MiB/s)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Deploying: done (15 seconds)
+</span></span><span class="line"><span class="cl">Queued for next boot: quay.io/rguske/bootc-webserver:v1.1</span></span></code></pre></div></div>
+<ul>
+<li>The switch will be applied after rebooting the system:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo systemctl reboot</span></span></code></pre></div></div>
+<ul>
+<li>After the reboot, the new image is active:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>bootc-user@bootc-webserver ~<span class="o">]</span>$ sudo bootc status
+</span></span><span class="line"><span class="cl"><span class="o">[</span>  114.802632<span class="o">]</span> SELinux:  Context unconfined_u:object_r:invalid_bootcinstall_testlabel_t:s0 is not valid <span class="o">(</span>left unmapped<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">● Booted image: quay.io/rguske/bootc-webserver:v1.1
+</span></span><span class="line"><span class="cl">        Digest: sha256:728e8e1d196a4707ab8017948e27e0d73534cee037c4038fd9c05da8a2375a46 <span class="o">(</span>amd64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">       Version: <span class="m">9</span> <span class="o">(</span>2026-07-31T22:34:55Z<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Rollback image: quay.io/rguske/bootc-webserver:v1.0
+</span></span><span class="line"><span class="cl">          Digest: sha256:5d100215e05a702733f7ddbcdca54f0d69e3a4437d3c5396dab368b5ca0c8c51 <span class="o">(</span>amd64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">         Version: <span class="m">9</span> <span class="o">(</span>2026-07-31T22:34:55Z<span class="o">)</span></span></span></code></pre></div></div>
+<ul>
+<li>As aforementioned <code>bootc upgrade</code> won&rsquo;t work with my demo:</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>bootc-user@bootc-webserver ~<span class="o">]</span>$ sudo bootc upgrade
+</span></span><span class="line"><span class="cl"><span class="o">[</span>  462.222832<span class="o">]</span> evm: overlay not supported
+</span></span><span class="line"><span class="cl">No changes in quay.io/rguske/bootc-webserver:v1.1 <span class="o">=</span>&gt; sha256:728e8e1d196a4707ab8017948e27e0d73534cee037c4038fd9c05da8a2375a46
+</span></span><span class="line"><span class="cl">No update available.</span></span></code></pre></div></div>
+<p>One reboot later, the beautiful (IMO) purple <code>v1.1</code> theme shows up:</p>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/webpage2.png" title="/img/posts/202609_bootablecontainers/webpage2.png" data-thumbnail="/img/posts/202609_bootablecontainers/webpage2.png" data-sub-html="<h2>Figure II: v1.1, deployed with a single bootc switch &#43; reboot</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/webpage2.png"
+            data-srcset="/img/posts/202609_bootablecontainers/webpage2.png, /img/posts/202609_bootablecontainers/webpage2.png 1.5x, /img/posts/202609_bootablecontainers/webpage2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/webpage2.png" />
+    </a><figcaption class="image-caption">Figure II: v1.1, deployed with a single bootc switch + reboot</figcaption>
+    </figure>
+<p>If that had gone wrong, the fix is just as boring (in the best way):</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo bootc rollback
+</span></span><span class="line"><span class="cl">sudo systemctl reboot</span></span></code></pre></div></div>
+<div class="details admonition success open">
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-circle-check" aria-hidden="true"></i>Just Rollback!<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">No package archaeology, no &ldquo;which RPM broke this&rdquo;, no snapshot restore. Just boot the previous image again.</div>
+    </div>
+</div>
+<h2 id="automating-it-three-flavors-of-cicd">Automating It: Three Flavors of CI/CD</h2>
+<p>Building and switching images by hand is fine for a demo, but the whole point of image mode is that it fits into the container tooling you already have including your CI/CD. I ended up building the same pipeline three different ways, mostly to figure out which one I&rsquo;d actually reach for on a real project.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-code">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Git Push → Build bootc → Convert to QCOW2 → Package → Deploy VM</span></span></code></pre></div></div>
+<h3 id="github-actions">GitHub Actions</h3>
+<p>The simplest option if your code already lives on GitHub. It builds the bootc image, converts it to <code>qcow2</code>, pushes both, and if the OpenShift API is reachable from GitHub&rsquo;s runners, deploys the VM too.</p>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/github-actions2.png" title="/img/posts/202609_bootablecontainers/github-actions2.png" data-thumbnail="/img/posts/202609_bootablecontainers/github-actions2.png" data-sub-html="<h2>Figure III: The GitHub Actions workflow building a bootable container</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/github-actions2.png"
+            data-srcset="/img/posts/202609_bootablecontainers/github-actions2.png, /img/posts/202609_bootablecontainers/github-actions2.png 1.5x, /img/posts/202609_bootablecontainers/github-actions2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/github-actions2.png" />
+    </a><figcaption class="image-caption">Figure III: The GitHub Actions workflow building a bootable container</figcaption>
+    </figure>
+<div class="details admonition note open">
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>Reachability matters<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">GitHub-hosted runners need to reach your OpenShift API over the public internet for the deploy step. On a lab or private cluster, build and convert still succeed, but <code>oc login</code> fails. Run the deploy step from somewhere that can actually reach the cluster, or pick one of the two options below.</div>
+    </div>
+</div>
+<h3 id="openshift-pipelines-tekton">OpenShift Pipelines (Tekton)</h3>
+<p>For anything more OpenShift-native or fully air-gapped, Tekton pipelines running inside the cluster are the better fit. This one needs the <strong>OpenShift Pipelines</strong> operator installed and each of its five tasks (<code>git-clone</code>, <code>build-bootc-image</code>, <code>convert-to-qcow2</code>, <code>package-disk-image</code>, <code>deploy-vm</code>) mirrors a step from the manual walkthrough above.</p>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/pipelinerun1.png" title="/img/posts/202609_bootablecontainers/pipelinerun1.png" data-thumbnail="/img/posts/202609_bootablecontainers/pipelinerun1.png" data-sub-html="<h2>Figure IV: A Tekton PipelineRun building and converting the bootc image</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/pipelinerun1.png"
+            data-srcset="/img/posts/202609_bootablecontainers/pipelinerun1.png, /img/posts/202609_bootablecontainers/pipelinerun1.png 1.5x, /img/posts/202609_bootablecontainers/pipelinerun1.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/pipelinerun1.png" />
+    </a><figcaption class="image-caption">Figure IV: A Tekton PipelineRun building and converting the bootc image</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/pipelinerun2.png" title="/img/posts/202609_bootablecontainers/pipelinerun2.png" data-thumbnail="/img/posts/202609_bootablecontainers/pipelinerun2.png" data-sub-html="<h2>Figure V: &hellip;and successfully deploying the VM at the end of the run</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/pipelinerun2.png"
+            data-srcset="/img/posts/202609_bootablecontainers/pipelinerun2.png, /img/posts/202609_bootablecontainers/pipelinerun2.png 1.5x, /img/posts/202609_bootablecontainers/pipelinerun2.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/pipelinerun2.png" />
+    </a><figcaption class="image-caption">Figure V: &hellip;and successfully deploying the VM at the end of the run</figcaption>
+    </figure>
+<h3 id="gitops-with-argocd">GitOps with ArgoCD</h3>
+<p>And finally, the declarative option. A single ArgoCD <code>Application</code> pointed at the same <code>openshift-virtualization/</code> manifests, deliberately synced into its own namespace so it doesn&rsquo;t fight with the manually deployed VM from earlier.</p>
+<figure><a class="lightgallery" href="/img/posts/202609_bootablecontainers/gitops1.png" title="/img/posts/202609_bootablecontainers/gitops1.png" data-thumbnail="/img/posts/202609_bootablecontainers/gitops1.png" data-sub-html="<h2>Figure VI: The bootc-webserver Application, synced and healthy in ArgoCD</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/img/posts/202609_bootablecontainers/gitops1.png"
+            data-srcset="/img/posts/202609_bootablecontainers/gitops1.png, /img/posts/202609_bootablecontainers/gitops1.png 1.5x, /img/posts/202609_bootablecontainers/gitops1.png 2x"
+            data-sizes="auto"
+            alt="/img/posts/202609_bootablecontainers/gitops1.png" />
+    </a><figcaption class="image-caption">Figure VI: The bootc-webserver Application, synced and healthy in ArgoCD</figcaption>
+    </figure>
+<div class="details admonition note open">
+    <div class="details-summary admonition-title">
+        <i class="icon far fa-pen-to-square" aria-hidden="true"></i>One gotcha worth knowing upfront<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content"><p>ArgoCD&rsquo;s default RBAC can&rsquo;t manage <code>VirtualMachine</code>, <code>DataVolume</code>, or <code>Route</code> objects. Without an explicit RBAC grant for the <code>argocd-application-controller</code>/<code>-server</code> ServiceAccounts, the <code>Application</code> just sits <code>OutOfSync</code>/<code>Missing</code> forever.</p>
+<p>Example configuration &#x1f449; <a href="https://github.com/rguske/bootable-containers/blob/main/cicd/gitops/rbac.yaml" target="_blank" rel="noopener noreffer ">rbac.yaml</a></p>
+</div>
+    </div>
+</div>
+<h2 id="battle-scars">Battle Scars</h2>
+<p>A few things I ran into while building this, in case they save you an hour or two.</p>
+<div class="details admonition warning open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>bootc-image-builder needs real Linux<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content">I tried running <code>bootc-image-builder</code> via Podman Machine on macOS first. It fails, because the tool needs a bind-mount of the <strong>host&rsquo;s</strong> container storage, and Podman Machine&rsquo;s virtualization layer doesn&rsquo;t expose that reliably. Do this step on a native Linux x86_64 box. A small VM works fine.</div>
+    </div>
+</div>
+<div class="details admonition warning open">
+    <div class="details-summary admonition-title">
+        <i class="icon fas fa-exclamation" aria-hidden="true"></i>Pull before you build<i class="details-icon fas fa-angle-right" aria-hidden="true"></i>
+    </div>
+    <div class="details-content">
+        <div class="admonition-content"><code>bootc-image-builder</code> no longer pulls images automatically. Skip the <code>podman pull</code> step and you&rsquo;ll get a confusing <code>image not known</code> error instead of a helpful &ldquo;please pull first&rdquo; message. Always <code>sudo podman pull &lt;image&gt;</code> immediately before invoking it.</div>
+    </div>
+</div>
+<h2 id="conclusion">Conclusion</h2>
+<p>Bootable containers collapse a distinction that&rsquo;s existed for as long as I&rsquo;ve worked with Operating Systems. &ldquo;The app&rdquo; and &ldquo;the OS it runs on&rdquo; used to need completely different tooling, different update mechanisms, and different mental models. With <code>bootc</code>, they&rsquo;re the same <code>Containerfile</code>, the same registry, the same <code>podman build</code>, and my favorite part, the same instant, atomic rollback you already rely on for application containers.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html-single/using_image_mode_for_rhel_to_build_deploy_and_manage_operating_systems/index" target="_blank" rel="noopener noreffer ">Image Mode for RHEL - Red Hat Docs</a></li>
+<li><a href="https://github.com/containers/bootc" target="_blank" rel="noopener noreffer ">bootc Project</a> on <i class='fab fa-github fa-fw'></i></li>
+<li><a href="https://github.com/osbuild/bootc-image-builder" target="_blank" rel="noopener noreffer ">bootc-image-builder</a> on <i class='fab fa-github fa-fw'></i></li>
+<li><a href="https://github.com/CentOS/centos-bootc" target="_blank" rel="noopener noreffer ">CentOS bootc Images</a></li>
+<li><a href="https://developers.redhat.com/products/rhel/image-mode" target="_blank" rel="noopener noreffer ">Image Mode Overview - Red Hat Developer</a></li>
+<li><a href="https://developers.redhat.com/articles/2024/11/11/deploy-image-mode-rhel-openshift-virtualization" target="_blank" rel="noopener noreffer ">Deploy Image Mode RHEL to OpenShift Virtualization</a></li>
+<li><a href="https://github.com/redhat-cop/rhel-bootc-examples" target="_blank" rel="noopener noreffer ">rhel-bootc-examples (Red Hat CoP)</a></li>
+<li><a href="https://gitlab.com/bootc-org/examples" target="_blank" rel="noopener noreffer ">bootc-org/examples</a></li>
+<li><a href="https://docs.fedoraproject.org/en-US/bootc/" target="_blank" rel="noopener noreffer ">Fedora bootc Documentation</a></li>
+</ul>
+<p>Thanks for reading.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2026-09-10</span>
+            </div><div id="page-views" class="post-info-mod">
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/post/bootable-containers-an-entire-operating-system-as-a-containerfile/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" data-title="Bootable Containers - An Entire Operating System as a Containerfile" data-hashtags="RedHat,OpenShift,Containers,Linux,bootc,KubeVirt,Automation"><i class="fab fa-x-twitter" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" data-title="Bootable Containers - An Entire Operating System as a Containerfile"><i class="fab fa-threads" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" data-hashtag="RedHat"><i class="fab fa-facebook-square" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/"><i class="fab fa-linkedin" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" data-title="Bootable Containers - An Entire Operating System as a Containerfile"><i class="fab fa-hacker-news" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/"><i class="fab fa-reddit" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Xing" data-sharer="xing" data-url="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" data-title="Bootable Containers - An Entire Operating System as a Containerfile"><i class="fab fa-xing" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags" aria-hidden="true"></i>&nbsp;<a href="/tags/redhat/">RedHat</a>,&nbsp;<a href="/tags/openshift/">OpenShift</a>,&nbsp;<a href="/tags/containers/">Containers</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/bootc/">Bootc</a>,&nbsp;<a href="/tags/kubevirt/">KubeVirt</a>,&nbsp;<a href="/tags/automation/">Automation</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" class="prev" rel="prev" title="Installing Red Hat OpenShift in a disconnected/air-gapped environment"><i class="fas fa-angle-left" aria-hidden="true"></i>Installing Red Hat OpenShift in a disconnected/air-gapped environment</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.148.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 1.0.0"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/about/" target="_blank">Robert Guske</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/lightgallery/lightgallery.min.js"></script><script src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/typeit/index.umd.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"  Robert Guske's Blog","id-2":"  Robert Guske's Blog"},"lightgallery":true,"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script src="/js/theme.js"></script></body>
+</html>

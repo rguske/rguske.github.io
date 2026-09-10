@@ -12,7 +12,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-09-08T12:35:00+02:00">
-    <meta property="article:modified_time" content="2026-09-08T12:35:00+02:00">
+    <meta property="article:modified_time" content="2026-09-08T12:52:49+02:00">
     <meta property="article:tag" content="RedHat">
     <meta property="article:tag" content="OpenShift">
     <meta property="article:tag" content="Kubernetes">
@@ -27,7 +27,7 @@
   <meta name="twitter:description" content="A deep-dive into installing Red Hat OpenShift in a fully disconnected environment using the Agent-Based Installer (ABI). I cover bastion host preparation, standing up the mirror registry, mirroring release/operator images with oc-mirror v2, creating the agent ISO, and running Operator Lifecycle Manager and the Update Service without direct internet access.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
 <meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
-<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" /><link rel="prev" href="https://rguske.github.io/post/red-hat-anniversary/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" /><link rel="prev" href="https://rguske.github.io/post/red-hat-anniversary/" /><link rel="next" href="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -39,7 +39,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment\/"
         },"genre": "posts","keywords": "RedHat, OpenShift, Kubernetes, Disconnected, AirGapped, Automation","wordcount":  5836 ,
-        "url": "https:\/\/rguske.github.io\/post\/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment\/","datePublished": "2026-09-08T12:35:00+02:00","dateModified": "2026-09-08T12:35:00+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
+        "url": "https:\/\/rguske.github.io\/post\/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment\/","datePublished": "2026-09-08T12:35:00+02:00","dateModified": "2026-09-08T12:52:49+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
@@ -898,7 +898,7 @@
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -k https://rguske-rhel9-disco-bastion.disco.local:8443/health/instance
 </span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s2">&#34;data&#34;</span>:<span class="o">{</span><span class="s2">&#34;services&#34;</span>:<span class="o">{</span><span class="s2">&#34;auth&#34;</span>:true,<span class="s2">&#34;database&#34;</span>:true,<span class="s2">&#34;disk_space&#34;</span>:true,<span class="s2">&#34;registry_gunicorn&#34;</span>:true,<span class="s2">&#34;service_key&#34;</span>:true,<span class="s2">&#34;web_gunicorn&#34;</span>:true<span class="o">}}</span>,<span class="s2">&#34;status_code&#34;</span>:200<span class="o">}</span></span></span></code></pre></div></div>
 <p>Check the certificate:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -922,7 +922,7 @@
 </span></span><span class="line"><span class="cl">-----BEGIN CERTIFICATE-----
 </span></span><span class="line"><span class="cl"><span class="o">[</span>...<span class="o">]</span></span></span></code></pre></div></div>
 <p>Also validate the certificate we&rsquo;re going to trust on our bastion host:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -947,7 +947,7 @@
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">podman login -u init -p <span class="s1">&#39;r3dh4t1!&#39;</span> https://rguske-rhel9-disco-bastion.disco.local:8443 --tls-verify<span class="o">=</span>false</span></span></code></pre></div></div>
 <p>It&rsquo;s also possible without <code>--tls-verify=false</code> by trusting the newly created certificates, which are stored under <code>root/quay-config</code>:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -1064,7 +1064,7 @@
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> -n <span class="s1">&#39;init:r3dh4t1!&#39;</span> <span class="p">|</span> base64 -w0</span></span></code></pre></div></div>
 <p>Edit the JSON file and add a section that describes your registry to it:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-json">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -1090,7 +1090,7 @@
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc mirror list operators --catalogs --version<span class="o">=</span>4.21 --v1</span></span></code></pre></div></div>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -2032,7 +2032,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>Updated on 2026-09-08</span>
+                <span>Updated on 2026-09-08&nbsp;<a class="git-hash" href="https://github.com/rguske/blog/commit/e2fe33af0d01937c30a0b5a1cd9eced1a9d8cf67" target="_blank" title="commit by Robert Guske(robert.guske@gmail.com) e2fe33af0d01937c30a0b5a1cd9eced1a9d8cf67: new post openshift-disconnected finished">
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>e2fe33a</a></span>
             </div><div id="page-views" class="post-info-mod">
             </div></div>
         <div class="post-info-line">
@@ -2052,7 +2053,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/red-hat-anniversary/" class="prev" rel="prev" title="Time Flies! One Year at Red Hat"><i class="fas fa-angle-left" aria-hidden="true"></i>Time Flies! One Year at Red Hat</a></div>
+    <div class="post-nav"><a href="/post/red-hat-anniversary/" class="prev" rel="prev" title="Time Flies! One Year at Red Hat"><i class="fas fa-angle-left" aria-hidden="true"></i>Time Flies! One Year at Red Hat</a>
+            <a href="/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" class="next" rel="next" title="Bootable Containers - An Entire Operating System as a Containerfile">Bootable Containers - An Entire Operating System as a Containerfile<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">
