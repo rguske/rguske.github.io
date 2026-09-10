@@ -323,21 +323,11 @@ You could use `curl -LO <url>` for it:
 OCP_VERSION='4.21.11'
 ```
 
-OpenShift Installer:
-
-```shell
-curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OCP_VERSION}/openshift-install-rhel9-amd64.tar.gz"
-```
-
 OpenShift Client:
 
 ```shell
 curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OCP_VERSION}/openshift-client-linux-amd64-rhel9-${OCP_VERSION}.tar.gz"
 ```
-
-{{< admonition note "FIPS note" true >}}
-RHEL 9 is FIPS compatible; RHEL 8 is non-FIPS compatible.
-{{< /admonition >}}
 
 OpenShift Mirror CLI:
 
@@ -1199,6 +1189,10 @@ Release Image Architecture is unknown
 release architecture unknown
 default architecture amd64
 ```
+
+{{< admonition note "FIPS note" true >}}
+RHEL 9 is FIPS compatible; RHEL 8 is non-FIPS compatible.
+{{< /admonition >}}
 
 This binary is what will be used to create the agent ISO.
 
