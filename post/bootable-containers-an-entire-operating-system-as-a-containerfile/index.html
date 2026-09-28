@@ -27,7 +27,7 @@
   <meta name="twitter:description" content="A hands-on look at bootable containers (bootc): building an entire OS as a Containerfile, converting it to a bootable disk image, deploying it to OpenShift Virtualization, and automating the whole pipeline with GitHub Actions, OpenShift Pipelines, and GitOps.">
 <meta name="application-name" content="Robert Guske&#39;s Blog">
 <meta name="apple-mobile-web-app-title" content="Robert Guske&#39;s Blog">
-<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" /><link rel="prev" href="https://rguske.github.io/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rguske.github.io/post/bootable-containers-an-entire-operating-system-as-a-containerfile/" /><link rel="prev" href="https://rguske.github.io/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" /><link rel="next" href="https://rguske.github.io/post/kubevirt-meets-eventing-automating-vm-lifecycle-data-with-knative-and-faas/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><meta name="google-site-verification" content="WA7hqFngJR6BpdME_dqsDyCzWf8YVaWVM6FUUyycIoI" /><script type="application/ld+json">
     {
@@ -264,7 +264,7 @@
 <h3 id="bootc"><code>bootc</code></h3>
 <p><i class='fab fa-github fa-fw'></i> repository &#x1f449; <a href="https://github.com/bootc-dev/bootc" target="_blank" rel="noopener noreffer ">bootc-dev/bootc</a></p>
 <p><code>bootc</code> is the tool that lives <em>inside</em> the running system and manages which bootable container image is currently booted.</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -427,7 +427,7 @@
     </div>
 </div>
 <p>In order to do the conversion <code>bootc-image-builder</code> is used. A container to create disk images from bootc container inputs.</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -491,7 +491,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --image-path ~/output/qcow2/disk.qcow2 <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>  --insecure</span></span></code></pre></div></div>
 <p>Example <code>virtctl image-upload</code> output:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -540,7 +540,7 @@
 </span></span><span class="line"><span class="cl">persistentvolumeclaim/bootc-webserver   Bound    pvc-c15578c5-9a63-4eac-8a22-4064ac03e2bc   10Gi       RWX            kubevirt-odf-replica-two-block   &lt;unset&gt;                 7m27s</span></span></code></pre></div></div>
 <p>&hellip;the consequently next step is to create the virtual machine and boot it (based on a bootable container image &#x1f680;).</p>
 <p>Apply the following VM spec:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -597,7 +597,7 @@
 <p>Now, the cool thing about OpenShift Virtualization is, that of course you can just connect your virtual machine workloads directly to your data center, e.g. to VLAN baked networks. Like you would do on other Hypervisor platforms as well. But since vms are first citizens on OpenShift, you can also simply use standard Kubernetes network concepts like <code>Services</code> and <code>Ingress/Routes</code>.</p>
 <p>For my example and for the sake of the demo, I only want to expose the website itself on port <code>443</code>/<code>https</code>.</p>
 <p>Create a <code>Service</code> type <code>ClusterIP</code>:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -622,7 +622,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
 <p>The necessary object for Ingress communication is an OpenShift <code>Route</code>.</p>
 <p>Create the <code>route</code> accordingly:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -734,7 +734,7 @@
 </span></span><span class="line"><span class="cl">virtualmachine.kubevirt.io/bootc-webserver created
 </span></span><span class="line"><span class="cl">route.route.openshift.io/bootc-webserver created</span></span></code></pre></div></div>
 <p>The important part though is the <code>DataVolume</code> spec:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -771,7 +771,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                                                  READY   STATUS    RESTARTS   AGE
 </span></span><span class="line"><span class="cl">importer-prime-fedfa4be-5513-46be-88f2-ee7cb0b3a69e   1/1     Running   <span class="m">0</span>          2m33s</span></span></code></pre></div></div>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -791,7 +791,7 @@
 </span></span><span class="line"><span class="cl">I0909 08:11:28.282302       <span class="m">1</span> transport.go:158<span class="o">]</span> File <span class="s1">&#39;disk/disk.qcow2&#39;</span> found in the layer
 </span></span><span class="line"><span class="cl">I0909 08:11:28.285689       <span class="m">1</span> file.go:230<span class="o">]</span> copyWithSparseCheck to /scratch/disk/disk.qcow2</span></span></code></pre></div></div>
 <p>Check if all objects are deployed successfully:</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -1089,7 +1089,8 @@
         </section>
     </div>
 
-    <div class="post-nav"><a href="/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" class="prev" rel="prev" title="Installing Red Hat OpenShift in a disconnected/air-gapped environment"><i class="fas fa-angle-left" aria-hidden="true"></i>Installing Red Hat OpenShift in a disconnected/air-gapped environment</a></div>
+    <div class="post-nav"><a href="/post/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment/" class="prev" rel="prev" title="Installing Red Hat OpenShift in a disconnected/air-gapped environment"><i class="fas fa-angle-left" aria-hidden="true"></i>Installing Red Hat OpenShift in a disconnected/air-gapped environment</a>
+            <a href="/post/kubevirt-meets-eventing-automating-vm-lifecycle-data-with-knative-and-faas/" class="next" rel="next" title="KubeVirt meets Eventing: Automating VM Lifecycle Data with Knative and FaaS">KubeVirt meets Eventing: Automating VM Lifecycle Data with Knative and FaaS<i class="fas fa-angle-right" aria-hidden="true"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">
