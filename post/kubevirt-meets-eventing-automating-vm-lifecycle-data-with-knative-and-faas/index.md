@@ -240,6 +240,8 @@ metadata:
 EOF
 ```
 
+On OpenShift, simply `oc new-project kubevirt-eventing`.
+
 ```yaml
 oc create -f - <<EOF
 apiVersion: eventing.knative.dev/v1
