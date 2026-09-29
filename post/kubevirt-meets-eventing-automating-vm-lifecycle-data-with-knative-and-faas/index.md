@@ -19,7 +19,7 @@ That's exactly the gap Functions-as-a-Service (FaaS) and Knative Eventing fill. 
 
 ## Architecture at a Glance
 
-{{< image src="/img/posts/202512_kubevirt_meets_eventing/kubevirt-meets-eventing.png" caption="Figure I: End-to-end event flow from VM lifecycle event to database" src-s="/img/posts/202512_kubevirt_meets_eventing/kubevirt-meets-eventing.png" >}}
+{{< image src="/img/posts/202609_kubevirt_eventing/eventing-use-case-architecture.png" caption="Figure I: End-to-end event flow from VM lifecycle event to database" src-s="/img/posts/202609_kubevirt_eventing/eventing-use-case-architecture.png" >}}
 
 Let's walk through the diagram hop by hop, since every box in there is a piece we'll actually deploy later in this post:
 
