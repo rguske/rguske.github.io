@@ -93,7 +93,15 @@ The annual VMware vExpert title is given to individuals who have significantly c
 
 ## 2026
 
-### KubeCon 2026 Europe
+### ContainerDays 2026 - Hamburg
+
+| **Title** | **Link** |
+|:---: | :---: | :---:|
+| *Bootable Containers: An entire OS as a Containerfile*. | [YOUTUBE](https://youtu.be/cg-nQDNa-RU?si=2Fbry7fxPSmPILS0) |
+
+<center> {{< youtube cg-nQDNa-RU >}} </center>
+
+### KubeCon 2026 - Europe
 
 | **Activity @** | **Duty** | **Evidence** |
 |:---: | :---: | :---:|
