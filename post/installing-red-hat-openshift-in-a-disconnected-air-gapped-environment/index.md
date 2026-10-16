@@ -790,13 +790,17 @@ Edit the JSON file and add a section that describes your registry to it:
 
 ### Creating the Image Set Configuration
 
+The `ImageSetConfiguration` is a YAML configuration file used by `oc-mirror` to define which container images should be mirrored from external registries into a private container registry. Its primary purpose is to ensure that all required container images are available locally, allowing OpenShift clusters to be installed, updated, and operated without direct internet access.
+
 Create an `ImageSetConfiguration.yaml` file and modify it to include your required images.
 
-List the available Operators using, e.g.:
+List the available OpenShift operators using:
 
 ```shell
 oc mirror list operators --catalogs --version=4.21 --v1
 ```
+
+Define the operators you'd need for your OpenShift installation as well as the ones you need for addtional services. Create the `ImageSetConfiguration`:
 
 ```yaml
 tee imagesetconfiguration.yaml > /dev/null <<'EOF'
@@ -848,14 +852,6 @@ EOF
 ```
 
 Make sure the CLIs are in your `$PATH` (otherwise `export PATH=/usr/local/bin:$PATH`).
-
-The `oc-mirror` plugin v2 automatically generates the following custom resources for you:
-
-- **`ImageDigestMirrorSet` (IDMS)** - handles registry mirror rules when using image digest pull specifications. Generated if at least one image of the image set is mirrored by digest.
-- **`ImageTagMirrorSet` (ITMS)** - handles registry mirror rules when using image tag pull specifications. Generated if at least one image from the image set is mirrored by tag.
-- **`CatalogSource`** - retrieves information about the available Operators in the mirror registry. Used by Operator Lifecycle Manager (OLM).
-- **`ClusterCatalog`** - retrieves information about the available cluster extensions (which includes Operators) in the mirror registry. Used by OLM v1.
-- **`UpdateService`** - provides update graph data to the disconnected environment. Used by the OpenShift Update Service.
 
 Mirror the images from the specified image set configuration to disk:
 
@@ -1269,60 +1265,45 @@ agent.x86_64.iso      21%  ********************************************   |  261
 
 ## Using Operator Lifecycle Manager in Disconnected Environments
 
-Docs: [Using Operator Lifecycle Manager in disconnected environments](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/olm-restricted-networks)
+Source: [Using Operator Lifecycle Manager in disconnected environments](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/olm-restricted-networks)
 
-Disable the sources for the default catalogs by adding `disableAllDefaultSources: true` to the `OperatorHub` object:
+In section [Creating the Image Set Configuration](#creating-the-image-set-configuration) we've initiated the mirroring process which resulted in the creation of the following files which got stored in folder `../working-dir/cluster-resources`:
+
+- **`ImageDigestMirrorSet` (IDMS)** - handles registry mirror rules when using image digest pull specifications. Generated if at least one image of the image set is mirrored by digest.
+- **`ImageTagMirrorSet` (ITMS)** - handles registry mirror rules when using image tag pull specifications. Generated if at least one image from the image set is mirrored by tag.
+- **`CatalogSource`** - retrieves information about the available Operators in the mirror registry. Used by Operator Lifecycle Manager (OLM).
+- **`ClusterCatalog`** - retrieves information about the available cluster extensions (which includes Operators) in the mirror registry. Used by OLM v1.
+- **`UpdateService`** - provides update graph data to the disconnected environment. Used by the OpenShift Update Service.
+
+Before applying the newly created resource manifests, disable the sources for the default catalogs first by adding `disableAllDefaultSources: true` to the `OperatorHub` object:
 
 ```shell
 oc patch OperatorHub cluster --type json \
     -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 ```
 
-Create a new `CatalogSource` object that references your index image:
+Create the above listed resources by simply executing:
 
-```yaml
-oc create -f - <<EOF
-apiVersion: operators.coreos.com/v1alpha1
-kind: CatalogSource
-metadata:
-  name: my-operator-catalog
-  namespace: openshift-marketplace
-spec:
-  sourceType: grpc
-  grpcPodConfig:
-    securityContextConfig: legacy
-  image: rguske-rhel9-disco-bastion.disco.local:8443/disco/redhat/redhat-operator-index:v4.21
-  displayName: My Operator Catalog
-  publisher: rguske-disco-lab
-  updateStrategy:
-    registryPoll:
-      interval: 30m
-EOF
+```shell
+oc apply -f /home/rguske/openshift/mirror/working-dir/cluster-resources
 ```
 
-After applying the new `CatalogSource`, delete the old one using `oc -n openshift-marketplace delete catalogsource redhat-operators`.
+If this step is done, delete the old `CatalogSource` using `oc -n openshift-marketplace delete catalogsource redhat-operators`.
 
-Validate the new catalog source: `oc -n openshift-marketplace get catalogsource`
+### New CatalogSource
 
-Next, install the OpenShift Update Service Operator and create the instance using the file that `oc-mirror` already generated for you in `/home/rguske/openshift/mirror/working-dir/cluster-resources/updateService.yaml`:
+Validate the new catalog source:
 
-```yaml
-apiVersion: updateservice.operator.openshift.io/v1
-kind: UpdateService
-metadata:
-  annotations:
-    createdAt: Monday, 27-Apr-26 15:46:08 UTC
-    createdBy: oc-mirror v2
-    oc-mirror_version: 4.21.0-202604140043.p2.g12f1b06.assembly.stream.el9-12f1b06
-  name: update-service-oc-mirror
-spec:
-  graphDataImage: rguske-rhel9-disco-bastion.disco.local:8443/disco/openshift/graph-image:latest
-  releases: rguske-rhel9-disco-bastion.disco.local:8443/disco/openshift/release-images
-  replicas: 2
-status: {}
+```shell
+oc -n openshift-marketplace get catalogsource
+
+NAME                           DISPLAY                    TYPE   PUBLISHER   AGE
+my-operator-catalog  Red Hat Operators          grpc   Red Hat     15m
 ```
 
-The update service will be available after applying this configuration, but it won't trust your registry yet. You need to create a `ConfigMap` with the root certificate of your mirror registry.
+### New UpdateService
+
+Besides the new `CatalogSource` object, a new `OpenShift Update Service Operator` object (based on `updateService.yaml`) was also part of the previous operation. But the new `UpdateService` won't trust your registry yet. You need to create a `ConfigMap` with the root certificate of your mirror registry.
 
 Docs: [Configuring access to a secured registry for the OpenShift Update Service](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/updating-a-cluster-in-a-disconnected-environment#registry-configuration-for-update-service_updating-disconnected-cluster-osus) and [Configuring additional trust stores for image registry access](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html-single/registry/index#images-configuration-cas_configuring-registry-operator)
 
@@ -1365,13 +1346,11 @@ data:
 EOF
 ```
 
-After creating the `ConfigMap`, edit the `config.openshift.io/v1` CR named `cluster` with the new `additionalTrustedCA`:
+After creating the `ConfigMap`, patch the `config.openshift.io/v1` CR named `cluster` with the new `additionalTrustedCA`:
 
-```yaml
-[...]
-spec:
-  additionalTrustedCA:
-    name: my-mirror-registry-ca
+```shell
+oc patch image.config.openshift.io/cluster --type=merge \
+  -p '{"spec":{"additionalTrustedCA":{"name":"my-mirror-registry-ca"}}}'
 ```
 
 Check the pods within the `openshift-update-service` namespace:
@@ -1386,7 +1365,9 @@ update-service-oc-mirror-98764cbd-t87tf   2/2     Running   0          8m4s
 updateservice-operator-74d959fd7d-qzj8s   1/1     Running   0          46m
 ```
 
-The next step is to update the Cluster Version Operator with the new `route` object:
+The next step is to update the Cluster Version Operator with the new `route` object.
+
+Option 1 - CLI:
 
 ```shell
 oc -n openshift-update-service get route
@@ -1395,11 +1376,35 @@ NAME                             HOST/PORT                                      
 update-service-oc-mirror-route   update-service-oc-mirror-route-openshift-update-service.apps.rguske-ocp42-disco.disco.local          update-service-oc-mirror-policy-engine   policy-engine   edge/None     None
 ```
 
-After updating the route via the web console (**Administration** → **Cluster Settings** → **Upstream Configuration**), the service will initially complain about the untrusted cluster certificate. It's necessary to patch the cluster-wide `proxy` configuration with a `ConfigMap` object that contains the cluster's self-signed certificate.
+```shell
+POLICY_ENGINE_GRAPH_URI="$(oc -n openshift-update-service get updateservice update-service-oc-mirror \
+  -o jsonpath='{.status.policyEngineURI}/api/upgrades_info/v1/graph{"\n"}')"
+```
+
+```shell
+oc patch clusterversion/version \
+  --type=merge \
+  -p "{\"spec\":{\"upstream\":\"${POLICY_ENGINE_GRAPH_URI}\"}}"
+```
+
+Option 2 - WebConsole:
+
+Go to **Administration** → **Cluster Settings** → **Upstream Configuration** and select `Default update server`. Select `Custom update service` and paste the output of `oc -n openshift-update-service get route` in here.
+
+The service will initially complain about the untrusted cluster certificate. It's necessary to patch the cluster-wide `proxy` configuration with a `ConfigMap` object that contains the cluster's self-signed certificate.
+
+Obtain the certificate:
+
+```shell
+oc get secret router-ca \
+  -n openshift-ingress-operator \
+  -o jsonpath='{.data.tls\.crt}' \
+  | base64 -d > router-ca.pem
+```
 
 Create the `ConfigMap`:
 
-```yaml
+```shell
 oc apply -f - <<EOF
 apiVersion: v1
 kind: ConfigMap
@@ -1408,10 +1413,7 @@ metadata:
   namespace: openshift-config
 data:
   ca-bundle.crt: |
-    # MyPrivateCA (root.crt)
-    -----BEGIN CERTIFICATE-----
-    [...]
-    -----END CERTIFICATE-----
+`sed 's/^/    /' router-ca.pem`
 EOF
 ```
 
@@ -1430,6 +1432,44 @@ oc get co -w
 ```
 
 After a successful reconciliation, the update graph should look good.
+
+## Additionally
+
+### Disable Insights
+
+```shell
+oc get secret pull-secret -n openshift-config \
+  -o jsonpath='{.data.\.dockerconfigjson}' \
+  | base64 -d \
+  | jq 'del(.auths["cloud.openshift.com"])' \
+  > pull-secret-without-insights.json
+```
+
+```shell
+oc set data secret/pull-secret -n openshift-config \
+  --from-file=.dockerconfigjson=pull-secret-without-insights.json
+```
+
+```shell
+oc apply -n openshift-insights -f - <<'EOF'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: insights-config
+  namespace: openshift-insights
+data:
+  config.yaml: |
+    alerting:
+      disabled: true
+EOF
+```
+
+### Disable Devfiles
+
+```shell
+oc patch consoles.operator.openshift.io/cluster  --type=merge \
+  -p '{"spec":{"customization":{"developerCatalog":{"types":{"state":"Disabled","disabled":["Devfile"]}}}}}'
+```
 
 ## Troubleshooting
 
@@ -1669,5 +1709,7 @@ Running OpenShift fully disconnected requires quite a bit more upfront planning 
 
 If you hit a wall, the assisted-service API and its `validations_info` are your best friend - in my case, it was "just" a duplicated hostname.
 
-Thanks for reading.
+## Contributions
+
+Shoutout to [Joachim von Thadden](https://www.linkedin.com/in/joachim-von-thadden-41214939/) and [Robert Bohne](https://www.linkedin.com/in/robertbohne/) for reviewing the article and for providing valueable feedback.
 

@@ -38,7 +38,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rguske.github.io\/post\/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment\/"
-        },"genre": "posts","keywords": "RedHat, OpenShift, Kubernetes, Disconnected, AirGapped, Automation","wordcount":  5831 ,
+        },"genre": "posts","keywords": "RedHat, OpenShift, Kubernetes, Disconnected, AirGapped, Automation","wordcount":  6015 ,
         "url": "https:\/\/rguske.github.io\/post\/installing-red-hat-openshift-in-a-disconnected-air-gapped-environment\/","datePublished": "2026-09-08T12:35:00+02:00","dateModified": "2026-09-10T17:05:39+02:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License. © All rights reserved -2018","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -137,8 +137,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Installing Red Hat OpenShift in a disconnected/air-gapped environment</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/about/" title="Author" rel="author" class="author"><i class="fas fa-user-circle" aria-hidden="true"></i>Robert Guske</a></span>&nbsp;<span class="post-category">included in <a href="/categories/platforms/"><i class="far fa-folder" aria-hidden="true"></i>Platforms</a>&nbsp;<a href="/categories/open-source/"><i class="far fa-folder" aria-hidden="true"></i>Open-Source</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2026-09-08">2026-09-08</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;5831 words&nbsp;
-                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;28 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="2026-09-08">2026-09-08</time>&nbsp;<i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;6015 words&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;29 minutes&nbsp;</div>
         </div><div class="featured-image"><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -196,7 +196,18 @@
         <li><a href="#sharing-the-iso-via-a-httpd-webserver">Sharing the ISO via a <code>httpd</code> Webserver</a></li>
       </ul>
     </li>
-    <li><a href="#using-operator-lifecycle-manager-in-disconnected-environments">Using Operator Lifecycle Manager in Disconnected Environments</a></li>
+    <li><a href="#using-operator-lifecycle-manager-in-disconnected-environments">Using Operator Lifecycle Manager in Disconnected Environments</a>
+      <ul>
+        <li><a href="#new-catalogsource">New CatalogSource</a></li>
+        <li><a href="#new-updateservice">New UpdateService</a></li>
+      </ul>
+    </li>
+    <li><a href="#additionally">Additionally</a>
+      <ul>
+        <li><a href="#disable-insights">Disable Insights</a></li>
+        <li><a href="#disable-devfiles">Disable Devfiles</a></li>
+      </ul>
+    </li>
     <li><a href="#troubleshooting">Troubleshooting</a>
       <ul>
         <li><a href="#networking">Networking</a></li>
@@ -206,6 +217,7 @@
       </ul>
     </li>
     <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#contributions">Contributions</a></li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="why-disconnected-openshift">Why Disconnected OpenShift</h2>
@@ -356,7 +368,7 @@
 </span></span><span class="line"><span class="cl">Wired connection <span class="m">1</span>  c8d40ef7-3d02-3ba5-b047-dacd6d013b24  /etc/NetworkManager/system-connections/Wired connection 1.nmconnection
 </span></span><span class="line"><span class="cl">lo                  dd314177-6d3f-4ad3-a1af-2875d094c193  /run/NetworkManager/system-connections/lo.nmconnection</span></span></code></pre></div></div>
 <p>Readable configuration:</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -388,7 +400,7 @@
 </span></span><span class="line"><span class="cl"><span class="nv">NAME</span><span class="o">=</span><span class="s2">&#34;System eth0&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">UUID</span><span class="o">=</span>5fb06bd0-0bb0-7ffb-45f1-d6edd65f3e03</span></span></code></pre></div></div>
 <p>And the other interface:</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -470,7 +482,7 @@
 </span></span><span class="line"><span class="cl">  interfaces: eth0
 </span></span><span class="line"><span class="cl">trusted
 </span></span><span class="line"><span class="cl">  interfaces: eth1</span></span></code></pre></div></div>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -490,7 +502,7 @@
 </span></span><span class="line"><span class="cl">  source-ports:
 </span></span><span class="line"><span class="cl">  icmp-blocks:
 </span></span><span class="line"><span class="cl">  rich rules:</span></span></code></pre></div></div>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -608,7 +620,7 @@
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">sudo chown root:root /usr/local/bin/<span class="o">{</span>kubectl,oc,oc-mirror,openshift-install-fips<span class="o">}</span>
 </span></span><span class="line"><span class="cl">sudo chmod <span class="m">755</span> /usr/local/bin/<span class="o">{</span>kubectl,oc,oc-mirror,openshift-install-fips<span class="o">}</span></span></span></code></pre></div></div>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -699,7 +711,7 @@
 <ol start="4">
 <li>Create a local repository pointing at the mounted ISO:</li>
 </ol>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -759,7 +771,7 @@
 </span></span><span class="line"><span class="cl">dig +short rguske-rhel9-disco-bastion.disco.local
 </span></span><span class="line"><span class="cl">192.168.69.208</span></span></code></pre></div></div>
 <p>In this scenario it&rsquo;s important to use the DNS record which points to the IP in the disconnected subnet (192.168.69.0/24).</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
@@ -1067,14 +1079,16 @@
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
 <h3 id="creating-the-image-set-configuration">Creating the Image Set Configuration</h3>
+<p>The <code>ImageSetConfiguration</code> is a YAML configuration file used by <code>oc-mirror</code> to define which container images should be mirrored from external registries into a private container registry. Its primary purpose is to ensure that all required container images are available locally, allowing OpenShift clusters to be installed, updated, and operated without direct internet access.</p>
 <p>Create an <code>ImageSetConfiguration.yaml</code> file and modify it to include your required images.</p>
-<p>List the available Operators using, e.g.:</p>
+<p>List the available OpenShift operators using:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc mirror list operators --catalogs --version<span class="o">=</span>4.21 --v1</span></span></code></pre></div></div>
+<p>Define the operators you&rsquo;d need for your OpenShift installation as well as the ones you need for addtional services. Create the <code>ImageSetConfiguration</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-yaml">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
@@ -1127,14 +1141,6 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">shortestPath</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
 <p>Make sure the CLIs are in your <code>$PATH</code> (otherwise <code>export PATH=/usr/local/bin:$PATH</code>).</p>
-<p>The <code>oc-mirror</code> plugin v2 automatically generates the following custom resources for you:</p>
-<ul>
-<li><strong><code>ImageDigestMirrorSet</code> (IDMS)</strong> - handles registry mirror rules when using image digest pull specifications. Generated if at least one image of the image set is mirrored by digest.</li>
-<li><strong><code>ImageTagMirrorSet</code> (ITMS)</strong> - handles registry mirror rules when using image tag pull specifications. Generated if at least one image from the image set is mirrored by tag.</li>
-<li><strong><code>CatalogSource</code></strong> - retrieves information about the available Operators in the mirror registry. Used by Operator Lifecycle Manager (OLM).</li>
-<li><strong><code>ClusterCatalog</code></strong> - retrieves information about the available cluster extensions (which includes Operators) in the mirror registry. Used by OLM v1.</li>
-<li><strong><code>UpdateService</code></strong> - provides update graph data to the disconnected environment. Used by the OpenShift Update Service.</li>
-</ul>
 <p>Mirror the images from the specified image set configuration to disk:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
@@ -1593,8 +1599,16 @@
 </span></span><span class="line"><span class="cl">saving to <span class="s1">&#39;agent.x86_64.iso&#39;</span>
 </span></span><span class="line"><span class="cl">agent.x86_64.iso      21%  ********************************************   <span class="p">|</span>  261M  0:00:10 ETA</span></span></code></pre></div></div>
 <h2 id="using-operator-lifecycle-manager-in-disconnected-environments">Using Operator Lifecycle Manager in Disconnected Environments</h2>
-<p>Docs: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/olm-restricted-networks" target="_blank" rel="noopener noreffer ">Using Operator Lifecycle Manager in disconnected environments</a></p>
-<p>Disable the sources for the default catalogs by adding <code>disableAllDefaultSources: true</code> to the <code>OperatorHub</code> object:</p>
+<p>Source: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/olm-restricted-networks" target="_blank" rel="noopener noreffer ">Using Operator Lifecycle Manager in disconnected environments</a></p>
+<p>In section <a href="#creating-the-image-set-configuration" rel="">Creating the Image Set Configuration</a> we&rsquo;ve initiated the mirroring process which resulted in the creation of the following files which got stored in folder <code>../working-dir/cluster-resources</code>:</p>
+<ul>
+<li><strong><code>ImageDigestMirrorSet</code> (IDMS)</strong> - handles registry mirror rules when using image digest pull specifications. Generated if at least one image of the image set is mirrored by digest.</li>
+<li><strong><code>ImageTagMirrorSet</code> (ITMS)</strong> - handles registry mirror rules when using image tag pull specifications. Generated if at least one image from the image set is mirrored by tag.</li>
+<li><strong><code>CatalogSource</code></strong> - retrieves information about the available Operators in the mirror registry. Used by Operator Lifecycle Manager (OLM).</li>
+<li><strong><code>ClusterCatalog</code></strong> - retrieves information about the available cluster extensions (which includes Operators) in the mirror registry. Used by OLM v1.</li>
+<li><strong><code>UpdateService</code></strong> - provides update graph data to the disconnected environment. Used by the OpenShift Update Service.</li>
+</ul>
+<p>Before applying the newly created resource manifests, disable the sources for the default catalogs first by adding <code>disableAllDefaultSources: true</code> to the <code>OperatorHub</code> object:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
@@ -1602,51 +1616,27 @@
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc patch OperatorHub cluster --type json <span class="se">\
 </span></span></span><span class="line"><span class="cl"><span class="se"></span>    -p <span class="s1">&#39;[{&#34;op&#34;: &#34;add&#34;, &#34;path&#34;: &#34;/spec/disableAllDefaultSources&#34;, &#34;value&#34;: true}]&#39;</span></span></span></code></pre></div></div>
-<p>Create a new <code>CatalogSource</code> object that references your index image:</p>
+<p>Create the above listed resources by simply executing:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
-    <div class="code-header language-yaml">
+    <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
-    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">oc create -f - &lt;&lt;EOF</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">operators.coreos.com/v1alpha1</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CatalogSource</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-operator-catalog</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">openshift-marketplace</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">sourceType</span><span class="p">:</span><span class="w"> </span><span class="l">grpc</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">grpcPodConfig</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">securityContextConfig</span><span class="p">:</span><span class="w"> </span><span class="l">legacy</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">rguske-rhel9-disco-bastion.disco.local:8443/disco/redhat/redhat-operator-index:v4.21</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">displayName</span><span class="p">:</span><span class="w"> </span><span class="l">My Operator Catalog</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">publisher</span><span class="p">:</span><span class="w"> </span><span class="l">rguske-disco-lab</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">updateStrategy</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">registryPoll</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l">30m</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
-<p>After applying the new <code>CatalogSource</code>, delete the old one using <code>oc -n openshift-marketplace delete catalogsource redhat-operators</code>.</p>
-<p>Validate the new catalog source: <code>oc -n openshift-marketplace get catalogsource</code></p>
-<p>Next, install the OpenShift Update Service Operator and create the instance using the file that <code>oc-mirror</code> already generated for you in <code>/home/rguske/openshift/mirror/working-dir/cluster-resources/updateService.yaml</code>:</p>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc apply -f /home/rguske/openshift/mirror/working-dir/cluster-resources</span></span></code></pre></div></div>
+<p>If this step is done, delete the old <code>CatalogSource</code> using <code>oc -n openshift-marketplace delete catalogsource redhat-operators</code>.</p>
+<h3 id="new-catalogsource">New CatalogSource</h3>
+<p>Validate the new catalog source:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
-    <div class="code-header language-yaml">
+    <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
-    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">updateservice.operator.openshift.io/v1</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">UpdateService</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">createdAt</span><span class="p">:</span><span class="w"> </span><span class="l">Monday, 27-Apr-26 15:46:08 UTC</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">createdBy</span><span class="p">:</span><span class="w"> </span><span class="l">oc-mirror v2</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">oc-mirror_version</span><span class="p">:</span><span class="w"> </span><span class="m">4.21.0-202604140043.</span><span class="l">p2.g12f1b06.assembly.stream.el9-12f1b06</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">update-service-oc-mirror</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">graphDataImage</span><span class="p">:</span><span class="w"> </span><span class="l">rguske-rhel9-disco-bastion.disco.local:8443/disco/openshift/graph-image:latest</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">releases</span><span class="p">:</span><span class="w"> </span><span class="l">rguske-rhel9-disco-bastion.disco.local:8443/disco/openshift/release-images</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w"> </span>{}</span></span></code></pre></div></div>
-<p>The update service will be available after applying this configuration, but it won&rsquo;t trust your registry yet. You need to create a <code>ConfigMap</code> with the root certificate of your mirror registry.</p>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc -n openshift-marketplace get catalogsource
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME                           DISPLAY                    TYPE   PUBLISHER   AGE
+</span></span><span class="line"><span class="cl">my-operator-catalog  Red Hat Operators          grpc   Red Hat     15m</span></span></code></pre></div></div>
+<h3 id="new-updateservice">New UpdateService</h3>
+<p>Besides the new <code>CatalogSource</code> object, a new <code>OpenShift Update Service Operator</code> object (based on <code>updateService.yaml</code>) was also part of the previous operation. But the new <code>UpdateService</code> won&rsquo;t trust your registry yet. You need to create a <code>ConfigMap</code> with the root certificate of your mirror registry.</p>
 <p>Docs: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/disconnected_environments/updating-a-cluster-in-a-disconnected-environment#registry-configuration-for-update-service_updating-disconnected-cluster-osus" target="_blank" rel="noopener noreffer ">Configuring access to a secured registry for the OpenShift Update Service</a> and <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html-single/registry/index#images-configuration-cas_configuring-registry-operator" target="_blank" rel="noopener noreffer ">Configuring additional trust stores for image registry access</a></p>
 <p>You can add references to a <code>ConfigMap</code> that has additional certificate authorities (CAs) to be trusted during image registry access to the <code>image.config.openshift.io/cluster</code> custom resource (CR).</p>
 <div class="details admonition warning open">
@@ -1692,16 +1682,14 @@
 </span></span></span><span class="line"><span class="cl"><span class="sd">    gPt4JJQZJ8JP6bSREgAhqfNSngfLj73O1+S2fuN7i3mCQEv0UajEhQgHQtcZ6r1C
 </span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
-<p>After creating the <code>ConfigMap</code>, edit the <code>config.openshift.io/v1</code> CR named <code>cluster</code> with the new <code>additionalTrustedCA</code>:</p>
+<p>After creating the <code>ConfigMap</code>, patch the <code>config.openshift.io/v1</code> CR named <code>cluster</code> with the new <code>additionalTrustedCA</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
-    <div class="code-header language-yaml">
+    <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
-    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="p">[</span><span class="l">...]</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">additionalTrustedCA</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-mirror-registry-ca</span></span></span></code></pre></div></div>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc patch image.config.openshift.io/cluster --type<span class="o">=</span>merge <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p <span class="s1">&#39;{&#34;spec&#34;:{&#34;additionalTrustedCA&#34;:{&#34;name&#34;:&#34;my-mirror-registry-ca&#34;}}}&#39;</span></span></span></code></pre></div></div>
 <p>Check the pods within the <code>openshift-update-service</code> namespace:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
@@ -1715,7 +1703,8 @@
 </span></span><span class="line"><span class="cl">update-service-oc-mirror-98764cbd-cj2sd   2/2     Running   <span class="m">0</span>          8m4s
 </span></span><span class="line"><span class="cl">update-service-oc-mirror-98764cbd-t87tf   2/2     Running   <span class="m">0</span>          8m4s
 </span></span><span class="line"><span class="cl">updateservice-operator-74d959fd7d-qzj8s   1/1     Running   <span class="m">0</span>          46m</span></span></code></pre></div></div>
-<p>The next step is to update the Cluster Version Operator with the new <code>route</code> object:</p>
+<p>The next step is to update the Cluster Version Operator with the new <code>route</code> object.</p>
+<p>Option 1 - CLI:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
@@ -1725,26 +1714,50 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">NAME                             HOST/PORT                                                                                     PATH   SERVICES                                 PORT            TERMINATION   WILDCARD
 </span></span><span class="line"><span class="cl">update-service-oc-mirror-route   update-service-oc-mirror-route-openshift-update-service.apps.rguske-ocp42-disco.disco.local          update-service-oc-mirror-policy-engine   policy-engine   edge/None     None</span></span></code></pre></div></div>
-<p>After updating the route via the web console (<strong>Administration</strong> → <strong>Cluster Settings</strong> → <strong>Upstream Configuration</strong>), the service will initially complain about the untrusted cluster certificate. It&rsquo;s necessary to patch the cluster-wide <code>proxy</code> configuration with a <code>ConfigMap</code> object that contains the cluster&rsquo;s self-signed certificate.</p>
-<p>Create the <code>ConfigMap</code>:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
-    <div class="code-header language-yaml">
+    <div class="code-header language-shell">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
-    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="l">oc apply -f - &lt;&lt;EOF</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ConfigMap</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">ocp-disco-ingress-cert</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">openshift-config</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ca-bundle.crt</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span></span></span><span class="line"><span class="cl"><span class="sd">    # MyPrivateCA (root.crt)
-</span></span></span><span class="line"><span class="cl"><span class="sd">    -----BEGIN CERTIFICATE-----
-</span></span></span><span class="line"><span class="cl"><span class="sd">    [...]
-</span></span></span><span class="line"><span class="cl"><span class="sd">    -----END CERTIFICATE-----</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="l">EOF</span></span></span></code></pre></div></div>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">POLICY_ENGINE_GRAPH_URI</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>oc -n openshift-update-service get updateservice update-service-oc-mirror <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -o <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.policyEngineURI}/api/upgrades_info/v1/graph{&#34;\n&#34;}&#39;</span><span class="k">)</span><span class="s2">&#34;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc patch clusterversion/version <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --type<span class="o">=</span>merge <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p <span class="s2">&#34;{\&#34;spec\&#34;:{\&#34;upstream\&#34;:\&#34;</span><span class="si">${</span><span class="nv">POLICY_ENGINE_GRAPH_URI</span><span class="si">}</span><span class="s2">\&#34;}}&#34;</span></span></span></code></pre></div></div>
+<p>Option 2 - WebConsole:</p>
+<p>Go to <strong>Administration</strong> → <strong>Cluster Settings</strong> → <strong>Upstream Configuration</strong> and select <code>Default update server</code>. Select <code>Custom update service</code> and paste the output of <code>oc -n openshift-update-service get route</code> in here.</p>
+<p>The service will initially complain about the untrusted cluster certificate. It&rsquo;s necessary to patch the cluster-wide <code>proxy</code> configuration with a <code>ConfigMap</code> object that contains the cluster&rsquo;s self-signed certificate.</p>
+<p>Obtain the certificate:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get secret router-ca <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -n openshift-ingress-operator <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -o <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.data.tls\.crt}&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="p">|</span> base64 -d &gt; router-ca.pem</span></span></code></pre></div></div>
+<p>Create the <code>ConfigMap</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc apply -f - <span class="s">&lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ConfigMap
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: ocp-disco-ingress-cert
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: openshift-config
+</span></span></span><span class="line"><span class="cl"><span class="s">data:
+</span></span></span><span class="line"><span class="cl"><span class="s">  ca-bundle.crt: |
+</span></span></span><span class="line"><span class="cl"><span class="s">`sed &#39;s/^/    /&#39; router-ca.pem`
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span></span></span></code></pre></div></div>
 <p>Patch the <code>proxy</code> object:</p>
 <div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-shell">
@@ -1762,6 +1775,49 @@
         <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
     </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get co -w</span></span></code></pre></div></div>
 <p>After a successful reconciliation, the update graph should look good.</p>
+<h2 id="additionally">Additionally</h2>
+<h3 id="disable-insights">Disable Insights</h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc get secret pull-secret -n openshift-config <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -o <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.data.\.dockerconfigjson}&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="p">|</span> base64 -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  <span class="p">|</span> jq <span class="s1">&#39;del(.auths[&#34;cloud.openshift.com&#34;])&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  &gt; pull-secret-without-insights.json</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc <span class="nb">set</span> data secret/pull-secret -n openshift-config <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --from-file<span class="o">=</span>.dockerconfigjson<span class="o">=</span>pull-secret-without-insights.json</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc apply -n openshift-insights -f - <span class="s">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ConfigMap
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: insights-config
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: openshift-insights
+</span></span></span><span class="line"><span class="cl"><span class="s">data:
+</span></span></span><span class="line"><span class="cl"><span class="s">  config.yaml: |
+</span></span></span><span class="line"><span class="cl"><span class="s">    alerting:
+</span></span></span><span class="line"><span class="cl"><span class="s">      disabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span></span></span></code></pre></div></div>
+<h3 id="disable-devfiles">Disable Devfiles</h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-shell">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">oc patch consoles.operator.openshift.io/cluster  --type<span class="o">=</span>merge <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p <span class="s1">&#39;{&#34;spec&#34;:{&#34;customization&#34;:{&#34;developerCatalog&#34;:{&#34;types&#34;:{&#34;state&#34;:&#34;Disabled&#34;,&#34;disabled&#34;:[&#34;Devfile&#34;]}}}}}&#39;</span></span></span></code></pre></div></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>Typical disconnected blockers in OpenShift agent-based installs are:</p>
 <ul>
@@ -2020,7 +2076,8 @@
 <h2 id="conclusion">Conclusion</h2>
 <p>Running OpenShift fully disconnected requires quite a bit more upfront planning than a regular connected install. A well prepared bastion host, a local mirror registry, a carefully crafted <code>ImageSetConfiguration</code>, and a trust chain that needs to be threaded through the installer, OLM, and the Update Service alike. But once the mirror registry and the generated <code>IDMS</code>/<code>ITMS</code>/<code>CatalogSource</code> manifests are in place, the Agent-Based Installer takes care of the rest just like in a connected environment.</p>
 <p>If you hit a wall, the assisted-service API and its <code>validations_info</code> are your best friend - in my case, it was &ldquo;just&rdquo; a duplicated hostname.</p>
-<p>Thanks for reading.</p>
+<h2 id="contributions">Contributions</h2>
+<p>Shoutout to <a href="https://www.linkedin.com/in/joachim-von-thadden-41214939/" target="_blank" rel="noopener noreffer ">Joachim von Thadden</a> and <a href="https://www.linkedin.com/in/robertbohne/" target="_blank" rel="noopener noreffer ">Robert Bohne</a> for reviewing the article and for providing valueable feedback.</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
